@@ -38,7 +38,7 @@ public class PlatoService {
     }
 
     @Transactional
-    public void deletePlayer(Plato p) {
+    public void deletePlato(Plato p) {
         repo.delete(p);
     }
 
