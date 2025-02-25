@@ -10,7 +10,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/productos")
 public class ProductoController {
-    
+
     private final ProductoService ps;
 
     @Autowired
@@ -21,8 +21,12 @@ public class ProductoController {
     // Crear un producto
     @PostMapping
     public ResponseEntity<Producto> crearProducto(@RequestBody Producto producto) {
-        Producto nuevoProducto = ps.crearProducto(producto);
-        return ResponseEntity.ok(nuevoProducto);
+        try {
+            Producto nuevoProducto = ps.crearProducto(producto);
+            return ResponseEntity.ok(nuevoProducto);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     // Modificar un producto
@@ -30,9 +34,14 @@ public class ProductoController {
     public ResponseEntity<Producto> modificarProducto(@PathVariable Integer id, @RequestBody Producto producto) {
         Optional<Producto> productoExistente = ps.obtenerProductoPorId(id);
         if (productoExistente.isPresent()) {
+            // Asignamos el id del path al objeto producto
             producto.setId(id);
-            Producto productoActualizado = ps.modificarProducto(producto);
-            return ResponseEntity.ok(productoActualizado);
+            try {
+                Producto productoActualizado = ps.modificarProducto(producto);
+                return ResponseEntity.ok(productoActualizado);
+            } catch (IllegalArgumentException ex) {
+                return ResponseEntity.badRequest().build();
+            }
         } else {
             return ResponseEntity.notFound().build();
         }

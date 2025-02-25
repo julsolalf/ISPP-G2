@@ -17,18 +17,34 @@ public class ProductoService {
         this.pr = productoRepository;
     }
 
-    // Crear un producto
     @Transactional
     public Producto crearProducto(Producto producto) {
+        if (producto.getId() != null) {
+            throw new IllegalArgumentException("Un producto nuevo no debe tener ID asignado.");
+        }
         return pr.save(producto);
     }
 
-    // Modificar un producto
+    // Modificar un producto existente
+    @Transactional
     public Producto modificarProducto(Producto producto) {
         if (producto.getId() == null || !pr.existsById(producto.getId())) {
             throw new IllegalArgumentException("No se puede modificar un producto que no existe.");
         }
-        return pr.save(producto);
+        // Opcionalmente: obtener el producto actual, actualizar solo ciertos campos,
+        // etc.
+        // Por ejemplo:
+        Producto productoExistente = pr.findById(producto.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
+        productoExistente.setNombre(producto.getNombre());
+        productoExistente.setFechaCaducidad(producto.getFechaCaducidad());
+        productoExistente.setCantidad(producto.getCantidad());
+        productoExistente.setDescripcion(producto.getDescripcion());
+        productoExistente.setMedida(producto.getMedida());
+        productoExistente.setTamaño(producto.getTamaño());
+        productoExistente.setProveedor(producto.getProveedor());
+
+        return pr.save(productoExistente);
     }
 
     // Eliminar un producto por id
