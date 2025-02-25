@@ -29,6 +29,9 @@ public class Producto extends NamedEntity {
     @Column(name = "cantidad")
     private Integer cantidad;
 
+    @Column(name = "descripcion")
+    private Integer descripcion;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "medida")
     private Medida medida;
