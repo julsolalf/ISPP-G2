@@ -17,6 +17,9 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.List;
 
+import ispp_g2.gastrostock.model.NamedEntity;
+import ispp_g2.gastrostock.plato.Plato;
+
 @Entity
 @Table(name = "producto")
 @Getter

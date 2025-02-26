@@ -1,5 +1,6 @@
 package ispp_g2.gastrostock.Productos;
 
+import ispp_g2.gastrostock.Almacenes.Almacen;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
