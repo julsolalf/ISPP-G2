@@ -21,8 +21,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v1.0.${{ github.run_number }}
-          release_name: "v1.0.${{ github.run_number }}"
+          tag_name: v1.0.${{ github.run_number }} #Modificar si queremos modificar la version, ahora mismo seria 1.0.X
+          release_name: "v1.0.${{ github.run_number }}" #Modificar si queremos modificar la version, ahora mismo seria 1.0.X
 #Cambiar por el mensaje que se desee si quieres proporcinar mas informacion sobre la nueva release
           body: "Nueva Release."  
           draft: false
