@@ -85,6 +85,10 @@ public class VentaService {
     public void eliminarVenta(Integer id) {
         repo.deleteById(id);
     }
+
+    public List<Venta> obtenerVentasPorFecha(LocalDate fecha) {
+        return repo.findByFecha(fecha);
+    }
     
 
     

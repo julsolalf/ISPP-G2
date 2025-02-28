@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,6 +63,23 @@ public class VentaController {
             return ResponseEntity.noContent().build();
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    // Endpoint para obtener ventas por una fecha específica
+    @GetMapping("/por-fecha")
+    public ResponseEntity<List<Venta>> obtenerVentasPorFecha(@RequestParam("fecha") String fecha) {
+        try {
+            // Convertir la fecha de tipo String a LocalDate
+            LocalDate fechaVenta = LocalDate.parse(fecha);
+
+            // Llamar al servicio para obtener las ventas
+            List<Venta> ventas = ventaService.obtenerVentasPorFecha(fechaVenta);
+
+            // Retornar las ventas encontradas
+            return ResponseEntity.ok(ventas);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
         }
     }
 }
