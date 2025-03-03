@@ -41,7 +41,7 @@ jobs:
           echo "New version: $new_version"
           
           # Define la salida para utilizarla en otros pasos (nueva sintaxis)
-          echo "new_version=$new_version" >> $GITHUB_OUTPUT
+          echo "new_version=$new_version" >> $GITHUB_ENV
 
       - name: Create ZIP
         run: zip -r release.zip .
@@ -50,10 +50,10 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ steps.calculate_version.outputs.new_version }}
-          release_name: "v${{ steps.calculate_version.outputs.new_version }}"
+          tag_name: v${{ env.new_version }}
+          release_name: "v${{ env.new_version }}"
           commitish: ${{ github.sha }}
           body: "Nueva Release basada en commits: Release, feat y fix."
           draft: false
@@ -62,9 +62,9 @@ jobs:
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: release.zip
-          asset_name: source_code_v${{ steps.calculate_version.outputs.new_version }}.zip
+          asset_name: source_code_v${{ env.new_version }}.zip
           asset_content_type: application/zip
