@@ -12,6 +12,33 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Calculate new version
+        id: calculate_version
+        run: |
+          # Obtiene el último tag; si no hay ninguno, se usa "0.0.0"
+          last_tag=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "0.0.0")
+          echo "Last tag: $last_tag"
+          
+          # Separa el tag en X, Y, Z
+          IFS='.' read -r x y z <<< "$last_tag"
+          echo "Valores iniciales - X: $x, Y: $y, Z: $z"
+          
+          # Cuenta commits nuevos según scope entre el último tag y HEAD
+          release_count=$(git log ${last_tag}..HEAD --grep="^Release:" --oneline | wc -l | tr -d ' ')
+          feat_count=$(git log ${last_tag}..HEAD --grep="^feat:" --oneline | wc -l | tr -d ' ')
+          fix_count=$(git log ${last_tag}..HEAD --grep="^fix:" --oneline | wc -l | tr -d ' ')
+          echo "Commits - Release: $release_count, feat: $feat_count, fix: $fix_count"
+          
+          # Calcula la nueva versión sumando los contadores
+          new_x=$((x + release_count))
+          new_y=$((y + feat_count))
+          new_z=$((z + fix_count))
+          new_version="${new_x}.${new_y}.${new_z}"
+          echo "New version: $new_version"
+          
+          # Define la salida para utilizarla en otros pasos
+          echo "::set-output name=new_version::$new_version"
+
       - name: Create ZIP
         run: zip -r release.zip .
 
@@ -21,10 +48,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v1.0.${{ github.run_number }} #Modificar si queremos modificar la version, ahora mismo seria 1.0.X
-          release_name: "v1.0.${{ github.run_number }}" #Modificar si queremos modificar la version, ahora mismo seria 1.0.X
-#Cambiar por el mensaje que se desee si quieres proporcinar mas informacion sobre la nueva release
-          body: "Nueva Release."  
+          tag_name: v${{ steps.calculate_version.outputs.new_version }}
+          release_name: "v${{ steps.calculate_version.outputs.new_version }}"
+          body: "Nueva Release basada en commits: Release, feat y fix."  
           draft: false
           prerelease: false
 
@@ -35,5 +61,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: release.zip
-          asset_name: source_code_v1.0.${{ github.run_number }}.zip
+          asset_name: source_code_v${{ steps.calculate_version.outputs.new_version }}.zip
           asset_content_type: application/zip
