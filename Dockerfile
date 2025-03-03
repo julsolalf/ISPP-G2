@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y maven && rm -rf /var/lib/apt/lists/*
 COPY pom.xml .
 RUN mvn dependency:go-offline
 
-# Copiar el resto del código del proyecto y compilar la aplicación sin ejecutar tests
+# Copiar el resto del código del proyecto y compilar la aplicación sin ejecutar test
 COPY . .
 RUN mvn clean package -DskipTests
 
