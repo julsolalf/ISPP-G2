@@ -6,6 +6,9 @@ on:
       - main
       - feat/47
 
+permissions:
+  contents: write
+
 jobs:
   create_release:
     runs-on: ubuntu-latest
@@ -37,8 +40,8 @@ jobs:
           new_version="${new_x}.${new_y}.${new_z}"
           echo "New version: $new_version"
           
-          # Define la salida para utilizarla en otros pasos
-          echo "::set-output name=new_version::$new_version"
+          # Define la salida para utilizarla en otros pasos (nueva sintaxis)
+          echo "new_version=$new_version" >> $GITHUB_OUTPUT
 
       - name: Create ZIP
         run: zip -r release.zip .
@@ -47,7 +50,7 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
         with:
           tag_name: v${{ steps.calculate_version.outputs.new_version }}
           release_name: "v${{ steps.calculate_version.outputs.new_version }}"
@@ -59,7 +62,7 @@ jobs:
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: release.zip
