@@ -40,7 +40,7 @@ jobs:
           new_version="${new_x}.${new_y}.${new_z}"
           echo "New version: $new_version"
           
-          # Define la salida para utilizarla en otros pasos (nueva sintaxis())
+          # Define la salida para utilizarla en otros pasos (nueva sintaxis)
           echo "new_version=$new_version" >> $GITHUB_OUTPUT
 
       - name: Create ZIP
