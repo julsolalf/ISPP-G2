@@ -1,75 +1,28 @@
-name: Automatic Release
-
 on:
   push:
     branches:
       - main
-      - feat/47
-
-permissions:
-  contents: write
-
+name: release-please
 jobs:
-  create_release:
+  release-please:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Calculate new version
-        id: calculate_version
-        shell: bash
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          release-type: node
+      - uses: actions/checkout@v4
+      - name: tag major and minor versions
+        if: ${{ steps.release.outputs.release_created }}
         run: |
-          # Obtiene el último tag; si no hay ninguno, se usa "0.0.0"
-          last_tag=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "0.0.0")
-          echo "Last tag: $last_tag"
-          
-          # Separa el tag en X, Y, Z
-          IFS='.' read -r x y z <<< "$last_tag"
-          echo "Valores iniciales - X: $x, Y: $y, Z: $z"
-          
-          # Verifica los commits entre el último tag y HEAD
-          echo "Commits entre el último tag y HEAD:"
-          git log ${last_tag}..HEAD --oneline
-          
-          # Cuenta commits nuevos según scope entre el último tag y HEAD
-          release_count=$(git log ${last_tag}..HEAD --grep="^Release:" --oneline | wc -l | tr -d ' ')
-          feat_count=$(git log ${last_tag}..HEAD --grep="^Feat:" --oneline | wc -l | tr -d ' ')
-          fix_count=$(git log ${last_tag}..HEAD --grep="^Fix:" --oneline | wc -l | tr -d ' ')
-          echo "Commits - Release: $release_count, feat: $feat_count, fix: $fix_count"
-          
-          # Calcula la nueva versión sumando los contadores
-          new_x=$((x + release_count))
-          new_y=$((y + feat_count))
-          new_z=$((z + fix_count))
-          new_version="${new_x}.${new_y}.${new_z}"
-          echo "New version: $new_version"
-          
-          # Define la salida para utilizarla en otros pasos (nueva sintaxis)
-          echo "new_version=$new_version" >> $GITHUB_ENV
-
-      - name: Create ZIP
-        run: zip -r release.zip .
-
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v${{ env.new_version }}
-          release_name: "v${{ env.new_version }}"
-          commitish: ${{ github.sha }}
-          body: "Nueva Release basada en commits: Release, feat y fix."
-          draft: false
-          prerelease: false
-
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: release.zip
-          asset_name: source_code_v${{ env.new_version }}.zip
-          asset_content_type: application/zip
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git remote add gh-token "https://${{ secrets.GITHUB_TOKEN }}@github.com/googleapis/release-please-action.git"
+          git tag -d v${{ steps.release.outputs.major }} || true
+          git tag -d v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }} || true
+          git push origin :v${{ steps.release.outputs.major }} || true
+          git push origin :v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }} || true
+          git tag -a v${{ steps.release.outputs.major }} -m "Release v${{ steps.release.outputs.major }}"
+          git tag -a v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }} -m "Release v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}"
+          git push origin v${{ steps.release.outputs.major }}
+          git push origin v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}
