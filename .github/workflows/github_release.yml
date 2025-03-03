@@ -28,9 +28,9 @@ jobs:
           echo "Valores iniciales - X: $x, Y: $y, Z: $z"
           
           # Cuenta commits nuevos según scope entre el último tag y HEAD
-          release_count=$(git log ${last_tag}..HEAD --grep="^Release" --oneline | wc -l | tr -d ' ')
-          feat_count=$(git log ${last_tag}..HEAD --grep="^Feat" --oneline | wc -l | tr -d ' ')
-          fix_count=$(git log ${last_tag}..HEAD --grep="^Fix" --oneline | wc -l | tr -d ' ')
+          release_count=$(git log ${last_tag}..HEAD --grep="^Release:" --oneline | wc -l | tr -d ' ')
+          feat_count=$(git log ${last_tag}..HEAD --grep="^Feat:" --oneline | wc -l | tr -d ' ')
+          fix_count=$(git log ${last_tag}..HEAD --grep="^Fix:" --oneline | wc -l | tr -d ' ')
           echo "Commits - Release: $release_count, feat: $feat_count, fix: $fix_count"
           
           # Calcula la nueva versión sumando los contadores
@@ -40,7 +40,7 @@ jobs:
           new_version="${new_x}.${new_y}.${new_z}"
           echo "New version: $new_version"
           
-          # Define la salida para utilizarla en otros pasos (nueva sintaxis)
+          # Define la salida para utilizarla en otros pasos (nueva sintaxis())
           echo "new_version=$new_version" >> $GITHUB_OUTPUT
 
       - name: Create ZIP
