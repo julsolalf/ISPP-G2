@@ -3,9 +3,10 @@ FROM eclipse-temurin:21 AS builder
 WORKDIR /app
 
 # Instalar Maven
+
 RUN apt-get update && apt-get install -y maven && rm -rf /var/lib/apt/lists/*
 
-# Copiar el archivo pom.xml y descargar las dependencias para aprovechar la caché de Maven.
+# Copiar el archivo pom.xml y descargar las dependencias para aprovechar la caché de Maven
 COPY pom.xml .
 RUN mvn dependency:go-offline
 
