@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - feat/47
 
 permissions:
   contents: write
@@ -23,7 +22,7 @@ jobs:
         uses: googleapis/release-please-action@v4
         with:
           release-type: maven
-          target-branch: feat/47
+          target-branch: main
         env:
           GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
 
@@ -41,3 +40,4 @@ jobs:
           asset_path: release.zip
           asset_name: source_code_v${{ steps.release_please.outputs.tag_name }}.zip
           asset_content_type: application/zip
+
