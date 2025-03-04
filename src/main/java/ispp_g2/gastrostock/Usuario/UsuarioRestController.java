@@ -83,5 +83,9 @@ public class UsuarioRestController {
     }
 
 
-    
+    @PostMapping("/{negocioId}/empleado/{usuarioId}")
+    public ResponseEntity<Usuario> agregarEmpleado(@PathVariable Integer negocioId, @PathVariable Integer usuarioId) {
+        Usuario usuario = usuarioService.agregarEmpleado(negocioId, usuarioId);
+        return new ResponseEntity<>(usuario, HttpStatus.OK);
+    }
 }

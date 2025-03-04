@@ -1,10 +1,13 @@
 package ispp_g2.gastrostock.Usuario;
 import java.time.LocalDateTime;
 
+import ispp_g2.gastrostock.Negocios.Negocio;
 import ispp_g2.gastrostock.model.Person;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -45,4 +48,9 @@ public class Usuario extends Person {
     private String avatarUrl;
 
     private String codigoRecuperacion;
+
+    @ManyToOne
+    @JoinColumn(name = "negocio_id")
+    private Negocio negocio;
+
 }
