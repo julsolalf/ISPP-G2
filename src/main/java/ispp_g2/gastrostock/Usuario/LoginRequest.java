@@ -1,4 +1,4 @@
-package ispp_g2.gastrostock.usuario;
+package ispp_g2.gastrostock.Usuario;
 
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotBlank;

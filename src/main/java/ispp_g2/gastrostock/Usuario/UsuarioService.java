@@ -1,8 +1,9 @@
-package ispp_g2.gastrostock.usuario;
+package ispp_g2.gastrostock.Usuario;
 
 import java.util.List;
 import java.util.Random;
 
+import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +27,7 @@ public class UsuarioService {
     private final JavaMailSender emailSender;
 
     @Autowired
-    public UsuarioService(UsuarioRepository repo) {
+    public UsuarioService(UsuarioRepository repo, JavaMailSender emailSender) {
         this.repo = repo;
         this.passwordEncoder = new BCryptPasswordEncoder();
         this.emailSender = emailSender;

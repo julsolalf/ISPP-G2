@@ -1,6 +1,7 @@
-package ispp_g2.gastrostock.usuario;
+package ispp_g2.gastrostock.Usuario;
 import java.time.LocalDateTime;
 
+import ispp_g2.gastrostock.model.Person;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

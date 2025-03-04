@@ -1,4 +1,4 @@
-package ispp_g2.gastrostock.usuario;
+package ispp_g2.gastrostock.Usuario;
 
 import java.util.List;
 
@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
+
+import ispp_g2.gastrostock.exceptions.ResourceNotFoundException;
 
 @RestController
 @RequestMapping("/api/v1/{matchId}/usuario")
@@ -36,7 +38,7 @@ public class UsuarioRestController {
 	public ResponseEntity<Usuario> getUsuarios(@PathVariable("id") int id) {
 		Usuario achievementToGet = usuarioService.getById(id);
 		if (achievementToGet == null)
-			throw new ResourceNotFoundException("Player with id " + id + " not found!");
+			throw new ResourceNotFoundException("User with id " + id + " not found!");
 		return new ResponseEntity<Usuario>(achievementToGet, HttpStatus.OK);
 	}
 
