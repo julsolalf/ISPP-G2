@@ -3,7 +3,7 @@ name: release-please
 on:
   push:
     branches:
-      - main
+      - feat/47
 
 permissions:
   contents: write
@@ -22,7 +22,7 @@ jobs:
         uses: googleapis/release-please-action@v4
         with:
           release-type: maven
-          target-branch: main
+          target-branch: feat/47
         env:
           GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
 
