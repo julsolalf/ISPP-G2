@@ -3,6 +3,7 @@ package ispp_g2.gastrostock.Ventas;
 import java.time.LocalDate;
 import java.util.List;
 
+import ispp_g2.gastrostock.Negocios.Negocio;
 import ispp_g2.gastrostock.Productos.Producto;
 import ispp_g2.gastrostock.model.BaseEntity;
 import ispp_g2.gastrostock.plato.Plato;

@@ -36,7 +36,7 @@ public class ProductoService {
         // Por ejemplo:
         Producto productoExistente = pr.findById(producto.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
-        productoExistente.setNombre(producto.getNombre());
+        productoExistente.setName(producto.getName());
         productoExistente.setFechaCaducidad(producto.getFechaCaducidad());
         productoExistente.setCantidad(producto.getCantidad());
         productoExistente.setDescripcion(producto.getDescripcion());

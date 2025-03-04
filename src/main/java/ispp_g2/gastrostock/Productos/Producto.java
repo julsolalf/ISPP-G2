@@ -17,6 +17,7 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.List;
 
+import ispp_g2.gastrostock.Proveedores.Proveedor;
 import ispp_g2.gastrostock.model.NamedEntity;
 import ispp_g2.gastrostock.plato.Plato;
 
@@ -33,7 +34,7 @@ public class Producto extends NamedEntity {
     private Integer cantidad;
 
     @Column(name = "descripcion")
-    private Integer descripcion;
+    private String descripcion;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "medida")
