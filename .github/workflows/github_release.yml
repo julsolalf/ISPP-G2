@@ -23,7 +23,7 @@ jobs:
           release-type: maven
           target-branch: ${{ github.ref_name }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create ZIP
         if: steps.release_please.outputs.release_created == 'true'
@@ -33,7 +33,7 @@ jobs:
         if: steps.release_please.outputs.release_created == 'true'
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.release_please.outputs.upload_url }}
           asset_path: release.zip
