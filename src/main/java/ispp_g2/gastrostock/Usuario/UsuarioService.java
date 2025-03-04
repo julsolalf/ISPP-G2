@@ -148,6 +148,17 @@ public class UsuarioService {
         return repo.save(usuario);
     }
 
-    
-    
+    @Transactional
+    public void eliminarEmpleado(Integer negocioId, Integer usuarioId) {
+       Usuario usuario = repo.findById(usuarioId)
+          .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+
+        if (!usuario.getNegocio().getId().equals(negocioId)) {
+             throw new BadRequestException("El usuario no pertenece a este negocio.");
+        }
+
+        usuario.setNegocio(null);
+        repo.save(usuario);
+}
+
 }
