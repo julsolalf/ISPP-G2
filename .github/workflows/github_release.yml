@@ -20,7 +20,7 @@ jobs:
         id: release_please
         uses: googleapis/release-please-action@v4
         with:
-          release-type: node
+          release-type: maven
           target-branch: ${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
