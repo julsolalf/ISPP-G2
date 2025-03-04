@@ -1,4 +1,4 @@
-# Etapa de construcción: Se usa JDK 21 y se instala Maven para compilar la aplicación
+# Etapa de construcción: Se usa JDK 21 y se instala Maven para compilar la aplicació
 FROM eclipse-temurin:21 AS builder
 WORKDIR /app
 
