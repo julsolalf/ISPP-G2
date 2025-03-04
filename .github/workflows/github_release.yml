@@ -1,39 +1,42 @@
-name: Automatic Release
+name: release-please
 
 on:
   push:
     branches:
-      - main
+      - feat/48
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
 
 jobs:
-  create_release:
+  release-please:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Release Please
+        id: release_please
+        uses: googleapis/release-please-action@v4
+        with:
+          release-type: maven
+          target-branch: feat/48
+        env:
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+
       - name: Create ZIP
+        if: steps.release_please.outputs.release_created == 'true'
         run: zip -r release.zip .
 
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v1.0.${{ github.run_number }} #Modificar si queremos modificar la version, ahora mismo seria 1.0.X
-          release_name: "v1.0.${{ github.run_number }}" #Modificar si queremos modificar la version, ahora mismo seria 1.0.X
-#Cambiar por el mensaje que se desee si quieres proporcinar mas informacion sobre la nueva release
-          body: "Nueva Release."  
-          draft: false
-          prerelease: false
-
       - name: Upload Release Asset
+        if: steps.release_please.outputs.release_created == 'true'
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.release_please.outputs.upload_url }}
           asset_path: release.zip
-          asset_name: source_code_v1.0.${{ github.run_number }}.zip
+          asset_name: source_code_v${{ steps.release_please.outputs.tag_name }}.zip
           asset_content_type: application/zip
