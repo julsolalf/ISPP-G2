@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>ispp-g2</groupId>
 	<artifactId>gastrostock</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>2.0.0</version>
 	<name>gastrostock</name>
 	<description>Demo project for gastrostock</description>
 	<url/>
