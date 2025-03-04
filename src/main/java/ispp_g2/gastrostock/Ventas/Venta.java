@@ -3,8 +3,10 @@ package ispp_g2.gastrostock.Ventas;
 import java.time.LocalDate;
 import java.util.List;
 
+import ispp_g2.gastrostock.Negocios.Negocio;
 import ispp_g2.gastrostock.Productos.Producto;
 import ispp_g2.gastrostock.model.BaseEntity;
+import ispp_g2.gastrostock.plato.Plato;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -30,11 +32,11 @@ public class Venta extends BaseEntity {
 
     @ManyToMany
     @JoinTable(
-        name = "venta_producto", 
+        name = "venta_plato", 
         joinColumns = @JoinColumn(name = "venta_id"), 
-        inverseJoinColumns = @JoinColumn(name = "producto_id")
+        inverseJoinColumns = @JoinColumn(name = "plato_id")
     )
-    private List<Producto> productos;
+    private List<Plato> productos;  
 
     @Column(name = "total")
     private Double total;
