@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -87,5 +88,11 @@ public class UsuarioRestController {
     public ResponseEntity<Usuario> agregarEmpleado(@PathVariable Integer negocioId, @PathVariable Integer usuarioId) {
         Usuario usuario = usuarioService.agregarEmpleado(negocioId, usuarioId);
         return new ResponseEntity<>(usuario, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{negocioId}/empleado/{usuarioId}")
+    public ResponseEntity<Void> eliminarEmpleado(@PathVariable Integer negocioId, @PathVariable Integer usuarioId) {
+        usuarioService.eliminarEmpleado(negocioId, usuarioId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
