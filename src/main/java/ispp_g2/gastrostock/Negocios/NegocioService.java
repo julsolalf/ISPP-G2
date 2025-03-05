@@ -23,7 +23,7 @@ public class NegocioService {
         return negocios;
     }
 
-    public Optional<Negocio> findById(Long id) {
+    public Optional<Negocio> findById(Integer id) {
         return negocioRepository.findById(id);
     }
 
@@ -35,7 +35,7 @@ public class NegocioService {
         return negocioRepository.save(negocio);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(Integer id) {
         negocioRepository.deleteById(id);
     }
 }

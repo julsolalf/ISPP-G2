@@ -8,7 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import ispp_g2.gastrostock.Negocios.Negocio;
+import ispp_g2.gastrostock.Negocios.NegocioRepository;
 import ispp_g2.gastrostock.exceptions.AuthenticationFailedException;
+import ispp_g2.gastrostock.exceptions.BadRequestException;
 import ispp_g2.gastrostock.exceptions.ResourceAlreadyExistsException;
 import jakarta.validation.Valid;
 
@@ -23,14 +26,16 @@ import org.springframework.scheduling.annotation.Async;
 @Service
 public class UsuarioService {
     private final UsuarioRepository repo;
+    private final NegocioRepository NegocioRepository;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender emailSender;
 
     @Autowired
-    public UsuarioService(UsuarioRepository repo, JavaMailSender emailSender) {
+    public UsuarioService(UsuarioRepository repo, JavaMailSender emailSender, NegocioRepository NegocioRepository) {
         this.repo = repo;
         this.passwordEncoder = new BCryptPasswordEncoder();
         this.emailSender = emailSender;
+        this.NegocioRepository = NegocioRepository;
     }
 
     @Transactional(readOnly = true)
@@ -59,7 +64,7 @@ public class UsuarioService {
     }
 
     public Usuario getById(Integer id) {
-        return repo.getById();
+        return repo.findById(id).get();
     }
 
     @Transactional
@@ -126,5 +131,23 @@ public class UsuarioService {
         usuario.setCodigoRecuperacion(null); // Limpiar el código de recuperación
         repo.save(usuario);
     }
+
+    @Transactional
+    public Usuario agregarEmpleado(Integer negocioId, Integer usuarioId) {
+        Negocio negocio = NegocioRepository.findById(negocioId)
+            .orElseThrow(() -> new ResourceNotFoundException("Negocio no encontrado"));
+    
+        Usuario usuario = repo.findById(usuarioId)
+            .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+
+        if (!usuario.getTipo().equals(TipoUsuario.TRABAJADOR) && !usuario.getTipo().equals(TipoUsuario.ENCARGADO)) {
+            throw new BadRequestException("Solo los trabajadores y encargados pueden ser empleados de un negocio.");
+        }
+
+        usuario.setNegocio(negocio);
+        return repo.save(usuario);
+    }
+
+    
     
 }

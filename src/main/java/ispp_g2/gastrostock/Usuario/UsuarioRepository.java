@@ -13,7 +13,5 @@ public interface UsuarioRepository extends CrudRepository<Usuario, Integer> {
     Usuario findByEmail(String email); 
 
     public List<Usuario> findByTipo(TipoUsuario tipo);
-
-    public Usuario getById();
     
 }
