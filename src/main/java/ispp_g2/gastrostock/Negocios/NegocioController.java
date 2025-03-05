@@ -23,7 +23,7 @@ public class NegocioController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Negocio> getNegocioById(@PathVariable Long id) {
+    public ResponseEntity<Negocio> getNegocioById(@PathVariable Integer id) {
         Optional<Negocio> negocio = negocioService.findById(id);
         return negocio.map(ResponseEntity::ok)
                       .orElseGet(() -> ResponseEntity.notFound().build());
@@ -43,7 +43,7 @@ public class NegocioController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteNegocio(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteNegocio(@PathVariable Integer id) {
         if (negocioService.findById(id).isPresent()) {
             negocioService.deleteById(id);
             return ResponseEntity.noContent().build();
