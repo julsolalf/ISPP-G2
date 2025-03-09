@@ -1,4 +1,4 @@
-package ispp_g2.gastrostock.proveedores;
+package ispp_g2.gastrostock.empleado;
 
 import jakarta.persistence.Entity;
 import lombok.Getter;
@@ -7,7 +7,6 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Proveedor {
-
+public class Empleado {
     
 }
