@@ -92,7 +92,7 @@ public class NegocioController {
 	public ResponseEntity<Negocio> createNegocio(@RequestBody @Valid Negocio newNegocio, BindingResult br) {
 		Negocio result = null;
 		if (!br.hasErrors())
-			result = ns.savNegocio(newNegocio);
+			result = ns.saveNegocio(newNegocio);
 		else
 			throw new BadRequestException(br.getAllErrors());
 		return new ResponseEntity<>(result, HttpStatus.CREATED);
@@ -108,15 +108,15 @@ public class NegocioController {
 			throw new BadRequestException("Negocio id is not consistent with resource URL:" + id);
 		else {
 			BeanUtils.copyProperties(newNegocio, negocioToUpdate, "id");
-			ns.savNegocio(negocioToUpdate);
+			ns.saveNegocio(negocioToUpdate);
 		}
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 	@DeleteMapping("/{token}")
 	public ResponseEntity<Void> deletenegocio(@PathVariable("token") Integer token) {
-		findNegocio(token);
-		ns.deleteCardByToken(token);
+		findNegocioByToken(token);
+		ns.deleteNegocioByToken(token);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 }

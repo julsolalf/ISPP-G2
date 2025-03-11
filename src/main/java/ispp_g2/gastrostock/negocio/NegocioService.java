@@ -60,12 +60,12 @@ public class NegocioService {
     }
 
     @Transactional
-    public Negocio savNegocio(@Valid Negocio newNegocio){
+    public Negocio saveNegocio(@Valid Negocio newNegocio){
         return nr.save(newNegocio);
     }
 
     @Transactional
-    public void deleteCardByToken(Integer token) {
+    public void deleteNegocioByToken(Integer token) {
         Negocio n = nr.findByTokenNegocio(token);
         nr.delete(n);
     }
