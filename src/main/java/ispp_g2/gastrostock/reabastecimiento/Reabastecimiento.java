@@ -8,12 +8,14 @@ import ispp_g2.gastrostock.proveedores.Proveedor;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+
 public class Reabastecimiento extends BaseEntity {
 
     private LocalDate fecha;

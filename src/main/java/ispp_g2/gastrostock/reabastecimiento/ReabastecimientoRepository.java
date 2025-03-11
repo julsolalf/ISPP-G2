@@ -17,4 +17,5 @@ public interface ReabastecimientoRepository extends CrudRepository<Reabastecimie
     List<Reabastecimiento> findByFechaBetween(LocalDate fechaInicio, LocalDate fechaFin);
 
     List<Reabastecimiento> findByProveedor(Proveedor proveedor);
+
 }
