@@ -1,4 +1,4 @@
-package ispp_g2.gastrostock.rebastecimiento;
+package ispp_g2.gastrostock.reabastecimiento;
 
 import jakarta.persistence.Entity;
 import lombok.Getter;
@@ -7,6 +7,6 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Rebastecimiento {
+public class Reabastecimiento {
     
 }
