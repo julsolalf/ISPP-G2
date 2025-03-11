@@ -1,8 +1,8 @@
-package ispp_g2.gastrostock.rebastecimiento;
+package ispp_g2.gastrostock.reabastecimiento;
 
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class RebastecimientoController {
+public class ReabastecimientoController {
     
 }
