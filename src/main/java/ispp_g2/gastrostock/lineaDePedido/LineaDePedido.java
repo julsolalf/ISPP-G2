@@ -24,12 +24,14 @@ public class LineaDePedido extends BaseEntity{
     @Positive
     private Double precioLinea;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "id")
-    private Pedido pedido;
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "id")
-    private ProductoVenta producto;
+//    TEMPORAL FIX
+//    @ManyToOne(optional = false)
+//    @JoinColumn(name = "id")
+//    private Pedido pedido;
+//
+//    TEMPORAL FIX
+//    @ManyToOne(optional = false)
+//    @JoinColumn(name = "id")
+//    private ProductoVenta producto;
 
 }

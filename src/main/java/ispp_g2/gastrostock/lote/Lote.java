@@ -2,6 +2,7 @@ package ispp_g2.gastrostock.lote;
 
 import java.time.LocalDate;
 
+import ispp_g2.gastrostock.model.BaseEntity;
 import ispp_g2.gastrostock.productoInventario.ProductoInventario;
 import ispp_g2.gastrostock.reabastecimiento.Reabastecimiento;
 import jakarta.persistence.Entity;
@@ -15,7 +16,8 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Lote {
+//TEMPORAL FIX
+public class Lote extends BaseEntity {
 
     @NotNull
     @Positive
@@ -24,13 +26,14 @@ public class Lote {
     @NotNull
     private LocalDate fechaCaducidad;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "id")
-    private ProductoInventario producto;
+//    TEMPORAL FIX
+//    @ManyToOne(optional = false)
+//    @JoinColumn(name = "id")
+//    private ProductoInventario producto;
 
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "id")
-    private Reabastecimiento reabastecimiento;
+//  TEMOPRAL FIX
+//    @ManyToOne(optional = false)
+//    @JoinColumn(name = "id")
+//    private Reabastecimiento reabastecimiento;
 
 }
