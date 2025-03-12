@@ -24,12 +24,15 @@ public class Proveedor extends Person {
     private String direccion;
 
     @ElementCollection
-    @Enumerated(EnumType.STRING) 
-    private List<DiaSemana> diasReparto;
-    
-    @OneToMany(mappedBy = "proveedor")
-    private List<Reabastecimiento> reabastecimientos;
+    @Enumerated(EnumType.STRING)
+//    TEMPORAL FIX
+    private List<ispp_g2.gastrostock.proveedores.DiaSemana> diasReparto;
 
-    @ManyToMany(mappedBy = "proveedores")
-    private List<Negocio> negocios;
+//    TEMPORAL FIX
+//    @OneToMany(mappedBy = "reabastecimiento")
+//    private List<Reabastecimiento> reabastecimientos;
+
+//    TEMPORAL FIX
+//    @ManyToMany(mappedBy = "proveedores")
+//    private List<Negocio> negocios;
 }

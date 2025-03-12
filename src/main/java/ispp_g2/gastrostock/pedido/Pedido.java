@@ -28,15 +28,16 @@ public class Pedido extends BaseEntity{
     @Positive
     private Double precioTotal;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "id")
-    private Mesa mesa;
-    
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "id")
-    private Empleado empleado;
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "id")
-    private Negocio negocio;
+//    TEMPORAL FIX
+//    @ManyToOne(optional = false)
+//    @JoinColumn(name = "id")
+//    private Mesa mesa;
+//
+//    @ManyToOne(optional = false)
+//    @JoinColumn(name = "id")
+//    private Empleado empleado;
+//
+//    @ManyToOne(optional = false)
+//    @JoinColumn(name = "id")
+//    private Negocio negocio;
 }
