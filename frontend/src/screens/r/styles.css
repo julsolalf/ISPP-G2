@@ -1,0 +1,28 @@
+.producto-button {
+    width: 120px;
+    height: 120px;
+    background-size: cover;
+    background-position: center;
+    border: none;
+    border-radius: 8px;
+    margin: 5px;
+    position: relative;
+    cursor: pointer;         
+}
+
+.producto-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px
+     rgba(0, 0, 0, 0.3);         
+}
+.producto-name {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 5px 0;
+    font-weight: bold;
+  }

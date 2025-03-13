@@ -1,11 +1,16 @@
 import React, { useState } from "react";
+import "./styles.css";
 
 const products = [
-  { id: 1, name: "Café", price: 1.5 },
-  { id: 2, name: "Té", price: 1.2 },
-  { id: 3, name: "Zumo de naranja", price: 1.0 },
+  { id: 1, name: "Café", price: 1.5, image: "/imagesProductos/cafe.jpg" },
+  { id: 2, name: "Té", price: 1.2, image: "/imagesProductos/te.jpg" },
+  { id: 3, name: "Zumo de naranja", price: 1.0, image: "/imagesProductos/zumoNaranja.jpg" },
+  { id: 4, name: "Carne con Tomate", price: 1.5, image: "/imagesProductos/carneTomate.jpg" },
+  { id: 5, name: "Tortilla", price: 1.0, image: "/imagesProductos/tortilla.jpg" },
+  { id: 6, name: "Agua", price: 0.8, image: "/imagesProductos/agua.jpg" },
+  { id: 7, name: "Cerveza", price: 2.5, image: "/imagesProductos/cerveza.jpg" },
+  { id: 8, name: "Queso", price: 2.0, image: "/imagesProductos/queso.jpg" },
 ];
-
 
 
 const TPV = () => {
@@ -26,10 +31,10 @@ const TPV = () => {
     {/* Lista de productos */}
     <div style={{ flex: 1, padding: "10px", background: "#fff", borderRadius: "10px" }}>
     <h2 style={{ color: "#000" }}>Productos</h2>
-      {products.map((product) => (
-        <button key={product.id} onClick={() => addOrder(product)} style={{ display: "block", margin: "5px", padding: "10px", background: "#4CAF50", color: "#fff", border: "none", borderRadius: "5px" }}>
-          {product.name} - ${product.price.toFixed(2)}
-        </button>
+    {products.map((product) => ( 
+    <button key={product.id} onClick={() => addOrder(product)} className="producto-button" style={{ backgroundImage:`url(${product.image})` }}>            
+     <span className="producto-name"> {product.name} - ${product.price.toFixed(2)} </span>           
+      </button>
       ))}
     </div>
 
