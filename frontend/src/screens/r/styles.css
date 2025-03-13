@@ -26,3 +26,15 @@
     padding: 5px 0;
     font-weight: bold;
   }
+
+  .logo-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .app-logo {
+    max-width: 200px;
+    object-fit: contain;
+  }

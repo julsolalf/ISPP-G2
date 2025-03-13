@@ -27,16 +27,23 @@ const TPV = () => {
     setTotal(0);
   };
 
-  return(<div style={{ display: "flex", gap: "20px", padding: "20px" }}>
-    {/* Lista de productos */}
-    <div style={{ flex: 1, padding: "10px", background: "#fff", borderRadius: "10px" }}>
-    <h2 style={{ color: "#000" }}>Productos</h2>
-    {products.map((product) => ( 
-    <button key={product.id} onClick={() => addOrder(product)} className="producto-button" style={{ backgroundImage:`url(${product.image})` }}>            
-     <span className="producto-name"> {product.name} - ${product.price.toFixed(2)} </span>           
-      </button>
-      ))}
+  return(
+    <div style={{ padding: "20px" }}>
+      {/* Logo en la parte superior central */}
+      <div className="logo-container">
+        <img src="/gastrostockLogo.png" alt="App Logo" className="app-logo" />
     </div>
+
+    <div style={{ display: "flex", gap: "20px", padding: "20px" }}>
+      {/* Lista de productos */}
+      <div style={{ flex: 1, padding: "10px", background: "#fff", borderRadius: "10px" }}>
+      <h2 style={{ color: "#000" }}>Productos</h2>
+      {products.map((product) => ( 
+      <button key={product.id} onClick={() => addOrder(product)} className="producto-button" style={{ backgroundImage:`url(${product.image})` }}>            
+      <span className="producto-name"> {product.name} - {product.price.toFixed(2)}€ </span>           
+        </button>
+        ))}
+      </div>
 
     {/* Pedido */}
     <div style={{ flex: 1, padding: "10px", background: "#fff", borderRadius: "10px" }}>
@@ -48,10 +55,12 @@ const TPV = () => {
         </li>
         ))}
       </ul>
-      <h3 style={{ color: "#000" }}>Total: ${total.toFixed(2)}</h3>
+      <h3 style={{ color: "#000" }}>Total: {total.toFixed(2)}€</h3>
       <button onClick={clearOrders} style={{ background: "#FF5733", color: "#000", padding: "10px", border: "none", borderRadius: "5px" }}>Limpiar Pedido</button>
     </div>
-  </div>);
+  </div>
+  </div>
+  );
 };
 
 export default TPV;
