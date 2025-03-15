@@ -9,8 +9,10 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,8 +21,13 @@ import lombok.Setter;
 @Setter
 public class Proveedor extends Person {
 
+    @NotBlank
     private String email;
+
+    @NotBlank
     private String telefono;
+
+    @NotBlank
     private String direccion;
 
     @ElementCollection
@@ -28,11 +35,14 @@ public class Proveedor extends Person {
 //    TEMPORAL FIX
     private List<ispp_g2.gastrostock.proveedores.DiaSemana> diasReparto;
 
-//    TEMPORAL FIX
-//    @OneToMany(mappedBy = "reabastecimiento")
-//    private List<Reabastecimiento> reabastecimientos;
+/*     TEMPORAL FIX
+    @OneToMany
+    @JoinColumn(name = "reabastecimiento_id", nullable = false)
+    private List<Reabastecimiento> reabastecimientos;
 
-//    TEMPORAL FIX
-//    @ManyToMany(mappedBy = "proveedores")
-//    private List<Negocio> negocios;
+    TEMPORAL FIX
+    @ManyToMany
+    @JoinColumn(name = "proveedor_id", nullable = false)
+    private List<Negocio> negocios;
+*/
 }
