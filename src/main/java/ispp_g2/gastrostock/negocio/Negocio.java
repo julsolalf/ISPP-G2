@@ -3,6 +3,7 @@ package ispp_g2.gastrostock.negocio;
 import ispp_g2.gastrostock.dueño.Dueño;
 import ispp_g2.gastrostock.model.NamedEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -26,5 +27,6 @@ public class Negocio extends NamedEntity {
     private String pais;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "dueño_id")
     private Dueño dueño;
 }

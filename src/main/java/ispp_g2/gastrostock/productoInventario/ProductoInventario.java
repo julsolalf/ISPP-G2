@@ -24,12 +24,5 @@ public class ProductoInventario extends BaseEntity {
 
     @NotNull
     private Double precioCompra;
-
-    public int calcularCantidad() {
-        return lotes.stream().mapToInt(Lote::getCantidad).sum();
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "lote_id")
-    private List<Lote> lotes;
+    
 }
