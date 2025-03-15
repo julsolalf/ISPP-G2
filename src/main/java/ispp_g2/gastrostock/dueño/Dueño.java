@@ -1,6 +1,6 @@
 package ispp_g2.gastrostock.dueño;
 
-import ispp_g2.gastrostock.model.BaseEntity;
+import ispp_g2.gastrostock.model.User;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Dueño extends BaseEntity {
+public class Dueño extends User {
 
     @NotBlank
     @Email

@@ -1,6 +1,6 @@
 package ispp_g2.gastrostock.empleado;
 
-import ispp_g2.gastrostock.model.NamedEntity;
+import ispp_g2.gastrostock.model.User;
 import ispp_g2.gastrostock.negocio.Negocio;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
@@ -12,7 +12,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Empleado extends NamedEntity {
+public class Empleado extends User {
 
     @NotBlank
     private String tokenEmpleado;
