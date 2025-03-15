@@ -20,7 +20,8 @@ public class Negocio extends NamedEntity {
     @NotBlank
     private String direccion;
     @NotNull
-    private Integer codigoPostal;
+	@Digits(fraction = 0, integer = 5)
+    private String codigoPostal;
     @NotBlank
     private String ciudad;
     @NotBlank
