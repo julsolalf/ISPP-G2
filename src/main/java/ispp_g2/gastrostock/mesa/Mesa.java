@@ -15,6 +15,7 @@ import lombok.Setter;
 public class Mesa extends NamedEntity{
     
     @NotNull
+    @Min(2)
     private Integer numeroAsientos;
 
     @ManyToOne(optional = false)
