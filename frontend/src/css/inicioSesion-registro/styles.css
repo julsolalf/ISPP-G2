@@ -1,0 +1,72 @@
+/* General para el body y html */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  /* Contenedor principal de la página de inicio de sesión con el fondo */
+  .home-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+    position: relative;
+  }
+  
+  /* Contenedor de los campos y botones con un fondo translúcido */
+  .content {
+    background: rgba(234, 197, 197, 0.8); /* Fondo translúcido */
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    width: 80%;
+    max-width: 350px;
+    position: absolute; /* Para mantenerlo centrado */
+  }
+  
+  /* Estilo para el encabezado */
+  h2 {
+    color: #333;
+    margin-bottom: 20px;
+    font-family: 'Playfair Display', serif;
+    font-weight: bold;
+  }
+  
+  /* Estilo para los campos de entrada */
+  input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+  }
+  
+  /* Estilo para los botones */
+  button {
+      font-size: 18px;
+      padding: 12px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      border: none;
+      transition: 0.3s;
+      width: 100%;
+      margin-top: 10px;
+  }
+  
+  /* Estilo para el botón de iniciar sesión */
+  .login-btn {
+      background-color: #a92d4e;
+      color: white;
+  }
+  
+  /* Estilo para los botones cuando se pasa el ratón */
+  button:hover {
+      opacity: 0.8;
+  }
+  

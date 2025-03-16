@@ -1,28 +1,55 @@
-
+import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
 import "./App.css";
-import TPV from "./screens/r/index.js";
-//import Productos from "./components/Productos.js";
+import LoginScreen from "./screens/inicioSesion/index.js";
+import RegisterScreen from "./screens/registro/index.js";
+
+function HomeScreen() {
+  const navigate = useNavigate();
+
+  return (
+    <div 
+      className="home-container"
+      style={{ 
+        backgroundImage: `url(${process.env.PUBLIC_URL + "/background-spices.jpg"})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center"
+      }}
+    >
+      <div className="content">
+        <img src="/gastrostockLogo.png" alt="App Logo" className="app-logo" />
+        <h1 className="title">GastroStock</h1>
+        <div className="buttons">
+          <button className="login-btn" onClick={() => navigate("/login")}>
+            Iniciar Sesión
+          </button>
+          <button className="register-btn" onClick={() => navigate("/register")}>
+            Registrarse
+          </button>
+        </div>
+        <button className="info-btn">Más Información</button>
+        <p className="contact-info">
+          <strong>Av. Reina Mercedes, s/n, 41012, Sevilla</strong><br />
+          Contacto: 678 12 34 56
+        </p>
+      </div>
+    </div>
+  );
+}
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <div className="logo-container">
-        <img src="/gastrostockLogo.png" alt="App Logo" className="app-logo" />
-        </div>
-        <div className="button-container">
-          <button onClick={() => console.log("Ir a Iniciar Sesión")}>
-            Iniciar Sesión
-          </button>
-          <button onClick={() => console.log("Ir a Registrarse")}>
-            Registrarse
-          </button>
-          <button onClick={() => console.log("Mostrar Más Información")}>
-            Más Información
-          </button>
-        </div>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomeScreen />} />
+        <Route path="/login" element={<LoginScreen />} />
+        <Route path="/register" element={<RegisterScreen />} />
+      </Routes>
+    </Router>
   );
 }
 
