@@ -18,6 +18,8 @@ package ispp_g2.gastrostock.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Simple JavaBean domain object adds a name property to
@@ -28,19 +30,14 @@ import jakarta.validation.constraints.Size;
  * @author Juergen Hoeller
  */
 @MappedSuperclass
+@Getter
+@Setter
 public class NamedEntity extends BaseEntity {
 
 	@Size(min = 3, max = 50)
 	@Column(name = "name")
 	private String name;
 
-	public String getName() {
-		return this.name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	@Override
 	public String toString() {

@@ -55,7 +55,7 @@ public class NegocioService {
     }
 
     @Transactional(readOnly = true)
-    public List<Negocio> getByCodigoPostal(Integer codigoPostal) {
+    public List<Negocio> getByCodigoPostal(String codigoPostal) {
         return nr.findByCodigoPostal(codigoPostal);
     }
 

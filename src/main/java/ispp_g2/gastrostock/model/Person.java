@@ -17,7 +17,11 @@ package ispp_g2.gastrostock.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Simple JavaBean domain object representing an person.
@@ -25,29 +29,24 @@ import jakarta.validation.constraints.NotEmpty;
  * @author Ken Krebs
  */
 @MappedSuperclass
+@Getter
+@Setter
 public class Person extends BaseEntity {
 
 	@NotEmpty
 	@Column(name = "first_name")
 	protected String firstName;
 
+	@NotEmpty
 	@Column(name = "last_name")
 	protected String lastName;
 
-	public String getFirstName() {
-		return this.firstName;
-	}
+	@NotEmpty
+	@Email
+	protected String email;
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
 
-	public String getLastName() {
-		return this.lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
+	@NotEmpty
+	@Digits(fraction = 0, integer = 9)
+	protected String numTelefono;
 }

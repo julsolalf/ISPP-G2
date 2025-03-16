@@ -63,7 +63,7 @@ public class NegocioController {
 	}
 
     @GetMapping("/codigoPostal/{codigoPostal}")
-	public ResponseEntity<List<Negocio>> findNegocioByCodigoPostal(@PathVariable("codigoPostal") Integer codigoPostal) {
+	public ResponseEntity<List<Negocio>> findNegocioByCodigoPostal(@PathVariable("codigoPostal") String codigoPostal) {
 		List<Negocio> negociosToGet = ns.getByCodigoPostal(codigoPostal);
 		if (negociosToGet == null)
 			throw new ResourceNotFoundException("negocio with codigoPostal " + codigoPostal + " not found!");

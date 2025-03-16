@@ -37,13 +37,7 @@ public class MesaController {
 		return new ResponseEntity<Mesa>(MesaToGet, HttpStatus.OK);
 	}
 
-    @GetMapping("/numeroMesa/{numeroMesa}")
-	public ResponseEntity<Mesa> findByNumeroMesa(@PathVariable("numeroMesa") int numeroMesa) {
-		Mesa MesaToGet = ms.getByNumeroMesa(numeroMesa);
-		if (MesaToGet == null)
-			throw new ResourceNotFoundException("Mesa with numeroMesa " + numeroMesa + " not found!");
-		return new ResponseEntity<Mesa>(MesaToGet, HttpStatus.OK);
-	}
+
 
     @GetMapping("/numeroAsientos/{numeroAsientos}")
 	public ResponseEntity<List<Mesa>> findByNumeroAsientos(@PathVariable("numeroAsientos") int numeroAsientos) {
@@ -76,11 +70,6 @@ public class MesaController {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
-	@DeleteMapping("/{numeroMesa}")
-	public ResponseEntity<Void> deleteMesa(@PathVariable("numeroMesa") Integer numeroMesa) {
-		findByNumeroMesa(numeroMesa);
-		ms.deleteMesaByNumeroMesa(numeroMesa);
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	}
+
     
 }

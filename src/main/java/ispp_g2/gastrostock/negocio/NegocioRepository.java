@@ -18,7 +18,7 @@ public interface NegocioRepository extends CrudRepository<Negocio, String> {
 
     public List<Negocio> findByCiudad(String ciudad);
 
-    public List<Negocio> findByCodigoPostal(Integer codigoPostal);
+    public List<Negocio> findByCodigoPostal(String codigoPostal);
 
     public List<Negocio> findByPais(String pais);
 
