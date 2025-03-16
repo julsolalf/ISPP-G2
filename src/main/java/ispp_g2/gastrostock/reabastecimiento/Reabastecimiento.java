@@ -17,7 +17,6 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-
 public class Reabastecimiento extends BaseEntity {
 
     @NotNull
@@ -30,12 +29,11 @@ public class Reabastecimiento extends BaseEntity {
     @NotBlank
     private String referencia;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "proveedor_id", nullable = false)
     private Proveedor proveedor;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "negocio_id", nullable = false)
     private Negocio negocio;
-    
 }

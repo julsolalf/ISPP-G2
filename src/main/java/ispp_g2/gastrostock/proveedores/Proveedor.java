@@ -1,30 +1,32 @@
 package ispp_g2.gastrostock.proveedores;
 
-import java.util.List;
-
-import ispp_g2.gastrostock.model.Person;
+import ispp_g2.gastrostock.model.NamedEntity;
 import ispp_g2.gastrostock.negocio.Negocio;
-import ispp_g2.gastrostock.reabastecimiento.Reabastecimiento;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
-public class Proveedor extends Person {
+public class Proveedor extends NamedEntity {
 
     @NotBlank
+    @Email
     private String email;
 
     @NotBlank
+    @Digits(fraction = 0, integer = 9)
     private String telefono;
 
     @NotBlank
@@ -32,17 +34,9 @@ public class Proveedor extends Person {
 
     @ElementCollection
     @Enumerated(EnumType.STRING)
-//    TEMPORAL FIX
     private List<ispp_g2.gastrostock.proveedores.DiaSemana> diasReparto;
 
-/*     TEMPORAL FIX
-    @OneToMany
-    @JoinColumn(name = "reabastecimiento_id", nullable = false)
-    private List<Reabastecimiento> reabastecimientos;
-
-    TEMPORAL FIX
-    @ManyToMany
-    @JoinColumn(name = "proveedor_id", nullable = false)
-    private List<Negocio> negocios;
-*/
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "negocio_id", nullable = false)
+    private Negocio negocio;
 }
