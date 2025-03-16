@@ -1,22 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+
+import "./App.css";
+import TPV from "./screens/r/index.js";
+//import Productos from "./components/Productos.js";
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <div className="logo-container">
+        <img src="/gastrostockLogo.png" alt="App Logo" className="app-logo" />
+        </div>
+        <div className="button-container">
+          <button onClick={() => console.log("Ir a Iniciar Sesión")}>
+            Iniciar Sesión
+          </button>
+          <button onClick={() => console.log("Ir a Registrarse")}>
+            Registrarse
+          </button>
+          <button onClick={() => console.log("Mostrar Más Información")}>
+            Más Información
+          </button>
+        </div>
       </header>
     </div>
   );

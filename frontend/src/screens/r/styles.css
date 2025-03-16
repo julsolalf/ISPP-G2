@@ -1,0 +1,68 @@
+.producto-button {
+    width: 120px;
+    height: 120px;
+    background-size: cover;
+    background-position: center;
+    border: none;
+    border-radius: 8px;
+    margin: 5px;
+    position: relative;
+    cursor: pointer;         
+}
+
+.producto-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px
+     rgba(0, 0, 0, 0.3);         
+}
+.producto-name {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 5px 0;
+    font-weight: bold;
+  }
+
+  .logo-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .app-logo {
+    max-width: 200px;
+    object-fit: contain;
+  }
+  .orders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 15px;
+  }
+  
+  .order-button {
+    width: 120px;
+    height: 120px;
+    background-color: #e9ecef;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: #000;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .order-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3);
+  }
