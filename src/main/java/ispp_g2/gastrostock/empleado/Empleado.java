@@ -2,8 +2,12 @@ package ispp_g2.gastrostock.empleado;
 
 import ispp_g2.gastrostock.model.NamedEntity;
 import ispp_g2.gastrostock.negocio.Negocio;
+import ispp_g2.gastrostock.user.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -24,6 +28,9 @@ public class Empleado extends NamedEntity {
     @NotNull
     private Negocio negocio;
 
-    // En Pedido tendría que haber una relación ManyToOne a Empleado.
+    @OneToOne(cascade = { CascadeType.DETACH, CascadeType.REFRESH, CascadeType.PERSIST })
+	@JoinColumn(name = "user_id")
+	private User user;
+
     
 }

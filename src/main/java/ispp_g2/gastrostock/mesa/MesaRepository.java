@@ -16,6 +16,4 @@ public interface MesaRepository extends CrudRepository<Mesa,String> {
 
     public Mesa findById(Integer id);
 
-    public Mesa findByNumeroMesa(Integer numeroMesa);
-
 }

@@ -38,20 +38,11 @@ public class MesaService {
         return mr.findMesasByNumeroAsientos(numeroAsientos);
     }
 
-    @Transactional(readOnly = true)
-    public Mesa getByNumeroMesa(Integer numeroMesa) {
-        return mr.findByNumeroMesa(numeroMesa);
-    }
 
     @Transactional
     public Mesa saveMesa(@Valid Mesa newMesa){
         return mr.save(newMesa);
     }
 
-    @Transactional
-    public void deleteMesaByNumeroMesa(Integer numeroMesa) {
-        Mesa n = mr.findByNumeroMesa(numeroMesa);
-        mr.delete(n);
-    }
     
 }
