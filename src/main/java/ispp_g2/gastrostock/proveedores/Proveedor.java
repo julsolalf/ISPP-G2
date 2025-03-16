@@ -32,11 +32,7 @@ public class Proveedor extends NamedEntity {
     @NotBlank
     private String direccion;
 
-    @ElementCollection
-    @Enumerated(EnumType.STRING)
-    private List<ispp_g2.gastrostock.proveedores.DiaSemana> diasReparto;
-
     @ManyToOne(optional = false)
-    @JoinColumn(name = "negocio_id", nullable = false)
+    @JoinColumn(name = "negocio_id")
     private Negocio negocio;
 }
