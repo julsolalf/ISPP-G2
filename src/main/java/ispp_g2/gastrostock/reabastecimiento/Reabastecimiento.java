@@ -34,6 +34,6 @@ public class Reabastecimiento extends BaseEntity {
     private Proveedor proveedor;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "negocio_id", nullable = false)
+    @JoinColumn(name = "negocio_id")
     private Negocio negocio;
 }
