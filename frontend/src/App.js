@@ -1,6 +1,7 @@
 import "./App.css";
 import TPV from "./screens/r/index.js";
 import Categorias from "./productoInventario/list.js";
+import Proveedores from "./listaProveedores/proveedores.js";
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 
 function App() {
@@ -35,6 +36,9 @@ function AppContent() {
             <button onClick={() => navigate("/categorias")}>
               Ver Categorías
             </button>
+            <button onClick={() => navigate("/proveedores")}>
+              Ver Proveedores
+            </button>
           </div>
         </header>
       )}
@@ -43,6 +47,7 @@ function AppContent() {
         <Routes>
           <Route path="/" element={<p>Bienvenido a la aplicación</p>} />
           <Route path="/categorias" element={<Categorias />} />
+          <Route path="/proveedores" element={<Proveedores />} />
         </Routes>
       </main>
     </div>
