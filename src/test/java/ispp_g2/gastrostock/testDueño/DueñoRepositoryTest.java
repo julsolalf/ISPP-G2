@@ -1,10 +1,10 @@
-/*
 package ispp_g2.gastrostock.testDueño;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import ispp_g2.gastrostock.dueño.Dueño;
@@ -13,6 +13,7 @@ import ispp_g2.gastrostock.dueño.DueñoRepository;
 import java.util.Optional;
 
 @DataJpaTest
+@AutoConfigureTestDatabase
 class DueñoRepositoryTest {
 
     @Autowired
@@ -79,4 +80,3 @@ class DueñoRepositoryTest {
         assertFalse(found.isPresent());
     }
 }
-*/

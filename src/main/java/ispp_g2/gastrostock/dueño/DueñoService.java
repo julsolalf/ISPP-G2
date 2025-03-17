@@ -9,13 +9,16 @@ import org.springframework.stereotype.Service;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+
+import java.security.Key;
 import java.util.Date;
 
 @Service
 public class DueñoService {
 
     private final DueñoRepository repo;
-    private static final String SECRET_KEY = "mySecretKey";
+    private static final String SECRET_KEY = "mySecretKeymySecretKeymySecretKeymySecretKeymySecretKey";
 
     @Autowired
     public DueñoService(DueñoRepository repo) {
@@ -56,11 +59,12 @@ public class DueñoService {
 
     // Generar token JWT
     public String generateToken(String email) {
+        Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // Expira en 1 día
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .signWith(key,SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -75,9 +79,11 @@ public class DueñoService {
 
     // Validar token JWT
     public boolean validateToken(String token) {
+        Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
         try {
-            Claims claims = Jwts.parser()
-                    .setSigningKey(SECRET_KEY)
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
                     .parseClaimsJws(token)
                     .getBody();
             return claims.getExpiration().after(new Date());
