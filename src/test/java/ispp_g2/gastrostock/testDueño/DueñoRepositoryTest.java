@@ -39,6 +39,9 @@ class DueñoRepositoryTest {
         // Crear un Dueño directamente sin asociar a un User
         Dueño dueño = new Dueño();
         dueño.setTokenDueño("testToken");
+        dueño.setFirstName("Manolo");
+        dueño.setLastName("García");
+        dueño.setNumTelefono("652345678");
         // Si la entidad Dueño tiene email, asignar el email
         dueño.setEmail("test@example.com");
 
@@ -53,11 +56,22 @@ class DueñoRepositoryTest {
 
     @Test
     void testFindAll() {
-        // Crear Dueños sin asociar User
+        Dueño dueño = new Dueño();
+        dueño.setTokenDueño("testToken");
+        dueño.setFirstName("Manolo");
+        dueño.setLastName("García");
+        dueño.setNumTelefono("652345678");
+        dueño.setEmail("test@example.com");
+
         Dueño dueño1 = new Dueño();
-        Dueño dueño2 = new Dueño();
+        dueño1.setTokenDueño("testToken1");
+        dueño1.setFirstName("Antonio");
+        dueño1.setLastName("García");
+        dueño1.setNumTelefono("655545678");
+        dueño1.setEmail("test1@example.com");
+
+        repo.save(dueño);
         repo.save(dueño1);
-        repo.save(dueño2);
 
         // Verificar que ambos Dueños fueron guardados
         var dueños = repo.findAll();
@@ -71,6 +85,10 @@ class DueñoRepositoryTest {
         dueño.setTokenDueño("testToken");
         dueño = repo.save(dueño);
         int id = dueño.getId();
+
+        //Verificar que el Dueño se guardó correctamente
+        Optional<Dueño> foundDueño = repo.findById(id);
+        assertTrue(foundDueño.isPresent());
 
         // Borrar el Dueño
         repo.deleteById(id);
