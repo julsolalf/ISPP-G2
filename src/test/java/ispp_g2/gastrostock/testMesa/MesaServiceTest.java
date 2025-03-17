@@ -12,11 +12,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.test.context.ActiveProfiles;
 
 import ispp_g2.gastrostock.mesa.Mesa;
 import ispp_g2.gastrostock.mesa.MesaRepository;
 import ispp_g2.gastrostock.mesa.MesaService;
 
+@ActiveProfiles("test")
 class MesaServiceTest {
 
     @Mock

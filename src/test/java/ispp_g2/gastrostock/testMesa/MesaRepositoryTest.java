@@ -26,6 +26,7 @@ import ispp_g2.gastrostock.pedido.Pedido;
 
 @DataJpaTest
 @AutoConfigureTestDatabase
+@ActiveProfiles("test")
 class MesaRepositoryTest {
 
     @Autowired
