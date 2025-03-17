@@ -1,16 +1,16 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom"; // Importa Link
+import { useNavigate } from "react-router-dom";
 import "../../css/inicioSesion-registro/styles.css";
 
-function LoginScreen() {
+function RecoverPasswordScreen() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    console.log("Iniciando sesión con:", email, password);
-    // Aquí iría la lógica de autenticación
-    navigate("/");
+  const handleSubmit = () => {
+    // Aquí podrías hacer la lógica de envío del correo de recuperación
+    console.log("Enviando correo de recuperación a:", email);
+    alert("Se ha enviado un correo para restablecer tu contraseña.");
+    navigate("/"); // Redirigir al inicio o a donde desees
   };
 
   return (
@@ -30,28 +30,21 @@ function LoginScreen() {
       <div className="content">
         <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
         <h1 className="title">GastroStock</h1>
-        <h2>Iniciar Sesión</h2>
+        <h2>Recuperar Contraseña</h2>
+
+        <p>Introduce el correo electrónico al que está asociada tu cuenta. Se enviará un correo electrónico a la dirección indicada con un enlace para restablecer la contraseña.</p>
+        
         <input
           type="email"
           placeholder="Correo Electrónico"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button onClick={handleLogin} className="login-btn">Iniciar Sesión</button>
 
-        {/* Enlace para recuperación de contraseña */}
-        <Link to="/recuperar-contrasena" className="forgot-password-link">
-          ¿Has olvidado la contraseña?
-        </Link>
+        <button onClick={handleSubmit} className="login-btn">Enviar</button>
       </div>
     </div>
   );
 }
 
-export default LoginScreen;
+export default RecoverPasswordScreen;

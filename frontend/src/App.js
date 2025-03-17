@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-route
 import "./App.css";
 import LoginScreen from "./screens/inicioSesion/index.js";
 import RegisterScreen from "./screens/registro/index.js";
+import RecoverPasswordScreen from "./screens/recuperarContraseña/index.js";
 
 function HomeScreen() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ function HomeScreen() {
       }}
     >
       <div className="content">
-        <img src="/gastrostockLogo.png" alt="App Logo" className="app-logo" />
+        <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
         <h1 className="title">GastroStock</h1>
         <div className="buttons">
           <button className="login-btn" onClick={() => navigate("/login")}>
@@ -47,6 +48,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomeScreen />} />
         <Route path="/login" element={<LoginScreen />} />
+        <Route path="/recuperar-contrasena" element={<RecoverPasswordScreen />} />
         <Route path="/register" element={<RegisterScreen />} />
       </Routes>
     </Router>

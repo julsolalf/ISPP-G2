@@ -1,72 +1,116 @@
 /* General para el body y html */
 body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    font-family: 'Arial', sans-serif;
-  }
-  
-  /* Contenedor principal de la página de inicio de sesión con el fondo */
-  .home-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    width: 100%;
-    position: relative;
-  }
-  
-  /* Contenedor de los campos y botones con un fondo translúcido */
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Contenedor principal con el fondo */
+.home-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Contenedor del formulario con fondo translúcido */
+.content {
+  background: rgba(234, 197, 197, 0.85); /* Más opacidad para mejor visibilidad */
+  padding: 40px 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  width: 90%;
+  max-width: 400px; /* Aumentado el ancho */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px; /* Espaciado más uniforme */
+}
+
+/* Estilo para el logo */
+.app-logo {
+  width: 120px; /* Aumentado el tamaño */
+  margin-bottom: 10px; /* Más espacio debajo del logo */
+}
+
+/* Estilo para el título */
+.title {
+  margin: 0;
+  font-size: 30px; /* Ajustado para mayor visibilidad */
+}
+
+/* Estilo para el encabezado */
+h2 {
+  color: #333;
+  margin-bottom: 15px;
+  font-family: 'Playfair Display', serif;
+  font-weight: bold;
+  font-size: 25px;
+}
+
+/* Estilo para los campos de entrada */
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0; /* Reducido el margen para optimizar espacio */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 480px) {
   .content {
-    background: rgba(234, 197, 197, 0.8); /* Fondo translúcido */
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    text-align: center;
-    width: 80%;
-    max-width: 350px;
-    position: absolute; /* Para mantenerlo centrado */
+    width: 95%;
+    padding: 30px 20px;
   }
-  
-  /* Estilo para el encabezado */
-  h2 {
-    color: #333;
-    margin-bottom: 20px;
-    font-family: 'Playfair Display', serif;
-    font-weight: bold;
+
+  .app-logo {
+    width: 100px;
   }
-  
-  /* Estilo para los campos de entrada */
+
   input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-size: 16px;
+    font-size: 14px;
+    padding: 10px;
   }
-  
-  /* Estilo para los botones */
-  button {
-      font-size: 18px;
-      padding: 12px 20px;
-      border-radius: 10px;
-      cursor: pointer;
-      border: none;
-      transition: 0.3s;
-      width: 100%;
-      margin-top: 10px;
-  }
-  
-  /* Estilo para el botón de iniciar sesión */
-  .login-btn {
-      background-color: #a92d4e;
-      color: white;
-  }
-  
-  /* Estilo para los botones cuando se pasa el ratón */
-  button:hover {
-      opacity: 0.8;
-  }
-  
+}
+
+/* Estilo para los botones */
+button {
+  font-size: 18px;
+  padding: 12px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: none;
+  transition: 0.3s;
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* Estilo para el botón de registro */
+.login-btn {
+  background-color: #a92d4e;
+  color: white;
+  font-weight: bold;
+}
+
+/* Efecto hover en los botones */
+button:hover {
+  opacity: 0.8;
+}
+
+.forgot-password-link {
+  color: #a92d4e; /* O el color que desees */
+  text-decoration: none; /* Para eliminar el subrayado por defecto */
+  margin-top: 10px;
+  display: inline-block;
+}
+
+.forgot-password-link:hover {
+  text-decoration: underline; /* Subrayado cuando se pasa el mouse */
+}

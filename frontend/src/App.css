@@ -12,10 +12,11 @@ body, html {
   padding: 30px;
   border-radius: 15px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
 }
 
 .app-logo {
-  width: 100px;
+  width: 250px; /* Aumentado el tamaño del logo */
   margin-bottom: 10px;
 }
 
@@ -29,8 +30,10 @@ body, html {
 
 .buttons {
   display: flex;
-  justify-content: center;
-  gap: 15px;
+  flex-direction: column; /* Alinea los botones verticalmente */
+  align-items: center;
+  gap: 10px;
+  width: 100%;
 }
 
 button {
@@ -40,6 +43,8 @@ button {
   cursor: pointer;
   border: none;
   transition: 0.3s;
+  width: 100%; /* Hace que todos los botones ocupen el mismo ancho */
+  max-width: 300px; /* Define un ancho máximo para los botones */
 }
 
 .login-btn {
@@ -53,10 +58,8 @@ button {
 }
 
 .info-btn {
-  background-color: white;
-  color: black;
-  border: 2px solid black;
-  margin-top: 10px;
+  background-color: rgb(237, 121, 20);
+  color: white;
 }
 
 button:hover {
