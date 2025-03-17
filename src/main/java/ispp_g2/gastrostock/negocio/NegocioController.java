@@ -47,7 +47,7 @@ public class NegocioController {
 	}
 
     @GetMapping("/name/{name}")
-	public ResponseEntity<Negocio> findNegocioByName(@PathVariable("token") String name) {
+	public ResponseEntity<Negocio> findNegocioByName(@PathVariable("name") String name) {
 		Negocio negocioToGet = ns.getByName(name);
 		if (negocioToGet == null)
 			throw new ResourceNotFoundException("negocio with name " + name + " not found!");
