@@ -3,6 +3,7 @@ import "./App.css";
 import LoginScreen from "./screens/inicioSesion/index.js";
 import RegisterScreen from "./screens/registro/index.js";
 import RecoverPasswordScreen from "./screens/recuperarContraseña/index.js";
+import MoreInfoScreen from "./screens/masInformacion/index.js";
 
 function HomeScreen() {
   const navigate = useNavigate();
@@ -32,7 +33,9 @@ function HomeScreen() {
             Registrarse
           </button>
         </div>
-        <button className="info-btn">Más Información</button>
+        <button className="info-btn" onClick={() => navigate("/mas-informacion")}>
+          Más Información
+          </button>
         <p className="contact-info">
           <strong>Av. Reina Mercedes, s/n, 41012, Sevilla</strong><br />
           Contacto: 678 12 34 56
@@ -50,6 +53,7 @@ function App() {
         <Route path="/login" element={<LoginScreen />} />
         <Route path="/recuperar-contrasena" element={<RecoverPasswordScreen />} />
         <Route path="/register" element={<RegisterScreen />} />
+        <Route path="/mas-informacion" element={<MoreInfoScreen />} />
       </Routes>
     </Router>
   );

@@ -114,3 +114,56 @@ button:hover {
 .forgot-password-link:hover {
   text-decoration: underline; /* Subrayado cuando se pasa el mouse */
 }
+
+.info-content {
+  background: rgba(234, 197, 197, 0.85);
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  max-width: 600px;
+  width: 90%;
+  overflow-y: auto;
+}
+
+.pricing {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.plan {
+  background:  rgba(228, 162, 162, 0.85);
+  padding: 15px;
+  border-radius: 10px;
+  width: 30%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.plan h3 {
+  color: #a92d4e;
+  margin-bottom: 5px;
+}
+
+/* Botón de volver arriba a la izquierda dentro del contenedor */
+.back-button {
+  position: absolute;
+  top: 15px;
+  left: -70px; 
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #333;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.back-button:hover {
+  text-decoration: underline;
+}
+
+.content {
+  position: relative;
+  padding-top: 50px; 
+}

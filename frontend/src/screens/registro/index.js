@@ -36,10 +36,21 @@ function RegisterScreen() {
       style={{ 
         backgroundImage: `url(${process.env.PUBLIC_URL + "/background-spices.jpg"})`,
         backgroundSize: "cover",
-        backgroundPosition: "center"
+        backgroundPosition: "center",
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+        padding: "20px",
+        overflowY: "auto"
       }}
     >
       <div className="content">
+        <button className="back-button" onClick={() => navigate(-1)}>
+          ← Volver
+        </button>
+
         <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
         <h1 className="title">GastroStock</h1>
         <h2>Registrarse</h2>

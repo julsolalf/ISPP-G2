@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom"; // Importa Link
+import { useNavigate, Link } from "react-router-dom";
 import "../../css/inicioSesion-registro/styles.css";
 
 function LoginScreen() {
@@ -9,7 +9,6 @@ function LoginScreen() {
 
   const handleLogin = () => {
     console.log("Iniciando sesión con:", email, password);
-    // Aquí iría la lógica de autenticación
     navigate("/");
   };
 
@@ -28,9 +27,11 @@ function LoginScreen() {
       }}
     >
       <div className="content">
+        <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
         <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
         <h1 className="title">GastroStock</h1>
         <h2>Iniciar Sesión</h2>
+
         <input
           type="email"
           placeholder="Correo Electrónico"
@@ -45,7 +46,6 @@ function LoginScreen() {
         />
         <button onClick={handleLogin} className="login-btn">Iniciar Sesión</button>
 
-        {/* Enlace para recuperación de contraseña */}
         <Link to="/recuperar-contrasena" className="forgot-password-link">
           ¿Has olvidado la contraseña?
         </Link>
