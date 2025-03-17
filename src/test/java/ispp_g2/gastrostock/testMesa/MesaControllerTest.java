@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -27,6 +28,7 @@ import ispp_g2.gastrostock.mesa.MesaController;
 import ispp_g2.gastrostock.mesa.MesaService;
 
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("test")
 class MesaControllerTest {
 
     private MockMvc mockMvc;

@@ -11,13 +11,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.test.context.ActiveProfiles;
 
 import ispp_g2.gastrostock.dueño.Dueño;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioRepository;
 import ispp_g2.gastrostock.negocio.NegocioService;
 
-
+@ActiveProfiles("test")
 class NegocioServiceTest{
 
     @Mock
