@@ -18,11 +18,13 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 
 import ispp_g2.gastrostock.exceptions.ResourceNotFoundException;
 import ispp_g2.gastrostock.mesa.Mesa;
 import ispp_g2.gastrostock.mesa.MesaController;
 import ispp_g2.gastrostock.mesa.MesaService;
+
 
 class MesaControllerTest {
 
