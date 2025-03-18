@@ -17,6 +17,7 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/lineasDePedido/**").permitAll()
+                        .requestMatchers("/api/pedidos/**").permitAll()
                         .anyRequest().authenticated());
 
         return http.build();
