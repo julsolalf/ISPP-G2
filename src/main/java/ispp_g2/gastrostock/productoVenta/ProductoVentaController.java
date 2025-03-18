@@ -108,6 +108,7 @@ public class ProductoVentaController {
         if(productoVentaService.getById(id) == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        productoVenta.setId(Integer.valueOf(id));
         return new ResponseEntity<>(productoVentaService.save(productoVenta), HttpStatus.OK);
     }
 
