@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -46,7 +47,7 @@ public class LoteController {
     }
 
     @GetMapping("/fechaCaducidad/{fechaCaducidad}")
-    public ResponseEntity<List<Lote>> findByFechaCaducidad(@PathVariable("fechaCaducidad") String fechaCaducidad) {
+    public ResponseEntity<List<Lote>> findByFechaCaducidad(@PathVariable("fechaCaducidad") LocalDate fechaCaducidad) {
         List<Lote> lotes = loteService.getLotesByFechaCaducidad(fechaCaducidad);
         if(lotes == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
