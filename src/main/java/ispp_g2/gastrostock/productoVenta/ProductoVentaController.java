@@ -1,5 +1,6 @@
 package ispp_g2.gastrostock.productoVenta;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -92,7 +93,7 @@ public class ProductoVentaController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductoVenta> save(@RequestBody ProductoVenta productoVenta) {
+    public ResponseEntity<ProductoVenta> save(@RequestBody @Valid ProductoVenta productoVenta) {
         if (productoVenta == null) {
             throw new IllegalArgumentException("Producto de venta no puede ser nulo");
         }
@@ -100,7 +101,7 @@ public class ProductoVentaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductoVenta> update(@PathVariable("id") String id, @RequestBody ProductoVenta productoVenta) {
+    public ResponseEntity<ProductoVenta> update(@PathVariable("id") String id, @RequestBody @Valid ProductoVenta productoVenta) {
         if (productoVenta == null) {
             throw new IllegalArgumentException("Producto de venta no puede ser nulo");
         }
