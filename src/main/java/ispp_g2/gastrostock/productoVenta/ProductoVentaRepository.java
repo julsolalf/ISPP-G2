@@ -2,9 +2,11 @@ package ispp_g2.gastrostock.productoVenta;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface ProductoVentaRepository extends CrudRepository<ProductoVenta,String>{
 
     @Query("SELECT p FROM ProductoVenta p WHERE p.nombre = ?1")
