@@ -115,15 +115,21 @@ button:hover {
   text-decoration: underline; /* Subrayado cuando se pasa el mouse */
 }
 
+/* Contenedor principal de la sección */
 .info-content {
   background: rgba(234, 197, 197, 0.85);
   padding: 30px;
   border-radius: 15px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   text-align: center;
-  max-width: 600px;
+  max-width: 900px; /* Define un ancho fijo */
   width: 90%;
-  overflow-y: auto;
+  margin: 50px auto; /* Añade espacio arriba y abajo */
+  overflow-y: auto; /* Permite hacer scroll si el contenido es muy largo */
+  max-height: 85vh; /* Evita que el contenedor sea demasiado alto */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .pricing {

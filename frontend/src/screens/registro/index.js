@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../../css/inicioSesion-registro/styles.css";
+import "../../css/paginasBase/styles.css";
 
 function RegisterScreen() {
   const [businessName, setBusinessName] = useState("");
