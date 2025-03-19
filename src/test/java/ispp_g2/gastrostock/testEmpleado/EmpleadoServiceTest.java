@@ -36,7 +36,6 @@ class EmpleadoServiceTest {
         empleado = new Empleado();
         empleado.setId(1);
         empleado.setTokenEmpleado("testToken");
-        empleado.setRol(Rol.BARRA);
     }
 
     @Test

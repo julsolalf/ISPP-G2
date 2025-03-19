@@ -20,7 +20,4 @@ public class Dueño extends Person {
     @NotBlank
     private String tokenDueño;
 
-    @OneToOne(cascade = { CascadeType.DETACH, CascadeType.REFRESH, CascadeType.PERSIST })
-	@JoinColumn(name = "user_id")
-	private User user;
 }

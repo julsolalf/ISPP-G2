@@ -82,9 +82,8 @@ class MesaRepositoryTest {
 
         // Crear un empleado
         empleado = new Empleado();
-        empleado.setName("Carlos Camarero");
+        empleado.setFirstName("Carlos Camarero");
         empleado.setTokenEmpleado("EMP-TOKEN-123");
-        empleado.setRol(Rol.BARRA);
         empleado.setNegocio(negocio);
         empleado = empleadoRepository.save(empleado);
 

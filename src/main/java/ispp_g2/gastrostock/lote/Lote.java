@@ -16,7 +16,6 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-//TEMPORAL FIX
 public class Lote extends BaseEntity {
 
     @NotNull
