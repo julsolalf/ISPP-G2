@@ -36,7 +36,6 @@ class EmpleadoRepositoryTest {
     void testSaveAndFindById() {
         Empleado empleado = new Empleado();
         empleado.setTokenEmpleado("testToken");
-        empleado.setRol(Rol.BARRA);
 
         empleado = repo.save(empleado);
 
@@ -68,7 +67,6 @@ class EmpleadoRepositoryTest {
 
         Empleado empleado = new Empleado();
         empleado.setTokenEmpleado("testToken");
-        empleado.setRol(Rol.COCINA);
         empleado.setNegocio(negocio1);
 
         repo.save(empleado);
@@ -83,7 +81,6 @@ class EmpleadoRepositoryTest {
     void testDeleteById() {
         Empleado empleado = new Empleado();
         empleado.setTokenEmpleado("testToken");
-        empleado.setRol(Rol.EXTERIOR);
 
         empleado = repo.save(empleado);
         int id = empleado.getId();
