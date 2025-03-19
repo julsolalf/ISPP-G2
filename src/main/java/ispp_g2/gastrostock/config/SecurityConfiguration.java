@@ -16,11 +16,9 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/lineasDePedido/**").permitAll()
-                        .requestMatchers("/api/pedidos/**").permitAll()
-                        .requestMatchers("/api/lote/**").permitAll()
-                        .requestMatchers("/productoVenta/**").permitAll()
-                        .anyRequest().authenticated());
+                        .anyRequest().permitAll())
+                .formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
