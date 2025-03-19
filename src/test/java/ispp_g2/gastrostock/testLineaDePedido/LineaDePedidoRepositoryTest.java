@@ -14,7 +14,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import ispp_g2.gastrostock.empleado.Empleado;
 import ispp_g2.gastrostock.empleado.EmpleadoRepository;
-import ispp_g2.gastrostock.empleado.Rol;
 import ispp_g2.gastrostock.lineaDePedido.LineaDePedido;
 import ispp_g2.gastrostock.lineaDePedido.LineaDePedidoRepository;
 import ispp_g2.gastrostock.negocio.Negocio;
@@ -104,7 +103,7 @@ public class LineaDePedidoRepositoryTest {
         
     
         producto = new ProductoVenta();
-        producto.setNombre("Producto A");
+        producto.setName("Producto A");
         producto.setPrecioVenta(5.0);
         producto.setCategoriaVenta(CategoriasVenta.PLATOS);
         ProductoVentaRepository.save(producto);

@@ -45,16 +45,6 @@ public class ProductoVentaService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProductoVenta> getProductosVentaByLineaDePedidoId(Integer lineaDePedido) {
-        return productoVentaRepository.findProductoVentaByLineaDePedidoId(lineaDePedido);
-    }
-
-    @Transactional(readOnly = true)
-    public List<ProductoVenta> getProductosVentaByNombreAndPrecioVenta(String nombre, Double precioVenta) {
-        return productoVentaRepository.findProductoVentaByNombreAndPrecioVenta(nombre, precioVenta);
-    }
-
-    @Transactional(readOnly = true)
     public List<ProductoVenta> getProductosVentaByCategoriaVentaAndPrecioVenta(CategoriasVenta categoriaVenta, Double precioVenta) {
         return productoVentaRepository.findProductoVentaByCategoriaVentaAndPrecioVenta(categoriaVenta, precioVenta);
     }
