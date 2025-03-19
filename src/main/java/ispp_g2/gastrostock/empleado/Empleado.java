@@ -1,6 +1,7 @@
 package ispp_g2.gastrostock.empleado;
 
 import ispp_g2.gastrostock.model.NamedEntity;
+import ispp_g2.gastrostock.model.Person;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.user.User;
 import jakarta.persistence.CascadeType;
@@ -16,7 +17,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Empleado extends NamedEntity {
+public class Empleado extends Person {
 
     @NotBlank
     private String tokenEmpleado;
@@ -26,10 +27,6 @@ public class Empleado extends NamedEntity {
     @ManyToOne(optional = false)
     @JoinColumn(name = "negocio_id")
     private Negocio negocio;
-
-    @OneToOne(cascade = { CascadeType.DETACH, CascadeType.REFRESH, CascadeType.PERSIST })
-	@JoinColumn(name = "user_id")
-	private User user;
 
     
 }
