@@ -21,8 +21,7 @@ public class Empleado extends NamedEntity {
     @NotBlank
     private String tokenEmpleado;
 
-    @NotNull
-    private Rol rol;
+    private String descripcion;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "negocio_id")
