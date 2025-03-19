@@ -7,6 +7,7 @@ import ispp_g2.gastrostock.negocio.Negocio;
 
 import ispp_g2.gastrostock.proveedores.Proveedor;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -22,12 +23,12 @@ public class DiaReparto extends BaseEntity {
 
     private String descripcion;
 
-    @ManyToOne
-    @NotNull
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "negocio_id")
     private Negocio negocio;
 
-    @ManyToOne
-    @NotNull
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "proveedor_id")
     private Proveedor proveedor;
     
 }
