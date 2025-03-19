@@ -1,12 +1,13 @@
 package ispp_g2.gastrostock.diaReparto;
 
+import java.time.DayOfWeek;
+
 import ispp_g2.gastrostock.model.BaseEntity;
 import ispp_g2.gastrostock.negocio.Negocio;
 
 import ispp_g2.gastrostock.proveedores.Proveedor;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,9 +18,8 @@ import lombok.Setter;
 public class DiaReparto extends BaseEntity {
 
     @NotNull
-    private DiaSemana diaSemana;
+    private DayOfWeek diaSemana;
 
-    @NotBlank
     private String descripcion;
 
     @ManyToOne
