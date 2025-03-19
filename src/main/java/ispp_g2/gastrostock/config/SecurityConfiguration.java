@@ -17,6 +17,7 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/lineasDePedido/**").permitAll()
+                        .requestMatchers("/api/pedidos/**").permitAll()
                         .requestMatchers("/api/lote/**").permitAll()
                         .requestMatchers("/productoVenta/**").permitAll()
                         .anyRequest().authenticated());
