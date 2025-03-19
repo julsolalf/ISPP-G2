@@ -23,8 +23,8 @@ public class Empleado extends NamedEntity {
 
     private String descripcion;
 
-    @ManyToOne
-    @NotNull
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "negocio_id")
     private Negocio negocio;
 
     @OneToOne(cascade = { CascadeType.DETACH, CascadeType.REFRESH, CascadeType.PERSIST })

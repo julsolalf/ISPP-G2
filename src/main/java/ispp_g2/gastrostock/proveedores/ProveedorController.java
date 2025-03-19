@@ -3,6 +3,7 @@ package ispp_g2.gastrostock.proveedores;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +34,7 @@ public class ProveedorController {
     }
 
     @GetMapping("/dia-reparto/{dia}")
-    public List<Proveedor> getByDiaReparto(@PathVariable DiaSemana dia) {
+    public List<Proveedor> getByDiaReparto(@PathVariable DayOfWeek dia) {
         return proveedorService.getByDiaReparto(dia);
     }
 
