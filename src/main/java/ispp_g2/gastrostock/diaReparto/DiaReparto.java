@@ -1,15 +1,14 @@
-package ispp_g2.gastrostock.empleado;
+package ispp_g2.gastrostock.diaReparto;
 
-import ispp_g2.gastrostock.model.NamedEntity;
-import ispp_g2.gastrostock.model.Person;
+import java.time.DayOfWeek;
+
+import ispp_g2.gastrostock.model.BaseEntity;
 import ispp_g2.gastrostock.negocio.Negocio;
-import ispp_g2.gastrostock.user.User;
-import jakarta.persistence.CascadeType;
+
+import ispp_g2.gastrostock.proveedores.Proveedor;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,10 +16,10 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Empleado extends Person {
+public class DiaReparto extends BaseEntity {
 
-    @NotBlank
-    private String tokenEmpleado;
+    @NotNull
+    private DayOfWeek diaSemana;
 
     private String descripcion;
 
@@ -28,5 +27,8 @@ public class Empleado extends Person {
     @JoinColumn(name = "negocio_id")
     private Negocio negocio;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "proveedor_id")
+    private Proveedor proveedor;
     
 }

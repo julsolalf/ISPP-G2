@@ -10,10 +10,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import ispp_g2.gastrostock.empleado.Empleado;
 import ispp_g2.gastrostock.empleado.EmpleadoRepository;
-import ispp_g2.gastrostock.empleado.Rol;
 import ispp_g2.gastrostock.lineaDePedido.LineaDePedido;
 import ispp_g2.gastrostock.lineaDePedido.LineaDePedidoRepository;
 import ispp_g2.gastrostock.negocio.Negocio;
@@ -30,6 +30,7 @@ import ispp_g2.gastrostock.mesa.MesaRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase
+@ActiveProfiles("test")
 public class LineaDePedidoRepositoryTest {
 
     @Autowired
@@ -94,16 +95,15 @@ public class LineaDePedidoRepositoryTest {
 
         
         empleado = new Empleado();
-        empleado.setName("Carlos Camarero");
+        empleado.setFirstName("Carlos Camarero");
         empleado.setTokenEmpleado("EMP-TOKEN-123");
-        empleado.setRol(Rol.BARRA);
         empleado.setNegocio(negocio);
         empleado = empleadoRepository.save(empleado);
 
         
     
         producto = new ProductoVenta();
-        producto.setNombre("Producto A");
+        producto.setName("Producto A");
         producto.setPrecioVenta(5.0);
         producto.setCategoriaVenta(CategoriasVenta.PLATOS);
         ProductoVentaRepository.save(producto);

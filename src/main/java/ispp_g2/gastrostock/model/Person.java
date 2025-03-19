@@ -15,8 +15,12 @@
  */
 package ispp_g2.gastrostock.model;
 
+import ispp_g2.gastrostock.user.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -45,8 +49,11 @@ public class Person extends BaseEntity {
 	@Email
 	protected String email;
 
-
 	@NotEmpty
 	@Digits(fraction = 0, integer = 9)
 	protected String numTelefono;
+
+	@OneToOne(cascade = { CascadeType.DETACH, CascadeType.REFRESH, CascadeType.PERSIST })
+	@JoinColumn(name = "user_id")
+	private User user;
 }

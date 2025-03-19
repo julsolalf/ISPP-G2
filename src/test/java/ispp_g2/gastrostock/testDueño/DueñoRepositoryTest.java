@@ -6,12 +6,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import ispp_g2.gastrostock.dueño.Dueño;
 import ispp_g2.gastrostock.dueño.DueñoRepository;
 
+
 import java.util.Optional;
 
+@ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase
 class DueñoRepositoryTest {
@@ -97,4 +100,21 @@ class DueñoRepositoryTest {
         Optional<Dueño> found = repo.findById(id);
         assertFalse(found.isPresent());
     }
+
+    @Test
+    void testFindByTokenDueño() {
+
+        Dueño dueño = new Dueño();
+        dueño.setFirstName("Juan Propietario");
+        dueño.setLastName("García");
+        dueño.setEmail("juan@gastrostock.com");
+        dueño.setTokenDueño("testToken");
+        dueño.setNumTelefono("652345678");
+        repo.save(dueño);
+
+        Optional<Dueño> found = repo.findByTokenDueño("testToken");
+        assertTrue(found.isPresent());
+        assertEquals("testToken", found.get().getTokenDueño());
+    }
+
 }

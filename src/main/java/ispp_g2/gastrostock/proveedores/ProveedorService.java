@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +34,7 @@ public class ProveedorService {
     }
 
     @Transactional(readOnly = true)
-    public List<Proveedor> getByDiaReparto(DiaSemana diaSemana) {
+    public List<Proveedor> getByDiaReparto(DayOfWeek diaSemana) {
         return proveedorRepository.findByDiasRepartoContaining(diaSemana);
     }
 

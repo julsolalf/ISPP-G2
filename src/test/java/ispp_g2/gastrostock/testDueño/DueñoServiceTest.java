@@ -12,11 +12,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 
 import ispp_g2.gastrostock.dueño.Dueño;
 import ispp_g2.gastrostock.dueño.DueñoRepository;
 import ispp_g2.gastrostock.dueño.DueñoService;
 
+@ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 class DueñoServiceTest {
     
