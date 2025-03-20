@@ -5,6 +5,7 @@ import ispp_g2.gastrostock.model.Person;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.user.User;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -20,6 +21,7 @@ import lombok.Setter;
 public class Empleado extends Person {
 
     @NotBlank
+    @Column(unique = true)
     private String tokenEmpleado;
 
     private String descripcion;

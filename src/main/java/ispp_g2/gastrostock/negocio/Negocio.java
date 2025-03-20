@@ -2,6 +2,7 @@ package ispp_g2.gastrostock.negocio;
 
 import ispp_g2.gastrostock.dueño.Dueño;
 import ispp_g2.gastrostock.model.NamedEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -17,6 +18,7 @@ import lombok.Setter;
 public class Negocio extends NamedEntity {
     
     @NotNull
+    @Column(unique = true)
     private Integer tokenNegocio;
     @NotBlank
     private String direccion;

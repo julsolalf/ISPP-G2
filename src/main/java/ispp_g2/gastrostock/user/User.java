@@ -26,7 +26,7 @@ public class User extends BaseEntity{
 
     @NotNull
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "authority")
+	@JoinColumn(name = "authority_id")
 	Authorities authority;
 
 	public Boolean hasAuthority(String auth) {
