@@ -83,6 +83,7 @@ body, html {
 .elim-btn {
   background-color: #d9534f;
   color: white;
+  margin-bottom: 10px;
   padding: 8px;
   border: none;
   border-radius: 5px;
