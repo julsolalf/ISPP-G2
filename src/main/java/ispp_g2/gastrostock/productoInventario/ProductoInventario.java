@@ -1,7 +1,6 @@
 package ispp_g2.gastrostock.productoInventario;
 
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import ispp_g2.gastrostock.lote.Lote;
