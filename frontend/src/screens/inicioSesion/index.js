@@ -9,7 +9,7 @@ function LoginScreen() {
 
   const handleLogin = () => {
     console.log("Iniciando sesión con:", email, password);
-    navigate("/");
+    navigate("/inicio");
   };
 
   return (

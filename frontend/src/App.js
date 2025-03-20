@@ -4,8 +4,10 @@ import LoginScreen from "./screens/inicioSesion/index.js";
 import RegisterScreen from "./screens/registro/index.js";
 import RecoverPasswordScreen from "./screens/recuperarContraseña/index.js";
 import MoreInfoScreen from "./screens/masInformacion/index.js";
+import HomeScreen from "./screens/inicio/index.js";
+import PlanesScreen from "./screens/planes/index.js";
 
-function HomeScreen() {
+function AppScreen() {
   const navigate = useNavigate();
 
   return (
@@ -49,11 +51,14 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<HomeScreen />} />
+        <Route path="/" element={<AppScreen />} />
         <Route path="/login" element={<LoginScreen />} />
         <Route path="/recuperar-contrasena" element={<RecoverPasswordScreen />} />
         <Route path="/register" element={<RegisterScreen />} />
         <Route path="/mas-informacion" element={<MoreInfoScreen />} />
+        <Route path="/inicio" element={<HomeScreen />} />
+        <Route path="/planes" element={<PlanesScreen />} />
+
       </Routes>
     </Router>
   );
