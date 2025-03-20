@@ -1,7 +1,8 @@
 import "./App.css";
 import TPV from "./screens/r/index.js";
-import Categorias from "./productoInventario/list.js";
-import Proveedores from "./listaProveedores/proveedores.js";
+import Categorias from "./screens/productoInventario/list.js";
+import Proveedores from "./screens/listaProveedores/proveedores.js";
+import Empleados from "./screens/listaEmpleados/empleados.js";
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 
 function App() {
@@ -24,21 +25,12 @@ function AppContent() {
             <img src="/gastrostockLogo.png" alt="App Logo" className="app-logo" />
           </div>
           <div className="button-container">
-            <button onClick={() => console.log("Ir a Iniciar Sesión")}>
-              Iniciar Sesión
-            </button>
-            <button onClick={() => console.log("Ir a Registrarse")}>
-              Registrarse
-            </button>
-            <button onClick={() => console.log("Mostrar Más Información")}>
-              Más Información
-            </button>
-            <button onClick={() => navigate("/categorias")}>
-              Ver Categorías
-            </button>
-            <button onClick={() => navigate("/proveedores")}>
-              Ver Proveedores
-            </button>
+            <button onClick={() => console.log("Ir a Iniciar Sesión")}>Iniciar Sesión</button>
+            <button onClick={() => console.log("Ir a Registrarse")}>Registrarse</button>
+            <button onClick={() => console.log("Mostrar Más Información")}>Más Información</button>
+            <button onClick={() => navigate("/categorias")}>Ver Categorías</button>
+            <button onClick={() => navigate("/proveedores")}>Ver Proveedores</button>
+            <button onClick={() => navigate("/empleados")}>Ver Empleados</button>
           </div>
         </header>
       )}
@@ -48,6 +40,7 @@ function AppContent() {
           <Route path="/" element={<p>Bienvenido a la aplicación</p>} />
           <Route path="/categorias" element={<Categorias />} />
           <Route path="/proveedores" element={<Proveedores />} />
+          <Route path="/empleados" element={<Empleados />} />
         </Routes>
       </main>
     </div>
