@@ -163,5 +163,14 @@
     justify-items: center; /* Esto centra los elementos dentro de cada celda del grid */
     align-items: center; /* Esto centra los elementos verticalmente en el grid */
   }
+
+  .button-container2 {
+    display: grid;
+    gap: 10px;
+    margin-top: 20px;
+    width: 100%;
+    justify-items: center; /* Esto centra los elementos dentro de cada celda del grid */
+    align-items: center; /* Esto centra los elementos verticalmente en el grid */
+  }
   
   

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../css/paginasBase/styles.css";
 
-function RecoverPasswordScreen() {
+function PantallaRecuperarContraseña() {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
 
@@ -47,4 +47,4 @@ function RecoverPasswordScreen() {
   );
 }
 
-export default RecoverPasswordScreen;
+export default PantallaRecuperarContraseña;

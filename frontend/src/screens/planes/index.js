@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../../css/planes/styles.css";
 import { Bell, User } from "lucide-react";
 
-function PlanesScreen() {
+function PantallaPlanes() {
   const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = React.useState(false);
   const [showUserOptions, setShowUserOptions] = React.useState(false);
@@ -112,4 +112,4 @@ function PlanesScreen() {
   );
 }
 
-export default PlanesScreen;
+export default PantallaPlanes;

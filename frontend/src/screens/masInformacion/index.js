@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import "../../css/paginasBase/styles.css";
 
-function MoreInfoScreen() {
+function PantallaMasInfo() {
   const navigate = useNavigate();
 
   return (
@@ -64,4 +64,4 @@ function MoreInfoScreen() {
   );
 }
 
-export default MoreInfoScreen;
+export default PantallaMasInfo;

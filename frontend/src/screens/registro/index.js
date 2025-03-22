@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../css/paginasBase/styles.css";
 
-function RegisterScreen() {
+function PantallaRegistro() {
   const [businessName, setBusinessName] = useState("");
   const [ownerFirstName, setOwnerFirstName] = useState("");
   const [ownerLastName, setOwnerLastName] = useState("");
@@ -104,4 +104,4 @@ function RegisterScreen() {
   );
 }
 
-export default RegisterScreen;
+export default PantallaRegistro;

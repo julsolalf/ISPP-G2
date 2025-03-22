@@ -2,14 +2,22 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../../css/paginasBase/styles.css";
 
-function LoginScreen() {
+function PantallaInicioSesion() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const role = "dueño";
 
   const handleLogin = () => {
     console.log("Iniciando sesión con:", email, password);
-    navigate("/inicio");
+
+    // HAY QUE IMPLEMENTAR LA LÓGICA DE INICIO DE SESIÓN
+    // Y REDIRECCIONAMIENTO A LA PÁGINA DE INICIO CORRESPONDIENTE SERA ALGO DE ESTE ESTILO
+    if (role === "dueño") {
+      navigate("/inicioDueño");
+    } else {
+      navigate("/inicioEmpleado");
+    }
   };
 
   return (
@@ -54,4 +62,4 @@ function LoginScreen() {
   );
 }
 
-export default LoginScreen;
+export default PantallaInicioSesion;

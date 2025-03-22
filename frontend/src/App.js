@@ -1,11 +1,12 @@
 import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
 import "./App.css";
-import LoginScreen from "./screens/inicioSesion/index.js";
-import RegisterScreen from "./screens/registro/index.js";
-import RecoverPasswordScreen from "./screens/recuperarContraseña/index.js";
-import MoreInfoScreen from "./screens/masInformacion/index.js";
-import HomeScreen from "./screens/inicio/index.js";
-import PlanesScreen from "./screens/planes/index.js";
+import PantallaInicioSesion from "./screens/inicioSesion/index.js";
+import PantallaRegistro from "./screens/registro/index.js";
+import PantallaRecuperarContraseña from "./screens/recuperarContraseña/index.js";
+import PantallaMasInfo from "./screens/masInformacion/index.js";
+import PantallaInicioDueño from "./screens/inicioDueño/index.js";
+import PantallaInicioEmpleado from "./screens/inicioEmpleado/index.js";
+import PantallaPlanes from "./screens/planes/index.js";
 
 function AppScreen() {
   const navigate = useNavigate();
@@ -28,14 +29,14 @@ function AppScreen() {
         <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
         <h1 className="title">GastroStock</h1>
         <div className="buttons">
-          <button className="login-btn" onClick={() => navigate("/login")}>
+          <button className="login-btn" onClick={() => navigate("/inicioSesion")}>
             Iniciar Sesión
           </button>
-          <button className="register-btn" onClick={() => navigate("/register")}>
+          <button className="register-btn" onClick={() => navigate("/registarse")}>
             Registrarse
           </button>
         </div>
-        <button className="info-btn" onClick={() => navigate("/mas-informacion")}>
+        <button className="info-btn" onClick={() => navigate("/masInformacion")}>
           Más Información
           </button>
         <p className="contact-info">
@@ -52,13 +53,13 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<AppScreen />} />
-        <Route path="/login" element={<LoginScreen />} />
-        <Route path="/recuperar-contrasena" element={<RecoverPasswordScreen />} />
-        <Route path="/register" element={<RegisterScreen />} />
-        <Route path="/mas-informacion" element={<MoreInfoScreen />} />
-        <Route path="/inicio" element={<HomeScreen />} />
-        <Route path="/planes" element={<PlanesScreen />} />
-
+        <Route path="/inicioSesion" element={<PantallaInicioSesion />} />
+        <Route path="/recuperarContraseña" element={<PantallaRecuperarContraseña />} />
+        <Route path="/registarse" element={<PantallaRegistro />} />
+        <Route path="/masInformacion" element={<PantallaMasInfo />} />
+        <Route path="/inicioDueño" element={<PantallaInicioDueño />} />
+        <Route path="/inicioEmpleado" element={<PantallaInicioEmpleado />} />
+        <Route path="/planes" element={<PantallaPlanes />} />
       </Routes>
     </Router>
   );
