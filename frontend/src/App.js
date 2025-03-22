@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
+
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import "./App.css";
 import PantallaInicioSesion from "./screens/inicioSesion/index.js";
 import PantallaRegistro from "./screens/registro/index.js";
@@ -7,7 +8,10 @@ import PantallaMasInfo from "./screens/masInformacion/index.js";
 import PantallaInicioDueño from "./screens/inicioDueño/index.js";
 import PantallaInicioEmpleado from "./screens/inicioEmpleado/index.js";
 import PantallaPlanes from "./screens/planes/index.js";
-
+import TPV from "./screens/r/index.js";
+import Categorias from "./screens/productoInventario/list.js";
+import Proveedores from "./screens/listaProveedores/proveedores.js";
+import Empleados from "./screens/listaEmpleados/empleados.js";
 function AppScreen() {
   const navigate = useNavigate();
 

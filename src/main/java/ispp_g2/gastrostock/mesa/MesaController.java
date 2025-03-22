@@ -47,7 +47,7 @@ public class MesaController {
 		return new ResponseEntity<List<Mesa>>(MesasToGet, HttpStatus.OK);
 	}
 
-    @GetMapping("/{name}")
+    @GetMapping("/name/{name}")
 	public ResponseEntity<Mesa> findByName(@PathVariable("name") String name) {
 		Mesa MesaToGet = ms.getByName(name);
 		if (MesaToGet == null)

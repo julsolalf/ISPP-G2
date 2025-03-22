@@ -16,7 +16,6 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-//TEMPORAL FIX
 public class Lote extends BaseEntity {
 
     @NotNull
@@ -26,14 +25,12 @@ public class Lote extends BaseEntity {
     @NotNull
     private LocalDate fechaCaducidad;
 
-//    TEMPORAL FIX
-//    @ManyToOne(optional = false)
-//    @JoinColumn(name = "id")
-//    private ProductoInventario producto;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "producto_id")
+    private ProductoInventario producto;
 
-//  TEMOPRAL FIX
-//    @ManyToOne(optional = false)
-//    @JoinColumn(name = "id")
-//    private Reabastecimiento reabastecimiento;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "reabastecimiento_id")
+    private Reabastecimiento reabastecimiento;
 
 }
