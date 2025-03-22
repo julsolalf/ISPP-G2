@@ -68,6 +68,10 @@ class EmpleadoRepositoryTest {
         Empleado empleado = new Empleado();
         empleado.setTokenEmpleado("testToken");
         empleado.setNegocio(negocio1);
+        empleado.setFirstName("Antinio");
+        empleado.setLastName("García");
+        empleado.setEmail("antoninio@test.com");
+        empleado.setNumTelefono("666111222");
 
         repo.save(empleado);
 
