@@ -23,12 +23,10 @@ public interface DueñoRepository extends CrudRepository<Dueño,String>{
     @Query("SELECT d FROM Dueño d WHERE d.numTelefono = ?1")
     Optional<Dueño> findDueñoByTelefono(String telefono);
 
-    @Query("SELECT d FROM Dueño d WHERE d.user = ?1")
-    Optional<Dueño> findDueñoByUser(User user);
+    @Query("SELECT d FROM Dueño d WHERE d.user.id = ?1")
+    Optional<Dueño> findDueñoByUser(String userId);
 
     @Query("SELECT d FROM Dueño d WHERE d.tokenDueño = ?1")
     Optional<Dueño> findDueñoByToken(String token);
 
-    @Query("SELECT d FROM Dueño d WHERE d.negocio.id = ?1")
-    Optional<Dueño> findDueñoByNegocio(String id);
 }

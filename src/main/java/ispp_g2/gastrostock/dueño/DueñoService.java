@@ -55,8 +55,8 @@ public class DueñoService {
     }
 
     @Transactional(readOnly = true)
-    public Dueño getDueñoByUser(User user) {
-        return duenoRepository.findDueñoByUser(user).orElse(null);
+    public Dueño getDueñoByUser(String userId) {
+        return duenoRepository.findDueñoByUser(userId).orElse(null);
     }
 
     @Transactional(readOnly = true)
@@ -64,10 +64,6 @@ public class DueñoService {
         return duenoRepository.findDueñoByToken(token).orElse(null);
     }
 
-    @Transactional(readOnly = true)
-    public Dueño getDueñoByNegocio(String id) {
-        return duenoRepository.findDueñoByNegocio(id).orElse(null);
-    }
 
     @Transactional
     public Dueño saveDueño(Dueño dueño) {

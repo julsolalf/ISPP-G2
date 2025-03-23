@@ -17,8 +17,5 @@ public class Dueño extends Person {
     @Column(unique = true)
     private String tokenDueño;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "negocio_id")
-    private Negocio negocio;
 
 }

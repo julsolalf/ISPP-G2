@@ -24,7 +24,7 @@ public class DueñoController {
     public ResponseEntity<List<Dueño>> findAll() {
         if (duenoService.getAllDueños().isEmpty())
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        return ResponseEntity.ok(duenoService.getAllDueños());
+        return new ResponseEntity<>(duenoService.getAllDueños(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -32,7 +32,7 @@ public class DueñoController {
         Dueño dueno = duenoService.getDueñoById(id);
         if(dueno == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return ResponseEntity.ok(duenoService.getDueñoById(id));
+        return new ResponseEntity<>(dueno, HttpStatus.OK);
     }
 
     @GetMapping("/token/{token}")
@@ -40,7 +40,7 @@ public class DueñoController {
         Dueño dueno = duenoService.getDueñoByToken(token);
         if(dueno == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return ResponseEntity.ok(duenoService.getDueñoByToken(token));
+        return new ResponseEntity<>(duenoService.getDueñoByToken(token), HttpStatus.OK);
     }
 
     @GetMapping("/email/{email}")
@@ -48,7 +48,7 @@ public class DueñoController {
         Dueño dueno = duenoService.getDueñoByEmail(email);
         if(dueno == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return ResponseEntity.ok(duenoService.getDueñoByEmail(email));
+        return new ResponseEntity<>(duenoService.getDueñoByEmail(email), HttpStatus.OK);
     }
 
     @GetMapping("/nombre/{nombre}")
@@ -56,7 +56,7 @@ public class DueñoController {
         List<Dueño> duenos = duenoService.getDueñoByNombre(nombre);
         if(duenos.isEmpty())
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return ResponseEntity.ok(duenoService.getDueñoByNombre(nombre));
+        return new ResponseEntity<>(duenos, HttpStatus.OK);
     }
 
     @GetMapping("/apellido/{apellido}")
@@ -64,7 +64,7 @@ public class DueñoController {
         List<Dueño> duenos = duenoService.getDueñoByApellido(apellido);
         if(duenos.isEmpty())
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return ResponseEntity.ok(duenoService.getDueñoByApellido(apellido));
+        return new ResponseEntity<>(duenoService.getDueñoByApellido(apellido), HttpStatus.OK);
     }
 
     @GetMapping("/telefono/{telefono}")
@@ -72,20 +72,23 @@ public class DueñoController {
         Dueño dueno = duenoService.getDueñoByTelefono(telefono);
         if(dueno == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return ResponseEntity.ok(duenoService.getDueñoByTelefono(telefono));
+        return new ResponseEntity<>(duenoService.getDueñoByTelefono(telefono), HttpStatus.OK);
     }
 
-    @GetMapping("/negocio/{id}")
-    public ResponseEntity<Dueño> findByNegocio(@PathVariable("id") String id) {
-        Dueño dueno = duenoService.getDueñoByNegocio(id);
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<Dueño> findByUser(@PathVariable("id") String id) {
+        Dueño dueno = duenoService.getDueñoByUser(id);
         if(dueno == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return ResponseEntity.ok(duenoService.getDueñoByNegocio(id));
+        return new ResponseEntity<>(duenoService.getDueñoByUser(id), HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<Dueño> save(@RequestBody @Valid Dueño dueño) {
-        return ResponseEntity.ok(duenoService.saveDueño(dueño));
+        if(dueño == null)
+            throw new IllegalArgumentException("Dueño no puede ser nulo");
+        return new ResponseEntity<>(duenoService.saveDueño(dueño), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
