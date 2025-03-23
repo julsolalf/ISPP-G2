@@ -28,4 +28,7 @@ public interface DueñoRepository extends CrudRepository<Dueño,String>{
 
     @Query("SELECT d FROM Dueño d WHERE d.tokenDueño = ?1")
     Optional<Dueño> findDueñoByToken(String token);
+
+    @Query("SELECT d FROM Dueño d WHERE d.negocio.id = ?1")
+    Optional<Dueño> findDueñoByNegocio(String id);
 }

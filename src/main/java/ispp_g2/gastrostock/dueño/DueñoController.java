@@ -75,6 +75,14 @@ public class DueñoController {
         return ResponseEntity.ok(duenoService.getDueñoByTelefono(telefono));
     }
 
+    @GetMapping("/negocio/{id}")
+    public ResponseEntity<Dueño> findByNegocio(@PathVariable("id") String id) {
+        Dueño dueno = duenoService.getDueñoByNegocio(id);
+        if(dueno == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return ResponseEntity.ok(duenoService.getDueñoByNegocio(id));
+    }
+
     @PostMapping
     public ResponseEntity<Dueño> save(@RequestBody @Valid Dueño dueño) {
         return ResponseEntity.ok(duenoService.saveDueño(dueño));
@@ -91,5 +99,15 @@ public class DueñoController {
         dueño.setId(Integer.valueOf(id));
         return new ResponseEntity<>(duenoService.saveDueño(dueño), HttpStatus.OK);
 
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable("id") String id) {
+        Dueño dueño = duenoService.getDueñoById(id);
+        if (dueño == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        duenoService.deleteDueño(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

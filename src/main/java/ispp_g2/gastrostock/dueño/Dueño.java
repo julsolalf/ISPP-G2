@@ -1,12 +1,9 @@
 package ispp_g2.gastrostock.dueño;
 
 import ispp_g2.gastrostock.model.Person;
+import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.user.User;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,10 +13,12 @@ import lombok.Setter;
 @Setter
 public class Dueño extends Person {
 
-
-
     @NotBlank
     @Column(unique = true)
     private String tokenDueño;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "negocio_id")
+    private Negocio negocio;
 
 }
