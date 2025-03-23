@@ -10,7 +10,7 @@ import java.util.stream.StreamSupport;
 @Service
 public class LineaDePedidoService {
 
-    private LineaDePedidoRepository lineaDePedidoRepository;
+    private final LineaDePedidoRepository lineaDePedidoRepository;
 
     @Autowired
     public LineaDePedidoService(LineaDePedidoRepository lineaDePedidoRepository) {
