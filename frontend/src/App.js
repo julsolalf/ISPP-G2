@@ -8,7 +8,7 @@ import PantallaMasInfo from "./screens/masInformacion/index.js";
 import PantallaInicioDueño from "./screens/inicioDueño/index.js";
 import PantallaInicioEmpleado from "./screens/inicioEmpleado/index.js";
 import PantallaPlanes from "./screens/planes/index.js";
-import TPV from "./screens/r/index.js";
+import TPV from "./screens/tpv/index.js";
 import PantallaInventario from "./screens/inventario/index.js";
 import PantallaProveedores from "./screens/proveedores/index.js";
 import PantallaEmpleados from "./screens/empleados/index.js";
@@ -44,6 +44,9 @@ function AppScreen() {
         <button className="info-btn" onClick={() => navigate("/masInformacion")}>
           Más Información
           </button>
+        <button className="test-btn" onClick={() => navigate("/tpv")}>
+          TPV
+          </button>
         <p className="contact-info">
           <strong>Av. Reina Mercedes, s/n, 41012, Sevilla</strong><br />
           Contacto: 678 12 34 56
@@ -68,6 +71,7 @@ function App() {
         <Route path="/inventario" element={<PantallaInventario />} />
         <Route path="/proveedores" element={<PantallaProveedores />} />
         <Route path="/empleados" element={<PantallaEmpleados />} />
+        <Route path="/tpv" element={<TPV />} />
       </Routes>
     </Router>
   );

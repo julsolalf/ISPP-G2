@@ -1,0 +1,115 @@
+/* Main container */
+.main-screen {
+    display: grid;
+    grid-template-columns: 10% 65% 25%; /* 10% for left border, 70% for middle, 20% for right */
+    grid-template-rows: 1fr 1fr; /* Two rows */
+    height: 97vh; /* Full screen height */
+    width: 97%; /* Full screen width */
+    gap: 1% 1%; /* Space between sections */
+    padding: 10px; /* Optional padding */
+  }
+  
+  /* General section styling */
+  .section {
+    border: 1px solid #ccc; /* Optional border for visualization */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  
+  /* Leftmost Section: Vertical Buttons */
+  .left-border {
+    grid-column: 1 / 2; /* First column */
+    grid-row: 1 / 3; /* Spans both rows (top to bottom) */
+    flex-direction: column; /* Stack buttons vertically */
+  }
+  
+  /* Top-Left Section */
+  .top-left {
+    grid-column: 2 / 3; /* Middle column */
+    grid-row: 1 / 2; /* First row */
+    background-image: url('../../../public/suelo_bar.jpg');
+    background-size: 100% 110%; /* Scales the image to cover the entire div */
+    background-position: center; /* Centers the image */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+  }
+  
+  /* Top-Right Section */
+  .top-right {
+    grid-column: 3 / 4; /* Right column */
+    grid-row: 1 / 2; /* First row */
+    flex-direction: column; /* Stack array values vertically */
+  }
+  
+  /* Bottom-Left Section */
+  .bottom-left {
+    grid-column: 2 / 3; /* Middle column */
+    grid-row: 2 / 3; /* Second row */
+  }
+  
+  /* Bottom-Right Section */
+  .bottom-right {
+    grid-column: 3 / 4; /* Right column */
+    grid-row: 2 / 3; /* Second row */
+    display: flex;
+    align-items: stretch; /* Ensure child elements stretch to fill height */
+    justify-content: stretch; /* Ensure child elements stretch to fill width */
+  }
+  
+  /* Overlay items for top-left section */
+  .overlay-item {
+    position: absolute;
+    z-index: 2; /* Ensure overlay items are above the background image */
+    color: white; /* Example styling */
+    margin: 5px;
+  }
+  
+  /* Array values for top-right section */
+  .array-value {
+    margin: 5px 0; /* Space between array values */
+  }
+  /* Buttons Component */
+  .bottom-left button {
+    margin: 5px;
+    padding: 10px;
+    font-size: 16px;
+  }
+  
+  /* Numpad */
+  .numpad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    grid-template-rows: repeat(4, 1fr); /* 4 rows */
+    gap: 10px; /* Space between buttons */
+    width: 100%; /* Fill the width of the parent */
+    height: 100%; /* Fill the height of the parent */
+    padding: 10px; /* Optional padding */
+  }
+  
+  .numpad-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .numpad button {
+    width:  100%; /* Fill the grid cell width */
+    height: 80%; /* Fill the grid cell height */
+    font-size: 40px; /* Adjust font size */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ccc; /* Optional border */
+    background-color: #f0f0f0; /* Optional background color */
+    cursor: pointer;
+  }
+  
+  .numpad button:hover {
+    background-color: #ddd; /* Hover effect */
+  }
+
+  /* Center the "0" button in the bottom row */
+.zero-button {
+  grid-column: 2 / 3; /* Place the "0" button in the middle column */
+}

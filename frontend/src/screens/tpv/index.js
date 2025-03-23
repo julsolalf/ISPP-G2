@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import "./styles.css";
+import "../../css/TPV/main_styles.css";
+import Numpad from "../../components/Numpad.js";
 
 const products = [
   { id: 1, name: "Café", price: 1.5, image: "/imagesProductos/cafe.jpg" },
@@ -12,6 +14,8 @@ const products = [
   { id: 8, name: "Queso", price: 2.0, image: "/imagesProductos/queso.jpg" },
 ];
 
+const arrayValues = ['Value 1', 'Value 2', 'Value 3', 'Value 4'];
+
 const TPV = () => {
   // Inicializamos 8 pedidos independientes
   const [orders, setOrders] = useState(
@@ -19,6 +23,7 @@ const TPV = () => {
   );
   // Estado para el pedido activo (null = vista de selección)
   const [activeOrder, setActiveOrder] = useState(null);
+  
 
   const addOrderItem = (product) => {
     if (activeOrder === null) return; // Si no ha seleccionado ningún pedido, no hacer nada
@@ -42,7 +47,7 @@ const TPV = () => {
     setOrders(newOrders);
   };
 
-  return (
+  let a = (
     <div style={{ padding: "20px" }}>
       {/* Logo en la parte superior central */}
       <div className="logo-container">
@@ -109,6 +114,38 @@ const TPV = () => {
             </>
           )}
         </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="main-screen">
+      {/* Top-Left Section */}
+      <div className="section top-left">
+      </div>
+
+      {/* Leftmost Section: Vertical Buttons */}
+      <div className="section left-border">
+        <div></div> {/* Use your pre-made buttons component here */}
+      </div>
+
+      {/* Top-Right Section */}
+      <div className="section top-right">
+        {arrayValues.map((value, index) => (
+          <div key={index} className="array-value">
+            {value}
+          </div>
+        ))}
+      </div>
+
+      {/* Bottom-Left Section */}
+      <div className="section bottom-left">
+        <div></div>
+      </div>
+
+      {/* Bottom-Right Section */}
+      <div className="section bottom-right">
+      <Numpad />
       </div>
     </div>
   );
