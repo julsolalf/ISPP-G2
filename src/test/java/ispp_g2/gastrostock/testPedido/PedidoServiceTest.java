@@ -55,10 +55,14 @@ class PedidoServiceTest {
         mesa.setNumeroAsientos(4);
         
         // Set up Empleado
-        empleado = new Empleado();
+        Empleado empleado = new Empleado();
+        empleado.setTokenEmpleado("testToken");
+        empleado.setNegocio(negocio);
+        empleado.setFirstName("Antinio");
+        empleado.setLastName("García");
+        empleado.setEmail("antoninio@test.com");
+        empleado.setNumTelefono("666111222");
         empleado.setId(1);
-        empleado.setName("Empleado Test");
-        empleado.setTokenEmpleado("EMP123");
         
         // Set up Negocio
         negocio = new Negocio();
@@ -240,6 +244,7 @@ class PedidoServiceTest {
     void testGetPedidoByEmpleadoId_Success() {
         // Given
         List<Pedido> pedidos = Collections.singletonList(pedido);
+      //  Integer empleadoId = empleado.getId();
         when(pedidoRepository.findPedidoByEmpleadoId(1)).thenReturn(pedidos);
         
         // When

@@ -71,7 +71,6 @@ class PedidoControllerTest {
         // Configurar Empleado
         empleado = new Empleado();
         empleado.setId(1);
-        empleado.setName("Empleado Test");
         empleado.setTokenEmpleado("EMP123");
         
         // Configurar Negocio
