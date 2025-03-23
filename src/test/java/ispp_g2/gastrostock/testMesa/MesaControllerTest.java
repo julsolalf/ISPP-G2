@@ -68,7 +68,7 @@ class MesaControllerTest {
         Mesa mesa = new Mesa();
         mesa.setId(1);
         mesa.setName("Mesa VIP");
-        when(mesaService.getById(1)).thenReturn(mesa);
+        when(mesaService.getById(String.valueOf(1))).thenReturn(mesa);
 
         mockMvc.perform(get("/api/mesas/1"))
                 .andExpect(status().isOk())
@@ -94,7 +94,7 @@ class MesaControllerTest {
         mesa.setName("Mesa Nueva");
         mesa.setNumeroAsientos(4);
 
-        when(mesaService.getById(1)).thenReturn(mesa);
+        when(mesaService.getById(String.valueOf(1))).thenReturn(mesa);
 
         mockMvc.perform(put("/api/mesas/1")
                 .contentType(MediaType.APPLICATION_JSON)
