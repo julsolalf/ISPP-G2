@@ -12,6 +12,7 @@ import TPV from "./screens/r/index.js";
 import Categorias from "./screens/productoInventario/list.js";
 import Proveedores from "./screens/listaProveedores/proveedores.js";
 import Empleados from "./screens/listaEmpleados/empleados.js";
+import Dashboard from "./screens/dashboard/index.js";
 function AppScreen() {
   const navigate = useNavigate();
 
@@ -64,6 +65,7 @@ function App() {
         <Route path="/inicioDueño" element={<PantallaInicioDueño />} />
         <Route path="/inicioEmpleado" element={<PantallaInicioEmpleado />} />
         <Route path="/planes" element={<PantallaPlanes />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </Router>
   );
