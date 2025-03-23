@@ -13,7 +13,7 @@ import java.util.List;
 public class LineaDePedidoController {
 
 //   TO DO: Implementar la logica de que sololos usuarios del restaurante pueden ver sus lineas de pedido
-    private LineaDePedidoService lineaDePedidoService;
+    private final LineaDePedidoService lineaDePedidoService;
 
     @Autowired
     public LineaDePedidoController(LineaDePedidoService lineaDePedidoService) {
