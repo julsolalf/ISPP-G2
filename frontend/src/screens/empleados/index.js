@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Bell, User } from "lucide-react";
-import "../../css/empleadosYproveedores/styles.css";
+import "../../css/listados/styles.css";
 
 function Empleados() {
   const navigate = useNavigate();
@@ -71,8 +71,7 @@ function Empleados() {
           <button className="button">📥 Exportar</button>
           <button className="button">🔍 Filtrar</button>
         </div>
-
-
+        
         <div className="empleados-grid">
           {empleados.map((empleado, index) => (
             <div key={index} className="empleado-card">

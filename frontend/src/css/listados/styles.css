@@ -214,6 +214,15 @@
   overflow-y: auto;   /* Habilita el scroll si el contenido excede el tamaño */
 }
 
+.empleados-grid1 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);  /* Dos columnas */
+  gap: 20px;
+  padding: 20px;
+  max-height: 400px;  /* Altura máxima para permitir el scroll */
+  overflow-y: auto;   /* Habilita el scroll si el contenido excede el tamaño */
+}
+
 /* Estilos de las tarjetas de empleados */
 .empleado-card {
   background-color: #a92d4e;
@@ -233,6 +242,13 @@
   color: white;
 }
 
+.empleado-card h4 {
+  margin-top: 0;
+  color: white;
+  font-size: 40px;
+}
+
+
 .empleado-card p {
   margin: 5px 0;
   color: white;
@@ -240,7 +256,7 @@
 
 
 .ver-btn {
-  background-color: rgb(233, 168, 168);
+  background-color: rgb(102, 215, 111);
   color: #333;
   border: none;
   padding: 8px 12px;
@@ -253,5 +269,5 @@
 }
 
 .ver-btn:hover {
-  background-color: rgb(238, 183, 183);
+  background-color: rgb(102, 215, 111);
 }
