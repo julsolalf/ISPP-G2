@@ -1,6 +1,7 @@
 package ispp_g2.gastrostock.productoInventario;
 
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,42 +12,57 @@ import jakarta.validation.Valid;
 @Service
 public class ProductoInventarioService {
         
-    private ProductoInventarioRepository pr;
+    private ProductoInventarioRepository productoInventarioRepository;
 
     @Autowired
     public ProductoInventarioService(ProductoInventarioRepository ProductoInventarioRepository) {
-        this.pr = ProductoInventarioRepository;
+        this.productoInventarioRepository = ProductoInventarioRepository;
     }
 
     @Transactional(readOnly = true)
-    public ProductoInventario getById(Integer id) {
-        return pr.findById(id);
-    }
-
-    @Transactional(readOnly = true)
-    public ProductoInventario getByName(String name) {
-        return pr.findByName(name);
+    public ProductoInventario getById(String id) {
+        return productoInventarioRepository.findById(id).orElse(null);
     }
 
     @Transactional(readOnly = true)
     public List<ProductoInventario> getProductosInventario() {
-        return pr.findAll();
+        Iterable<ProductoInventario> productoInventario = productoInventarioRepository.findAll();
+        return StreamSupport.stream(productoInventario.spliterator(), false)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public ProductoInventario getByName(String name) {
+        return productoInventarioRepository.findByName(name);
     }
 
     @Transactional(readOnly = true)
     public List<ProductoInventario> getProductoInventarioByCategoria(CategoriasInventario categoriaInventario) {
-        return pr.findByCategoriaInventario(categoriaInventario);
+        return productoInventarioRepository.findByCategoriaInventario(categoriaInventario);
     }
 
+    @Transactional(readOnly = true)
+    public List<ProductoInventario> getProductoInventarioByPrecioCompra(Double precioCompra) {
+        return productoInventarioRepository.findByPrecioCompra(precioCompra);
+    }
 
-    @Transactional
-    public ProductoInventario saveProductoInventario(@Valid ProductoInventario newProductoInventario){
-        return pr.save(newProductoInventario);
+    @Transactional(readOnly = true)
+    public List<ProductoInventario> getProductoInventarioByCantidadDeseada(Integer cantidadDeseada) {
+        return productoInventarioRepository.findByCantidadDeseada(cantidadDeseada);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductoInventario> getProductoInventarioByCantidadAviso(Integer cantidadAviso) {
+        return productoInventarioRepository.findByCantidadAviso(cantidadAviso);
     }
 
     @Transactional
-    public void deleteProductoInventario(Integer id){
-        ProductoInventario productoInventarioToDelete = pr.findById(id);
-        pr.delete(productoInventarioToDelete);
+    public ProductoInventario save(@Valid ProductoInventario newProductoInventario){
+        return productoInventarioRepository.save(newProductoInventario);
+    }
+
+    @Transactional
+    public void delete(String id){
+        productoInventarioRepository.deleteById(id);
     }
 }
