@@ -56,7 +56,7 @@ class EmpleadoControllerTest {
 
     @Test
     void testGetEmpleadoById() throws Exception {
-        when(empleadoService.getEmpleadoById(1)).thenReturn(Optional.of(empleado));
+        when(empleadoService.getEmpleadoById(String.valueOf(1))).thenReturn(empleado);
 
         mockMvc.perform(get("/api/v1/empleados/1"))
                 .andExpect(status().isOk())
@@ -75,7 +75,7 @@ class EmpleadoControllerTest {
 
     @Test
     void testDeleteEmpleado() throws Exception {
-        doNothing().when(empleadoService).deleteEmpleado(1);
+        doNothing().when(empleadoService).deleteEmpleado(String.valueOf(1));
 
         mockMvc.perform(delete("/api/v1/empleados/1"))
                 .andExpect(status().isNoContent());
