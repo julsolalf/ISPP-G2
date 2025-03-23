@@ -14,7 +14,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import ispp_g2.gastrostock.empleado.Empleado;
 import ispp_g2.gastrostock.empleado.EmpleadoRepository;
-import ispp_g2.gastrostock.empleado.Rol;
 import ispp_g2.gastrostock.lineaDePedido.LineaDePedido;
 import ispp_g2.gastrostock.lineaDePedido.LineaDePedidoRepository;
 import ispp_g2.gastrostock.negocio.Negocio;
@@ -95,16 +94,20 @@ public class LineaDePedidoRepositoryTest {
 
 
         
-        empleado = new Empleado();
-        empleado.setName("Carlos Camarero");
-        empleado.setTokenEmpleado("EMP-TOKEN-123");
+        Empleado empleado = new Empleado();
+        empleado.setTokenEmpleado("testToken");
         empleado.setNegocio(negocio);
-        empleado = empleadoRepository.save(empleado);
+        empleado.setFirstName("Antinio");
+        empleado.setLastName("García");
+        empleado.setEmail("antoninio@test.com");
+        empleado.setNumTelefono("666111222");
+        empleadoRepository.save(empleado);
+
 
         
     
         producto = new ProductoVenta();
-        producto.setNombre("Producto A");
+        producto.setName("Producto A");
         producto.setPrecioVenta(5.0);
         producto.setCategoriaVenta(CategoriasVenta.PLATOS);
         ProductoVentaRepository.save(producto);

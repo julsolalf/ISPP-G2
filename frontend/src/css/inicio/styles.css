@@ -1,0 +1,176 @@
+/* Contenedor principal */
+.home-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+    text-align: center;
+    position: relative;
+  }
+  
+  /* Contenedor del contenido principal */
+  .content {
+    background: rgba(234, 197, 197, 0.85);
+    padding: 40px 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  /* Contenedor de iconos de notificaciones y perfil a la derecha */
+  .icon-container-right {
+    position: absolute;
+    top: 10px;
+    right: 30px;
+    display: flex;
+    gap: 15px;
+  }
+  
+  /* Estilo para los iconos */
+  .icon {
+    cursor: pointer;
+    color: black;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .icon:hover {
+    transform: scale(1.1);
+  }
+  
+  /* Ventana bocadillo de notificaciones */
+  .notification-bubble {
+    position: absolute;
+    top: 50px;
+    right: 40px;
+    background-color: rgb(238, 183, 183);
+    border: 1px solid rgb(238, 183, 183);
+    border-radius: 10px;
+    width: 200px;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+  }
+  
+  .notification-bubble .notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .notification-bubble ul {
+    margin: 10px 0;
+    padding: 0;
+    list-style-type: none;
+  }
+  
+  .notification-bubble ul li {
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  
+  .close-btn {
+    font-size: 14px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: #a92d4e;
+    position: absolute;
+    right: -70px; 
+    top: -11px; 
+  }
+  
+  .close-btn:hover {
+    color: red;
+  }
+  
+  /* Estilo para las opciones de usuario */
+  .user-options {
+    position: absolute;
+    top: 50px;
+    right: 40px;
+    background-color: rgb(238, 183, 183);
+    border: 1px solid rgb(238, 183, 183);
+    border-radius: 10px;
+    width: 200px;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+  }
+  
+  .user-options .notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .user-options ul {
+    margin: 10px 0;
+    padding: 0;
+    list-style-type: none;
+  }
+  
+  .user-options ul li {
+    margin-bottom: 5px;
+  }
+  
+  .user-btn {
+    background-color: #a92d4e;
+    color: white;
+    font-size: 14px;
+    padding: 8px;
+    width: 100%;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .user-btn:hover {
+    opacity: 0.8;
+  }
+  
+  /* Estilos para los botones */
+  .menu-btn {
+    font-size: 18px;
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    border: none;
+    transition: 0.3s;
+    width: 100%;
+    background-color: #a92d4e;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .menu-btn:hover {
+    opacity: 0.8;
+  }
+  
+  .button-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 20px;
+    width: 100%;
+    justify-items: center; /* Esto centra los elementos dentro de cada celda del grid */
+    align-items: center; /* Esto centra los elementos verticalmente en el grid */
+  }
+
+  .button-container2 {
+    display: grid;
+    gap: 10px;
+    margin-top: 20px;
+    width: 100%;
+    justify-items: center; /* Esto centra los elementos dentro de cada celda del grid */
+    align-items: center; /* Esto centra los elementos verticalmente en el grid */
+  }
+  
+  

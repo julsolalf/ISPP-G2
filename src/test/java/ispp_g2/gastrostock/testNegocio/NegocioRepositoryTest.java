@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import ispp_g2.gastrostock.dueño.Dueño;
 import ispp_g2.gastrostock.dueño.DueñoRepository;
@@ -17,6 +18,7 @@ import ispp_g2.gastrostock.negocio.NegocioRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase
+@ActiveProfiles("test")
 class NegocioRepositoryTest {
 
     @Autowired
@@ -40,7 +42,7 @@ class NegocioRepositoryTest {
         dueño1.setLastName("García");
         dueño1.setEmail("juan@example.com");
         dueño1.setNumTelefono("666111222");
-        dueño1.setTokenDueño("TOKEN123");
+        dueño1.setTokenDueño("TOKEN999");
         dueño1 = dueñoRepository.save(dueño1);
         
         dueño2 = new Dueño();

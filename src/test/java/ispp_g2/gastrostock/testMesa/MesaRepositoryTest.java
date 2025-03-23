@@ -81,11 +81,14 @@ class MesaRepositoryTest {
         negocio = negocioRepository.save(negocio);
 
         // Crear un empleado
-        empleado = new Empleado();
-        empleado.setName("Carlos Camarero");
-        empleado.setTokenEmpleado("EMP-TOKEN-123");
+        Empleado empleado = new Empleado();
+        empleado.setTokenEmpleado("testToken");
         empleado.setNegocio(negocio);
-        empleado = empleadoRepository.save(empleado);
+        empleado.setFirstName("Antinio");
+        empleado.setLastName("García");
+        empleado.setEmail("antoninio@test.com");
+        empleado.setNumTelefono("666111222");
+        empleadoRepository.save(empleado);
 
         // Crear objetos Mesa para pruebas
         mesa1 = new Mesa();

@@ -3,6 +3,7 @@ package ispp_g2.gastrostock.dueño;
 import ispp_g2.gastrostock.model.Person;
 import ispp_g2.gastrostock.user.User;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
@@ -18,9 +19,7 @@ public class Dueño extends Person {
 
 
     @NotBlank
+    @Column(unique = true)
     private String tokenDueño;
 
-    @OneToOne(cascade = { CascadeType.DETACH, CascadeType.REFRESH, CascadeType.PERSIST })
-	@JoinColumn(name = "user_id")
-	private User user;
 }
