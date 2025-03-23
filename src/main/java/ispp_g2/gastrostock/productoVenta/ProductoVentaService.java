@@ -10,7 +10,7 @@ import java.util.stream.StreamSupport;
 @Service
 public class ProductoVentaService {
 
-    private ProductoVentaRepository productoVentaRepository;
+    private final ProductoVentaRepository productoVentaRepository;
 
     @Autowired
     public ProductoVentaService(ProductoVentaRepository productoVentaRepository) {

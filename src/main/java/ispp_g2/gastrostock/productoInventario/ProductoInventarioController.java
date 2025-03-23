@@ -14,10 +14,10 @@ import ispp_g2.gastrostock.exceptions.ResourceNotFoundException;
 import jakarta.validation.Valid;
 
 @RestController
-
+@RequestMapping("/api/productosInventario")
 public class ProductoInventarioController {
 
-    private ProductoInventarioService productoInventarioService;
+    private final ProductoInventarioService productoInventarioService;
 
 	@Autowired
 	public ProductoInventarioController(ProductoInventarioService productoInventarioService) {

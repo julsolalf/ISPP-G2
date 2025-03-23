@@ -12,7 +12,7 @@ import jakarta.validation.Valid;
 @Service
 public class ProductoInventarioService {
         
-    private ProductoInventarioRepository productoInventarioRepository;
+    private final ProductoInventarioRepository productoInventarioRepository;
 
     @Autowired
     public ProductoInventarioService(ProductoInventarioRepository ProductoInventarioRepository) {

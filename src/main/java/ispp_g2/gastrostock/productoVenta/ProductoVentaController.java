@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/productoVenta")
+@RequestMapping("/api/productosVenta")
 public class ProductoVentaController {
 
-    private ProductoVentaService productoVentaService;
+    private final ProductoVentaService productoVentaService;
 
     @Autowired
     public ProductoVentaController(ProductoVentaService productoVentaService) {
