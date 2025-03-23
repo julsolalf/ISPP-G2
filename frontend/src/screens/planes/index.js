@@ -30,7 +30,7 @@ function PantallaPlanes() {
         overflowY: "auto",
       }}
     >
-      <div className="content">
+      <div className="content1">
         <div className="icon-container-right">
           <Bell size={30} className="icon" onClick={toggleNotifications} />
           <User size={30} className="icon" onClick={toggleUserOptions} />
