@@ -1,5 +1,8 @@
 package ispp_g2.gastrostock.lineaDePedido;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import ispp_g2.gastrostock.model.BaseEntity;
 import ispp_g2.gastrostock.pedido.Pedido;
 import ispp_g2.gastrostock.productoVenta.ProductoVenta;
@@ -11,6 +14,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Entity
 @Getter
 @Setter

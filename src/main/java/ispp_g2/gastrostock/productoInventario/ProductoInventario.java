@@ -3,6 +3,9 @@ package ispp_g2.gastrostock.productoInventario;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import ispp_g2.gastrostock.categorias.Categoria;
 import ispp_g2.gastrostock.ingrediente.Ingrediente;
 import ispp_g2.gastrostock.lineaDePedido.LineaDePedido;
@@ -13,6 +16,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Entity
 @Getter
 @Setter
