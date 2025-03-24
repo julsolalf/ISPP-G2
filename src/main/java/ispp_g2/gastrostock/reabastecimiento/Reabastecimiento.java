@@ -1,13 +1,13 @@
 package ispp_g2.gastrostock.reabastecimiento;
 
 import java.time.LocalDate;
+import java.util.List;
 
+import ispp_g2.gastrostock.lote.Lote;
 import ispp_g2.gastrostock.model.BaseEntity;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.proveedores.Proveedor;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -36,4 +36,7 @@ public class Reabastecimiento extends BaseEntity {
     @ManyToOne(optional = false)
     @JoinColumn(name = "negocio_id")
     private Negocio negocio;
+
+    @OneToMany(mappedBy = "reabastecimiento", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Lote> lotes;
 }

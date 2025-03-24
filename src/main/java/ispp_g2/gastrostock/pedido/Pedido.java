@@ -1,14 +1,14 @@
 package ispp_g2.gastrostock.pedido;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import ispp_g2.gastrostock.empleado.Empleado;
+import ispp_g2.gastrostock.lineaDePedido.LineaDePedido;
 import ispp_g2.gastrostock.mesa.Mesa;
 import ispp_g2.gastrostock.model.BaseEntity;
 import ispp_g2.gastrostock.negocio.Negocio;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
@@ -39,4 +39,7 @@ public class Pedido extends BaseEntity{
     @ManyToOne(optional = false)
     @JoinColumn(name = "negocio_id")
     private Negocio negocio;
+
+    @OneToMany(mappedBy = "pedido",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LineaDePedido> lineasDePedido;
 }

@@ -6,6 +6,7 @@ import ispp_g2.gastrostock.model.BaseEntity;
 import ispp_g2.gastrostock.negocio.Negocio;
 
 import ispp_g2.gastrostock.proveedores.Proveedor;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;

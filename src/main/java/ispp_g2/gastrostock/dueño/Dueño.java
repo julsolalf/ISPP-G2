@@ -8,6 +8,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -17,5 +19,7 @@ public class Dueño extends Person {
     @Column(unique = true)
     private String tokenDueño;
 
+    @OneToMany(mappedBy = "dueño", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Negocio> negocios;
 
 }

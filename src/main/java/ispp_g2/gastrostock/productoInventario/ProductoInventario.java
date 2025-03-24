@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import ispp_g2.gastrostock.categorias.Categoria;
+import ispp_g2.gastrostock.ingrediente.Ingrediente;
+import ispp_g2.gastrostock.lineaDePedido.LineaDePedido;
 import ispp_g2.gastrostock.lote.Lote;
 import ispp_g2.gastrostock.model.NamedEntity;
 import jakarta.persistence.*;
@@ -29,11 +31,16 @@ public class ProductoInventario extends NamedEntity {
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
+    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Lote> lotes;
+
+    @OneToMany(mappedBy = "productoInventario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Ingrediente> ingredientes;
+
     @Transient
     public Integer calcularCantidad(List<Lote> lotes) {
         return lotes.stream().collect(Collectors.summingInt(Lote::getCantidad));
     }
-
 
     
 }
