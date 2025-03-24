@@ -17,7 +17,6 @@ import org.springframework.test.context.TestPropertySource;
 
 import ispp_g2.gastrostock.lote.Lote;
 import ispp_g2.gastrostock.lote.LoteRepository;
-import ispp_g2.gastrostock.productoInventario.CategoriasInventario;
 import ispp_g2.gastrostock.productoInventario.ProductoInventario;
 import ispp_g2.gastrostock.productoInventario.ProductoInventarioRepository;
 import ispp_g2.gastrostock.reabastecimiento.Reabastecimiento;
@@ -121,7 +120,6 @@ public class LoteRepositoryTest {
         producto1.setPrecioCompra(3.5);
         producto1.setCantidadAviso(1);
         producto1.setCantidadDeseada(10);
-        producto1.setCategoriaInventario(CategoriasInventario.COMIDA);
         producto1 = productoInventarioRepository.save(producto1);
         
         producto2 = new ProductoInventario();
@@ -129,8 +127,6 @@ public class LoteRepositoryTest {
         producto2.setPrecioCompra(1.8);
         producto2.setPrecioCompra(2.8);
         producto2.setCantidadAviso(1);
-        producto2.setCantidadDeseada(10);
-        producto2.setCategoriaInventario(CategoriasInventario.COMIDA);
         producto2 = productoInventarioRepository.save(producto2);
         
         // Crear reabastecimientos

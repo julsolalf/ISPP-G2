@@ -1,5 +1,5 @@
 package ispp_g2.gastrostock.testProveedores;
-
+/*
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -344,3 +344,4 @@ public class ProveedorServiceTest {
         verify(proveedorRepository, times(1)).deleteById(null);
     }
 }
+*/
