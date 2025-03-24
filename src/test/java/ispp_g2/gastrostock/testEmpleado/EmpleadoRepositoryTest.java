@@ -44,6 +44,7 @@ public class EmpleadoRepositoryTest {
     
     @Autowired
     private DueñoRepository dueñoRepository;
+
     
     private Empleado empleado1, empleado2, empleado3, empleadoSinToken, empleadoSinEmail;
     private User user1, user2, user3;
