@@ -48,7 +48,7 @@ public class ProductoVentaController {
     }
 
     @GetMapping("/categoriaVenta/{categoriaVenta}")
-    public ResponseEntity<List<ProductoVenta>> findByCategoriaVenta(@PathVariable("categoriaVenta") CategoriasVenta categoriaVenta) {
+    public ResponseEntity<List<ProductoVenta>> findByCategoriaVenta(@PathVariable("categoriaVenta") String categoriaVenta) {
         List<ProductoVenta> productosVenta = productoVentaService.getProductosVentaByCategoriaVenta(categoriaVenta);
         if (productosVenta == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -66,7 +66,7 @@ public class ProductoVentaController {
     }
 
     @GetMapping("/categoriaVenta/{categoriaVenta}/precioVenta/{precioVenta}")
-    public ResponseEntity<List<ProductoVenta>> findByCategoriaVentaAndPrecioVenta(@PathVariable("categoriaVenta") CategoriasVenta categoriaVenta, @PathVariable("precioVenta") Double precioVenta) {
+    public ResponseEntity<List<ProductoVenta>> findByCategoriaVentaAndPrecioVenta(@PathVariable("categoriaVenta") String categoriaVenta, @PathVariable("precioVenta") Double precioVenta) {
         List<ProductoVenta> productosVenta = productoVentaService.getProductosVentaByCategoriaVentaAndPrecioVenta(categoriaVenta, precioVenta);
         if (productosVenta == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

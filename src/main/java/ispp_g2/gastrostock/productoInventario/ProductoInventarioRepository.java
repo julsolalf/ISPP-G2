@@ -12,8 +12,8 @@ public interface ProductoInventarioRepository extends CrudRepository<ProductoInv
     @Query("SELECT p FROM ProductoInventario p WHERE p.name = ?1")
     ProductoInventario findByName(String name);
 
-    @Query("SELECT p FROM ProductoInventario p WHERE p.categoriaInventario = ?1")
-    List<ProductoInventario> findByCategoriaInventario(CategoriasInventario categoriaInventario);
+    @Query("SELECT p FROM ProductoInventario p WHERE p.categoria.name = ?1")
+    List<ProductoInventario> findByCategoriaName(String categoria);
 
     @Query("SELECT p FROM ProductoInventario p WHERE p.precioCompra = ?1")
     List<ProductoInventario> findByPrecioCompra(Double precioCompra);

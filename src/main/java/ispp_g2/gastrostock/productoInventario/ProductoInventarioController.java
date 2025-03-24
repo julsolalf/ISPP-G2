@@ -2,11 +2,9 @@ package ispp_g2.gastrostock.productoInventario;
 
 import java.util.List;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import ispp_g2.gastrostock.exceptions.BadRequestException;
@@ -40,8 +38,8 @@ public class ProductoInventarioController {
 	}
 
     @GetMapping("/categoria/{categoria}")
-	public ResponseEntity<List<ProductoInventario>> findByNumeroAsientos(@PathVariable("categoria") CategoriasInventario categoriasInventario) {
-		List<ProductoInventario> productoInventario = productoInventarioService.getProductoInventarioByCategoria(categoriasInventario);
+	public ResponseEntity<List<ProductoInventario>> findByCategoriaName(@PathVariable("categoria") String categoriasInventario) {
+		List<ProductoInventario> productoInventario = productoInventarioService.getProductoInventarioByCategoriaName(categoriasInventario);
 		if (productoInventario == null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		return new ResponseEntity<>(productoInventario, HttpStatus.OK);
