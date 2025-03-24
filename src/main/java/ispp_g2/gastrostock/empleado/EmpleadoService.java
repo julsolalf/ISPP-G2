@@ -4,7 +4,9 @@ import java.security.Key;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
+import ispp_g2.gastrostock.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,68 +14,76 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EmpleadoService {
 
-    private final EmpleadoRepository repo;
-    private static final String SECRET_KEY = "mySecretKeymySecretKeymySecretKeymySecretKeymySecretKey";
+    private final EmpleadoRepository empleadoRepository;
 
     @Autowired
-    public EmpleadoService(EmpleadoRepository repo) {
-        this.repo = repo;
+    public EmpleadoService(EmpleadoRepository empleadoRepository) {
+        this.empleadoRepository = empleadoRepository;
     }
 
     // Crear o actualizar un empleado
+    @Transactional
     public Empleado saveEmpleado(Empleado empleado) {
-        return repo.save(empleado);
+        return empleadoRepository.save(empleado);
     }
 
     // Obtener todos los empleados
+    @Transactional(readOnly = true)
     public List<Empleado> getAllEmpleados() {
-        return (List<Empleado>) repo.findAll();
+        Iterable<Empleado> empleados = empleadoRepository.findAll();
+        return StreamSupport.stream(empleados.spliterator(), false).toList();
     }
 
     // Buscar empleado por ID
-    public Optional<Empleado> getEmpleadoById(Integer id) {
-        return repo.findById(id);
+    @Transactional(readOnly = true)
+    public Empleado getEmpleadoById(String id) {
+        return empleadoRepository.findById(id).orElse(null);
     }
 
     // Eliminar empleado
-    public void deleteEmpleado(Integer id) {
-        repo.deleteById(id);
+    @Transactional
+    public void deleteEmpleado(String id) {
+        empleadoRepository.deleteById(id);
     }
 
-    // Generar token JWT
-    public String generateToken(String tokenEmpleado) {
-        Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
-        return Jwts.builder()
-                .setSubject(tokenEmpleado) 
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // Expira en 1 día
-                .signWith(key,SignatureAlgorithm.HS256)
-                .compact();
+    @Transactional(readOnly = true)
+    public Empleado getEmpleadoByEmail(String email) {
+        return empleadoRepository.findByEmail(email).orElse(null);
     }
 
-    // Autenticación de empleado con JWT
-    public String authenticateEmpleado(String tokenEmpleado) {
-        Optional<Empleado> empleado = repo.findByTokenEmpleado(tokenEmpleado);
-        return empleado.isPresent() ? generateToken(tokenEmpleado) : null;
+    @Transactional(readOnly = true)
+    public List<Empleado> getEmpleadoByNombre(String nombre) {
+        return empleadoRepository.findByNombre(nombre);
     }
 
-    // Validar token JWT
-    public boolean validateToken(String token) {
-        Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
-        try {
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-            return claims.getExpiration().after(new Date());
-        } catch (Exception e) {
-            return false;
-        }
+    @Transactional(readOnly = true)
+    public List<Empleado> getEmpleadoByApellido(String apellido) {
+        return empleadoRepository.findByApellido(apellido);
+    }
+
+    @Transactional(readOnly = true)
+    public Empleado getEmpleadoByTelefono(String telefono) {
+        return empleadoRepository.findByTelefono(telefono).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Empleado> getEmpleadoByNegocio(String id) {
+        return empleadoRepository.findByNegocio(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Empleado getEmpleadoByUser(String userId) {
+        return empleadoRepository.findByUserId(userId).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public Empleado getEmpleadoByTokenEmpleado(String tokenEmpleado) {
+        return empleadoRepository.findByTokenEmpleado(tokenEmpleado).orElse(null);
     }
     
 }

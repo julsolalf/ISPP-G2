@@ -13,7 +13,7 @@ import java.util.List;
 @RequestMapping("/api/pedidos")
 public class PedidoController {
 
-    private PedidoService pedidoService;
+    private final PedidoService pedidoService;
 
     @Autowired
     public PedidoController(PedidoService pedidoService) {

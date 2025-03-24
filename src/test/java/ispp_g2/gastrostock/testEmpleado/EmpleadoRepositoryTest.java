@@ -39,7 +39,7 @@ class EmpleadoRepositoryTest {
 
         empleado = repo.save(empleado);
 
-        Optional<Empleado> found = repo.findById(empleado.getId());
+        Optional<Empleado> found = repo.findById(String.valueOf(empleado.getId()));
         assertTrue(found.isPresent());
         assertEquals("testToken", found.get().getTokenEmpleado());
     }
@@ -89,9 +89,9 @@ class EmpleadoRepositoryTest {
         empleado = repo.save(empleado);
         int id = empleado.getId();
 
-        repo.deleteById(id);
+        repo.deleteById(String.valueOf(id));
 
-        Optional<Empleado> found = repo.findById(id);
+        Optional<Empleado> found = repo.findById(String.valueOf(id));
         assertFalse(found.isPresent());
     }
 }

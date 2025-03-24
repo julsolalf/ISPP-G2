@@ -2,16 +2,26 @@ package ispp_g2.gastrostock.productoInventario;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface ProductoInventarioRepository extends CrudRepository<ProductoInventario,String>{
 
-    public List<ProductoInventario> findAll();
+    @Query("SELECT p FROM ProductoInventario p WHERE p.name = ?1")
+    ProductoInventario findByName(String name);
 
-    public ProductoInventario findById(Integer id);
-    
-    public ProductoInventario findByName(String name);
-    
-    public List<ProductoInventario> findByCategoriaInventario(CategoriasInventario categoriaInventario);
-    
+    @Query("SELECT p FROM ProductoInventario p WHERE p.categoriaInventario = ?1")
+    List<ProductoInventario> findByCategoriaInventario(CategoriasInventario categoriaInventario);
+
+    @Query("SELECT p FROM ProductoInventario p WHERE p.precioCompra = ?1")
+    List<ProductoInventario> findByPrecioCompra(Double precioCompra);
+
+    @Query("SELECT p FROM ProductoInventario p WHERE p.cantidadDeseada = ?1")
+    List<ProductoInventario> findByCantidadDeseada(Integer cantidadDeseada);
+
+    @Query("SELECT p FROM ProductoInventario p WHERE p.cantidadAviso = ?1")
+    List<ProductoInventario> findByCantidadAviso(Integer cantidadAviso);
+
 }

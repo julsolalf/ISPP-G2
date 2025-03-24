@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.List;
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,9 +38,9 @@ class MesaServiceTest {
         Mesa mesa = new Mesa();
         mesa.setId(1);
         mesa.setName("Mesa Grande");
-        when(mesaRepository.findById(1)).thenReturn(mesa);
+        when(mesaRepository.findById(String.valueOf(1))).thenReturn(Optional.of(mesa));
 
-        Mesa found = mesaService.getById(1);
+        Mesa found = mesaService.getById(String.valueOf(1));
         assertNotNull(found);
         assertEquals("Mesa Grande", found.getName());
     }
@@ -48,7 +49,7 @@ class MesaServiceTest {
     void testGetByName() {
         Mesa mesa = new Mesa();
         mesa.setName("Mesa VIP");
-        when(mesaRepository.findByName("Mesa VIP")).thenReturn(mesa);
+        when(mesaRepository.findMesaByName("Mesa VIP")).thenReturn(mesa);
 
         Mesa found = mesaService.getByName("Mesa VIP");
         assertNotNull(found);
@@ -76,7 +77,7 @@ class MesaServiceTest {
         Mesa mesa2 = new Mesa();
         mesa2.setNumeroAsientos(4);
 
-        when(mesaRepository.findMesasByNumeroAsientos(4)).thenReturn(Arrays.asList(mesa1, mesa2));
+        when(mesaRepository.findMesaByNumeroAsientos(4)).thenReturn(Arrays.asList(mesa1, mesa2));
 
         List<Mesa> mesas = mesaService.getMesasByNumeroAsientos(4);
         assertEquals(2, mesas.size());
@@ -91,7 +92,7 @@ class MesaServiceTest {
 
         when(mesaRepository.save(mesa)).thenReturn(mesa);
 
-        Mesa saved = mesaService.saveMesa(mesa);
+        Mesa saved = mesaService.save(mesa);
         assertNotNull(saved);
         assertEquals("Mesa Nueva", saved.getName());
         assertEquals(6, saved.getNumeroAsientos());

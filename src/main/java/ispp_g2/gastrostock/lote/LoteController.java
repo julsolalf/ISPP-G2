@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/lote")
+@RequestMapping("/api/lotes")
 public class LoteController {
 
     private LoteService loteService;

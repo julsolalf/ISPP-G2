@@ -12,6 +12,7 @@ import ispp_g2.gastrostock.dueño.Dueño;
 import ispp_g2.gastrostock.dueño.DueñoRepository;
 
 
+import java.util.List;
 import java.util.Optional;
 
 @ActiveProfiles("test")
@@ -32,7 +33,7 @@ class DueñoRepositoryTest {
         dueño = repo.save(dueño);
 
         // Verificar que el Dueño se guardó correctamente
-        Optional<Dueño> found = repo.findById(dueño.getId());
+        Optional<Dueño> found = repo.findById(String.valueOf(dueño.getId()));
         assertTrue(found.isPresent());
         assertEquals("testToken", found.get().getTokenDueño());
     }
@@ -52,7 +53,7 @@ class DueñoRepositoryTest {
         repo.save(dueño);
 
         // Buscar por email
-        Optional<Dueño> found = repo.findByEmail("test@example.com");
+        Optional<Dueño> found = repo.findDueñoByEmail("test@example.com");
         assertTrue(found.isPresent());
         assertEquals("test@example.com", found.get().getEmail());
     }
@@ -78,7 +79,8 @@ class DueñoRepositoryTest {
 
         // Verificar que ambos Dueños fueron guardados
         var dueños = repo.findAll();
-        assertEquals(2, dueños.size());
+         List<Dueño> dueñosAux= (List<Dueño>) dueños;
+        assertEquals(2, dueñosAux.size());
     }
 
     @Test
@@ -90,14 +92,14 @@ class DueñoRepositoryTest {
         int id = dueño.getId();
 
         //Verificar que el Dueño se guardó correctamente
-        Optional<Dueño> foundDueño = repo.findById(id);
+        Optional<Dueño> foundDueño = repo.findById(String.valueOf(id));
         assertTrue(foundDueño.isPresent());
 
         // Borrar el Dueño
-        repo.deleteById(id);
+        repo.deleteById(String.valueOf(id));
 
         // Verificar que el Dueño ha sido borrado
-        Optional<Dueño> found = repo.findById(id);
+        Optional<Dueño> found = repo.findById(String.valueOf(id));
         assertFalse(found.isPresent());
     }
 
@@ -112,7 +114,7 @@ class DueñoRepositoryTest {
         dueño.setNumTelefono("652345678");
         repo.save(dueño);
 
-        Optional<Dueño> found = repo.findByTokenDueño("testToken");
+        Optional<Dueño> found = repo.findDueñoByToken("testToken");
         assertTrue(found.isPresent());
         assertEquals("testToken", found.get().getTokenDueño());
     }

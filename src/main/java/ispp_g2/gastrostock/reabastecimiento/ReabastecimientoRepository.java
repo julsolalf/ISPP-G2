@@ -1,21 +1,32 @@
 package ispp_g2.gastrostock.reabastecimiento;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import ispp_g2.gastrostock.proveedores.Proveedor;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
-public interface ReabastecimientoRepository extends CrudRepository<Reabastecimiento, Integer> {
+public interface ReabastecimientoRepository extends CrudRepository<Reabastecimiento, String> {
 
-    Optional<Reabastecimiento> findByReferencia(String referencia);
-    
+    @Query("SELECT r FROM Reabastecimiento r WHERE r.fecha = ?1")
+    List<Reabastecimiento> findByFecha(LocalDate fecha);
+
+    @Query("SELECT r FROM Reabastecimiento r WHERE r.fecha BETWEEN ?1 AND ?2")
     List<Reabastecimiento> findByFechaBetween(LocalDate fechaInicio, LocalDate fechaFin);
 
-    List<Reabastecimiento> findByProveedor(Proveedor proveedor);
+    @Query("SELECT r FROM Reabastecimiento r WHERE r.precioTotal = ?1")
+    List<Reabastecimiento> findByPrecioTotal(Double precioTotal);
+
+    @Query("SELECT r FROM Reabastecimiento r WHERE r.referencia = ?1")
+    List<Reabastecimiento> findByReferencia(String referencia);
+
+    @Query("SELECT r FROM Reabastecimiento r WHERE r.proveedor.id = ?1")
+    List<Reabastecimiento> findByProveedor(String proveedor);
+
+    @Query("SELECT r FROM Reabastecimiento r WHERE r.negocio.id = ?1")
+    List<Reabastecimiento> findByNegocio(String negocio);
 
 }
