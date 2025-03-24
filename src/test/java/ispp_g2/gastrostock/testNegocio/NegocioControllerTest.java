@@ -73,7 +73,7 @@ class NegocioControllerTest {
         negocio1.setCiudad("Sevilla");
         negocio1.setPais("España");
         negocio1.setCodigoPostal("41001");
-        negocio1.setTokenNegocio(9999);
+        negocio1.setTokenNegocio(12345);
         negocio1.setDueño(dueño);
         
         negocio2 = new Negocio();
