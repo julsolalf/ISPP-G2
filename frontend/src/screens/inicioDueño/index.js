@@ -7,6 +7,7 @@ function HomeScreen() {
   const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
@@ -14,6 +15,11 @@ function HomeScreen() {
 
   const toggleUserOptions = () => {
     setShowUserOptions(!showUserOptions);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("userToken"); // Eliminamos el token del usuario
+    navigate("/inicioSesion"); // Redirigir a la pantalla de inicio de sesión
   };
 
   return (
@@ -65,7 +71,7 @@ function HomeScreen() {
                 <button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button>
               </li>
               <li>
-                <button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button>
+                <button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
               </li>
             </ul>
           </div>
@@ -83,6 +89,19 @@ function HomeScreen() {
             <button className="menu-btn" onClick={() => navigate("/carta")}><span role="img" aria-label="carta">🍽️</span> Carta</button>
             <button className="menu-btn" onClick={() => navigate("/proveedores")}><span role="img" aria-label="proveedores">📋</span> Proveedores</button>
         </div>
+         {/* Modal de Confirmación para Logout */}
+         {showLogoutModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>¿Está seguro que desea abandonar la sesión?</h3>
+              <div className="modal-buttons">
+                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
+                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
+              </div>
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
   );

@@ -17,6 +17,13 @@ function Dashboard() {
   const [lowStockData, setLowStockData] = useState([]);
   const [emergencyStockData, setEmergencyStockData] = useState([]);
 
+  const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
+
+  const handleLogout = () => {
+    localStorage.removeItem("userToken"); // Eliminamos el token del usuario
+    navigate("/inicioSesion"); // Redirigir a la pantalla de inicio de sesión
+  };
+
   useEffect(() => {
     // Simulación de la carga de datos
     setProductsSoldData([15, 30, 25, 40, 60, 80, 100]);
@@ -140,7 +147,7 @@ function Dashboard() {
                 <button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button>
               </li>
               <li>
-                <button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button>
+                <button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
               </li>
             </ul>
           </div>
@@ -223,6 +230,19 @@ function Dashboard() {
         <div className="download-button-container">
           <button onClick={downloadPDF} className="download-pdf-button">Descargar PDF</button>
         </div>
+
+        {/* Modal de Confirmación para Logout */}
+        {showLogoutModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>¿Estás seguro que deseas abandonar la sesión?</h3>
+              <div className="modal-buttons">
+                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
+                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
