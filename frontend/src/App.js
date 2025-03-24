@@ -12,6 +12,7 @@ import TPV from "./screens/r/index.js";
 import PantallaInventario from "./screens/inventario/index.js";
 import PantallaProveedores from "./screens/proveedores/index.js";
 import PantallaEmpleados from "./screens/empleados/index.js";
+import VerTipoProducto from "./screens/verTipoProducto/index.js";
 
 function AppScreen() {
   const navigate = useNavigate();
@@ -66,6 +67,7 @@ function App() {
         <Route path="/inicioEmpleado" element={<PantallaInicioEmpleado />} />
         <Route path="/planes" element={<PantallaPlanes />} />
         <Route path="/inventario" element={<PantallaInventario />} />
+        <Route path="/verTipoProducto/:categoriaId" element={<VerTipoProducto />} />
         <Route path="/proveedores" element={<PantallaProveedores />} />
         <Route path="/empleados" element={<PantallaEmpleados />} />
       </Routes>
