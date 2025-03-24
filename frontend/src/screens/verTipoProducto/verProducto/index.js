@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import "../../css/listados/styles.css";
+import "../../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
 const obtenerCategorias = async () => {
@@ -10,11 +10,11 @@ const obtenerCategorias = async () => {
       nombre: "Bebidas",
       emoticono: "🥤",
       productos: [
-        { nombre: "Coca-Cola", cantidad: 20, alertaStock: 5 },
-        { nombre: "Agua", cantidad: 50, alertaStock: 10 },
-        { nombre: "Cerveza", cantidad: 15, alertaStock: 3 },
-        { nombre: "Jugo de Naranja", cantidad: 30, alertaStock: 8 },
-        { nombre: "Sprite", cantidad: 25, alertaStock: 6 },
+        { nombre: "Coca-Cola", cantidad: 20, alertaStock: 5, descripcion: "Refresco de cola" },
+        { nombre: "Agua", cantidad: 50, alertaStock: 10, descripcion: "Agua mineral" },
+        { nombre: "Cerveza", cantidad: 15, alertaStock: 3, descripcion: "Bebida alcohólica" },
+        { nombre: "Jugo de Naranja", cantidad: 30, alertaStock: 8, descripcion: "Jugo natural" },
+        { nombre: "Sprite", cantidad: 25, alertaStock: 6, descripcion: "Refresco de lima-limón" },
       ],
     },
     {
@@ -22,43 +22,45 @@ const obtenerCategorias = async () => {
       nombre: "Carnes",
       emoticono: "🥩",
       productos: [
-        { nombre: "Pollo", cantidad: 10, alertaStock: 2 },
-        { nombre: "Res", cantidad: 8, alertaStock: 3 },
-        { nombre: "Cerdo", cantidad: 12, alertaStock: 4 },
-        { nombre: "Pavo", cantidad: 5, alertaStock: 1 },
-        { nombre: "Cordero", cantidad: 7, alertaStock: 2 },
+        { nombre: "Pollo", cantidad: 10, alertaStock: 2, descripcion: "Carne de ave" },
+        { nombre: "Res", cantidad: 8, alertaStock: 3, descripcion: "Carne roja" },
+        { nombre: "Cerdo", cantidad: 12, alertaStock: 4, descripcion: "Carne de cerdo" },
+        { nombre: "Pavo", cantidad: 5, alertaStock: 1, descripcion: "Carne magra" },
+        { nombre: "Cordero", cantidad: 7, alertaStock: 2, descripcion: "Carne de cordero" },
       ],
     },
   ];
 };
 
-function VerTipoProducto() {
-  const { categoriaId } = useParams();
+function VerProducto() {
+  const { categoriaId, productoNombre } = useParams();
   const navigate = useNavigate();
-  const [categoria, setCategoria] = useState(null);
+  const [producto, setProducto] = useState(null);
   const [showNotifications, setShowNotifications] = useState(false);
-    const [showUserOptions, setShowUserOptions] = useState(false);
-  
-    const toggleNotifications = () => {
-      setShowNotifications(!showNotifications);
-    };
-  
-    const toggleUserOptions = () => {
-      setShowUserOptions(!showUserOptions);
-    };
+  const [showUserOptions, setShowUserOptions] = useState(false);
+
+  const toggleNotifications = () => {
+    setShowNotifications(!showNotifications);
+  };
+
+  const toggleUserOptions = () => {
+    setShowUserOptions(!showUserOptions);
+  };
 
   useEffect(() => {
     const cargarDatos = async () => {
       const categorias = await obtenerCategorias();
-      const categoriaEncontrada = categorias.find((cat) => cat.id === parseInt(categoriaId));
-      setCategoria(categoriaEncontrada);
+      const categoria = categorias.find((cat) => cat.id === parseInt(categoriaId));
+      if (categoria) {
+        const productoEncontrado = categoria.productos.find((prod) => prod.nombre === productoNombre);
+        setProducto(productoEncontrado);
+      }
     };
-
     cargarDatos();
-  }, [categoriaId]);
+  }, [categoriaId, productoNombre]);
 
-  if (!categoria) {
-    return <h2>Categoría no encontrada</h2>;
+  if (!producto) {
+    return <h2>Producto no encontrado</h2>;
   }
 
   return (
@@ -114,22 +116,21 @@ function VerTipoProducto() {
             </ul>
           </div>
         )}
+
         <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
-        <h1>{categoria.emoticono} {categoria.nombre}</h1>
-        <div className="empleados-grid">
-          {categoria.productos.map((producto, index) => (
-            <div key={index} className="empleado-card" onClick={() => navigate(`/categoria/${categoria.id}/producto/${producto.nombre}`)} style={{ cursor: "pointer" }}>
-            <h3>{producto.nombre}</h3>
-            <p>Cantidad: {producto.cantidad}</p>
-            {producto.cantidad <= producto.alertaStock && (
-              <p style={{ color: "red" }}>⚠ Stock bajo</p>
-            )}
-          </div>          
-          ))}
+
+        <div className="producto-card">
+          <h1 className="producto-nombre">{producto.nombre}</h1>
+          <p className="producto-atributo"><strong>Cantidad:</strong> {producto.cantidad}</p>
+          <p className="producto-atributo"><strong>Stock mínimo:</strong> {producto.alertaStock}</p>
+          <p className="producto-atributo"><strong>Descripción:</strong> {producto.descripcion}</p>
+          {producto.cantidad <= producto.alertaStock && (
+            <p className="producto-alerta">⚠ Stock bajo</p>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-export default VerTipoProducto;
+export default VerProducto;

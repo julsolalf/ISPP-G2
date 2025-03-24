@@ -13,6 +13,7 @@ import PantallaInventario from "./screens/inventario/index.js";
 import PantallaProveedores from "./screens/proveedores/index.js";
 import PantallaEmpleados from "./screens/empleados/index.js";
 import VerTipoProducto from "./screens/verTipoProducto/index.js";
+import VerProducto from "./screens/verTipoProducto/verProducto/index.js";
 
 function AppScreen() {
   const navigate = useNavigate();
@@ -68,6 +69,7 @@ function App() {
         <Route path="/planes" element={<PantallaPlanes />} />
         <Route path="/inventario" element={<PantallaInventario />} />
         <Route path="/verTipoProducto/:categoriaId" element={<VerTipoProducto />} />
+        <Route path="/categoria/:categoriaId/producto/:productoNombre" element={<VerProducto />} />
         <Route path="/proveedores" element={<PantallaProveedores />} />
         <Route path="/empleados" element={<PantallaEmpleados />} />
       </Routes>
