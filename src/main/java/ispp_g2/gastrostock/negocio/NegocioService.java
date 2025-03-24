@@ -61,6 +61,11 @@ public class NegocioService {
         return negocioRepository.findByCodigoPostal(codigoPostal);
     }
 
+    @Transactional(readOnly = true)
+    public List<Negocio> getByDueño(String dueño) {
+        return negocioRepository.findByDueño(dueño);
+    }
+
     @Transactional
     public Negocio save(Negocio newNegocio){
         return negocioRepository.save(newNegocio);

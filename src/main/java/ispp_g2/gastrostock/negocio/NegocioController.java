@@ -85,6 +85,14 @@ public class NegocioController {
 		return new ResponseEntity<>(negocioToGet, HttpStatus.OK);
 	}
 
+	@GetMapping("/dueño/{dueño}")
+	public ResponseEntity<List<Negocio>> findNegocioByDueño(@PathVariable("dueño") String dueño) {
+		List<Negocio> negocioToGet = negocioService.getByDueño(dueño);
+		if (negocioToGet == null)
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(negocioToGet, HttpStatus.OK);
+	}
+
 	@PostMapping
 	public ResponseEntity<Negocio> save(@RequestBody @Valid Negocio newNegocio) {
 		if (newNegocio == null)
