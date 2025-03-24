@@ -1,10 +1,8 @@
 package ispp_g2.gastrostock.pedido;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import ispp_g2.gastrostock.empleado.Empleado;
-import ispp_g2.gastrostock.lineaDePedido.LineaDePedido;
 import ispp_g2.gastrostock.mesa.Mesa;
 import ispp_g2.gastrostock.model.BaseEntity;
 import ispp_g2.gastrostock.negocio.Negocio;
@@ -14,6 +12,8 @@ import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -29,17 +29,19 @@ public class Pedido extends BaseEntity{
     private Double precioTotal;
 
     @ManyToOne(optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "mesa_id")
     private Mesa mesa;
 
     @ManyToOne(optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "empleado_id")
     private Empleado empleado;
 
     @ManyToOne(optional = false)
+
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "negocio_id")
     private Negocio negocio;
 
-    @OneToMany(mappedBy = "pedido",cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LineaDePedido> lineasDePedido;
 }
