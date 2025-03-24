@@ -113,7 +113,7 @@ public class EmpleadoController {
         if(empleado == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         empleadoService.deleteEmpleado(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     
 }
