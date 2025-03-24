@@ -37,8 +37,8 @@ public class ProductoInventarioService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProductoInventario> getProductoInventarioByCategoria(CategoriasInventario categoriaInventario) {
-        return productoInventarioRepository.findByCategoriaInventario(categoriaInventario);
+    public List<ProductoInventario> getProductoInventarioByCategoriaName(String categoriaInventario) {
+        return productoInventarioRepository.findByCategoriaName(categoriaInventario);
     }
 
     @Transactional(readOnly = true)

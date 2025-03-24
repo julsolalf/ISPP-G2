@@ -3,6 +3,7 @@ package ispp_g2.gastrostock.productoInventario;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import ispp_g2.gastrostock.categorias.Categoria;
 import ispp_g2.gastrostock.lote.Lote;
 import ispp_g2.gastrostock.model.NamedEntity;
 import jakarta.persistence.*;
@@ -15,10 +16,6 @@ import lombok.Setter;
 @Setter
 public class ProductoInventario extends NamedEntity {
 
-    @Enumerated(EnumType.STRING)
-    @NotNull
-    private CategoriasInventario categoriaInventario;
-
     @NotNull
     private Double precioCompra;
 
@@ -28,9 +25,15 @@ public class ProductoInventario extends NamedEntity {
     @NotNull
     private Integer cantidadAviso;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "categoria_id")
+    private Categoria categoria;
+
     @Transient
     public Integer calcularCantidad(List<Lote> lotes) {
         return lotes.stream().collect(Collectors.summingInt(Lote::getCantidad));
     }
+
+
     
 }
