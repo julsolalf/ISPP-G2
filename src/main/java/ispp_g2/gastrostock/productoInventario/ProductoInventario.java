@@ -7,14 +7,14 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import ispp_g2.gastrostock.categorias.Categoria;
-import ispp_g2.gastrostock.ingrediente.Ingrediente;
-import ispp_g2.gastrostock.lineaDePedido.LineaDePedido;
 import ispp_g2.gastrostock.lote.Lote;
 import ispp_g2.gastrostock.model.NamedEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Entity
@@ -32,14 +32,9 @@ public class ProductoInventario extends NamedEntity {
     private Integer cantidadAviso;
 
     @ManyToOne(optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
-
-    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Lote> lotes;
-
-    @OneToMany(mappedBy = "productoInventario", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Ingrediente> ingredientes;
 
     @Transient
     public Integer calcularCantidad(List<Lote> lotes) {
