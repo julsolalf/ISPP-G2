@@ -42,7 +42,6 @@ function HomeScreen() {
           <User size={30} className="icon" onClick={toggleUserOptions} />
         </div>
 
-
         {showNotifications && (
           <div className="notification-bubble">
             <div className="notification-header">
@@ -81,7 +80,7 @@ function HomeScreen() {
         <h1 className="title">GastroStock</h1>
         <h2>Inicio</h2>
 
-        <div className="button-container">
+        <div className="button-container1">
             <button className="menu-btn" onClick={() => navigate("/empleados")}><span role="img" aria-label="empleados">👨‍💼</span> Empleados</button>
             <button className="menu-btn" onClick={() => navigate("/dashboard")}><span role="img" aria-label="dashboard">📊</span> Dashboard</button>
             <button className="menu-btn" onClick={() => navigate("/inventario")}><span role="img" aria-label="inventario">📦</span> Inventario</button>

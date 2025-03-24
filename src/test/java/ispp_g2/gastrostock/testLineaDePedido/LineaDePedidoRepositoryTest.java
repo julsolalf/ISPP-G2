@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import ispp_g2.gastrostock.categorias.Categoria;
+import ispp_g2.gastrostock.categorias.CategoriaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +24,6 @@ import ispp_g2.gastrostock.productoVenta.ProductoVenta;
 import ispp_g2.gastrostock.productoVenta.ProductoVentaRepository;
 import ispp_g2.gastrostock.pedido.Pedido;
 import ispp_g2.gastrostock.pedido.PedidoRepository;
-import ispp_g2.gastrostock.productoVenta.CategoriasVenta;
 import ispp_g2.gastrostock.dueño.Dueño;
 import ispp_g2.gastrostock.dueño.DueñoRepository;
 import ispp_g2.gastrostock.mesa.Mesa;
@@ -47,6 +48,8 @@ public class LineaDePedidoRepositoryTest {
     private DueñoRepository dueñoRepository;
     @Autowired
     private MesaRepository mesaRepository;
+    @Autowired
+    private CategoriaRepository categoriaRepository;
 
     
     private LineaDePedido linea1, linea2;
@@ -104,12 +107,15 @@ public class LineaDePedidoRepositoryTest {
         empleadoRepository.save(empleado);
 
 
-        
+        Categoria categoria = new Categoria();
+        categoria.setName("Platos");
+        categoria.setNegocio(negocio);
+        categoriaRepository.save(categoria);
     
         producto = new ProductoVenta();
         producto.setName("Producto A");
         producto.setPrecioVenta(5.0);
-        producto.setCategoriaVenta(CategoriasVenta.PLATOS);
+        producto.setCategoria(categoria);
         ProductoVentaRepository.save(producto);
 
         

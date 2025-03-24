@@ -55,7 +55,7 @@ class DueñoControllerTest {
 
     @Test
     void testGetDueñoById() throws Exception {
-        when(dueñoService.getDueñoById(1)).thenReturn(Optional.of(DueñoP));
+        when(dueñoService.getDueñoById(String.valueOf(1))).thenReturn(DueñoP);
 
         mockMvc.perform(get("/api/v1/1/dueño/1"))
                 .andExpect(status().isOk())
@@ -64,7 +64,7 @@ class DueñoControllerTest {
 
     @Test
     void testGetDueñoByEmail() throws Exception {
-        when(dueñoService.getDueñoByEmail("test@example.com")).thenReturn(Optional.of(DueñoP));
+        when(dueñoService.getDueñoByEmail("test@example.com")).thenReturn(DueñoP);
 
         mockMvc.perform(get("/api/v1/1/dueño/email/test@example.com"))
                 .andExpect(status().isOk());
@@ -82,7 +82,7 @@ class DueñoControllerTest {
 
     @Test
     void testDeleteDueño() throws Exception {
-        doNothing().when(dueñoService).deleteDueño(1);
+        doNothing().when(dueñoService).deleteDueño(String.valueOf(1));
 
         mockMvc.perform(delete("/api/v1/1/dueño/1"))
                 .andExpect(status().isNoContent());

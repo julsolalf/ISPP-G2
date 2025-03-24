@@ -12,13 +12,13 @@ public interface ProductoVentaRepository extends CrudRepository<ProductoVenta,St
     @Query("SELECT p FROM ProductoVenta p WHERE p.name = ?1")
     List<ProductoVenta> findProductoVentaByNombre(String nombre);
 
-    @Query("SELECT p FROM ProductoVenta p WHERE p.categoriaVenta = ?1")
-    List<ProductoVenta> findProductoVentaByCategoriaVenta(CategoriasVenta categoriaVenta);
+    @Query("SELECT p FROM ProductoVenta p WHERE p.categoria.name = ?1")
+    List<ProductoVenta> findProductoVentaByCategoriaVenta(String categoriaVenta);
 
     @Query("SELECT p FROM ProductoVenta p WHERE p.precioVenta = ?1")
     List<ProductoVenta> findProductoVentaByPrecioVenta(Double precioVenta);
 
-    @Query("SELECT p FROM ProductoVenta p WHERE p.categoriaVenta = ?1 AND p.precioVenta = ?2")
-    List<ProductoVenta> findProductoVentaByCategoriaVentaAndPrecioVenta(CategoriasVenta categoriaVenta, Double precioVenta);
+    @Query("SELECT p FROM ProductoVenta p WHERE p.categoria.name = ?1 AND p.precioVenta = ?2")
+    List<ProductoVenta> findProductoVentaByCategoriaVentaAndPrecioVenta(String categoriaVenta, Double precioVenta);
 
 }

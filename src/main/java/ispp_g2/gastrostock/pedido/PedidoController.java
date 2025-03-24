@@ -13,7 +13,7 @@ import java.util.List;
 @RequestMapping("/api/pedidos")
 public class PedidoController {
 
-    private PedidoService pedidoService;
+    private final PedidoService pedidoService;
 
     @Autowired
     public PedidoController(PedidoService pedidoService) {
@@ -95,7 +95,8 @@ public class PedidoController {
         if(pedido == null){
             throw new IllegalArgumentException("Pedido no puede ser nulo");
         }
-        if(pedido.getId() == null){
+        Pedido existingPedido = pedidoService.getById(id);
+        if(existingPedido.getId() == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         pedido.setId(Integer.valueOf(id));

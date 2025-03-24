@@ -2,74 +2,87 @@ package ispp_g2.gastrostock.mesa;
 
 import java.util.List;
 
-import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import ispp_g2.gastrostock.exceptions.BadRequestException;
-import ispp_g2.gastrostock.exceptions.ResourceNotFoundException;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/mesas")
 public class MesaController {
 
-    private MesaService ms;
+	private final MesaService mesaService;
 
-    @GetMapping
+	@Autowired
+	public MesaController(MesaService mesaService) {
+		this.mesaService = mesaService;
+	}
+
+	@GetMapping
 	public ResponseEntity<List<Mesa>> findAll() {
-		return new ResponseEntity<>((List<Mesa>) ms.getMesas(), HttpStatus.OK);
+		if (mesaService.getMesas().isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		return new ResponseEntity<>(mesaService.getMesas(), HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Mesa> findMesa(@PathVariable("id") int id) {
-		Mesa MesaToGet = ms.getById(id);
-		if (MesaToGet == null)
-			throw new ResourceNotFoundException("Mesa with id " + id + " not found!");
-		return new ResponseEntity<Mesa>(MesaToGet, HttpStatus.OK);
-	}
-
-
-
-    @GetMapping("/numeroAsientos/{numeroAsientos}")
-	public ResponseEntity<List<Mesa>> findByNumeroAsientos(@PathVariable("numeroAsientos") int numeroAsientos) {
-		List<Mesa> MesasToGet = ms.getMesasByNumeroAsientos(numeroAsientos);
-		if (MesasToGet == null)
-			throw new ResourceNotFoundException("Mesa with numeroAsientos " + numeroAsientos + " not found!");
-		return new ResponseEntity<List<Mesa>>(MesasToGet, HttpStatus.OK);
-	}
-
-    @GetMapping("/name/{name}")
-	public ResponseEntity<Mesa> findByName(@PathVariable("name") String name) {
-		Mesa MesaToGet = ms.getByName(name);
-		if (MesaToGet == null)
-			throw new ResourceNotFoundException("Mesa with name " + name + " not found!");
-		return new ResponseEntity<Mesa>(MesaToGet, HttpStatus.OK);
-	}
-
-    @PutMapping("/{id}")
-	public ResponseEntity<Void> modifyMesa(@RequestBody @Valid Mesa newMesa, BindingResult br,
-			@PathVariable("id") int id) {
-		Mesa MesaToUpdate = this.findMesa(id).getBody();
-		if (br.hasErrors())
-			throw new BadRequestException(br.getAllErrors());
-		else if (newMesa.getId() == null || !newMesa.getId().equals(id))
-			throw new BadRequestException("Mesa id is not consistent with resource URL:" + id);
-		else {
-			BeanUtils.copyProperties(newMesa, MesaToUpdate, "id");
-			ms.saveMesa(MesaToUpdate);
+	public ResponseEntity<Mesa> findById(@PathVariable("id") String id) {
+		Mesa mesa = mesaService.getById(id);
+		if (mesa == null) {
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
+		return new ResponseEntity<>(mesa, HttpStatus.OK);
+	}
+
+	@GetMapping("/numeroAsientos/{numeroAsientos}")
+	public ResponseEntity<List<Mesa>> findByNumeroAsientos(@PathVariable("numeroAsientos") Integer numeroAsientos) {
+		List<Mesa> mesas = mesaService.getMesasByNumeroAsientos(numeroAsientos);
+		if (mesas == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(mesas, HttpStatus.OK);
+	}
+
+	@GetMapping("/negocio/{negocioId}")
+	public ResponseEntity<List<Mesa>> findByNegocio(@PathVariable("negocioId") String negocioId) {
+		List<Mesa> mesas = mesaService.getMesasByNegocio(negocioId);
+		if (mesas == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(mesas, HttpStatus.OK);
+	}
+
+	@PostMapping
+	public ResponseEntity<Mesa> create(@RequestBody @Valid Mesa mesa) {
+		if(mesa == null) {
+			throw new IllegalArgumentException("Mesa cannot be null");
+		}
+		return new ResponseEntity<>(mesaService.save(mesa), HttpStatus.CREATED);
+	}
+
+	@PutMapping("/{id}")
+	public ResponseEntity<Mesa> update(@PathVariable("id") String id, @RequestBody @Valid Mesa mesa) {
+		if(mesa == null) {
+			throw new IllegalArgumentException("Mesa cannot be null");
+		}
+		Mesa existingMesa = mesaService.getById(id);
+		if (existingMesa == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		mesa.setId(Integer.valueOf(id));
+		return new ResponseEntity<>(mesaService.save(mesa), HttpStatus.OK);
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> delete(@PathVariable("id") String id) {
+		Mesa mesa = mesaService.getById(id);
+		if (mesa == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		mesaService.deleteById(id);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
-
-
-    
 }

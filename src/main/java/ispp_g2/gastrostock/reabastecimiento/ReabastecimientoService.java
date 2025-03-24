@@ -1,14 +1,13 @@
 package ispp_g2.gastrostock.reabastecimiento;
 
 import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import ispp_g2.gastrostock.proveedores.Proveedor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDate;
+import java.util.stream.StreamSupport;
 
 @Service
 public class ReabastecimientoService {
@@ -21,17 +20,33 @@ public class ReabastecimientoService {
     }
 
     @Transactional(readOnly = true)
-    public Iterable<Reabastecimiento> getAll() {
-        return reabastecimientoRepository.findAll();
+    public List<Reabastecimiento> getAll() {
+        Iterable<Reabastecimiento> iterable = reabastecimientoRepository.findAll();
+        return StreamSupport.stream(iterable.spliterator(), false).toList();
     }
 
     @Transactional(readOnly = true)
-    public Optional<Reabastecimiento> getById(Integer id) {
-        return reabastecimientoRepository.findById(id);
+    public List<Reabastecimiento> getByFecha(LocalDate fecha) {
+        return reabastecimientoRepository.findByFecha(fecha);
     }
 
     @Transactional(readOnly = true)
-    public Optional<Reabastecimiento> getByReferencia(String referencia) {
+    public List<Reabastecimiento> getByPrecioTotal(Double precioTotal) {
+        return reabastecimientoRepository.findByPrecioTotal(precioTotal);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Reabastecimiento> getByNegocio(String negocio) {
+        return reabastecimientoRepository.findByNegocio(negocio);
+    }
+
+    @Transactional(readOnly = true)
+    public Reabastecimiento getById(String  id) {
+        return reabastecimientoRepository.findById(id).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Reabastecimiento> getByReferencia(String referencia) {
         return reabastecimientoRepository.findByReferencia(referencia);
     }
 
@@ -41,7 +56,7 @@ public class ReabastecimientoService {
     }
 
     @Transactional(readOnly = true)
-    public List<Reabastecimiento> getByProveedor(Proveedor proveedor) {
+    public List<Reabastecimiento> getByProveedor(String proveedor) {
         return reabastecimientoRepository.findByProveedor(proveedor);
     }
 
@@ -51,7 +66,7 @@ public class ReabastecimientoService {
     }
 
     @Transactional
-    public void deleteById(Integer id) {
+    public void deleteById(String id) {
         reabastecimientoRepository.deleteById(id);
     }
 

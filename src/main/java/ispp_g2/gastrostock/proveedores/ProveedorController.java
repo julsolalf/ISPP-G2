@@ -1,11 +1,12 @@
 package ispp_g2.gastrostock.proveedores;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.DayOfWeek;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/proveedores")
@@ -19,32 +20,85 @@ public class ProveedorController {
     }
 
     @GetMapping
-    public List<Proveedor> getAll() {
-        return proveedorService.getAll();
+    public ResponseEntity<List<Proveedor>> findAll() {
+        if(proveedorService.findAll().isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(proveedorService.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public Optional<Proveedor> getById(@PathVariable Integer id) {
-        return proveedorService.getById(id);
+    public ResponseEntity<Proveedor> findById(@PathVariable("id") String id) {
+        Proveedor proveedor = proveedorService.findById(id);
+        if(proveedor == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(proveedor, HttpStatus.OK);
     }
 
-    @GetMapping("/nombre")
-    public List<Proveedor> getByFirstName(@RequestParam String firstName) {
-        return proveedorService.getByFirstName(firstName);
+    @GetMapping("/email/{email}")
+    public ResponseEntity<Proveedor> findByEmail(@PathVariable("email") String email) {
+        Proveedor proveedor = proveedorService.findByEmail(email);
+        if(proveedor == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(proveedor, HttpStatus.OK);
     }
 
-    @GetMapping("/dia-reparto/{dia}")
-    public List<Proveedor> getByDiaReparto(@PathVariable DayOfWeek dia) {
-        return proveedorService.getByDiaReparto(dia);
+    @GetMapping("/telefono/{telefono}")
+    public ResponseEntity<Proveedor> findByTelefono(@PathVariable("telefono") String telefono) {
+        Proveedor proveedor = proveedorService.findByTelefono(telefono);
+        if(proveedor == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(proveedor, HttpStatus.OK);
+    }
+
+    @GetMapping("/direccion/{direccion}")
+    public ResponseEntity<Proveedor> findByDireccion(@PathVariable("direccion") String direccion) {
+        Proveedor proveedor = proveedorService.findByDireccion(direccion);
+        if(proveedor == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(proveedor, HttpStatus.OK);
+    }
+
+    @GetMapping("/nombre/{nombre}")
+    public ResponseEntity<Proveedor> findByNombre(@PathVariable("nombre") String nombre) {
+        Proveedor proveedor = proveedorService.findByNombre(nombre);
+        if(proveedor == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(proveedor, HttpStatus.OK);
     }
 
     @PostMapping
-    public Proveedor create(@RequestBody Proveedor proveedor) {
-        return proveedorService.save(proveedor);
+    public ResponseEntity<Proveedor> save(@RequestBody @Valid Proveedor proveedor) {
+        if(proveedor == null){
+            throw new IllegalArgumentException("Proveedor no puede ser nulo");
+        }
+        return new ResponseEntity<>(proveedorService.save(proveedor), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Proveedor> update(@PathVariable("id") String id, @RequestBody @Valid Proveedor proveedor) {
+        if(proveedor == null){
+            throw new IllegalArgumentException("Proveedor no puede ser nulo");
+        }
+        if(proveedorService.findById(id) == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        proveedor.setId(Integer.valueOf(id));
+        return new ResponseEntity<>(proveedorService.save(proveedor), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteById(@PathVariable("id") String id) {
+        Proveedor proveedor = proveedorService.findById(id);
+        if(proveedor == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         proveedorService.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

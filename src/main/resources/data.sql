@@ -65,23 +65,33 @@ VALUES (4, 'Mesa 4', 2, (SELECT id FROM negocio WHERE name = 'Restaurante La Tra
 INSERT INTO mesa (id, name, numero_asientos, negocio_id) 
 VALUES (5, 'Mesa 5', 4, (SELECT id FROM negocio WHERE name = 'Restaurante Burguer'));
 
+--Insertando Categoria
+INSERT INTO categoria (id, name, negocio_id)
+VALUES (1, 'COMIDA',(SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
+INSERT INTO categoria (id, name, negocio_id)
+VALUES (2, 'BEBIDAS',(SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
+INSERT INTO categoria (id, name, negocio_id)
+VALUES (3, 'COMIDA',(SELECT id FROM negocio WHERE name = 'Restaurante Burguer'));
+INSERT INTO categoria (id, name, negocio_id)
+VALUES (4, 'BEBIDAS',(SELECT id FROM negocio WHERE name = 'Restaurante Burguer'));
+
 -- Insertando productos de venta
-INSERT INTO producto_venta (id, name, categoria_venta, precio_venta) 
-VALUES (1, 'Pizza Margherita', 'PLATOS', 12.50);
-INSERT INTO producto_venta (id, name, categoria_venta, precio_venta) 
-VALUES (2, 'Coca Cola', 'BEBIDAS', 2.50);
-INSERT INTO producto_venta (id, name, categoria_venta, precio_venta) 
-VALUES (3, 'Nestea', 'BEBIDAS', 2.50);
-INSERT INTO producto_venta (id, name, categoria_venta, precio_venta) 
-VALUES (4, 'Fanta', 'BEBIDAS', 2.50);
-INSERT INTO producto_venta (id, name, categoria_venta, precio_venta) 
-VALUES (5, 'Cerveza', 'BEBIDAS', 2.50);
-INSERT INTO producto_venta (id, name, categoria_venta, precio_venta) 
-VALUES (6, 'Hamburguesa', 'PLATOS', 12.50);
-INSERT INTO producto_venta (id, name, categoria_venta, precio_venta) 
-VALUES (7, 'Cocido', 'PLATOS', 7.50);
-INSERT INTO producto_venta (id, name, categoria_venta, precio_venta) 
-VALUES (8, 'Pez espada', 'PLATOS', 10.50);
+INSERT INTO producto_venta (id, name, categoria_id, precio_venta)
+VALUES (1, 'Pizza Margherita', 1, 12.50);
+INSERT INTO producto_venta (id, name, categoria_id, precio_venta)
+VALUES (2, 'Coca Cola', 2, 2.50);
+INSERT INTO producto_venta (id, name, categoria_id, precio_venta)
+VALUES (3, 'Nestea', 2, 2.50);
+INSERT INTO producto_venta (id, name, categoria_id, precio_venta)
+VALUES (4, 'Fanta', 2, 2.50);
+INSERT INTO producto_venta (id, name, categoria_id, precio_venta)
+VALUES (5, 'Cerveza', 4, 2.50);
+INSERT INTO producto_venta (id, name, categoria_id, precio_venta)
+VALUES (6, 'Hamburguesa', 3, 12.50);
+INSERT INTO producto_venta (id, name, categoria_id, precio_venta)
+VALUES (7, 'Cocido', 3, 7.50);
+INSERT INTO producto_venta (id, name, categoria_id, precio_venta)
+VALUES (8, 'Pez espada', 3, 10.50);
 
 -- Insertando pedidos
 INSERT INTO pedido (id, fecha, precio_total, mesa_id, empleado_id, negocio_id) 
@@ -94,12 +104,12 @@ INSERT INTO linea_de_pedido (id, cantidad, precio_linea, pedido_id, producto_id)
 VALUES (2, 1, 2.50, (SELECT id FROM pedido WHERE precio_total = 15.00), (SELECT id FROM producto_venta WHERE name = 'Coca Cola'));
 
 -- Insertando productos en inventario
-INSERT INTO producto_inventario (id, name, categoria_inventario, precio_compra, cantidad_deseada, cantidad_aviso) 
-VALUES (1, 'Harina', 'COMIDA', 0.50, 100, 10);
-INSERT INTO producto_inventario (id, name, categoria_inventario, precio_compra, cantidad_deseada, cantidad_aviso) 
-VALUES (2, 'Tomate', 'COMIDA', 0.30, 100, 10);
-INSERT INTO producto_inventario (id, name, categoria_inventario, precio_compra, cantidad_deseada, cantidad_aviso) 
-VALUES (3, 'Carne Buey', 'COMIDA', 5.50, 50, 5);
+INSERT INTO producto_inventario (id, name, categoria_id, precio_compra, cantidad_deseada, cantidad_aviso)
+VALUES (1, 'Harina', 1, 0.50, 100, 10);
+INSERT INTO producto_inventario (id, name, categoria_id, precio_compra, cantidad_deseada, cantidad_aviso)
+VALUES (2, 'Tomate', 1, 0.30, 100, 10);
+INSERT INTO producto_inventario (id, name, categoria_id, precio_compra, cantidad_deseada, cantidad_aviso)
+VALUES (3, 'Carne Buey', 2, 5.50, 50, 5);
 
 -- Insertando ingredientes
 INSERT INTO ingrediente (id, cantidad, producto_inventario_id, producto_venta_id) 
