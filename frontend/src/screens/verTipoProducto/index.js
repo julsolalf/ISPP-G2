@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
-// Simulación de una API que devuelve las categorías (puedes reemplazarla con una llamada a tu backend)
 const obtenerCategorias = async () => {
   return [
     {
