@@ -13,6 +13,7 @@ import PantallaInventario from "./screens/inventario/index.js";
 import PantallaProveedores from "./screens/proveedores/index.js";
 import PantallaEmpleados from "./screens/empleados/index.js";
 import PantallaAlertaStock from "./screens/alertaStock/index.js";
+import PantallaPerdidas from "./screens/perdidas/index.js";
 
 function AppScreen() {
   const navigate = useNavigate();
@@ -70,6 +71,7 @@ function App() {
         <Route path="/proveedores" element={<PantallaProveedores />} />
         <Route path="/empleados" element={<PantallaEmpleados />} />
         <Route path="/alertaStock" element={<PantallaAlertaStock />} />
+        <Route path="/perdidas" element={<PantallaPerdidas />} />
       </Routes>
     </Router>
   );
