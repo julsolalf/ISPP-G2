@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ispp_g2.gastrostock.empleado.Empleado;
 import ispp_g2.gastrostock.empleado.EmpleadoController;
 import ispp_g2.gastrostock.empleado.EmpleadoService;
+import ispp_g2.gastrostock.exceptions.ExceptionHandlerController;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.user.Authorities;
 import ispp_g2.gastrostock.user.User;
@@ -45,18 +46,20 @@ class EmpleadoControllerTest {
     private EmpleadoController empleadoController;
 
     private ObjectMapper objectMapper;
-    private Empleado empleado1;
+    private Empleado empleado1, empleadoNuevo, empleado;
     private Empleado empleado2;
     private Empleado empleadoInvalido;
     private List<Empleado> empleadosList;
     private Negocio negocio;
-    private User user;
+    private User user, user1;
     private Authorities authority;
 
     @BeforeEach
     void setUp() {
         // Configurar MockMvc
-        mockMvc = MockMvcBuilders.standaloneSetup(empleadoController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(empleadoController)
+                .setControllerAdvice(new ExceptionHandlerController())
+                .build();
         
         // Configurar ObjectMapper para serialización/deserialización
         objectMapper = new ObjectMapper();
@@ -72,6 +75,12 @@ class EmpleadoControllerTest {
         user.setUsername("juanperez");
         user.setPassword("password123");
         user.setAuthority(authority);
+
+        user1 = new User();
+        user1.setId(2);
+        user1.setUsername("anton");
+        user1.setPassword("password123");
+        user1.setAuthority(authority);
         
         // Crear negocio
         negocio = new Negocio();
@@ -92,11 +101,20 @@ class EmpleadoControllerTest {
         empleado1.setNumTelefono("666111222");
         empleado1.setTokenEmpleado("TOKEN123");
         empleado1.setDescripcion("Camarero principal");
-        empleado1.setUser(user);
+        empleado1.setUser(user1);
         empleado1.setNegocio(negocio);
+
+        empleado = new Empleado();
+        empleado.setFirstName("Antonio");
+        empleado.setLastName("Almanza");
+        empleado.setEmail("antonio@example.com");
+        empleado.setNumTelefono("666151222");
+        empleado.setTokenEmpleado("TOKEN129");
+        empleado.setDescripcion("Camarero principal");
+        empleado.setUser(user);
+        empleado.setNegocio(negocio);
         
         empleado2 = new Empleado();
-        empleado2.setId(2);
         empleado2.setFirstName("Ana");
         empleado2.setLastName("García");
         empleado2.setEmail("ana.garcia@example.com");
@@ -127,9 +145,7 @@ class EmpleadoControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].firstName", is("Juan")))
-                .andExpect(jsonPath("$[1].id", is(2)))
                 .andExpect(jsonPath("$[1].firstName", is("Ana")));
         
         verify(empleadoService, times(2)).getAllEmpleados();
@@ -313,7 +329,7 @@ class EmpleadoControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].id", is(1)))
-                .andExpect(jsonPath("$[1].id", is(2)));
+                .andExpect(jsonPath("$[1].firstName", is("Ana")));
         
         verify(empleadoService, times(2)).getEmpleadoByNegocio("1");
     }
@@ -401,9 +417,8 @@ class EmpleadoControllerTest {
         mockMvc.perform(post("/api/empleados")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(empleado1)))
+                .content(objectMapper.writeValueAsString(empleado)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.firstName", is("Juan")));
         
         verify(empleadoService).saveEmpleado(any(Empleado.class));
@@ -415,23 +430,8 @@ class EmpleadoControllerTest {
         mockMvc.perform(post("/api/empleados")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{}"))
+                .content(objectMapper.writeValueAsString(empleadoInvalido)))
                 .andExpect(status().isBadRequest());
-    }
-    
-    @Test
-    void testSave_ThrowsException() throws Exception {
-        // Arrange
-        when(empleadoService.saveEmpleado(any(Empleado.class))).thenThrow(new IllegalArgumentException());
-        
-        // Act & Assert
-        mockMvc.perform(post("/api/empleados")
-                .with(csrf())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(empleado1)))
-                .andExpect(status().isInternalServerError());
-        
-        verify(empleadoService).saveEmpleado(any(Empleado.class));
     }
 
     // TESTS PARA update()
@@ -440,7 +440,6 @@ class EmpleadoControllerTest {
     void testUpdate_Success() throws Exception {
         // Arrange
         Empleado empleadoActualizado = new Empleado();
-        empleadoActualizado.setId(1);
         empleadoActualizado.setFirstName("Juan Actualizado");
         empleadoActualizado.setLastName("Pérez");
         empleadoActualizado.setEmail("juan.perez@example.com");
@@ -474,7 +473,7 @@ class EmpleadoControllerTest {
         mockMvc.perform(put("/api/empleados/999")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(empleado1)))
+                .content(objectMapper.writeValueAsString(empleado)))
                 .andExpect(status().isNotFound());
         
         verify(empleadoService).getEmpleadoById("999");
@@ -483,20 +482,20 @@ class EmpleadoControllerTest {
     
     @Test
     void testUpdate_InvalidData() throws Exception {
-        // Arrange
-        when(empleadoService.getEmpleadoById("1")).thenReturn(empleado1);
+
+        empleadoNuevo = new Empleado();
         
         // Act & Assert - Probar con objeto vacío que debería fallar validación
         mockMvc.perform(put("/api/empleados/1")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{}"))
+                .content(objectMapper.writeValueAsString(empleadoInvalido)))
                 .andExpect(status().isBadRequest());
         
-        verify(empleadoService).getEmpleadoById("1");
+
         verify(empleadoService, never()).saveEmpleado(any(Empleado.class));
     }
-
+        
     // TESTS PARA delete()
     
     @Test

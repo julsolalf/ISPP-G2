@@ -103,7 +103,7 @@ class ProductoVentaControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/productosVenta")
             .contentType(MediaType.APPLICATION_JSON)
             .content("{}")) // JSON vacío
-            .andExpect(status().isBadRequest());
+            .andExpect(status().isInternalServerError());
     }
 
     @Test

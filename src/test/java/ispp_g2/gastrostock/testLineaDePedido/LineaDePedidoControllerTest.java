@@ -22,6 +22,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.util.NestedServletException;
 
@@ -58,7 +59,7 @@ public class LineaDePedidoControllerTest {
 
     private ObjectMapper objectMapper;
     
-    private LineaDePedido lineaNormal;
+    private LineaDePedido lineaNormal, linea;
     private LineaDePedido lineaCantidadGrande;
     private LineaDePedido lineaPrecioAlto;
     private LineaDePedido lineaInvalida;
@@ -88,7 +89,6 @@ public class LineaDePedidoControllerTest {
         
         // Crear negocio
         negocio = new Negocio();
-        negocio.setId(1);
         negocio.setName("Restaurante Test");
         negocio.setDireccion("Calle Test 123");
         negocio.setCiudad("Sevilla");
@@ -98,14 +98,12 @@ public class LineaDePedidoControllerTest {
         
         // Crear mesa
         mesa = new Mesa();
-        mesa.setId(1);
         mesa.setName("Mesa 1");
         mesa.setNumeroAsientos(4);
         mesa.setNegocio(negocio);
         
         // Crear empleado
         empleado = new Empleado();
-        empleado.setId(1);
         empleado.setFirstName("Antonio");
         empleado.setLastName("García");
         empleado.setEmail("antonio@test.com");
@@ -115,13 +113,11 @@ public class LineaDePedidoControllerTest {
         
         // Crear categoría
         categoria = new Categoria();
-        categoria.setId(1);
         categoria.setName("Bebidas");
         categoria.setNegocio(negocio);
         
         // Crear productos
         producto1 = new ProductoVenta();
-        producto1.setId(1);
         producto1.setName("Cerveza");
         producto1.setPrecioVenta(3.0);
         producto1.setCategoria(categoria);
@@ -134,7 +130,6 @@ public class LineaDePedidoControllerTest {
         
         // Crear pedidos
         pedido1 = new Pedido();
-        pedido1.setId(1);
         pedido1.setFecha(LocalDateTime.now().minusHours(1));
         pedido1.setPrecioTotal(50.75);
         pedido1.setMesa(mesa);
@@ -151,11 +146,17 @@ public class LineaDePedidoControllerTest {
         
         // Crear líneas de pedido
         lineaNormal = new LineaDePedido();
-        lineaNormal.setId(1);
-        lineaNormal.setCantidad(3);
-        lineaNormal.setPrecioLinea(9.0);
+        lineaNormal.setCantidad(5);
+        lineaNormal.setPrecioLinea(11.0);
         lineaNormal.setProducto(producto1);
         lineaNormal.setPedido(pedido1);
+
+        linea = new LineaDePedido();
+        linea.setId(1);
+        linea.setCantidad(3);
+        linea.setPrecioLinea(9.0);
+        linea.setProducto(producto1);
+        linea.setPedido(pedido1);
         
         lineaCantidadGrande = new LineaDePedido();
         lineaCantidadGrande.setId(2);
@@ -172,7 +173,6 @@ public class LineaDePedidoControllerTest {
         lineaPrecioAlto.setPedido(pedido2);
         
         lineaInvalida = new LineaDePedido();
-        lineaInvalida.setId(4);
         lineaInvalida.setCantidad(1);
         // Sin establecer más datos, será inválida
         
@@ -195,7 +195,6 @@ public class LineaDePedidoControllerTest {
         mockMvc.perform(get("/api/lineasDePedido"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[1].id", is(2)))
                 .andExpect(jsonPath("$[2].id", is(3)));
         
@@ -219,7 +218,7 @@ public class LineaDePedidoControllerTest {
     @Test
     void testFindById_Success() throws Exception {
         // Given
-        when(lineaDePedidoService.getById("1")).thenReturn(lineaNormal);
+        when(lineaDePedidoService.getById("1")).thenReturn(linea);
         
         // When & Then
         mockMvc.perform(get("/api/lineasDePedido/1"))
@@ -248,7 +247,7 @@ public class LineaDePedidoControllerTest {
     @Test
     void testFindByCantidad_Success() throws Exception {
         // Given
-        List<LineaDePedido> lineasCantidad3 = Collections.singletonList(lineaNormal);
+        List<LineaDePedido> lineasCantidad3 = Collections.singletonList(linea);
         when(lineaDePedidoService.getLineasDePedidoByCantidad(3)).thenReturn(lineasCantidad3);
         
         // When & Then
@@ -291,7 +290,7 @@ public class LineaDePedidoControllerTest {
     @Test
     void testFindByPrecioLinea_Success() throws Exception {
         // Given
-        List<LineaDePedido> lineasPrecio9 = Collections.singletonList(lineaNormal);
+        List<LineaDePedido> lineasPrecio9 = Collections.singletonList(linea);
         when(lineaDePedidoService.getLineasDePedidoByPrecioLinea(9.0)).thenReturn(lineasPrecio9);
         
         // When & Then
@@ -334,7 +333,7 @@ public class LineaDePedidoControllerTest {
     @Test
     void testFindByPedidoId_Success() throws Exception {
         // Given
-        List<LineaDePedido> lineasPedido1 = Arrays.asList(lineaNormal, lineaCantidadGrande);
+        List<LineaDePedido> lineasPedido1 = Arrays.asList(linea, lineaCantidadGrande);
         when(lineaDePedidoService.getLineasDePedidoByPedidoId(1)).thenReturn(lineasPedido1);
         
         // When & Then
@@ -377,7 +376,7 @@ public class LineaDePedidoControllerTest {
     @Test
     void testFindByProductoId_Success() throws Exception {
         // Given
-        List<LineaDePedido> lineasProducto1 = Arrays.asList(lineaNormal, lineaCantidadGrande);
+        List<LineaDePedido> lineasProducto1 = Arrays.asList(linea, lineaCantidadGrande);
         when(lineaDePedidoService.getLineasDePedidoByProductoId(1)).thenReturn(lineasProducto1);
         
         // When & Then
@@ -420,7 +419,7 @@ public class LineaDePedidoControllerTest {
     @Test
     void testFindByProductoIdAndCantidad_Success() throws Exception {
         // Given
-        List<LineaDePedido> lineasProducto1Cantidad3 = Collections.singletonList(lineaNormal);
+        List<LineaDePedido> lineasProducto1Cantidad3 = Collections.singletonList(linea);
         when(lineaDePedidoService.getLineasDePedidoByProductoIdAndCantidad(1, 3)).thenReturn(lineasProducto1Cantidad3);
         
         // When & Then
@@ -463,7 +462,7 @@ public class LineaDePedidoControllerTest {
     @Test
     void testFindByProductoIdAndPrecioLinea_Success() throws Exception {
         // Given
-        List<LineaDePedido> lineasProducto1Precio9 = Collections.singletonList(lineaNormal);
+        List<LineaDePedido> lineasProducto1Precio9 = Collections.singletonList(linea);
         when(lineaDePedidoService.getLineasDePedidoByProductoIdAndPrecioLinea(1, 9.0)).thenReturn(lineasProducto1Precio9);
         
         // When & Then
@@ -506,12 +505,13 @@ public class LineaDePedidoControllerTest {
     @Test
     void testSave_Success() throws Exception {
         // Given
-        when(lineaDePedidoService.save(any(LineaDePedido.class))).thenReturn(lineaNormal);
+        when(lineaDePedidoService.save(any(LineaDePedido.class))).thenReturn(linea);
         
         // When & Then
         mockMvc.perform(post("/api/lineasDePedido")
+                .with(csrf())   
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(lineaNormal)))
+                .content(objectMapper.writeValueAsString(linea)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.cantidad", is(3)))
@@ -536,13 +536,12 @@ public class LineaDePedidoControllerTest {
     void testUpdate_Success() throws Exception {
         // Given
         LineaDePedido updatedLinea = new LineaDePedido();
-        updatedLinea.setId(1);
         updatedLinea.setCantidad(5); // Actualizamos cantidad
         updatedLinea.setPrecioLinea(15.0); // Actualizamos precio
         updatedLinea.setProducto(producto1);
         updatedLinea.setPedido(pedido1);
         
-        when(lineaDePedidoService.getById("1")).thenReturn(lineaNormal);
+        when(lineaDePedidoService.getById("1")).thenReturn(linea);
         when(lineaDePedidoService.save(any(LineaDePedido.class))).thenReturn(updatedLinea);
         
         // When & Then
@@ -550,7 +549,6 @@ public class LineaDePedidoControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updatedLinea)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.cantidad", is(5)))
                 .andExpect(jsonPath("$.precioLinea", is(15.0)));
         
@@ -566,7 +564,7 @@ public class LineaDePedidoControllerTest {
         // When & Then
         mockMvc.perform(put("/api/lineasDePedido/999")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(lineaNormal)))
+                .content(objectMapper.writeValueAsString(linea)))
                 .andExpect(status().isNotFound());
         
         verify(lineaDePedidoService).getById("999");
@@ -576,25 +574,21 @@ public class LineaDePedidoControllerTest {
     @Test
     void testUpdate_NullBody() throws Exception {
         // When & Then
-        Assertions.assertThrows(NestedServletException.class, () -> {
-            mockMvc.perform(put("/api/lineasDePedido/1")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content("null"));
-        });
+        mockMvc.perform(put("/api/lineasDePedido/1")
+                .with(csrf())  
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("null"))
+                .andExpect(status().isBadRequest()); 
     }
-    
     @Test
     void testUpdate_InvalidBody() throws Exception {
-        // Given
-        when(lineaDePedidoService.getById("1")).thenReturn(lineaNormal);
-        
         // When & Then
         mockMvc.perform(put("/api/lineasDePedido/1")
+                .with(csrf())  // Añade el token CSRF
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{}"))
+                .content(objectMapper.writeValueAsString(lineaInvalida)))
                 .andExpect(status().isBadRequest());
         
-        verify(lineaDePedidoService).getById("1");
     }
     
     // TESTS PARA delete()

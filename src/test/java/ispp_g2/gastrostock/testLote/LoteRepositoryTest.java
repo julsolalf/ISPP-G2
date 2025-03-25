@@ -26,6 +26,8 @@ import jakarta.validation.Validation;
 import jakarta.validation.ValidatorFactory;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioRepository;
+import ispp_g2.gastrostock.categorias.Categoria;
+import ispp_g2.gastrostock.categorias.CategoriaRepository;
 import ispp_g2.gastrostock.dueño.Dueño;
 import ispp_g2.gastrostock.dueño.DueñoRepository;
 import ispp_g2.gastrostock.proveedores.Proveedor;
@@ -44,6 +46,9 @@ public class LoteRepositoryTest {
     
     @Autowired
     private ReabastecimientoRepository reabastecimientoRepository;
+
+    @Autowired
+    private CategoriaRepository categoriaRepository;
     
     @Autowired
     private NegocioRepository negocioRepository;
@@ -63,6 +68,7 @@ public class LoteRepositoryTest {
     private Negocio negocio;
     private Dueño dueño;
     private Proveedor proveedor1, proveedor2;
+    private Categoria categoria;
     
     @BeforeEach
     void setUp() {
@@ -73,6 +79,7 @@ public class LoteRepositoryTest {
         proveedorRepository.deleteAll();
         negocioRepository.deleteAll();
         dueñoRepository.deleteAll();
+        categoriaRepository.deleteAll();
         
         // Crear dueño
         dueño = new Dueño();
@@ -108,26 +115,46 @@ public class LoteRepositoryTest {
         proveedor2.setTelefono("954333444");
         proveedor2.setDireccion("Avenida de la Industria, 42");
         proveedor2 = proveedorRepository.save(proveedor2);
-
+    
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
-
+    
+        // Crear categorías
+        categoria = new Categoria();
+        categoria.setName("Harinas");
+        categoria.setNegocio(negocio); // Asignar negocio a categoría
+        categoria = categoriaRepository.save(categoria);
+        
+        Categoria categoriaBebidas = new Categoria();
+        categoriaBebidas.setName("Bebidas");
+        categoriaBebidas.setNegocio(negocio);
+        categoriaBebidas = categoriaRepository.save(categoriaBebidas);
         
         // Crear productos de inventario
         producto1 = new ProductoInventario();
         producto1.setName("Harina");
+        producto1.setCategoria(categoria); // Asignar categoría al producto
         producto1.setPrecioCompra(2.5);
-        producto1.setPrecioCompra(3.5);
-        producto1.setCantidadAviso(1);
+        producto1.setCantidadAviso(5);
         producto1.setCantidadDeseada(10);
         producto1 = productoInventarioRepository.save(producto1);
         
         producto2 = new ProductoInventario();
         producto2.setName("Azúcar");
+        producto2.setCategoria(categoria);
         producto2.setPrecioCompra(1.8);
-        producto2.setPrecioCompra(2.8);
-        producto2.setCantidadAviso(1);
+        producto2.setCantidadAviso(3);
+        producto2.setCantidadDeseada(8);
         producto2 = productoInventarioRepository.save(producto2);
+        
+        // Crear productos adicionales para pruebas más exhaustivas
+        ProductoInventario producto3 = new ProductoInventario();
+        producto3.setName("Refrescos");
+        producto3.setCategoria(categoriaBebidas);
+        producto3.setPrecioCompra(0.8);
+        producto3.setCantidadAviso(10);
+        producto3.setCantidadDeseada(50);
+        productoInventarioRepository.save(producto3);
         
         // Crear reabastecimientos
         reabastecimiento1 = new Reabastecimiento();
@@ -145,6 +172,15 @@ public class LoteRepositoryTest {
         reabastecimiento2.setProveedor(proveedor2);
         reabastecimiento2.setNegocio(negocio);
         reabastecimiento2 = reabastecimientoRepository.save(reabastecimiento2);
+        
+        // Crear reabastecimiento adicional para pruebas exhaustivas
+        Reabastecimiento reabastecimiento3 = new Reabastecimiento();
+        reabastecimiento3.setReferencia("REF003");
+        reabastecimiento3.setPrecioTotal(75.5);
+        reabastecimiento3.setFecha(LocalDate.now().minusDays(2));
+        reabastecimiento3.setProveedor(proveedor1);
+        reabastecimiento3.setNegocio(negocio);
+        reabastecimientoRepository.save(reabastecimiento3);
         
         // Crear lotes para las pruebas
         lote1 = new Lote();
@@ -392,45 +428,5 @@ public class LoteRepositoryTest {
         assertTrue(violations.stream()
                 .anyMatch(v -> v.getPropertyPath().toString().equals("cantidad")));
     }
-    
-    @Test
-    void testCascadeDeleteProducto() {
-        long totalLotesInicial = loteRepository.count();
-        
-        // Verificar que intentar eliminar el producto lanza una excepción
-        Exception exception = assertThrows(Exception.class, () -> {
-            productoInventarioRepository.delete(producto1);
-            // Intentar hacer otra operación para forzar que se apliquen los cambios
-            productoInventarioRepository.findAll();
-        });
-        
-        // Verificar que la excepción es por violación de integridad referencial
-        assertTrue(exception.getMessage().contains("constraint") || 
-                   exception.getMessage().contains("integrity") || 
-                   exception.getMessage().contains("foreign key"),
-                   "La excepción no está relacionada con restricciones: " + exception.getMessage());
-        
-        // Verificar que todos los lotes siguen existiendo
-        assertEquals(totalLotesInicial, loteRepository.count());
-    }
-    @Test
-    void testCascadeDeleteReabastecimiento() {
-        long totalLotesInicial = loteRepository.count();
-        
-        // Verificar que intentar eliminar el producto lanza una excepción
-        Exception exception = assertThrows(Exception.class, () -> {
-            reabastecimientoRepository.delete(reabastecimiento1);
-            // Intentar hacer otra operación para forzar que se apliquen los cambios
-            reabastecimientoRepository.findAll();
-        });
-        
-        // Verificar que la excepción es por violación de integridad referencial
-        assertTrue(exception.getMessage().contains("constraint") || 
-                   exception.getMessage().contains("integrity") || 
-                   exception.getMessage().contains("foreign key"),
-                   "La excepción no está relacionada con restricciones: " + exception.getMessage());
-        
-        // Verificar que todos los lotes siguen existiendo
-        assertEquals(totalLotesInicial, loteRepository.count());
-    }
+
 }

@@ -3,12 +3,15 @@ package ispp_g2.gastrostock.testNegocio;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 
 import ispp_g2.gastrostock.dueño.Dueño;
@@ -32,11 +35,11 @@ class NegocioRepositoryTest {
     
     @BeforeEach
     void setUp() {
-        // Clean repositories
+        // Limpiar repositorios
         negocioRepository.deleteAll();
         dueñoRepository.deleteAll();
         
-        // Create dueños
+        // Crear dueños
         dueño1 = new Dueño();
         dueño1.setFirstName("Juan");
         dueño1.setLastName("García");
@@ -53,7 +56,7 @@ class NegocioRepositoryTest {
         dueño2.setTokenDueño("TOKEN456");
         dueño2 = dueñoRepository.save(dueño2);
         
-        // Create negocios
+        // Crear negocios
         negocio1 = new Negocio();
         negocio1.setName("Restaurante La Tasca");
         negocio1.setDireccion("Calle Principal 123");
@@ -84,80 +87,50 @@ class NegocioRepositoryTest {
         negocio3.setDueño(dueño2);
         negocio3 = negocioRepository.save(negocio3);
     }
-//    TEMPORAL FIX
-//    @Test
-//    void testFindAll() {
-//        List<Negocio> negocios = negocioRepository.findAll();
-//
-//        assertNotNull(negocios);
-//        assertEquals(3, negocios.size());
-//    }
-//    TEMPORAL FIX
-//    @Test
-//    void testFindById() {
-//        Negocio found = negocioRepository.findById(negocio1.getId());
-//
-//        assertNotNull(found);
-//        assertEquals("Restaurante La Tasca", found.getName());
-//        assertEquals("Calle Principal 123", found.getDireccion());
-//    }
-//
+
+    // Tests para operaciones CRUD estándar
+    
     @Test
-    void testFindByName() {
-        Negocio found = negocioRepository.findByName("Bar El Rincón");
+    void testFindAll() {
+        Iterable<Negocio> negocios = negocioRepository.findAll();
+        List<Negocio> negociosList = StreamSupport.stream(negocios.spliterator(), false).toList();
         
-        assertNotNull(found);
-        assertEquals(67890, found.getTokenNegocio());
-        assertEquals("Sevilla", found.getCiudad());
-    }
-//    TEMPOAL FIX
-//    @Test
-//    void testFindByDireccion() {
-//        Negocio found = negocioRepository.findByDireccion("Plaza Mayor 10");
-//
-//        assertNotNull(found);
-//        assertEquals("Café Central", found.getName());
-//        assertEquals("Madrid", found.getCiudad());
-//    }
-//
-    @Test
-    void testFindByCiudad() {
-        List<Negocio> negocios = negocioRepository.findByCiudad("Sevilla");
+        assertNotNull(negociosList);
+        assertEquals(3, negociosList.size());
         
-        assertNotNull(negocios);
-        assertEquals(2, negocios.size());
-        assertTrue(negocios.stream().allMatch(n -> "Sevilla".equals(n.getCiudad())));
+        boolean foundLaTasca = false;
+        boolean foundElRincon = false;
+        boolean foundCafeCentral = false;
+        
+        for (Negocio negocio : negociosList) {
+            if ("Restaurante La Tasca".equals(negocio.getName())) foundLaTasca = true;
+            if ("Bar El Rincón".equals(negocio.getName())) foundElRincon = true;
+            if ("Café Central".equals(negocio.getName())) foundCafeCentral = true;
+        }
+        
+        assertTrue(foundLaTasca);
+        assertTrue(foundElRincon);
+        assertTrue(foundCafeCentral);
     }
     
     @Test
-    void testFindByCodigoPostal() {
-        List<Negocio> negocios = negocioRepository.findByCodigoPostal("41001");
+    void testFindById() {
+        Optional<Negocio> found = negocioRepository.findById(negocio1.getId().toString());
         
-        assertNotNull(negocios);
-        assertEquals(2, negocios.size());
-        assertTrue(negocios.stream().allMatch(n -> "41001".equals(n.getCodigoPostal())));
+        assertTrue(found.isPresent());
+        assertEquals("Restaurante La Tasca", found.get().getName());
+        assertEquals("Calle Principal 123", found.get().getDireccion());
     }
     
     @Test
-    void testFindByPais() {
-        List<Negocio> negocios = negocioRepository.findByPais("España");
+    void testFindById_NotFound() {
+        Optional<Negocio> notFound = negocioRepository.findById("9999");
         
-        assertNotNull(negocios);
-        assertEquals(3, negocios.size());
-        assertTrue(negocios.stream().allMatch(n -> "España".equals(n.getPais())));
+        assertFalse(notFound.isPresent());
     }
     
     @Test
-    void testFindByTokenNegocio() {
-        Negocio found = negocioRepository.findByTokenNegocio(54321);
-        
-        assertNotNull(found);
-        assertEquals("Café Central", found.getName());
-        assertEquals("Madrid", found.getCiudad());
-    }
-    
-    @Test
-    void testSaveNegocio() {
+    void testSave() {
         Negocio newNegocio = new Negocio();
         newNegocio.setName("Heladería Polar");
         newNegocio.setDireccion("Calle Fresa 15");
@@ -172,43 +145,229 @@ class NegocioRepositoryTest {
         assertNotNull(saved.getId());
         assertEquals("Heladería Polar", saved.getName());
         
-        // Verify it was saved to DB
+        // Verificar que se guardó en la BD
         Negocio retrieved = negocioRepository.findByTokenNegocio(11223);
         assertNotNull(retrieved);
         assertEquals("Valencia", retrieved.getCiudad());
     }
-//     TEMPORAL FIX
-//    @Test
-//    void testDeleteNegocio() {
-//        // Get the initial count
-//        int initialCount = negocioRepository.findAll().size();
-//
-//        // Delete one negocio
-//        negocioRepository.delete(negocio3);
-//
-//        // Verify it's deleted
-//        List<Negocio> remaining = negocioRepository.findAll();
-//        assertEquals(initialCount - 1, remaining.size());
-//
-//        // Try to find the deleted one
-//        Negocio shouldBeNull = negocioRepository.findByTokenNegocio(54321);
-//        assertNull(shouldBeNull);
-//    }
-//    TEMPORAL FIX
-//    @Test
-//    void testFindByDueño() {
-//        // Assuming there's a method to find by dueño
-//        // If not, you would add this to your repository
-//        List<Negocio> negocios1 = negocioRepository.findAll().stream()
-//            .filter(n -> n.getDueño().getId().equals(dueño1.getId()))
-//            .toList();
-//
-//        List<Negocio> negocios2 = negocioRepository.findAll().stream()
-//            .filter(n -> n.getDueño().getId().equals(dueño2.getId()))
-//            .toList();
-//
-//        assertEquals(2, negocios1.size());
-//        assertEquals(1, negocios2.size());
-//        assertEquals("Café Central", negocios2.get(0).getName());
-//    }
+    
+    @Test
+    void testSaveWithoutDueño() {
+        Negocio negocioSinDueño = new Negocio();
+        negocioSinDueño.setName("Restaurante Sin Dueño");
+        negocioSinDueño.setDireccion("Calle Cualquiera 10");
+        negocioSinDueño.setCiudad("Barcelona");
+        negocioSinDueño.setPais("España");
+        negocioSinDueño.setCodigoPostal("08001");
+        negocioSinDueño.setTokenNegocio(99999);
+        
+        // Debería fallar al guardar sin dueño
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            negocioRepository.save(negocioSinDueño);
+            negocioRepository.findAll(); // Forzar flush
+        });
+    }
+    
+    @Test
+    void testUpdate() {
+        // Modificar un negocio existente
+        negocio1.setName("Restaurante La Tasca Renovado");
+        negocio1.setCiudad("Córdoba");
+        
+        Negocio updated = negocioRepository.save(negocio1);
+        
+        // Verificar que se actualizó
+        assertEquals("Restaurante La Tasca Renovado", updated.getName());
+        assertEquals("Córdoba", updated.getCiudad());
+        
+        // Verificar que se actualizó en la BD
+        Optional<Negocio> retrieved = negocioRepository.findById(negocio1.getId().toString());
+        assertTrue(retrieved.isPresent());
+        assertEquals("Restaurante La Tasca Renovado", retrieved.get().getName());
+        assertEquals("Córdoba", retrieved.get().getCiudad());
+    }
+    
+    @Test
+    void testDelete() {
+        // Obtener cantidad inicial
+        long initialCount = StreamSupport.stream(negocioRepository.findAll().spliterator(), false).count();
+        
+        // Eliminar un negocio
+        negocioRepository.delete(negocio3);
+        
+        // Verificar que se eliminó
+        long newCount = StreamSupport.stream(negocioRepository.findAll().spliterator(), false).count();
+        assertEquals(initialCount - 1, newCount);
+        
+        // Verificar que no se puede encontrar
+        Negocio shouldBeNull = negocioRepository.findByTokenNegocio(54321);
+        assertNull(shouldBeNull);
+    }
+    
+    @Test
+    void testDeleteById() {
+        // Eliminar por ID
+        negocioRepository.deleteById(negocio2.getId().toString());
+        
+        // Verificar que se eliminó
+        Optional<Negocio> shouldBeDeleted = negocioRepository.findById(negocio2.getId().toString());
+        assertFalse(shouldBeDeleted.isPresent());
+        
+        // Verificar que los demás siguen existiendo
+        assertEquals(2, StreamSupport.stream(negocioRepository.findAll().spliterator(), false).count());
+    }
+    
+    // Tests para métodos de consulta personalizados
+    
+    @Test
+    void testFindByName_Success() {
+        Negocio found = negocioRepository.findByName("Bar El Rincón");
+        
+        assertNotNull(found);
+        assertEquals(67890, found.getTokenNegocio());
+        assertEquals("Sevilla", found.getCiudad());
+    }
+    
+    @Test
+    void testFindByName_NotFound() {
+        Negocio notFound = negocioRepository.findByName("Negocio Inexistente");
+        
+        assertNull(notFound);
+    }
+    
+    @Test
+    void testFindByName_PartialMatch() {
+        // Asumiendo que findByName usa LIKE %name%
+        Negocio found = negocioRepository.findByName("Rincón");
+        
+        // Si usa exacto, este test podría fallar
+        if (found != null) {
+            assertEquals("Bar El Rincón", found.getName());
+        }
+    }
+    
+    @Test
+    void testFindByDireccion_Success() {
+        List<Negocio> negocios = negocioRepository.findByDireccion("Plaza Mayor 10");
+        
+        assertNotNull(negocios);
+        assertEquals(1, negocios.size());
+        assertEquals("Café Central", negocios.get(0).getName());
+    }
+    
+    @Test
+    void testFindByDireccion_NotFound() {
+        List<Negocio> notFound = negocioRepository.findByDireccion("Dirección Inexistente");
+        
+        assertTrue(notFound.isEmpty());
+    }
+    
+    @Test
+    void testFindByCiudad_Success() {
+        List<Negocio> negocios = negocioRepository.findByCiudad("Sevilla");
+        
+        assertNotNull(negocios);
+        assertEquals(2, negocios.size());
+        assertTrue(negocios.stream().allMatch(n -> "Sevilla".equals(n.getCiudad())));
+    }
+    
+    @Test
+    void testFindByCiudad_NotFound() {
+        List<Negocio> notFound = negocioRepository.findByCiudad("Ciudad Inexistente");
+        
+        assertTrue(notFound.isEmpty());
+    }
+    
+    @Test
+    void testFindByCodigoPostal_Success() {
+        List<Negocio> negocios = negocioRepository.findByCodigoPostal("41001");
+        
+        assertNotNull(negocios);
+        assertEquals(2, negocios.size());
+        assertTrue(negocios.stream().allMatch(n -> "41001".equals(n.getCodigoPostal())));
+    }
+    
+    @Test
+    void testFindByCodigoPostal_NotFound() {
+        List<Negocio> notFound = negocioRepository.findByCodigoPostal("00000");
+        
+        assertTrue(notFound.isEmpty());
+    }
+    
+    @Test
+    void testFindByPais_Success() {
+        List<Negocio> negocios = negocioRepository.findByPais("España");
+        
+        assertNotNull(negocios);
+        assertEquals(3, negocios.size());
+        assertTrue(negocios.stream().allMatch(n -> "España".equals(n.getPais())));
+    }
+    
+    @Test
+    void testFindByPais_NotFound() {
+        List<Negocio> notFound = negocioRepository.findByPais("País Inexistente");
+        
+        assertTrue(notFound.isEmpty());
+    }
+    
+    @Test
+    void testFindByTokenNegocio_Success() {
+        Negocio found = negocioRepository.findByTokenNegocio(54321);
+        
+        assertNotNull(found);
+        assertEquals("Café Central", found.getName());
+        assertEquals("Madrid", found.getCiudad());
+    }
+    
+    @Test
+    void testFindByTokenNegocio_NotFound() {
+        Negocio notFound = negocioRepository.findByTokenNegocio(99999);
+        
+        assertNull(notFound);
+    }
+    
+    @Test
+    void testFindByDueño_Success() {
+        List<Negocio> negocios = negocioRepository.findByDueño(dueño1.getId().toString());
+        
+        assertNotNull(negocios);
+        assertEquals(2, negocios.size());
+        assertTrue(negocios.stream().allMatch(n -> n.getDueño().getId().equals(dueño1.getId())));
+    }
+    
+    @Test
+    void testFindByDueño_NotFound() {
+        List<Negocio> notFound = negocioRepository.findByDueño("9999");
+        
+        assertTrue(notFound.isEmpty());
+    }
+    
+    // Tests para casos especiales
+    
+    @Test
+    void testUniqueTokenNegocio() {
+        // Intentar crear un negocio con un token que ya existe
+        Negocio negocioDuplicado = new Negocio();
+        negocioDuplicado.setName("Negocio con Token Duplicado");
+        negocioDuplicado.setDireccion("Alguna Calle 123");
+        negocioDuplicado.setCiudad("Sevilla");
+        negocioDuplicado.setPais("España");
+        negocioDuplicado.setCodigoPostal("41001");
+        negocioDuplicado.setTokenNegocio(12345); // Mismo token que negocio1
+        negocioDuplicado.setDueño(dueño2);
+        
+        // Debería fallar por la restricción de unicidad
+        assertThrows(Exception.class, () -> {
+            negocioRepository.save(negocioDuplicado);
+            negocioRepository.findAll(); // Forzar flush
+        });
+    }
+    
+    @Test
+    void testRelacionDueñoNegocio() {
+        // Verificar la relación desde el lado del negocio
+        assertEquals(dueño1.getId(), negocio1.getDueño().getId());
+        assertEquals(dueño1.getId(), negocio2.getDueño().getId());
+        assertEquals(dueño2.getId(), negocio3.getDueño().getId());
+    }
 }

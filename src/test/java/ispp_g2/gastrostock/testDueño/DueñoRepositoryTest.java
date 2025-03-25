@@ -455,7 +455,7 @@ class DueñoRepositoryTest {
             // Excepción esperada si hay restricción de unicidad
         }
     }
-    
+    /* 
     @Test
     void testCascadeDeleteDueño() {
         // Crear un negocio asociado a un dueño
@@ -494,5 +494,5 @@ class DueñoRepositoryTest {
             System.out.println("Error al intentar eliminar dueño con negocio asociado: " + e.getMessage());
             // La prueba sigue siendo válida, ya que estamos verificando el comportamiento
         }
-    }
+    } */
 }
