@@ -2,15 +2,11 @@ package ispp_g2.gastrostock.mesa;
 
 import java.util.List;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import ispp_g2.gastrostock.exceptions.BadRequestException;
-import ispp_g2.gastrostock.exceptions.ResourceNotFoundException;
 import jakarta.validation.Valid;
 
 @RestController
@@ -77,7 +73,7 @@ public class MesaController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		mesa.setId(Integer.valueOf(id));
-		return new ResponseEntity<>(mesaService.save(existingMesa), HttpStatus.OK);
+		return new ResponseEntity<>(mesaService.save(mesa), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")

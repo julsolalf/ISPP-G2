@@ -1,0 +1,19 @@
+.profile_picture {
+    width:200px;
+    border-radius: 50%;
+}
+
+.profile_head {
+    font-weight: bold;
+    font-size: 48px;
+}
+
+.profile_details{
+    text-align: left;
+    font-size: 36px;
+}
+
+.content{
+    max-width: none;
+    width: fit-content;
+}

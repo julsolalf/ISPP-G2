@@ -95,7 +95,7 @@ public class UserController {
 		if(userService.findUserById(id)==null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		userService.deleteUser(id);
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 }

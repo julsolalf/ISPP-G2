@@ -163,7 +163,7 @@ function Inventario() {
         <h1 className="title">GastroStock</h1>
         <h2>Inventario</h2>
         <div className="button-container3">
-          <button className="button" onClick={() => navigate("/añadirEmpleado")}>➕ Añadir</button>
+          <button className="button" onClick={() => navigate("/añadirCategoria")}>➕ Añadir</button>
           <button className="button">📥 Exportar</button>
           <button className="button">🔍 Filtrar</button>
         </div>
@@ -176,6 +176,10 @@ function Inventario() {
               <button className="ver-btn" onClick={() => navigate(`/verTipoProducto/${categoria.id}`)}>👁️ Ver</button>
             </div>
           ))}
+        </div>
+        <div className="button-container1">
+          <button className="button" onClick={() => navigate("/alertaStock")}>⚠️ Alerta Stock</button>
+          <button className="button" onClick={() => navigate("/perdidas")}>📉 Pérdidas</button>
         </div>
       </div>
     </div>

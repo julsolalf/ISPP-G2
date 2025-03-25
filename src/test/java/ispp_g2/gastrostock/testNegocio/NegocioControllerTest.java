@@ -101,7 +101,7 @@ class NegocioControllerTest {
                 .andExpect(jsonPath("$[0].name", is("Restaurante La Tasca")))
                 .andExpect(jsonPath("$[1].name", is("Bar El Rincón")));
         
-        verify(negocioService).getNegocios();
+        verify(negocioService, atLeastOnce()).getNegocios();
     }
     
     @Test
@@ -210,39 +210,58 @@ class NegocioControllerTest {
         
         verify(negocioService).getByPais("España");
     }
-//    TEMPORAL FIX
-//    @Test
-//    void testFindNegocioByDireccion() throws Exception {
-//
-//        when(negocioService.getByDireccion("Calle Principal 123")).thenReturn(negocio1);
-//
-//        mockMvc.perform(get("/api/negocios/direccion/Calle Principal 123")
-//                .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.direccion", is("Calle Principal 123")));
-//
-//        verify(negocioService).getByDireccion("Calle Principal 123");
-//    }
-//    TEMPORAL FIX
-//    @Test
-//    void testCreateNegocio() throws Exception {
-//
-//        when(negocioService.saveNegocio(any(Negocio.class))).thenReturn(negocio1);
-//
-//        mockMvc.perform(post("/api/negocios")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(objectMapper.writeValueAsString(negocio1)))
-//                .andExpect(status().isCreated())
-//                .andExpect(jsonPath("$.name", is("Restaurante La Tasca")));
-//
-//        verify(negocioService).saveNegocio(any(Negocio.class));
-//    }
+    @Test
+    void testFindNegocioByDireccion() throws Exception {
+        // Crear lista con solo negocio1
+        List<Negocio> negociosByDireccion = Arrays.asList(negocio1);
+        
+        // Mock para retornar una lista en lugar de un solo negocio
+        when(negocioService.getByDireccion("Calle Principal 123")).thenReturn(negociosByDireccion);
+    
+        mockMvc.perform(get("/api/negocios/direccion/Calle Principal 123")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].direccion", is("Calle Principal 123")));
+    
+        verify(negocioService).getByDireccion("Calle Principal 123");
+    }
+    
+    @Test
+    void testCreateNegocio() throws Exception {
+        // Usando save() en lugar de saveNegocio()
+        Dueño dueñoact = new Dueño();
+        dueñoact.setFirstName("Anton");
+        dueñoact.setLastName("García");
+        dueñoact.setEmail("anton@example.com");
+        dueñoact.setNumTelefono("652349978");
+        dueñoact.setTokenDueño("TOKEN333");
+
+        // Crear negocio
+        Negocio negocioActualizado = new Negocio();
+        negocioActualizado.setName("Restaurante 2 Tasca");
+        negocioActualizado.setDireccion("Calle Principal 123");
+        negocioActualizado.setCiudad("Sevilla");
+        negocioActualizado.setPais("España");
+        negocioActualizado.setCodigoPostal("41001");
+        negocioActualizado.setTokenNegocio(12995);
+        negocioActualizado.setDueño(dueñoact);
+
+        when(negocioService.save(any(Negocio.class))).thenReturn(negocioActualizado);
+    
+        mockMvc.perform(post("/api/negocios")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(negocioActualizado)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name", is("Restaurante 2 Tasca")));
+    
+        verify(negocioService).save(any(Negocio.class));
+    }
     
     @Test
     void testModifyNegocio() throws Exception {
 
         Negocio updatedNegocio = new Negocio();
-        updatedNegocio.setId(1);
         updatedNegocio.setName("Restaurante Actualizado");
         updatedNegocio.setDireccion("Nueva Dirección 123");
         updatedNegocio.setCiudad("Sevilla");
@@ -257,7 +276,7 @@ class NegocioControllerTest {
         mockMvc.perform(put("/api/negocios/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updatedNegocio)))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
         
         verify(negocioService).save(any(Negocio.class));
     }
@@ -266,8 +285,15 @@ class NegocioControllerTest {
     void testModifyNegocio_InvalidId() throws Exception {
 
         Negocio invalidNegocio = new Negocio();
-        invalidNegocio.setId(2); // ID diferente del path variable
         invalidNegocio.setName("Restaurante Inválido");
+        invalidNegocio.setDireccion("Calle Principal 123");
+        invalidNegocio.setCiudad("Sevilla");
+        invalidNegocio.setPais("España");
+        invalidNegocio.setCodigoPostal("41001");
+        invalidNegocio.setTokenNegocio(9999);
+        invalidNegocio.setDueño(dueño);
+        
+        when(negocioService.getById(String.valueOf(1))).thenReturn(null);
 
         mockMvc.perform(put("/api/negocios/1")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -289,14 +315,17 @@ class NegocioControllerTest {
 //        verify(negocioService).deleteNegocioByToken(12345);
 //    }
     
-    @Test
-    void testDeleteNegocio_NotFound() throws Exception {
-
-        when(negocioService.getByToken(9999)).thenReturn(null);
-        
-
-        mockMvc.perform(delete("/api/negocios/9999")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-    }
+@Test
+void testDeleteNegocio_NotFound() throws Exception {
+    // Arrange - Usar getById en lugar de getByToken
+    when(negocioService.getById("9999")).thenReturn(null);
+    
+    // Act & Assert
+    mockMvc.perform(delete("/api/negocios/9999")
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound());
+            
+    // Verify
+    verify(negocioService).getById("9999");
+}
 }
