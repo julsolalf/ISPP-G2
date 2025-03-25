@@ -10,9 +10,6 @@ import PantallaInicioEmpleado from "./screens/inicioEmpleado/index.js";
 import PantallaPlanes from "./screens/planes/index.js";
 import TPV from "./screens/r/index.js";
 
-import Categorias from "./screens/productoInventario/list.js";
-import Proveedores from "./screens/listaProveedores/proveedores.js";
-import Empleados from "./screens/listaEmpleados/empleados.js";
 import Dashboard from "./screens/dashboard/index.js";
 
 import PantallaInventario from "./screens/inventario/index.js";
