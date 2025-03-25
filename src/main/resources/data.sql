@@ -67,19 +67,19 @@ VALUES (5, 'Mesa 5', 4, (SELECT id FROM negocio WHERE name = 'Restaurante Burgue
 
 --Insertando Categoria
 INSERT INTO categoria (id, name, pertenece, negocio_id)
-VALUES (1, 'COMIDA',0, (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
+VALUES (1, 'COMIDA',1, (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
 INSERT INTO categoria (id, name, pertenece, negocio_id)
-VALUES (2, 'BEBIDAS',0,(SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
+VALUES (2, 'BEBIDAS',1,(SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
 INSERT INTO categoria (id, name,pertenece, negocio_id)
-VALUES (3, 'COMIDA',0,(SELECT id FROM negocio WHERE name = 'Restaurante Burguer'));
+VALUES (3, 'COMIDA',1,(SELECT id FROM negocio WHERE name = 'Restaurante Burguer'));
 INSERT INTO categoria (id, name, pertenece, negocio_id)
-VALUES (4, 'BEBIDAS',0,(SELECT id FROM negocio WHERE name = 'Restaurante Burguer'));
+VALUES (4, 'BEBIDAS',1,(SELECT id FROM negocio WHERE name = 'Restaurante Burguer'));
 INSERT INTO categoria (id, name, pertenece, negocio_id)
-VALUES (5, 'HARINAS',1, (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
+VALUES (5, 'HARINAS',0, (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
 INSERT INTO categoria (id, name, pertenece, negocio_id)
-VALUES (6, 'VERDURAS',1,(SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
+VALUES (6, 'VERDURAS',0,(SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
 INSERT INTO categoria (id, name, pertenece, negocio_id)
-VALUES (7, 'CARNES',1,(SELECT id FROM negocio WHERE name = 'Restaurante Burguer'));
+VALUES (7, 'CARNES',0,(SELECT id FROM negocio WHERE name = 'Restaurante Burguer'));
 
 -- Insertando productos de venta
 INSERT INTO producto_venta (id, name, categoria_id, precio_venta)
