@@ -1,18 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Bell, User } from "lucide-react";
+import axios from "axios";
 import "../../css/listados/styles.css";
 
 function Proveedores() {
   const navigate = useNavigate();
-  const [proveedores, setProveedores] = useState([
-    { nombre: "Distribuidora A", telefono: "123-456-7890", descripcion: "Proveedor de bebidas y refrescos" },
-    { nombre: "Proveedor B", telefono: "987-654-3210", descripcion: "Especialista en carnes y embutidos" },
-    { nombre: "Comercializadora C", telefono: "456-789-0123", descripcion: "Lácteos y productos derivados" },
-  ]);
-
+  const [proveedores, setProveedores] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
+
+  useEffect(() => {
+    const fetchProveedores = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/api/proveedores");
+        setProveedores(response.data);
+      } catch (error) {
+        console.error("Error al obtener los proveedores:", error);
+      }
+    };
+    fetchProveedores();
+  }, []);
 
   const toggleNotifications = () => setShowNotifications(!showNotifications);
   const toggleUserOptions = () => setShowUserOptions(!showUserOptions);
@@ -38,7 +46,9 @@ function Proveedores() {
           <div className="notification-bubble">
             <div className="notification-header">
               <strong>Notificaciones</strong>
-              <button className="close-btn" onClick={toggleNotifications}>X</button>
+              <button className="close-btn" onClick={toggleNotifications}>
+                X
+              </button>
             </div>
             <ul>
               <li>Notificación 1</li>
@@ -52,35 +62,54 @@ function Proveedores() {
           <div className="notification-bubble user-options">
             <div className="notification-header">
               <strong>Usuario</strong>
-              <button className="close-btn" onClick={toggleUserOptions}>X</button>
+              <button className="close-btn" onClick={toggleUserOptions}>
+                X
+              </button>
             </div>
             <ul>
-              <li><button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button></li>
-              <li><button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button></li>
-              <li><button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button></li>
+              <li>
+                <button className="user-btn" onClick={() => navigate("/perfil")}>
+                  Ver Perfil
+                </button>
+              </li>
+              <li>
+                <button className="user-btn" onClick={() => navigate("/planes")}>
+                  Ver planes
+                </button>
+              </li>
+              <li>
+                <button className="user-btn" onClick={() => navigate("/logout")}>
+                  Cerrar Sesión
+                </button>
+              </li>
             </ul>
           </div>
         )}
 
-        <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
+        <button onClick={() => navigate(-1)} className="back-button">
+          ⬅ Volver
+        </button>
         <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
         <h1 className="title">GastroStock</h1>
         <h2>Proveedores</h2>
 
         <div className="button-container3">
-          <button className="button" onClick={() => navigate("/añadirProveedor")}>➕ Añadir</button>
+          <button className="button" onClick={() => navigate("/añadirProveedor")}>
+            ➕ Añadir
+          </button>
           <button className="button">📥 Exportar</button>
           <button className="button">🔍 Filtrar</button>
         </div>
 
-
         <div className="empleados-grid">
-          {proveedores.map((proveedor, index) => (
-            <div key={index} className="empleado-card">
-              <h3>{proveedor.nombre}</h3>
-              <p>{proveedor.descripcion}</p>
+          {proveedores.map((proveedor) => (
+            <div key={proveedor.id} className="empleado-card">
+              <h3>{proveedor.name}</h3>
+              <p>{proveedor.direccion}</p>
               <p>{proveedor.telefono}</p>
-              <button className="ver-btn" onClick={() => navigate("/verProveedor")}>Ver</button>
+              <button className="ver-btn" onClick={() => navigate("/verProveedor")}>
+                Ver
+              </button>
             </div>
           ))}
         </div>
