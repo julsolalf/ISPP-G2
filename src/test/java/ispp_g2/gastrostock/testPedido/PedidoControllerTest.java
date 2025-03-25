@@ -1,5 +1,7 @@
 package ispp_g2.gastrostock.testPedido;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -30,6 +32,7 @@ import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.pedido.Pedido;
 import ispp_g2.gastrostock.pedido.PedidoController;
 import ispp_g2.gastrostock.pedido.PedidoService;
+import jakarta.servlet.ServletException;
 
 @ExtendWith(MockitoExtension.class)
 class PedidoControllerTest {
@@ -291,14 +294,41 @@ class PedidoControllerTest {
     // Test para save() - Caso éxito
     @Test
     void testSave_Success() throws Exception {
-        when(pedidoService.save(any(Pedido.class))).thenReturn(pedido);
+        Mesa mesaUpdate = new Mesa();
+        mesaUpdate.setName("Mesa Actualizada");
+        mesaUpdate.setNumeroAsientos(6);
+        
+        Empleado empleadoUpdate = new Empleado();
+        empleadoUpdate.setTokenEmpleado("EMP456");
+        empleadoUpdate.setFirstName("Juan");
+        empleadoUpdate.setLastName("Pérez");
+        empleadoUpdate.setEmail("juan@example.com");
+        empleadoUpdate.setNumTelefono("666777888");
+        
+        Negocio negocioUpdate = new Negocio();
+        negocioUpdate.setName("Restaurante Actualizado");
+        negocioUpdate.setDireccion("Calle Nueva 456");
+        negocioUpdate.setCiudad("Madrid");
+        negocioUpdate.setPais("España");
+        negocioUpdate.setCodigoPostal("28001");
+        negocioUpdate.setTokenNegocio(54321);
+        
+        // Crear pedido actualizado
+        Pedido updatedPedido = new Pedido();
+        updatedPedido.setId(5); // 
+        updatedPedido.setFecha(fecha);
+        updatedPedido.setPrecioTotal(60.75); // Precio actualizado
+        updatedPedido.setMesa(mesaUpdate);
+        updatedPedido.setEmpleado(empleadoUpdate);
+        updatedPedido.setNegocio(negocioUpdate);
+        when(pedidoService.save(any(Pedido.class))).thenReturn(updatedPedido);
         
         mockMvc.perform(post("/api/pedidos")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(pedido)))
+                .content(objectMapper.writeValueAsString(updatedPedido)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.precioTotal").value(45.50));
+                .andExpect(jsonPath("$.id").value(5))
+                .andExpect(jsonPath("$.precioTotal").value(60.75));
         
         verify(pedidoService).save(any(Pedido.class));
     }
@@ -314,26 +344,47 @@ class PedidoControllerTest {
     
     // Test para update() - Caso éxito
     @Test
-    void testUpdate_Success() throws Exception {
-        Pedido updatedPedido = new Pedido();
-        updatedPedido.setId(1);
-        updatedPedido.setFecha(fecha);
-        updatedPedido.setPrecioTotal(60.75); // Precio actualizado
-        updatedPedido.setMesa(mesa);
-        updatedPedido.setEmpleado(empleado);
-        updatedPedido.setNegocio(negocio);
-        
-        when(pedidoService.save(any(Pedido.class))).thenReturn(updatedPedido);
-        
-        mockMvc.perform(put("/api/pedidos/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updatedPedido)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.precioTotal").value(60.75));
-        
-        verify(pedidoService).save(any(Pedido.class));
-    }
+void testUpdate_Success() throws Exception {
+    // Crear nuevas instancias sin asignar IDs
+    Mesa mesaUpdate = new Mesa();
+    mesaUpdate.setName("Mesa Actualizada");
+    mesaUpdate.setNumeroAsientos(6);
+    
+    Empleado empleadoUpdate = new Empleado();
+    empleadoUpdate.setTokenEmpleado("EMP456");
+    empleadoUpdate.setFirstName("Juan");
+    empleadoUpdate.setLastName("Pérez");
+    empleadoUpdate.setEmail("juan@example.com");
+    empleadoUpdate.setNumTelefono("666777888");
+    
+    Negocio negocioUpdate = new Negocio();
+    negocioUpdate.setName("Restaurante Actualizado");
+    negocioUpdate.setDireccion("Calle Nueva 456");
+    negocioUpdate.setCiudad("Madrid");
+    negocioUpdate.setPais("España");
+    negocioUpdate.setCodigoPostal("28001");
+    negocioUpdate.setTokenNegocio(54321);
+    
+    // Crear pedido actualizado
+    Pedido updatedPedido = new Pedido();
+    updatedPedido.setId(5); // 
+    updatedPedido.setFecha(fecha);
+    updatedPedido.setPrecioTotal(60.75); // Precio actualizado
+    updatedPedido.setMesa(mesaUpdate);
+    updatedPedido.setEmpleado(empleadoUpdate);
+    updatedPedido.setNegocio(negocioUpdate);
+
+    when(pedidoService.getById("1")).thenReturn(pedido);
+    when(pedidoService.save(any(Pedido.class))).thenReturn(updatedPedido);
+    
+    mockMvc.perform(put("/api/pedidos/1")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(updatedPedido)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.precioTotal").value(60.75));
+    
+    verify(pedidoService).save(any(Pedido.class));
+}
     
     // Test para update() - ID no coincide
     @Test
@@ -372,13 +423,17 @@ class PedidoControllerTest {
     }
     
     // Test para delete() - ID inválido (caso límite con ID no numérico)
-/* 
-    @Test
-    void testDelete_InvalidId() throws Exception {
-        doThrow(new NumberFormatException()).when(pedidoService).delete("999");
-        
-        mockMvc.perform(delete("/api/pedidos/999"))
-                .andExpect(status().isBadRequest());
+
+@Test
+void testDelete_InvalidId() throws Exception {
+    doThrow(new NumberFormatException()).when(pedidoService).delete("acd");
+    
+    try {
+        mockMvc.perform(delete("/api/pedidos/acd"));
+        fail("Se esperaba que se lanzara una excepción");
+    } catch (ServletException e) {
+        // Verificar que la causa raíz es NumberFormatException
+        assertTrue(e.getCause() instanceof NumberFormatException);
     }
-*/
+}
 }
