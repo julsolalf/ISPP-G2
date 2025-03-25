@@ -9,12 +9,7 @@ import PantallaInicioDueño from "./screens/inicioDueño/index.js";
 import PantallaInicioEmpleado from "./screens/inicioEmpleado/index.js";
 import PantallaPlanes from "./screens/planes/index.js";
 import TPV from "./screens/r/index.js";
-
-import Categorias from "./screens/productoInventario/list.js";
-import Proveedores from "./screens/listaProveedores/proveedores.js";
-import Empleados from "./screens/listaEmpleados/empleados.js";
 import Dashboard from "./screens/dashboard/index.js";
-
 import PantallaInventario from "./screens/inventario/index.js";
 import PantallaProveedores from "./screens/proveedores/index.js";
 import PantallaEmpleados from "./screens/empleados/index.js";
@@ -23,7 +18,7 @@ import PantallaPerdidas from "./screens/perdidas/index.js";
 import PantallaAñadirEmpleado from "./screens/añadirEmpleado/index.js";
 import PantallaAñadirProveedor from "./screens/añadirProveedor/index.js";
 import PantallaPerfil from "./screens/perfil/index.js";
-import PantallaAñadirCategoria from "./screens/inventario/añadir.js";
+import PantallaAñadirCategoria from "./screens/añadirCategoria/index.js";
 
 
 
