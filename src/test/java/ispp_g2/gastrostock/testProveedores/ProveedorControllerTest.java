@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.DayOfWeek;
@@ -346,32 +347,20 @@ public class ProveedorControllerTest {
         
         verify(proveedorService, times(1)).deleteById(1);
     }
-      /* 
     @Test
     void testDelete_Exception() throws Exception {
         // Arrange
         doThrow(new RuntimeException("Proveedor not found")).when(proveedorService).deleteById(999);
         
-        // Act & Assert
-        mockMvc.perform(delete("/api/proveedores/999"))
-            .andExpect(result -> assertTrue(result.getResolvedException() instanceof RuntimeException))
-            .andExpect(result -> assertEquals("Proveedor not found", result.getResolvedException().getMessage()));
+        // Act & Assert - Esperamos que la excepción sea lanzada
+        Exception exception = assertThrows(Exception.class, () -> {
+            mockMvc.perform(delete("/api/proveedores/999"))
+                .andReturn();
+        });
         
+        // Verificar que la excepción contiene el mensaje esperado
+        assertTrue(exception.getMessage().contains("Proveedor not found"));
         verify(proveedorService, times(1)).deleteById(999);
-    }
+}
     
-    // Test adicional: manejo de excepciones en general
-  
-    @Test
-    void testHandleExceptions() throws Exception {
-        // Arrange
-        when(proveedorService.getAll()).thenThrow(new RuntimeException("Error inesperado"));
-        
-        // Act & Assert
-        mockMvc.perform(get("/api/proveedores"))
-            .andExpect(status().isInternalServerError());
-        
-        verify(proveedorService, times(1)).getAll();
-    }
-        */
 }

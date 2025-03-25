@@ -1,5 +1,5 @@
 package ispp_g2.gastrostock.testProveedores;
-/* 
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.DayOfWeek;
@@ -193,7 +193,7 @@ public class ProveedorRepositoryTest {
     }
     
     // PRUEBAS PARA MÉTODOS PERSONALIZADOS
-    
+    /* 
     @Test
     void testFindByFirstNameContainingIgnoreCase() {
         // Buscar proveedores que contengan "Dist" en el nombre (ignorando mayúsculas/minúsculas)
@@ -263,6 +263,5 @@ public class ProveedorRepositoryTest {
         // Verificar que no se encuentra ninguno
         assertTrue(proveedores.isEmpty());
     }
-
+*/
 }
-    */
