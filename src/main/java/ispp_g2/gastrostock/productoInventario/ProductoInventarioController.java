@@ -2,76 +2,105 @@ package ispp_g2.gastrostock.productoInventario;
 
 import java.util.List;
 
-import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import ispp_g2.gastrostock.exceptions.BadRequestException;
 import ispp_g2.gastrostock.exceptions.ResourceNotFoundException;
 import jakarta.validation.Valid;
 
 @RestController
+@RequestMapping("/api/productosInventario")
 public class ProductoInventarioController {
 
-    private ProductoInventarioService ps;
+    private final ProductoInventarioService productoInventarioService;
+
+	@Autowired
+	public ProductoInventarioController(ProductoInventarioService productoInventarioService) {
+		this.productoInventarioService = productoInventarioService;
+	}
 
     @GetMapping
 	public ResponseEntity<List<ProductoInventario>> findAll() {
-		return new ResponseEntity<>((List<ProductoInventario>) ps.getProductosInventario(), HttpStatus.OK);
+		if(productoInventarioService.getProductosInventario().isEmpty())
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		return new ResponseEntity<>(productoInventarioService.getProductosInventario(), HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<ProductoInventario> findProductoInventario(@PathVariable("id") int id) {
-		ProductoInventario ProductoInventarioToGet = ps.getById(id);
-		if (ProductoInventarioToGet == null)
-			throw new ResourceNotFoundException("ProductoInventario with id " + id + " not found!");
-		return new ResponseEntity<ProductoInventario>(ProductoInventarioToGet, HttpStatus.OK);
+	public ResponseEntity<ProductoInventario> findProductoInventario(@PathVariable("id") String id) {
+		ProductoInventario productoInventario = productoInventarioService.getById(id);
+		if (productoInventario == null)
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(productoInventario, HttpStatus.OK);
 	}
 
-
-
     @GetMapping("/categoria/{categoria}")
-	public ResponseEntity<List<ProductoInventario>> findByNumeroAsientos(@PathVariable("categoria") CategoriasInventario categoriasInventario) {
-		List<ProductoInventario> ProductoInventariosToGet = ps.getProductoInventarioByCategoria(categoriasInventario);
-		if (ProductoInventariosToGet == null)
-			throw new ResourceNotFoundException("ProductoInventario with this categoria " + categoriasInventario + " not found!");
-		return new ResponseEntity<List<ProductoInventario>>(ProductoInventariosToGet, HttpStatus.OK);
+	public ResponseEntity<List<ProductoInventario>> findByCategoriaName(@PathVariable("categoria") String categoriasInventario) {
+		List<ProductoInventario> productoInventario = productoInventarioService.getProductoInventarioByCategoriaName(categoriasInventario);
+		if (productoInventario == null)
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(productoInventario, HttpStatus.OK);
 	}
 
     @GetMapping("/name/{name}")
 	public ResponseEntity<ProductoInventario> findByName(@PathVariable("name") String name) {
-		ProductoInventario ProductoInventarioToGet = ps.getByName(name);
-		if (ProductoInventarioToGet == null)
-			throw new ResourceNotFoundException("ProductoInventario with name " + name + " not found!");
-		return new ResponseEntity<ProductoInventario>(ProductoInventarioToGet, HttpStatus.OK);
+		ProductoInventario productoInventario = productoInventarioService.getByName(name);
+		if (productoInventario == null)
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(productoInventario, HttpStatus.OK);
+	}
+
+	@GetMapping("/precioCompra/{precioCompra}")
+	public ResponseEntity<List<ProductoInventario>> findByPrecioCompra(@PathVariable("precioCompra") Double precioCompra) {
+		List<ProductoInventario> productoInventario = productoInventarioService.getProductoInventarioByPrecioCompra(precioCompra);
+		if (productoInventario == null)
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(productoInventario, HttpStatus.OK);
+	}
+
+	@GetMapping("/cantidadDeseada/{cantidadDeseada}")
+	public ResponseEntity<List<ProductoInventario>> findByCantidadDeseada(@PathVariable("cantidadDeseada") Integer cantidadDeseada) {
+		List<ProductoInventario> productoInventario = productoInventarioService.getProductoInventarioByCantidadDeseada(cantidadDeseada);
+		if (productoInventario == null)
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(productoInventario, HttpStatus.OK);
+	}
+
+	@GetMapping("/cantidadAviso/{cantidadAviso}")
+	public ResponseEntity<List<ProductoInventario>> findByCantidadAviso(@PathVariable("cantidadAviso") Integer cantidadAviso) {
+		List<ProductoInventario> productoInventario = productoInventarioService.getProductoInventarioByCantidadAviso(cantidadAviso);
+		if (productoInventario == null)
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(productoInventario, HttpStatus.OK);
+	}
+	@PostMapping
+	public ResponseEntity<ProductoInventario> createProductoInventario(@RequestBody @Valid ProductoInventario newProductoInventario) {
+		if (newProductoInventario==null)
+			throw new IllegalArgumentException("ProductoInventario cannot be null");
+		return new ResponseEntity<>(productoInventarioService.save(newProductoInventario), HttpStatus.CREATED);
 	}
 
     @PutMapping("/{id}")
-	public ResponseEntity<Void> modifyProductoInventario(@RequestBody @Valid ProductoInventario newProductoInventario, BindingResult br,
-			@PathVariable("id") int id) {
-		ProductoInventario ProductoInventarioToUpdate = this.findProductoInventario(id).getBody();
-		if (br.hasErrors())
-			throw new BadRequestException(br.getAllErrors());
-		else if (newProductoInventario.getId() == null || !newProductoInventario.getId().equals(id))
-			throw new BadRequestException("ProductoInventario id is not consistent with resource URL:" + id);
-		else {
-			BeanUtils.copyProperties(newProductoInventario, ProductoInventarioToUpdate, "id");
-			ps.saveProductoInventario(ProductoInventarioToUpdate);
-		}
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	public ResponseEntity<ProductoInventario> update(@RequestBody @Valid ProductoInventario newProductoInventario, @PathVariable("id") String id) {
+		if (newProductoInventario == null)
+			throw new BadRequestException("ProductoInventario cannot be null");
+		ProductoInventario productoInventario = productoInventarioService.getById(id);
+		if (productoInventario == null)
+			throw new ResourceNotFoundException("ProductoInventario not found");
+		newProductoInventario.setId(Integer.valueOf(id));
+		return new ResponseEntity<>(productoInventarioService.save(newProductoInventario), HttpStatus.OK);
 	}
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProductoInventario(@PathVariable("id") int id) {
-        ps.deleteProductoInventario(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<Void> delete(@PathVariable("id") String id) {
+        ProductoInventario productoInventario = productoInventarioService.getById(id);
+		if (productoInventario == null)
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		productoInventarioService.delete(id);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     
 }

@@ -68,6 +68,14 @@ public class ExceptionHandlerController {
 		return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
 	}
 
+	@ExceptionHandler(value = IllegalArgumentException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalArgument(IllegalArgumentException ex) {
+         Map<String, String> error = new HashMap<>();
+         error.put("error", ex.getMessage());
+         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    
+
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(value = GameAlreadyStartedException.class)
 	public final ResponseEntity<ErrorMessage> handleGameAlreadyStarted(GameAlreadyStartedException ex,

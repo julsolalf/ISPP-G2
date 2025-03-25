@@ -1,21 +1,19 @@
 package ispp_g2.gastrostock.user;
 
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import ispp_g2.gastrostock.exceptions.ResourceNotFoundException;
-import jakarta.validation.Valid;
+
+import java.util.List;
+import java.util.stream.StreamSupport;
 
 @Service
 public class UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
 
 	@Autowired
@@ -23,60 +21,40 @@ public class UserService {
 		this.userRepository = userRepository;
 
 	}
-
-	@Transactional
-	public User saveUser(User user) throws DataAccessException {
-		userRepository.save(user);
-		return user;
+	@Transactional(readOnly = true)
+	public List<User> findAll() {
+		Iterable<User> users = userRepository.findAll();
+		return StreamSupport.stream(users.spliterator(), false)
+				.toList();
 	}
 
 	@Transactional(readOnly = true)
-	public User findUser(String username) {
-		return userRepository.findByUsername(username)
-				.orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
+	public User findUserById(String id) {
+		return userRepository.findById(id).orElse(null);
 	}
 
 	@Transactional(readOnly = true)
-	public User findUser(Integer id) {
-		return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
+	public User findUserByUsername(String username) {
+		return userRepository.findByUsername(username);
 	}
 
 	@Transactional(readOnly = true)
-	public User findCurrentUser() {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth == null)
-			throw new ResourceNotFoundException("Nobody authenticated!");
-		else
-			return userRepository.findByUsername(auth.getName())
-					.orElseThrow(() -> new ResourceNotFoundException("User", "Username", auth.getName()));
-	}
-
-	public Boolean existsUser(String username) {
-		return userRepository.existsByUsername(username);
+	public User findUserByUsernameAndPassword(String username, String password) {
+		return userRepository.findByUsernameAndPassword(username, password);
 	}
 
 	@Transactional(readOnly = true)
-	public Iterable<User> findAll() {
-		return userRepository.findAll();
-	}
-
-	public Iterable<User> findAllByAuthority(String auth) {
-		return userRepository.findAllByAuthority(auth);
+	public User findUserByAuthority(String authority) {
+		return userRepository.findByAuthority(authority);
 	}
 
 	@Transactional
-	public User updateUser(@Valid User user, Integer idToUpdate) {
-		User toUpdate = findUser(idToUpdate);
-		BeanUtils.copyProperties(user, toUpdate, "id");
-		userRepository.save(toUpdate);
-
-		return toUpdate;
+	public User saveUser(User user) {
+		return userRepository.save(user);
 	}
 
 	@Transactional
-	public void deleteUser(Integer id) {
-		User toDelete = findUser(id);
-		this.userRepository.delete(toDelete);
+	public void deleteUser(String id) {
+		userRepository.deleteById(id);
 	}
-
 }

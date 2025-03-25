@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/lineasDePedido")
+@RequestMapping("/api/lineasDePedido")
 public class LineaDePedidoController {
 
 //   TO DO: Implementar la logica de que sololos usuarios del restaurante pueden ver sus lineas de pedido
-    private LineaDePedidoService lineaDePedidoService;
+    private final LineaDePedidoService lineaDePedidoService;
 
     @Autowired
     public LineaDePedidoController(LineaDePedidoService lineaDePedidoService) {
@@ -25,7 +25,7 @@ public class LineaDePedidoController {
         if (lineaDePedidoService.getLineasDePedido().isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>((List<LineaDePedido>) lineaDePedidoService.getLineasDePedido(),
+        return new ResponseEntity<>(lineaDePedidoService.getLineasDePedido(),
                 HttpStatus.OK);
 
     }

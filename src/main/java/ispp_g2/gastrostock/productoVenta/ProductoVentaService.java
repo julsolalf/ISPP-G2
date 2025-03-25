@@ -10,7 +10,7 @@ import java.util.stream.StreamSupport;
 @Service
 public class ProductoVentaService {
 
-    private ProductoVentaRepository productoVentaRepository;
+    private final ProductoVentaRepository productoVentaRepository;
 
     @Autowired
     public ProductoVentaService(ProductoVentaRepository productoVentaRepository) {
@@ -35,7 +35,7 @@ public class ProductoVentaService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProductoVenta> getProductosVentaByCategoriaVenta(CategoriasVenta categoriaVenta) {
+    public List<ProductoVenta> getProductosVentaByCategoriaVenta(String categoriaVenta) {
         return productoVentaRepository.findProductoVentaByCategoriaVenta(categoriaVenta);
     }
 
@@ -45,7 +45,7 @@ public class ProductoVentaService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProductoVenta> getProductosVentaByCategoriaVentaAndPrecioVenta(CategoriasVenta categoriaVenta, Double precioVenta) {
+    public List<ProductoVenta> getProductosVentaByCategoriaVentaAndPrecioVenta(String categoriaVenta, Double precioVenta) {
         return productoVentaRepository.findProductoVentaByCategoriaVentaAndPrecioVenta(categoriaVenta, precioVenta);
     }
 
