@@ -1,9 +1,35 @@
 package ispp_g2.gastrostock.empleado;
 
+import java.util.List;
 import java.util.Optional;
 
+import ispp_g2.gastrostock.user.User;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-public interface EmpleadoRepository extends CrudRepository<Empleado, Integer> {
+@Repository
+public interface EmpleadoRepository extends CrudRepository<Empleado, String> {
+
+    @Query("SELECT e FROM Empleado e WHERE e.email = ?1")
+    Optional<Empleado> findByEmail(String email);
+
+    @Query("SELECT e FROM Empleado e WHERE e.firstName = ?1")
+    List<Empleado> findByNombre(String nombre);
+
+    @Query("SELECT e FROM Empleado e WHERE e.lastName = ?1")
+    List<Empleado> findByApellido(String apellido);
+
+    @Query("SELECT e FROM Empleado e WHERE e.numTelefono = ?1")
+    Optional<Empleado> findByTelefono(String telefono);
+
+    @Query("SELECT e FROM Empleado e WHERE e.negocio.id = ?1")
+    List<Empleado> findByNegocio(String id);
+
+    @Query("SELECT e FROM Empleado e WHERE e.user.id = ?1")
+    Optional<Empleado> findByUserId(String userId);
+
+    @Query("SELECT e FROM Empleado e WHERE e.tokenEmpleado = ?1")
     Optional<Empleado> findByTokenEmpleado(String tokenEmpleado);
+
 }

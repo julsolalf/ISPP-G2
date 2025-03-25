@@ -12,7 +12,7 @@ import java.util.stream.StreamSupport;
 @Service
 public class PedidoService {
 
-    private PedidoRepository pedidoRepository;
+    private final PedidoRepository pedidoRepository;
 
     @Autowired
     public PedidoService(PedidoRepository pedidoRepository) {

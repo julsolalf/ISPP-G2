@@ -2,19 +2,14 @@ package ispp_g2.gastrostock.empleado;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/empleados")
+@RequestMapping("/api/empleados")
 public class EmpleadoController {
 
     private final EmpleadoService empleadoService;
@@ -24,45 +19,101 @@ public class EmpleadoController {
         this.empleadoService = empleadoService;
     }
 
-    // Obtener todos los empleados
     @GetMapping
-    public List<Empleado> getAllEmpleados() {
-        return empleadoService.getAllEmpleados();
+    public ResponseEntity<List<Empleado>> findAll() {
+        if (empleadoService.getAllEmpleados().isEmpty())
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(empleadoService.getAllEmpleados(), HttpStatus.OK);
     }
 
-    // Obtener empleado por ID
     @GetMapping("/{id}")
-    public ResponseEntity<Empleado> getEmpleadoById(@PathVariable Integer id) {
-        return empleadoService.getEmpleadoById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<Empleado> findById(@PathVariable("id") String id) {
+        Empleado empleado = empleadoService.getEmpleadoById(id);
+        if(empleado == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(empleado, HttpStatus.OK);
     }
 
-    // Crear un nuevo empleado
+    @GetMapping("/email/{email}")
+    public ResponseEntity<Empleado> findByEmail(@PathVariable("email") String email) {
+        Empleado empleado = empleadoService.getEmpleadoByEmail(email);
+        if(empleado == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(empleadoService.getEmpleadoById(email), HttpStatus.OK);
+    }
+
+    @GetMapping("/nombre/{nombre}")
+    public ResponseEntity<List<Empleado>> findByNombre(@PathVariable("nombre") String nombre) {
+        List<Empleado> empleados = empleadoService.getEmpleadoByNombre(nombre);
+        if(empleados.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(empleados, HttpStatus.OK);
+    }
+
+    @GetMapping("/apellido/{apellido}")
+    public ResponseEntity<List<Empleado>> findByApellido(@PathVariable("apellido") String apellido) {
+        List<Empleado> empleados = empleadoService.getEmpleadoByApellido(apellido);
+        if(empleados.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(empleadoService.getEmpleadoByApellido(apellido), HttpStatus.OK);
+    }
+
+    @GetMapping("/telefono/{telefono}")
+    public ResponseEntity<Empleado> findByTelefono(@PathVariable("telefono") String telefono) {
+        Empleado empleado = empleadoService.getEmpleadoByTelefono(telefono);
+        if(empleado == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(empleadoService.getEmpleadoByTelefono(telefono), HttpStatus.OK);
+    }
+
+    @GetMapping("/negocio/{id}")
+    public ResponseEntity<List<Empleado>> findByNegocio(@PathVariable("id") String id) {
+        List<Empleado> empleados = empleadoService.getEmpleadoByNegocio(id);
+        if(empleados.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(empleadoService.getEmpleadoByNegocio(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<Empleado> findByUser(@PathVariable("id") String id) {
+        Empleado empleado = empleadoService.getEmpleadoByUser(id);
+        if(empleado == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(empleadoService.getEmpleadoByUser(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/token/{token}")
+    public ResponseEntity<Empleado> findByTokenEmpleado(@PathVariable("token") String token) {
+        Empleado empleado = empleadoService.getEmpleadoByTokenEmpleado(token);
+        if(empleado == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(empleadoService.getEmpleadoByTokenEmpleado(token), HttpStatus.OK);
+    }
+
     @PostMapping
-    public Empleado createEmpleado(@RequestBody Empleado empleado) {
-        return empleadoService.saveEmpleado(empleado);
+    public ResponseEntity<Empleado> save(@RequestBody @Valid Empleado empleado) {
+        if(empleado == null)
+            throw new IllegalArgumentException("Empleado no puede ser nulo");
+        return new ResponseEntity<>(empleadoService.saveEmpleado(empleado), HttpStatus.CREATED);
     }
 
-    // Eliminar un empleado
+    @PutMapping("/{id}")
+    public ResponseEntity<Empleado> update(@PathVariable("id") String id, @RequestBody @Valid  Empleado empleado) {
+        if(empleado == null)
+            throw new IllegalArgumentException("Empleado no puede ser nulo");
+        if(empleadoService.getEmpleadoById(id) == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        empleado.setId(Integer.valueOf(id));
+        return new ResponseEntity<>(empleadoService.saveEmpleado(empleado), HttpStatus.OK);
+    }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEmpleado(@PathVariable Integer id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") String id) {
+        Empleado empleado = empleadoService.getEmpleadoById(id);
+        if(empleado == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         empleadoService.deleteEmpleado(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    // Autenticación de empleado con JWT
-    @PostMapping("/login")
-    public ResponseEntity<String> authenticateEmpleado(@RequestParam String tokenEmpleado) {
-        String jwt = empleadoService.authenticateEmpleado(tokenEmpleado);
-        return (jwt != null) ? ResponseEntity.ok(jwt) : ResponseEntity.status(401).body("Credenciales incorrectas");
-    }
-
-    // Validar token JWT
-    @GetMapping("/validate")
-    public ResponseEntity<String> validateToken(@RequestParam String token) {
-        boolean isValid = empleadoService.validateToken(token);
-        return isValid ? ResponseEntity.ok("Token válido") : ResponseEntity.status(401).body("Token inválido o expirado");
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     
 }

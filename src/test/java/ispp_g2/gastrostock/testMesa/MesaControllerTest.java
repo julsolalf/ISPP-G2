@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,6 +30,7 @@ import ispp_g2.gastrostock.mesa.MesaService;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
+@WebMvcTest(MesaController.class)
 class MesaControllerTest {
 
     private MockMvc mockMvc;
@@ -68,7 +70,7 @@ class MesaControllerTest {
         Mesa mesa = new Mesa();
         mesa.setId(1);
         mesa.setName("Mesa VIP");
-        when(mesaService.getById(1)).thenReturn(mesa);
+        when(mesaService.getById(String.valueOf(1))).thenReturn(mesa);
 
         mockMvc.perform(get("/api/mesas/1"))
                 .andExpect(status().isOk())
@@ -94,7 +96,7 @@ class MesaControllerTest {
         mesa.setName("Mesa Nueva");
         mesa.setNumeroAsientos(4);
 
-        when(mesaService.getById(1)).thenReturn(mesa);
+        when(mesaService.getById(String.valueOf(1))).thenReturn(mesa);
 
         mockMvc.perform(put("/api/mesas/1")
                 .contentType(MediaType.APPLICATION_JSON)
