@@ -117,7 +117,7 @@ public class ProveedorRepositoryTest {
         assertNotNull(saved.getId());
         
         // Verificar que se guardó correctamente
-        Optional<Proveedor> found = proveedorRepository.findById(saved.getId());
+        Optional<Proveedor> found = proveedorRepository.findById(Integer.toString(saved.getId()));
         assertTrue(found.isPresent());
         assertEquals("Nuevo Proveedor S.A.", found.get().getName());
     }
@@ -125,7 +125,7 @@ public class ProveedorRepositoryTest {
     @Test
     void testFindById() {
         // Buscar un proveedor existente
-        Optional<Proveedor> found = proveedorRepository.findById(proveedor1.getId());
+        Optional<Proveedor> found = proveedorRepository.findById(Integer.toString(proveedor1.getId()));
         
         // Verificar que se encontró y los datos son correctos
         assertTrue(found.isPresent());
@@ -136,7 +136,7 @@ public class ProveedorRepositoryTest {
     @Test
     void testFindById_NotFound() {
         // Buscar un proveedor con ID inexistente
-        Optional<Proveedor> notFound = proveedorRepository.findById(999);
+        Optional<Proveedor> notFound = proveedorRepository.findById("999");
         
         // Verificar que no se encuentra
         assertFalse(notFound.isPresent());
@@ -145,7 +145,7 @@ public class ProveedorRepositoryTest {
     @Test
     void testFindAll() {
         // Recuperar todos los proveedores
-        List<Proveedor> proveedores = proveedorRepository.findAll();
+        List<Proveedor> proveedores = (List<Proveedor>) proveedorRepository.findAll();
         
         // Verificar que hay 3 proveedores (los creados en setUp)
         assertEquals(3, proveedores.size());
@@ -172,24 +172,24 @@ public class ProveedorRepositoryTest {
         proveedorRepository.delete(proveedor3);
         
         // Verificar que ya no existe
-        Optional<Proveedor> shouldBeDeleted = proveedorRepository.findById(proveedor3.getId());
+        Optional<Proveedor> shouldBeDeleted = proveedorRepository.findById(Integer.toString(proveedor3.getId()));
         assertFalse(shouldBeDeleted.isPresent());
         
         // Verificar que solo quedan 2 proveedores
-        assertEquals(2, proveedorRepository.findAll().size());
+        assertEquals(2, proveedorRepository.findAll());
     }
     
     @Test
     void testDeleteById() {
         // Eliminar un proveedor por ID
-        proveedorRepository.deleteById(proveedor2.getId());
+        proveedorRepository.deleteById(Integer.toString(proveedor2.getId()));
         
         // Verificar que ya no existe
-        Optional<Proveedor> shouldBeDeleted = proveedorRepository.findById(proveedor2.getId());
+        Optional<Proveedor> shouldBeDeleted = proveedorRepository.findById(Integer.toString(proveedor2.getId()));
         assertFalse(shouldBeDeleted.isPresent());
         
         // Verificar que solo quedan 2 proveedores
-        assertEquals(2, proveedorRepository.findAll().size());
+        assertEquals(2, proveedorRepository.findAll());
     }
     
     // PRUEBAS PARA MÉTODOS PERSONALIZADOS

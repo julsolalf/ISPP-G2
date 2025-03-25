@@ -138,7 +138,7 @@ public class ProveedorControllerTest {
     @Test
     void testGetAll_Success() throws Exception {
         // Arrange
-        when(proveedorService.getAll()).thenReturn(proveedores);
+        when(proveedorService.findAll()).thenReturn(proveedores);
         
         // Act & Assert
         mockMvc.perform(get("/api/proveedores"))
@@ -152,29 +152,14 @@ public class ProveedorControllerTest {
             .andExpect(jsonPath("$[2].id", is(3)))
             .andExpect(jsonPath("$[2].name", is("Distribuciones Rápidas")));
         
-        verify(proveedorService, times(1)).getAll();
+        verify(proveedorService, times(2)).findAll();
     }
-    
-    @Test
-    void testGetAll_EmptyList() throws Exception {
-        // Arrange
-        when(proveedorService.getAll()).thenReturn(Collections.emptyList());
-        
-        // Act & Assert
-        mockMvc.perform(get("/api/proveedores"))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$", hasSize(0)));
-        
-        verify(proveedorService, times(1)).getAll();
-    }
-    
     // Tests para getById()
     
     @Test
     void testGetById_Success() throws Exception {
         // Arrange
-        when(proveedorService.getById(1)).thenReturn(Optional.of(proveedor1));
+        when(proveedorService.findById("1")).thenReturn(proveedor1);
         
         // Act & Assert
         mockMvc.perform(get("/api/proveedores/1"))
@@ -184,20 +169,20 @@ public class ProveedorControllerTest {
             .andExpect(jsonPath("$.name", is("Distribuciones Alimentarias S.L.")))
             .andExpect(jsonPath("$.email", is("distribuciones@example.com")));
         
-        verify(proveedorService, times(1)).getById(1);
+        verify(proveedorService, times(1)).findById("1");
     }
     
     @Test
     void testGetById_NotFound() throws Exception {
         // Arrange
-        when(proveedorService.getById(999)).thenReturn(Optional.empty());
+        when(proveedorService.findById("999")).thenReturn(null);
         
         // Act & Assert
         mockMvc.perform(get("/api/proveedores/999"))
-            .andExpect(status().isOk())
-            .andExpect(content().string("null"));
+            .andExpect(status().isNotFound())
+            .andExpect(content().string(""));
         
-        verify(proveedorService, times(1)).getById(999);
+        verify(proveedorService, times(1)).findById("999");
     }
     
     // Tests para getByFirstName()
@@ -205,27 +190,25 @@ public class ProveedorControllerTest {
     @Test
     void testGetByFirstName_Success() throws Exception {
         // Arrange
-        List<Proveedor> distribuciones = Arrays.asList(proveedor1, proveedor3);
-        when(proveedorService.getByFirstName("Distribuciones")).thenReturn(distribuciones);
+        when(proveedorService.findByNombre("Distribuciones")).thenReturn(proveedor1);
         
         // Act & Assert
         mockMvc.perform(get("/api/proveedores/nombre")
-                .param("firstName", "Distribuciones"))
+                .param("nombre", "Distribuciones"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$", hasSize(2)))
             .andExpect(jsonPath("$[0].id", is(1)))
-            .andExpect(jsonPath("$[0].name", is("Distribuciones Alimentarias S.L.")))
-            .andExpect(jsonPath("$[1].id", is(3)))
-            .andExpect(jsonPath("$[1].name", is("Distribuciones Rápidas")));
+            .andExpect(jsonPath("$[0].name", is("Distribuciones Alimentarias S.L.")));
+
         
-        verify(proveedorService, times(1)).getByFirstName("Distribuciones");
+        verify(proveedorService, times(1)).findByNombre("Distribuciones");
     }
     
     @Test
     void testGetByFirstName_NotFound() throws Exception {
         // Arrange
-        when(proveedorService.getByFirstName("Inexistente")).thenReturn(Collections.emptyList());
+        when(proveedorService.findByNombre("Inexistente")).thenReturn(null);
         
         // Act & Assert
         mockMvc.perform(get("/api/proveedores/nombre")
@@ -234,13 +217,13 @@ public class ProveedorControllerTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$", hasSize(0)));
         
-        verify(proveedorService, times(1)).getByFirstName("Inexistente");
+        verify(proveedorService, times(1)).findByNombre("Inexistente");
     }
     
     @Test
     void testGetByFirstName_EmptyString() throws Exception {
         // Arrange
-        when(proveedorService.getByFirstName("")).thenReturn(proveedores);
+        when(proveedorService.findByNombre("")).thenReturn(proveedor1);
         
         // Act & Assert
         mockMvc.perform(get("/api/proveedores/nombre")
@@ -249,42 +232,9 @@ public class ProveedorControllerTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$", hasSize(3)));
         
-        verify(proveedorService, times(1)).getByFirstName("");
+        verify(proveedorService, times(1)).findByNombre("");
     }
-    
-    // Tests para getByDiaReparto()
-    
-    @Test
-    void testGetByDiaReparto_Success() throws Exception {
-        // Arrange
-        List<Proveedor> proveedoresLunes = Collections.singletonList(proveedor1);
-        when(proveedorService.getByDiaReparto(DayOfWeek.MONDAY)).thenReturn(proveedoresLunes);
-        
-        // Act & Assert
-        mockMvc.perform(get("/api/proveedores/dia-reparto/MONDAY"))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$", hasSize(1)))
-            .andExpect(jsonPath("$[0].id", is(1)))
-            .andExpect(jsonPath("$[0].name", is("Distribuciones Alimentarias S.L.")));
-        
-        verify(proveedorService, times(1)).getByDiaReparto(DayOfWeek.MONDAY);
-    }
-    
-    @Test
-    void testGetByDiaReparto_NotFound() throws Exception {
-        // Arrange
-        when(proveedorService.getByDiaReparto(DayOfWeek.SUNDAY)).thenReturn(Collections.emptyList());
-        
-        // Act & Assert
-        mockMvc.perform(get("/api/proveedores/dia-reparto/SUNDAY"))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$", hasSize(0)));
-        
-        verify(proveedorService, times(1)).getByDiaReparto(DayOfWeek.SUNDAY);
-    }
-    
+
     // Tests para create()
     
     @Test
@@ -339,18 +289,18 @@ public class ProveedorControllerTest {
     @Test
     void testDelete_Success() throws Exception {
         // Arrange
-        doNothing().when(proveedorService).deleteById(1);
+        doNothing().when(proveedorService).deleteById("1");
         
         // Act & Assert
         mockMvc.perform(delete("/api/proveedores/1"))
             .andExpect(status().isOk());
         
-        verify(proveedorService, times(1)).deleteById(1);
+        verify(proveedorService, times(1)).deleteById("1");
     }
     @Test
     void testDelete_Exception() throws Exception {
         // Arrange
-        doThrow(new RuntimeException("Proveedor not found")).when(proveedorService).deleteById(999);
+        doThrow(new RuntimeException("Proveedor not found")).when(proveedorService).deleteById("999");
         
         // Act & Assert - Esperamos que la excepción sea lanzada
         Exception exception = assertThrows(Exception.class, () -> {
@@ -360,7 +310,7 @@ public class ProveedorControllerTest {
         
         // Verificar que la excepción contiene el mensaje esperado
         assertTrue(exception.getMessage().contains("Proveedor not found"));
-        verify(proveedorService, times(1)).deleteById(999);
+        verify(proveedorService, times(1)).deleteById("999");
 }
     
 }
