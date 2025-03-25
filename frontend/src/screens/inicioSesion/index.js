@@ -54,7 +54,7 @@ function PantallaInicioSesion() {
         />
         <button onClick={handleLogin} className="login-btn">Iniciar Sesión</button>
 
-        <Link to="/recuperar-contrasena" className="forgot-password-link">
+        <Link to="/recuperarcontraseña" className="forgot-password-link">
           ¿Has olvidado la contraseña?
         </Link>
       </div>

@@ -4,9 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.DayOfWeek;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 @Service
 public class ProveedorService {
@@ -19,23 +18,34 @@ public class ProveedorService {
     }
 
     @Transactional(readOnly = true)
-    public List<Proveedor> getAll() {
-        return proveedorRepository.findAll();
+    public List<Proveedor> findAll() {
+        Iterable<Proveedor> proveedores = proveedorRepository.findAll();
+        return StreamSupport.stream(proveedores.spliterator(), false).toList();
     }
 
     @Transactional(readOnly = true)
-    public Optional<Proveedor> getById(Integer id) {
-        return proveedorRepository.findById(id);
+    public Proveedor findById(String id) {
+        return proveedorRepository.findById(id).orElse(null);
     }
 
     @Transactional(readOnly = true)
-    public List<Proveedor> getByFirstName(String firstName) {
-        return proveedorRepository.findByFirstNameContainingIgnoreCase(firstName);
+    public Proveedor findByEmail(String email) {
+        return proveedorRepository.findByEmail(email);
     }
 
     @Transactional(readOnly = true)
-    public List<Proveedor> getByDiaReparto(DayOfWeek diaSemana) {
-        return proveedorRepository.findByDiasRepartoContaining(diaSemana);
+    public Proveedor findByTelefono(String telefono) {
+        return proveedorRepository.findByTelefono(telefono);
+    }
+
+    @Transactional(readOnly = true)
+    public Proveedor findByDireccion(String direccion) {
+        return proveedorRepository.findByDireccion(direccion);
+    }
+
+    @Transactional(readOnly = true)
+    public Proveedor findByNombre(String nombre) {
+        return proveedorRepository.findByNombre(nombre);
     }
 
     @Transactional
@@ -44,7 +54,7 @@ public class ProveedorService {
     }
 
     @Transactional
-    public void deleteById(Integer id) {
+    public void deleteById(String id) {
         proveedorRepository.deleteById(id);
     }
 }

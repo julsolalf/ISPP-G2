@@ -1,13 +1,14 @@
 package ispp_g2.gastrostock.user;
 
-import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface AuthoritiesRepository extends CrudRepository<Authorities,String> {
 
-    @Query("SELECT DISTINCT auth FROM Authorities auth WHERE auth.authority LIKE :authority%")
-	Optional<Authorities> findByName(String authority);
+    @Query("SELECT a FROM Authorities a WHERE a.authority = ?1")
+    Authorities findByAuthority(String authority);
 
 }

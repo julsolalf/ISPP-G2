@@ -9,9 +9,12 @@ import PantallaInicioDueño from "./screens/inicioDueño/index.js";
 import PantallaInicioEmpleado from "./screens/inicioEmpleado/index.js";
 import PantallaPlanes from "./screens/planes/index.js";
 import TPV from "./screens/r/index.js";
-import Categorias from "./screens/productoInventario/list.js";
-import Proveedores from "./screens/listaProveedores/proveedores.js";
-import Empleados from "./screens/listaEmpleados/empleados.js";
+import PantallaInventario from "./screens/inventario/index.js";
+import PantallaProveedores from "./screens/proveedores/index.js";
+import PantallaEmpleados from "./screens/empleados/index.js";
+import PantallaPerfil from "./screens/perfil/index.js";
+import PantallaAñadirCategoria from "./screens/inventario/añadir.js";
+
 function AppScreen() {
   const navigate = useNavigate();
 
@@ -36,7 +39,7 @@ function AppScreen() {
           <button className="login-btn" onClick={() => navigate("/inicioSesion")}>
             Iniciar Sesión
           </button>
-          <button className="register-btn" onClick={() => navigate("/registarse")}>
+          <button className="register-btn" onClick={() => navigate("/registrarse")}>
             Registrarse
           </button>
         </div>
@@ -59,11 +62,16 @@ function App() {
         <Route path="/" element={<AppScreen />} />
         <Route path="/inicioSesion" element={<PantallaInicioSesion />} />
         <Route path="/recuperarContraseña" element={<PantallaRecuperarContraseña />} />
-        <Route path="/registarse" element={<PantallaRegistro />} />
+        <Route path="/registrarse" element={<PantallaRegistro />} />
         <Route path="/masInformacion" element={<PantallaMasInfo />} />
         <Route path="/inicioDueño" element={<PantallaInicioDueño />} />
         <Route path="/inicioEmpleado" element={<PantallaInicioEmpleado />} />
         <Route path="/planes" element={<PantallaPlanes />} />
+        <Route path="/inventario" element={<PantallaInventario />} />
+        <Route path="/proveedores" element={<PantallaProveedores />} />
+        <Route path="/empleados" element={<PantallaEmpleados />} />
+        <Route path="/perfil" element={<PantallaPerfil/>} />
+        <Route path="/añadirCategoria" element={<PantallaAñadirCategoria/>} />
       </Routes>
     </Router>
   );

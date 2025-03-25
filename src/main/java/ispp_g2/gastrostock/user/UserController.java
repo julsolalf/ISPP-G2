@@ -12,77 +12,90 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import ispp_g2.gastrostock.exceptions.AccessDeniedException;
 import jakarta.validation.Valid;
 
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 public class UserController {
 
-    private final UserService userService;
-	private final AuthoritiesService authService;
+	private final UserService userService;
 
 	@Autowired
-	public UserController(UserService userService, AuthoritiesService authService) {
+	public UserController(UserService userService) {
 		this.userService = userService;
-		this.authService = authService;
 	}
 
 	@GetMapping
-	public ResponseEntity<List<User>> findAll(@RequestParam(required = false) String auth) {
-		List<User> res;
-		if (auth != null) {
-			res = (List<User>) userService.findAllByAuthority(auth);
-		} else
-			res = (List<User>) userService.findAll();
-		return new ResponseEntity<>(res, HttpStatus.OK);
+	public ResponseEntity<List<User>> findAll() {
+		if (userService.findAll().isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
 	}
 
-	@GetMapping("authorities")
-	public ResponseEntity<List<Authorities>> findAllAuths() {
-		List<Authorities> res = (List<Authorities>) authService.findAll();
-		return new ResponseEntity<>(res, HttpStatus.OK);
+	@GetMapping("/{id}")
+	public ResponseEntity<User> findById(@PathVariable("id") String id) {
+		User user = userService.findUserById(id);
+		if (user == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
 
-	@GetMapping(value = "{id}")
-	public ResponseEntity<User> findById(@PathVariable("id") Integer id) {
-		return new ResponseEntity<>(userService.findUser(id), HttpStatus.OK);
+	@GetMapping("/username/{username}")
+	public ResponseEntity<User> findByUsername(@PathVariable("username") String username) {
+		User user = userService.findUserByUsername(username);
+		if (user == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
 
-    @PostMapping
-	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<User> create(@RequestBody @Valid User user) {
-		User savedUser = userService.saveUser(user);
-		return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+	@GetMapping("/authority/{authority}")
+	public ResponseEntity<User> findByAuthority(@PathVariable("authority") String authority) {
+		User user = userService.findUserByAuthority(authority);
+		if (user == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
 
-    @PutMapping(value = "{userId}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<User> update(@PathVariable("userId") Integer id, @RequestBody @Valid User user) {
-        User existingUser = userService.findUser(id);
-        if (existingUser == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(this.userService.updateUser(user, id), HttpStatus.OK);
-    }
+	@GetMapping("/usernameAndPassword/{username}/{password}")
+	public ResponseEntity<User> findByUsernameAndPassword(@PathVariable("username") String username,
+			@PathVariable("password") String password) {
+		User user = userService.findUserByUsernameAndPassword(username, password);
+		if (user == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(user, HttpStatus.OK);
+	}
 
-    @DeleteMapping(value = "{userId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> delete2(@PathVariable("userId") int id) {
-        User existingUser = userService.findUser(id);
-        if (existingUser == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        if (userService.findCurrentUser().getId() != id) {
-            userService.deleteUser(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            throw new AccessDeniedException("You can't delete yourself!");
-        }
-    }
+	@PostMapping
+	public ResponseEntity<User> save(@RequestBody @Valid User user) {
+		if(user==null)
+			throw new IllegalArgumentException("User cannot be null");
+		return new ResponseEntity<>(userService.saveUser(user), HttpStatus.CREATED);
+	}
+
+	@PutMapping("/{id}")
+	public ResponseEntity<User> update(@PathVariable("id") String id, @RequestBody @Valid User user) {
+		if(user==null)
+			throw new IllegalArgumentException("User cannot be null");
+		if(userService.findUserById(id)==null)
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		user.setId(Integer.valueOf(id));
+		return new ResponseEntity<>(userService.saveUser(user), HttpStatus.OK);
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<User> delete(@PathVariable("id") String id) {
+		if(userService.findUserById(id)==null)
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		userService.deleteUser(id);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
+
 }
