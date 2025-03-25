@@ -66,14 +66,20 @@ INSERT INTO mesa (id, name, numero_asientos, negocio_id)
 VALUES (5, 'Mesa 5', 4, (SELECT id FROM negocio WHERE name = 'Restaurante Burguer'));
 
 --Insertando Categoria
-INSERT INTO categoria (id, name, negocio_id)
-VALUES (1, 'COMIDA',(SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
-INSERT INTO categoria (id, name, negocio_id)
-VALUES (2, 'BEBIDAS',(SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
-INSERT INTO categoria (id, name, negocio_id)
-VALUES (3, 'COMIDA',(SELECT id FROM negocio WHERE name = 'Restaurante Burguer'));
-INSERT INTO categoria (id, name, negocio_id)
-VALUES (4, 'BEBIDAS',(SELECT id FROM negocio WHERE name = 'Restaurante Burguer'));
+INSERT INTO categoria (id, name, pertenece, negocio_id)
+VALUES (1, 'COMIDA',0, (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
+INSERT INTO categoria (id, name, pertenece, negocio_id)
+VALUES (2, 'BEBIDAS',0,(SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
+INSERT INTO categoria (id, name,pertenece, negocio_id)
+VALUES (3, 'COMIDA',0,(SELECT id FROM negocio WHERE name = 'Restaurante Burguer'));
+INSERT INTO categoria (id, name, pertenece, negocio_id)
+VALUES (4, 'BEBIDAS',0,(SELECT id FROM negocio WHERE name = 'Restaurante Burguer'));
+INSERT INTO categoria (id, name, pertenece, negocio_id)
+VALUES (5, 'HARINAS',1, (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
+INSERT INTO categoria (id, name, pertenece, negocio_id)
+VALUES (6, 'VERDURAS',1,(SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
+INSERT INTO categoria (id, name, pertenece, negocio_id)
+VALUES (7, 'CARNES',1,(SELECT id FROM negocio WHERE name = 'Restaurante Burguer'));
 
 -- Insertando productos de venta
 INSERT INTO producto_venta (id, name, categoria_id, precio_venta)
@@ -105,11 +111,11 @@ VALUES (2, 1, 2.50, (SELECT id FROM pedido WHERE precio_total = 15.00), (SELECT 
 
 -- Insertando productos en inventario
 INSERT INTO producto_inventario (id, name, categoria_id, precio_compra, cantidad_deseada, cantidad_aviso)
-VALUES (1, 'Harina', 1, 0.50, 100, 10);
+VALUES (1, 'Harina', 5, 0.50, 100, 10);
 INSERT INTO producto_inventario (id, name, categoria_id, precio_compra, cantidad_deseada, cantidad_aviso)
-VALUES (2, 'Tomate', 1, 0.30, 100, 10);
+VALUES (2, 'Tomate', 6, 0.30, 100, 10);
 INSERT INTO producto_inventario (id, name, categoria_id, precio_compra, cantidad_deseada, cantidad_aviso)
-VALUES (3, 'Carne Buey', 2, 5.50, 50, 5);
+VALUES (3, 'Carne Buey', 7, 5.50, 50, 5);
 
 -- Insertando ingredientes
 INSERT INTO ingrediente (id, cantidad, producto_inventario_id, producto_venta_id) 
