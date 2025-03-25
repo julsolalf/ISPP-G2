@@ -13,6 +13,7 @@ function AñadirEmpleado() {
   const [rol, setRol] = useState("");
   const [turno, setTurno] = useState("");
   const [posicion, setPosicion] = useState("");
+  const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
 const [showNotifications, setShowNotifications] = useState(false);
 const [showUserOptions, setShowUserOptions] = useState(false);
 
@@ -22,6 +23,11 @@ const toggleNotifications = () => {
 
   const toggleUserOptions = () => {
     setShowUserOptions(!showUserOptions);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("userToken"); // Eliminamos el token del usuario
+    navigate("/inicioSesion"); // Redirigir a la pantalla de inicio de sesión
   };
   
   const navigate = useNavigate();
@@ -92,7 +98,7 @@ const toggleNotifications = () => {
                     <button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button>
                 </li>
                 <li>
-                    <button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button>
+                    <button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
                 </li>
                 </ul>
             </div>
@@ -162,6 +168,18 @@ const toggleNotifications = () => {
         />
 
         <button onClick={handleRegister} className="login-btn">Añadir Empleado</button>
+        {/* Modal de Confirmación para Logout */}
+        {showLogoutModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>¿Está seguro que desea abandonar la sesión?</h3>
+              <div className="modal-buttons">
+                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
+                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
