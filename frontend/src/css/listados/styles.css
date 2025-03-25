@@ -327,3 +327,32 @@
 .ver-btn:hover {
   background-color: rgb(102, 215, 111);
 }
+
+/* Estilos para la tarjeta de producto */
+.producto-card {
+  background: #a92d4e;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  width: 50%;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.producto-nombre {
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+}
+
+.producto-atributo {
+  font-size: 1.2rem;
+  color: white;
+  margin: 10px 0;
+}
+
+.producto-alerta {
+  color: red;
+  font-weight: bold;
+  font-size: 1.3rem;
+}

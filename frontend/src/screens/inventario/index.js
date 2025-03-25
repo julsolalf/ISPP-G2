@@ -173,7 +173,7 @@ function Inventario() {
             <div key={index} className="empleado-card">
               <h4>{categoria.emoticono}</h4>
               <h3>{categoria.nombre}</h3>
-              <button className="ver-btn" onClick={() => navigate("/verTipoProducto")}>👁️ Ver</button>
+              <button className="ver-btn" onClick={() => navigate(`/verTipoProducto/${categoria.id}`)}>👁️ Ver</button>
             </div>
           ))}
         </div>
