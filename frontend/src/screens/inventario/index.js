@@ -177,6 +177,10 @@ function Inventario() {
             </div>
           ))}
         </div>
+        <div className="button-container1">
+          <button className="button" onClick={() => navigate("/alertaStock")}>⚠️ Alerta Stock</button>
+          <button className="button" onClick={() => navigate("/perdidas")}>📉 Pérdidas</button>
+        </div>
       </div>
     </div>
   );

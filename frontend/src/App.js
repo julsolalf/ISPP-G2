@@ -12,8 +12,13 @@ import TPV from "./screens/r/index.js";
 import PantallaInventario from "./screens/inventario/index.js";
 import PantallaProveedores from "./screens/proveedores/index.js";
 import PantallaEmpleados from "./screens/empleados/index.js";
+import PantallaAlertaStock from "./screens/alertaStock/index.js";
+import PantallaPerdidas from "./screens/perdidas/index.js";
+import PantallaAñadirEmpleado from "./screens/añadirEmpleado/index.js";
+import PantallaAñadirProveedor from "./screens/añadirProveedor/index.js";
 import PantallaPerfil from "./screens/perfil/index.js";
 import PantallaAñadirCategoria from "./screens/inventario/añadir.js";
+
 
 function AppScreen() {
   const navigate = useNavigate();
@@ -70,6 +75,10 @@ function App() {
         <Route path="/inventario" element={<PantallaInventario />} />
         <Route path="/proveedores" element={<PantallaProveedores />} />
         <Route path="/empleados" element={<PantallaEmpleados />} />
+        <Route path="/alertaStock" element={<PantallaAlertaStock />} />
+        <Route path="/perdidas" element={<PantallaPerdidas />} />
+        <Route path="/añadirEmpleado" element={<PantallaAñadirEmpleado />} />
+        <Route path="/añadirProveedor" element={<PantallaAñadirProveedor />} />
         <Route path="/perfil" element={<PantallaPerfil/>} />
         <Route path="/añadirCategoria" element={<PantallaAñadirCategoria/>} />
       </Routes>
