@@ -80,7 +80,7 @@ function PantallaInicioDueño() {
 
         <div className="button-container2">
             <button className="menu-btn" onClick={() => navigate("/carta")}><span role="img" aria-label="carta">🍽️</span> Carta</button>
-            <button className="menu-btn" onClick={() => navigate("/inventario")}><span role="img" aria-label="inventario">📦</span> Inventario</button>
+            <button className="menu-btn" onClick={() => navigate("/TPV")}><span role="img" aria-label="inventario">📱</span> TPV</button>
             <button className="menu-btn" onClick={() => navigate("/ventas")}><span role="img" aria-label="ventas">💰</span> Ventas</button>
         </div>
 
