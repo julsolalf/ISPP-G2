@@ -31,7 +31,7 @@ INSERT INTO app_user (id, username, password, authority_id) VALUES (7, 'fernando
 
 -- Insertando dueños
 INSERT INTO dueño (id, first_name, last_name, email, num_telefono, token_dueño, user_id) 
-VALUES (1, 'Carlos', 'Perez', 'carlos.perez@gmail.com', '123456789', 'tokenD1', (SELECT id FROM app_user WHERE username = 'admin'));
+VALUES (1, 'Carlos', 'Perez', 'carlos.perez@gmail.com', '123486789', 'tokenD1', (SELECT id FROM app_user WHERE username = 'admin'));
 INSERT INTO dueño (id, first_name, last_name, email, num_telefono, token_dueño, user_id) 
 VALUES (2, 'Pablo', 'Rivas', 'pablo.rivas@gmail.com', '123456789', 'tokenD2', (SELECT id FROM app_user WHERE username = 'admin2'));
 
@@ -45,13 +45,13 @@ VALUES (2, 'Restaurante Burguer', 09876, 'Calle Falsa 123', '28001', 'Madrid', '
 INSERT INTO empleado (id, first_name, last_name, email, num_telefono, token_empleado, descripcion, negocio_id, user_id) 
 VALUES (1,'Juan', 'Garcia', 'juan.garcia@gmail.com', '987654321', 'tokenEmp1', 'Cocina', (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'juan'));
 INSERT INTO empleado (id, first_name, last_name, email, num_telefono, token_empleado, descripcion, negocio_id, user_id) 
-VALUES (2, 'Alejandro', 'Vargas', 'alejandro.vargas@gmail.com', '987654321', 'tokenEmp2', 'Exterior', (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'alejandro'));
+VALUES (2, 'Alejandro', 'Vargas', 'alejandro.vargas@gmail.com', '987654322', 'tokenEmp2', 'Exterior', (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'alejandro'));
 INSERT INTO empleado (id, first_name, last_name, email, num_telefono, token_empleado, descripcion, negocio_id, user_id) 
-VALUES (3, 'Antonio', 'Fernández', 'antonio.fernandez@gmail.com', '987654321', 'tokenEmp3', 'Barra', (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'antonio'));
+VALUES (3, 'Antonio', 'Fernández', 'antonio.fernandez@gmail.com', '987654323', 'tokenEmp3', 'Barra', (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'antonio'));
 INSERT INTO empleado (id, first_name, last_name, email, num_telefono, token_empleado, descripcion, negocio_id, user_id) 
-VALUES (4, 'Paco', 'Hernández', 'paco.hernandez@gmail.com', '987654321', 'tokenEmp4', 'Cocina', (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'paco'));
+VALUES (4, 'Paco', 'Hernández', 'paco.hernandez@gmail.com', '987654324', 'tokenEmp4', 'Cocina', (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'paco'));
 INSERT INTO empleado (id, first_name, last_name, email, num_telefono, token_empleado, descripcion, negocio_id, user_id) 
-VALUES (5, 'Fernando', 'Pérez', 'fernando.perez@gmail.com', '987654321', 'tokenEmp5', null, (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'fernando'));
+VALUES (5, 'Fernando', 'Pérez', 'fernando.perez@gmail.com', '987654325', 'tokenEmp5', null, (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'fernando'));
 
 -- Insertando mesas
 INSERT INTO mesa (id, name, numero_asientos, negocio_id) 
