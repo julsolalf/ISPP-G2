@@ -34,6 +34,17 @@ function Inventario() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
 
+
+  const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
+
+  const toggleNotifications = () => {
+    setShowNotifications(!showNotifications);
+  };
+
+  const toggleUserOptions = () => {
+    setShowUserOptions(!showUserOptions);
+  };
+
   useEffect(() => {
     const cargarDatos = async () => {
       const datosCategorias = await obtenerCategorias();
@@ -41,6 +52,12 @@ function Inventario() {
     };
     cargarDatos();
   }, []);
+
+
+  const handleLogout = () => {
+    localStorage.removeItem("userToken"); // Eliminamos el token del usuario
+    navigate("/"); // Redirigir a la pantalla de inicio de sesión
+  };
 
   return (
     <div className="home-container"
@@ -81,9 +98,15 @@ function Inventario() {
               <button className="close-btn" onClick={() => setShowUserOptions(false)}>X</button>
             </div>
             <ul>
-              <li><button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button></li>
-              <li><button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button></li>
-              <li><button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button></li>
+              <li>
+                <button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button>
+              </li>
+              <li>
+                <button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button>
+              </li>
+              <li>
+              <button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
+              </li>
             </ul>
           </div>
         )}
@@ -110,6 +133,18 @@ function Inventario() {
           <button className="button" onClick={() => navigate("/alertaStock")}>⚠️ Alerta Stock</button>
           <button className="button" onClick={() => navigate("/perdidas")}>📉 Pérdidas</button>
         </div>
+        {/* Modal de Confirmación para Logout */}
+        {showLogoutModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>¿Está seguro que desea abandonar la sesión?</h3>
+              <div className="modal-buttons">
+                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
+                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

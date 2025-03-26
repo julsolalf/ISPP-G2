@@ -10,6 +10,11 @@ function AñadirEmpleado() {
   const [email, setEmail] = useState("");
   const [numTelefono, setNumTelefono] = useState("");
   const [rol, setRol] = useState("");
+  const [turno, setTurno] = useState("");
+  const [posicion, setPosicion] = useState("");
+  const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showUserOptions, setShowUserOptions] = useState(false);
   const [descripcion, setDescripcion] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -28,6 +33,13 @@ function AñadirEmpleado() {
   const toggleUserOptions = () => {
     setShowUserOptions(!showUserOptions);
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem("userToken"); // Eliminamos el token del usuario
+    navigate("/"); // Redirigir a la pantalla de inicio de sesión
+  };
+  
+  const navigate = useNavigate();
 
   const handleRegister = async () => {
     const empleadoData = {
@@ -94,18 +106,24 @@ function AñadirEmpleado() {
             </ul>
           </div>
         )}
-
-        {showUserOptions && (
-          <div className="notification-bubble user-options">
-            <div className="notification-header">
-              <strong>Usuario</strong>
-              <button className="close-btn" onClick={toggleUserOptions}>X</button>
-            </div>
-            <ul>
-              <li><button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button></li>
-              <li><button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button></li>
-              <li><button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button></li>
-            </ul>
+        
+            {showUserOptions && (
+            <div className="notification-bubble user-options">
+                <div className="notification-header">
+                <strong>Usuario</strong>
+                <button className="close-btn" onClick={toggleUserOptions}>X</button>
+                </div>
+                <ul>
+                <li>
+                    <button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button>
+                </li>
+                <li>
+                    <button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button>
+                </li>
+                <li>
+                    <button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
+                </li>
+                </ul>
           </div>
         )}
 
@@ -179,6 +197,18 @@ function AñadirEmpleado() {
         />
 
         <button onClick={handleRegister} className="login-btn">Añadir Empleado</button>
+        {/* Modal de Confirmación para Logout */}
+        {showLogoutModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>¿Está seguro que desea abandonar la sesión?</h3>
+              <div className="modal-buttons">
+                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
+                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

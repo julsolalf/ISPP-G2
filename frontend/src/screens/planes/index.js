@@ -7,11 +7,17 @@ function PantallaPlanes() {
   const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = React.useState(false);
   const [showUserOptions, setShowUserOptions] = React.useState(false);
+  const [showLogoutModal, setShowLogoutModal] = React.useState(false); // Estado para la modal de logout
   const [isFreePlanActive, setIsFreePlanActive] = React.useState(true);
   const [isPremiumPlanActive, setIsPremiumPlanActive] = React.useState(false); 
 
   const toggleNotifications = () => setShowNotifications(!showNotifications);
   const toggleUserOptions = () => setShowUserOptions(!showUserOptions);
+
+  const handleLogout = () => {
+    localStorage.removeItem("userToken"); // Eliminamos el token del usuario
+    navigate("/"); // Redirigir a la pantalla de inicio de sesión
+  };
 
   return (
     <div
@@ -62,7 +68,7 @@ function PantallaPlanes() {
                 <button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button>
               </li>
               <li>
-                <button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button>
+              <button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
               </li>
             </ul>
           </div>
@@ -107,6 +113,18 @@ function PantallaPlanes() {
             )}
             </div>
         </div>
+        {/* Modal de Confirmación para Logout */}
+        {showLogoutModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>¿Está seguro que desea abandonar la sesión?</h3>
+              <div className="modal-buttons">
+                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
+                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

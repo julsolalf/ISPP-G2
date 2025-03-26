@@ -19,7 +19,7 @@ function PantallaInicioDueño() {
 
   const handleLogout = () => {
     localStorage.removeItem("userToken"); // Eliminamos el token del usuario
-    navigate("/inicioSesion"); // Redirigir a la pantalla de inicio de sesión
+    navigate("/"); // Redirigir a la pantalla de inicio de sesión
   };
 
   return (
