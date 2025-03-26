@@ -94,5 +94,19 @@ public class EmpleadoService {
         empleado.setNegocio(negocio);
         return empleado;
     }
+
+    @Transactional(readOnly = true)
+    public EmpleadoDTO convertirEmpleadoDTO(Empleado empleado) {
+        EmpleadoDTO empleadoDTO = new EmpleadoDTO();
+        empleadoDTO.setFirstName(empleado.getFirstName());
+        empleadoDTO.setLastName(empleado.getLastName());
+        empleadoDTO.setEmail(empleado.getEmail());
+        empleadoDTO.setTokenEmpleado(empleado.getTokenEmpleado());
+        empleadoDTO.setNumTelefono(empleado.getNumTelefono());
+        empleadoDTO.setDescripcion(empleado.getDescripcion());
+        empleadoDTO.setUser(String.valueOf(empleado.getUser().getId()));
+        empleadoDTO.setNegocio(String.valueOf(empleado.getNegocio().getId()));
+        return empleadoDTO;
+    }
     
 }

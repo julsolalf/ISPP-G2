@@ -1,5 +1,6 @@
 package ispp_g2.gastrostock.empleado;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ispp_g2.gastrostock.negocio.Negocio;
@@ -34,12 +35,32 @@ public class EmpleadoController {
         return new ResponseEntity<>(empleadoService.getAllEmpleados(), HttpStatus.OK);
     }
 
+    @GetMapping("/dto")
+    public ResponseEntity<List<EmpleadoDTO>> findAllDTO() {
+        if (empleadoService.getAllEmpleados().isEmpty())
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        List<EmpleadoDTO> empleadoDTOS = new ArrayList<>();
+        for (Empleado empleado : empleadoService.getAllEmpleados()) {
+            empleadoDTOS.add(empleadoService.convertirEmpleadoDTO(empleado));
+        }
+        return new ResponseEntity<>(empleadoDTOS, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Empleado> findById(@PathVariable("id") String id) {
         Empleado empleado = empleadoService.getEmpleadoById(id);
         if(empleado == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(empleado, HttpStatus.OK);
+    }
+
+    @GetMapping("/dto/{id}")
+    public ResponseEntity<EmpleadoDTO> findDTOById(@PathVariable("id") String id) {
+        Empleado empleado = empleadoService.getEmpleadoById(id);
+        if(empleado == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        EmpleadoDTO empleadoDTO = empleadoService.convertirEmpleadoDTO(empleado);
+        return new ResponseEntity<>(empleadoDTO, HttpStatus.OK);
     }
 
     @GetMapping("/email/{email}")
@@ -50,12 +71,33 @@ public class EmpleadoController {
         return new ResponseEntity<>(empleadoService.getEmpleadoById(email), HttpStatus.OK);
     }
 
+    @GetMapping("/dto/email/{email}")
+    public ResponseEntity<EmpleadoDTO> findDTOByEmail(@PathVariable("email") String email) {
+        Empleado empleado = empleadoService.getEmpleadoByEmail(email);
+        if(empleado == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        EmpleadoDTO empleadoDTO = empleadoService.convertirEmpleadoDTO(empleado);
+        return new ResponseEntity<>(empleadoDTO, HttpStatus.OK);
+    }
+
     @GetMapping("/nombre/{nombre}")
     public ResponseEntity<List<Empleado>> findByNombre(@PathVariable("nombre") String nombre) {
         List<Empleado> empleados = empleadoService.getEmpleadoByNombre(nombre);
         if(empleados.isEmpty())
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(empleados, HttpStatus.OK);
+    }
+
+    @GetMapping("/dto/nombre/{nombre}")
+    public ResponseEntity<List<EmpleadoDTO>> findDTOByNombre(@PathVariable("nombre") String nombre) {
+        List<Empleado> empleados = empleadoService.getEmpleadoByNombre(nombre);
+        if(empleados.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        List<EmpleadoDTO> empleadoDTOS = new ArrayList<>();
+        for (Empleado empleado : empleados) {
+            empleadoDTOS.add(empleadoService.convertirEmpleadoDTO(empleado));
+        }
+        return new ResponseEntity<>(empleadoDTOS, HttpStatus.OK);
     }
 
     @GetMapping("/apellido/{apellido}")
@@ -66,12 +108,33 @@ public class EmpleadoController {
         return new ResponseEntity<>(empleadoService.getEmpleadoByApellido(apellido), HttpStatus.OK);
     }
 
+    @GetMapping("/dto/apellido/{apellido}")
+    public ResponseEntity<List<EmpleadoDTO>> findDTOByApellido(@PathVariable("apellido") String apellido) {
+        List<Empleado> empleados = empleadoService.getEmpleadoByApellido(apellido);
+        if(empleados.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        List<EmpleadoDTO> empleadoDTOS = new ArrayList<>();
+        for (Empleado empleado : empleados) {
+            empleadoDTOS.add(empleadoService.convertirEmpleadoDTO(empleado));
+        }
+        return new ResponseEntity<>(empleadoDTOS, HttpStatus.OK);
+    }
+
     @GetMapping("/telefono/{telefono}")
     public ResponseEntity<Empleado> findByTelefono(@PathVariable("telefono") String telefono) {
         Empleado empleado = empleadoService.getEmpleadoByTelefono(telefono);
         if(empleado == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(empleadoService.getEmpleadoByTelefono(telefono), HttpStatus.OK);
+    }
+
+    @GetMapping("/dto/telefono/{telefono}")
+    public ResponseEntity<EmpleadoDTO> findDTOByTelefono(@PathVariable("telefono") String telefono) {
+        Empleado empleado = empleadoService.getEmpleadoByTelefono(telefono);
+        if(empleado == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        EmpleadoDTO empleadoDTO = empleadoService.convertirEmpleadoDTO(empleado);
+        return new ResponseEntity<>(empleadoDTO, HttpStatus.OK);
     }
 
     @GetMapping("/negocio/{id}")
@@ -82,6 +145,18 @@ public class EmpleadoController {
         return new ResponseEntity<>(empleadoService.getEmpleadoByNegocio(id), HttpStatus.OK);
     }
 
+    @GetMapping("/dto/negocio/{id}")
+    public ResponseEntity<List<EmpleadoDTO>> findDTOByNegocio(@PathVariable("id") String id) {
+        List<Empleado> empleados = empleadoService.getEmpleadoByNegocio(id);
+        if(empleados.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        List<EmpleadoDTO> empleadoDTOS = new ArrayList<>();
+        for (Empleado empleado : empleados) {
+            empleadoDTOS.add(empleadoService.convertirEmpleadoDTO(empleado));
+        }
+        return new ResponseEntity<>(empleadoDTOS, HttpStatus.OK);
+    }
+
     @GetMapping("/user/{id}")
     public ResponseEntity<Empleado> findByUser(@PathVariable("id") String id) {
         Empleado empleado = empleadoService.getEmpleadoByUser(id);
@@ -90,12 +165,30 @@ public class EmpleadoController {
         return new ResponseEntity<>(empleadoService.getEmpleadoByUser(id), HttpStatus.OK);
     }
 
+    @GetMapping("/dto/user/{id}")
+    public ResponseEntity<EmpleadoDTO> findDTOByUser(@PathVariable("id") String id) {
+        Empleado empleado = empleadoService.getEmpleadoByUser(id);
+        if(empleado == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        EmpleadoDTO empleadoDTO = empleadoService.convertirEmpleadoDTO(empleado);
+        return new ResponseEntity<>(empleadoDTO, HttpStatus.OK);
+    }
+
     @GetMapping("/token/{token}")
     public ResponseEntity<Empleado> findByTokenEmpleado(@PathVariable("token") String token) {
         Empleado empleado = empleadoService.getEmpleadoByTokenEmpleado(token);
         if(empleado == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(empleadoService.getEmpleadoByTokenEmpleado(token), HttpStatus.OK);
+    }
+
+    @GetMapping("/dto/token/{token}")
+    public ResponseEntity<EmpleadoDTO> findDTOByTokenEmpleado(@PathVariable("token") String token) {
+        Empleado empleado = empleadoService.getEmpleadoByTokenEmpleado(token);
+        if(empleado == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        EmpleadoDTO empleadoDTO = empleadoService.convertirEmpleadoDTO(empleado);
+        return new ResponseEntity<>(empleadoDTO, HttpStatus.OK);
     }
 
     @PostMapping
