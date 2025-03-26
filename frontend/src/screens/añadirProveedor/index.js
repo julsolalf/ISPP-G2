@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios"; 
 import "../../css/paginasBase/styles.css";
 import { Bell, User } from "lucide-react"; 
 
 function AñadirProveedor() {
-  const [nombre, setNombre] = useState("");
+  const [name, setNombre] = useState("");
   const [email, setEmail] = useState("");
   const [telefono, setTelefono] = useState("");
   const [direccion, setDireccion] = useState(""); 
-  const [descripcion, setDescripcion] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
@@ -28,16 +28,29 @@ function AñadirProveedor() {
 
   const navigate = useNavigate();
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     console.log("Añadiendo proveedor con:", {
-      nombre,
+      name,
       email,
       telefono,
-      direccion,
-      descripcion
+      direccion
     });
 
-    navigate("/proveedores"); 
+    const proveedorData = {
+      name,
+      email,
+      telefono,
+      direccion
+    };
+
+    try {
+      const response = await axios.post("http://localhost:8080/api/proveedores", proveedorData);
+      if (response.status === 201) {
+        navigate("/proveedores"); 
+      }
+    } catch (error) {
+      console.error("Error al añadir el proveedor:", error.response ? error.response.data : error.message);
+    }
   };
 
   return (
@@ -101,7 +114,7 @@ function AñadirProveedor() {
         <input
           type="text"
           placeholder="Nombre"
-          value={nombre}
+          value={name}
           onChange={(e) => setNombre(e.target.value)}
         />
         <input
@@ -125,7 +138,7 @@ function AñadirProveedor() {
         <input
           type="text"
           placeholder="Descripción"
-          value={direccion}
+          value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
         />
 

@@ -31,7 +31,7 @@ INSERT INTO app_user (id, username, password, authority_id) VALUES (7, 'fernando
 
 -- Insertando dueños
 INSERT INTO dueño (id, first_name, last_name, email, num_telefono, token_dueño, user_id) 
-VALUES (1, 'Carlos', 'Perez', 'carlos.perez@gmail.com', '123456789', 'tokenD1', (SELECT id FROM app_user WHERE username = 'admin'));
+VALUES (1, 'Carlos', 'Perez', 'carlos.perez@gmail.com', '123486789', 'tokenD1', (SELECT id FROM app_user WHERE username = 'admin'));
 INSERT INTO dueño (id, first_name, last_name, email, num_telefono, token_dueño, user_id) 
 VALUES (2, 'Pablo', 'Rivas', 'pablo.rivas@gmail.com', '123456789', 'tokenD2', (SELECT id FROM app_user WHERE username = 'admin2'));
 
@@ -45,13 +45,13 @@ VALUES (2, 'Restaurante Burguer', 09876, 'Calle Falsa 123', '28001', 'Madrid', '
 INSERT INTO empleado (id, first_name, last_name, email, num_telefono, token_empleado, descripcion, negocio_id, user_id) 
 VALUES (1,'Juan', 'Garcia', 'juan.garcia@gmail.com', '987654321', 'tokenEmp1', 'Cocina', (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'juan'));
 INSERT INTO empleado (id, first_name, last_name, email, num_telefono, token_empleado, descripcion, negocio_id, user_id) 
-VALUES (2, 'Alejandro', 'Vargas', 'alejandro.vargas@gmail.com', '987654321', 'tokenEmp2', 'Exterior', (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'alejandro'));
+VALUES (2, 'Alejandro', 'Vargas', 'alejandro.vargas@gmail.com', '987654322', 'tokenEmp2', 'Exterior', (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'alejandro'));
 INSERT INTO empleado (id, first_name, last_name, email, num_telefono, token_empleado, descripcion, negocio_id, user_id) 
-VALUES (3, 'Antonio', 'Fernández', 'antonio.fernandez@gmail.com', '987654321', 'tokenEmp3', 'Barra', (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'antonio'));
+VALUES (3, 'Antonio', 'Fernández', 'antonio.fernandez@gmail.com', '987654323', 'tokenEmp3', 'Barra', (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'antonio'));
 INSERT INTO empleado (id, first_name, last_name, email, num_telefono, token_empleado, descripcion, negocio_id, user_id) 
-VALUES (4, 'Paco', 'Hernández', 'paco.hernandez@gmail.com', '987654321', 'tokenEmp4', 'Cocina', (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'paco'));
+VALUES (4, 'Paco', 'Hernández', 'paco.hernandez@gmail.com', '987654324', 'tokenEmp4', 'Cocina', (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'paco'));
 INSERT INTO empleado (id, first_name, last_name, email, num_telefono, token_empleado, descripcion, negocio_id, user_id) 
-VALUES (5, 'Fernando', 'Pérez', 'fernando.perez@gmail.com', '987654321', 'tokenEmp5', null, (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'fernando'));
+VALUES (5, 'Fernando', 'Pérez', 'fernando.perez@gmail.com', '987654325', 'tokenEmp5', null, (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'fernando'));
 
 -- Insertando mesas
 INSERT INTO mesa (id, name, numero_asientos, negocio_id) 
@@ -66,14 +66,20 @@ INSERT INTO mesa (id, name, numero_asientos, negocio_id)
 VALUES (5, 'Mesa 5', 4, (SELECT id FROM negocio WHERE name = 'Restaurante Burguer'));
 
 --Insertando Categoria
-INSERT INTO categoria (id, name, negocio_id)
-VALUES (1, 'COMIDA',(SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
-INSERT INTO categoria (id, name, negocio_id)
-VALUES (2, 'BEBIDAS',(SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
-INSERT INTO categoria (id, name, negocio_id)
-VALUES (3, 'COMIDA',(SELECT id FROM negocio WHERE name = 'Restaurante Burguer'));
-INSERT INTO categoria (id, name, negocio_id)
-VALUES (4, 'BEBIDAS',(SELECT id FROM negocio WHERE name = 'Restaurante Burguer'));
+INSERT INTO categoria (id, name, pertenece, negocio_id)
+VALUES (1, 'COMIDA',1, (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
+INSERT INTO categoria (id, name, pertenece, negocio_id)
+VALUES (2, 'BEBIDAS',1,(SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
+INSERT INTO categoria (id, name,pertenece, negocio_id)
+VALUES (3, 'COMIDA',1,(SELECT id FROM negocio WHERE name = 'Restaurante Burguer'));
+INSERT INTO categoria (id, name, pertenece, negocio_id)
+VALUES (4, 'BEBIDAS',1,(SELECT id FROM negocio WHERE name = 'Restaurante Burguer'));
+INSERT INTO categoria (id, name, pertenece, negocio_id)
+VALUES (5, 'HARINAS',0, (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
+INSERT INTO categoria (id, name, pertenece, negocio_id)
+VALUES (6, 'VERDURAS',0,(SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
+INSERT INTO categoria (id, name, pertenece, negocio_id)
+VALUES (7, 'CARNES',0,(SELECT id FROM negocio WHERE name = 'Restaurante Burguer'));
 
 -- Insertando productos de venta
 INSERT INTO producto_venta (id, name, categoria_id, precio_venta)
@@ -105,11 +111,11 @@ VALUES (2, 1, 2.50, (SELECT id FROM pedido WHERE precio_total = 15.00), (SELECT 
 
 -- Insertando productos en inventario
 INSERT INTO producto_inventario (id, name, categoria_id, precio_compra, cantidad_deseada, cantidad_aviso)
-VALUES (1, 'Harina', 1, 0.50, 100, 10);
+VALUES (1, 'Harina', 5, 0.50, 100, 10);
 INSERT INTO producto_inventario (id, name, categoria_id, precio_compra, cantidad_deseada, cantidad_aviso)
-VALUES (2, 'Tomate', 1, 0.30, 100, 10);
+VALUES (2, 'Tomate', 6, 0.30, 100, 10);
 INSERT INTO producto_inventario (id, name, categoria_id, precio_compra, cantidad_deseada, cantidad_aviso)
-VALUES (3, 'Carne Buey', 2, 5.50, 50, 5);
+VALUES (3, 'Carne Buey', 7, 5.50, 50, 5);
 
 -- Insertando ingredientes
 INSERT INTO ingrediente (id, cantidad, producto_inventario_id, producto_venta_id) 

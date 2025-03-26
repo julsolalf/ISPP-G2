@@ -14,4 +14,5 @@ public interface CategoriaRepository extends CrudRepository<Categoria, String> {
 
     @Query("SELECT c FROM Categoria c WHERE c.negocio.id = ?1")
     List<Categoria> findByNegocioId(String negocioId);
+
 }
