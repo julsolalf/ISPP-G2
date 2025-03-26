@@ -119,7 +119,7 @@ function AñadirProveedor() {
         <input
           type="text"
           placeholder="Descripción"
-          value={direccion}
+          value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
         />
 
