@@ -259,10 +259,10 @@ public class ReabastecimientoControllerTest {
     void testFindByPrecioTotal_NotFound() throws Exception {
         // Given
         Double precioNoExistente = 999.99;
-        when(reabastecimientoService.getByPrecioTotal(precioNoExistente)).thenReturn(Collections.emptyList());
+        when(reabastecimientoService.getByPrecioTotal(precioNoExistente)).thenReturn(null);
         
         // When & Then
-        mockMvc.perform(get("/api/reabastecimientos/precioTotal/999.99"))
+        mockMvc.perform(get("/api/reabastecimientos/precioTotal/" + precioNoExistente))
                 .andExpect(status().isNotFound());
         
         verify(reabastecimientoService).getByPrecioTotal(precioNoExistente);
