@@ -108,7 +108,7 @@ function Dashboard() {
 
   const handleLogout = () => {
     localStorage.removeItem("userToken");
-    navigate("/inicioSesion");
+    navigate("/");
   };
 
   // Datos para las gráficas
