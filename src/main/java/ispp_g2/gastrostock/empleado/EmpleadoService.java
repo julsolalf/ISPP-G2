@@ -81,7 +81,7 @@ public class EmpleadoService {
         return empleadoRepository.findByTokenEmpleado(tokenEmpleado).orElse(null);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Empleado convertirDTOEmpleado(EmpleadoDTO empleadoDTO, Negocio negocio, User user) {
         Empleado empleado = new Empleado();
         empleado.setFirstName(empleadoDTO.getFirstName());
