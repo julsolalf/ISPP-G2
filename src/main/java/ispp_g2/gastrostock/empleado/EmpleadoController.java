@@ -2,6 +2,10 @@ package ispp_g2.gastrostock.empleado;
 
 import java.util.List;
 
+import ispp_g2.gastrostock.negocio.Negocio;
+import ispp_g2.gastrostock.negocio.NegocioService;
+import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,10 +17,14 @@ import org.springframework.web.bind.annotation.*;
 public class EmpleadoController {
 
     private final EmpleadoService empleadoService;
+    private final UserService userService;
+    private final NegocioService negocioService;
 
     @Autowired
-    public EmpleadoController(EmpleadoService empleadoService) {
+    public EmpleadoController(EmpleadoService empleadoService, UserService userService, NegocioService negocioService) {
         this.empleadoService = empleadoService;
+        this.userService = userService;
+        this.negocioService = negocioService;
     }
 
     @GetMapping
@@ -91,18 +99,26 @@ public class EmpleadoController {
     }
 
     @PostMapping
-    public ResponseEntity<Empleado> save(@RequestBody @Valid Empleado empleado) {
-        if(empleado == null)
+    public ResponseEntity<Empleado> save(@RequestBody @Valid EmpleadoDTO empleadoDTO) {
+        if(empleadoDTO==null)
             throw new IllegalArgumentException("Empleado no puede ser nulo");
+        User usuario = userService.findUserById(empleadoDTO.getUser());
+        Negocio negocio = negocioService.getById(empleadoDTO.getNegocio());
+        if(usuario == null || negocio == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Empleado empleado = empleadoService.convertirDTOEmpleado(empleadoDTO, negocio, usuario);
         return new ResponseEntity<>(empleadoService.saveEmpleado(empleado), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Empleado> update(@PathVariable("id") String id, @RequestBody @Valid  Empleado empleado) {
-        if(empleado == null)
+    public ResponseEntity<Empleado> update(@PathVariable("id") String id, @RequestBody @Valid  EmpleadoDTO empleadoDTO) {
+        if(empleadoDTO==null)
             throw new IllegalArgumentException("Empleado no puede ser nulo");
+        Empleado current_empleado= empleadoService.getEmpleadoById(id);
+        Negocio negocio = negocioService.getById(empleadoDTO.getNegocio());
         if(empleadoService.getEmpleadoById(id) == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Empleado empleado = empleadoService.convertirDTOEmpleado(empleadoDTO,negocio,current_empleado.getUser());
         empleado.setId(Integer.valueOf(id));
         return new ResponseEntity<>(empleadoService.saveEmpleado(empleado), HttpStatus.OK);
     }

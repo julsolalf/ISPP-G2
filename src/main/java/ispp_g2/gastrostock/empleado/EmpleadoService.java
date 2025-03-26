@@ -1,19 +1,14 @@
 package ispp_g2.gastrostock.empleado;
 
-import java.security.Key;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.StreamSupport;
 
+import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
+
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -84,6 +79,20 @@ public class EmpleadoService {
     @Transactional(readOnly = true)
     public Empleado getEmpleadoByTokenEmpleado(String tokenEmpleado) {
         return empleadoRepository.findByTokenEmpleado(tokenEmpleado).orElse(null);
+    }
+
+    @Transactional
+    public Empleado convertirDTOEmpleado(EmpleadoDTO empleadoDTO, Negocio negocio, User user) {
+        Empleado empleado = new Empleado();
+        empleado.setFirstName(empleadoDTO.getFirstName());
+        empleado.setLastName(empleadoDTO.getLastName());
+        empleado.setEmail(empleadoDTO.getEmail());
+        empleado.setTokenEmpleado(empleadoDTO.getTokenEmpleado());
+        empleado.setNumTelefono(empleadoDTO.getNumTelefono());
+        empleado.setDescripcion(empleadoDTO.getDescripcion());
+        empleado.setUser(user);
+        empleado.setNegocio(negocio);
+        return empleado;
     }
     
 }
