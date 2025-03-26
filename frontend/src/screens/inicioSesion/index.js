@@ -61,8 +61,8 @@ function PantallaInicioSesion() {
         <h2>Iniciar Sesión</h2>
 
         <input
-          type="email"
-          placeholder="Correo Electrónico"
+          type="Usuario"
+          placeholder="Usuario"
           value={usuario}
           onChange={(e) => setUsuario(e.target.value)}
         />

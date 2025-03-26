@@ -2,7 +2,7 @@
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import "./App.css";
 import PantallaInicioSesion from "./screens/inicioSesion/index.js";
-import PantallaRegistro from "./screens/registro/index.js";
+import PantallaRegistroDueño from "./screens/registroDueño/index.js";
 import PantallaRecuperarContraseña from "./screens/recuperarContraseña/index.js";
 import PantallaMasInfo from "./screens/masInformacion/index.js";
 import PantallaInicioDueño from "./screens/inicioDueño/index.js";
@@ -48,7 +48,7 @@ function AppScreen() {
           <button className="login-btn" onClick={() => navigate("/inicioSesion")}>
             Iniciar Sesión
           </button>
-          <button className="register-btn" onClick={() => navigate("/registrarse")}>
+          <button className="register-btn" onClick={() => navigate("/registroDueño")}>
             Registrarse
           </button>
         </div>
@@ -71,7 +71,7 @@ function App() {
         <Route path="/" element={<AppScreen />} />
         <Route path="/inicioSesion" element={<PantallaInicioSesion />} />
         <Route path="/recuperarContraseña" element={<PantallaRecuperarContraseña />} />
-        <Route path="/registrarse" element={<PantallaRegistro />} />
+        <Route path="/registroDueño" element={<PantallaRegistroDueño />} />
         <Route path="/masInformacion" element={<PantallaMasInfo />} />
         <Route path="/inicioDueño" element={<PantallaInicioDueño />} />
         <Route path="/inicioEmpleado" element={<PantallaInicioEmpleado />} />
