@@ -16,6 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import ispp_g2.gastrostock.categorias.Categoria;
 import ispp_g2.gastrostock.categorias.CategoriaRepository;
+import ispp_g2.gastrostock.categorias.Pertenece;
 import ispp_g2.gastrostock.dueño.Dueño;
 import ispp_g2.gastrostock.dueño.DueñoRepository;
 import ispp_g2.gastrostock.empleado.Empleado;
@@ -128,6 +129,7 @@ public class LineaDePedidoRepositoryTest {
         categoria = new Categoria();
         categoria.setName("Bebidas");
         categoria.setNegocio(negocio);
+        categoria.setPertenece(Pertenece.INVENTARIO);
         categoria = categoriaRepository.save(categoria);
 
         // Crear productos

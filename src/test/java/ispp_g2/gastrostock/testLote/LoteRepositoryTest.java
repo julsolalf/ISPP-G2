@@ -28,6 +28,7 @@ import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioRepository;
 import ispp_g2.gastrostock.categorias.Categoria;
 import ispp_g2.gastrostock.categorias.CategoriaRepository;
+import ispp_g2.gastrostock.categorias.Pertenece;
 import ispp_g2.gastrostock.dueño.Dueño;
 import ispp_g2.gastrostock.dueño.DueñoRepository;
 import ispp_g2.gastrostock.proveedores.Proveedor;
@@ -122,12 +123,14 @@ public class LoteRepositoryTest {
         // Crear categorías
         categoria = new Categoria();
         categoria.setName("Harinas");
-        categoria.setNegocio(negocio); // Asignar negocio a categoría
+        categoria.setNegocio(negocio); 
+        categoria.setPertenece(Pertenece.INVENTARIO);
         categoria = categoriaRepository.save(categoria);
         
         Categoria categoriaBebidas = new Categoria();
         categoriaBebidas.setName("Bebidas");
         categoriaBebidas.setNegocio(negocio);
+        categoriaBebidas.setPertenece(Pertenece.INVENTARIO);
         categoriaBebidas = categoriaRepository.save(categoriaBebidas);
         
         // Crear productos de inventario
