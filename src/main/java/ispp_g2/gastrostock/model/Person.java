@@ -53,6 +53,7 @@ public class Person extends BaseEntity {
 
 	@NotEmpty
 	@Digits(fraction = 0, integer = 9)
+	@Column(unique = true)
 	protected String numTelefono;
 
 	@OneToOne(cascade = { CascadeType.DETACH, CascadeType.REFRESH, CascadeType.PERSIST })
