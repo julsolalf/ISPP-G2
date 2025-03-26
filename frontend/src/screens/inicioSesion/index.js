@@ -30,7 +30,7 @@ function PantallaInicioSesion() {
       }
       else if (dueño) {
         localStorage.setItem("user", JSON.stringify(dueño));
-        navigate("/inicioDueño");
+        navigate("/elegirNegocio");
       } else {
         throw new Error("Credenciales incorrectas.");
       }

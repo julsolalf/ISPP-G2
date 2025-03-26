@@ -22,6 +22,8 @@ import PantallaAñadirEmpleado from "./screens/añadirEmpleado/index.js";
 import PantallaAñadirProveedor from "./screens/añadirProveedor/index.js";
 import PantallaPerfil from "./screens/perfil/index.js";
 import PantallaAñadirCategoria from "./screens/añadirCategoria/index.js";
+import PantallaRegistroNegocio from "./screens/registroNegocio/index.js";
+import PantallaElegirNegocio from "./screens/elegirNegocio/index.js";
 
 
 function AppScreen() {
@@ -88,6 +90,8 @@ function App() {
         <Route path="/añadirProveedor" element={<PantallaAñadirProveedor />} />
         <Route path="/perfil" element={<PantallaPerfil/>} />
         <Route path="/añadirCategoria" element={<PantallaAñadirCategoria/>} />
+        <Route path="/registroNegocio" element={<PantallaRegistroNegocio/>} />
+        <Route path="/elegirNegocio" element={<PantallaElegirNegocio/>} />
       </Routes>
     </Router>
   );
