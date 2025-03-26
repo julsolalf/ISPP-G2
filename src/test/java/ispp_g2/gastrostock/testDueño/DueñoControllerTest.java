@@ -391,7 +391,7 @@ public class DueñoControllerTest {
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{}")) // Objeto JSON vacío
-                .andExpect(status().isInternalServerError()); // Debería fallar la validación
+                .andExpect(status().isBadRequest()); // Debería fallar la validación
     }
 
     @Test
@@ -458,7 +458,7 @@ public class DueñoControllerTest {
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{}")) // Objeto JSON vacío
-                .andExpect(status().isInternalServerError()); // Debería fallar la validación
+                .andExpect(status().isBadRequest()); // Cambiado a BAD_REQUEST (400)
     }
 
     // TESTS PARA delete()
