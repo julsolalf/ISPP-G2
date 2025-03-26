@@ -129,13 +129,6 @@ function AñadirProveedor() {
           value={direccion}
           onChange={(e) => setDireccion(e.target.value)}
         />
-        <input
-          type="text"
-          placeholder="Descripción"
-          value={descripcion}
-          onChange={(e) => setDescripcion(e.target.value)}
-        />
-
         <button onClick={handleRegister} className="login-btn">Añadir Proveedor</button>
       </div>
     </div>

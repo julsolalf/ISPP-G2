@@ -29,7 +29,7 @@ function PantallaRegistroNegocio() {
       codigoPostal,
       ciudad,
       pais,
-      dueño: 1
+      dueño: { id: 1 }
     };
 
     try {
@@ -37,7 +37,7 @@ function PantallaRegistroNegocio() {
       const response = await axios.post("http://localhost:8080/api/negocios", data);
       console.log("Registro exitoso:", response.data);
       alert("Registro exitoso. Inicia sesión.");
-      navigate("/login");
+      navigate("/elegirNegocio");
     } catch (error) {
       console.error("Error en el registro:", error.response?.data || error.message);
       alert(error.response?.data?.message || "Error al registrar. Verifica los datos.");
@@ -115,7 +115,7 @@ function PantallaRegistroNegocio() {
         <input type="text" placeholder="Ciudad" value={ciudad} onChange={(e) => setCiudad(e.target.value)} />
         <input type="text" placeholder="País" value={pais} onChange={(e) => setPais(e.target.value)} />
 
-        <button onClick={handleRegister} className="login-btn" disabled={loading}>{loading ? "Registrando..." : "Registrarse"}</button>
+        <button onClick={handleRegister} className="login-btn" disabled={loading}>{loading ? "Registrando..." : "Registrar negocio"}</button>
         <button  className="login-btn" onClick={() => navigate("/inicioSesion")}>Registrar negocio más tarde</button>
       </div>
     </div>
