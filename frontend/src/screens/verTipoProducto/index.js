@@ -3,67 +3,37 @@ import { useNavigate, useParams } from "react-router-dom";
 import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
-const obtenerCategorias = async () => {
-  return [
-    {
-      id: 1,
-      nombre: "Bebidas",
-      emoticono: "🥤",
-      productos: [
-        { nombre: "Coca-Cola", cantidad: 20, alertaStock: 5 },
-        { nombre: "Agua", cantidad: 50, alertaStock: 10 },
-        { nombre: "Cerveza", cantidad: 15, alertaStock: 3 },
-        { nombre: "Jugo de Naranja", cantidad: 30, alertaStock: 8 },
-        { nombre: "Sprite", cantidad: 25, alertaStock: 6 },
-      ],
-    },
-    {
-      id: 2,
-      nombre: "Carnes",
-      emoticono: "🥩",
-      productos: [
-        { nombre: "Pollo", cantidad: 10, alertaStock: 2 },
-        { nombre: "Res", cantidad: 8, alertaStock: 3 },
-        { nombre: "Cerdo", cantidad: 12, alertaStock: 4 },
-        { nombre: "Pavo", cantidad: 5, alertaStock: 1 },
-        { nombre: "Cordero", cantidad: 7, alertaStock: 2 },
-      ],
-    },
-  ];
+const obtenerProductosPorCategoria = async (categoriaId) => {
+  try {
+    const response = await fetch(`http://localhost:8080/api/productosInventario/categoria/${categoriaId}`);
+    if (!response.ok) {
+      throw new Error("Error al obtener los productos de la categoría");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error al obtener los productos:", error);
+    return [];
+  }
 };
 
 function VerTipoProducto() {
   const { categoriaId } = useParams();
   const navigate = useNavigate();
-  const [categoria, setCategoria] = useState(null);
+  const [productos, setProductos] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
-    const [showUserOptions, setShowUserOptions] = useState(false);
-  
-    const toggleNotifications = () => {
-      setShowNotifications(!showNotifications);
-    };
-  
-    const toggleUserOptions = () => {
-      setShowUserOptions(!showUserOptions);
-    };
+  const [showUserOptions, setShowUserOptions] = useState(false);
 
   useEffect(() => {
-    const cargarDatos = async () => {
-      const categorias = await obtenerCategorias();
-      const categoriaEncontrada = categorias.find((cat) => cat.id === parseInt(categoriaId));
-      setCategoria(categoriaEncontrada);
+    const cargarProductos = async () => {
+      const productosCategoria = await obtenerProductosPorCategoria(categoriaId);
+      setProductos(productosCategoria);
     };
-
-    cargarDatos();
+    cargarProductos();
   }, [categoriaId]);
 
-  if (!categoria) {
-    return <h2>Categoría no encontrada</h2>;
-  }
-
   return (
-    <div
-      className="home-container"
+    <div className="home-container"
       style={{
         backgroundImage: `url(${process.env.PUBLIC_URL + "/background-spices.jpg"})`,
         backgroundSize: "cover",
@@ -73,19 +43,18 @@ function VerTipoProducto() {
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center",
-      }}
-    >
+      }}>
       <div className="content">
         <div className="icon-container-right">
-          <Bell size={30} className="icon" onClick={toggleNotifications} />
-          <User size={30} className="icon" onClick={toggleUserOptions} />
+          <Bell size={30} className="icon" onClick={() => setShowNotifications(!showNotifications)} />
+          <User size={30} className="icon" onClick={() => setShowUserOptions(!showUserOptions)} />
         </div>
 
         {showNotifications && (
           <div className="notification-bubble">
             <div className="notification-header">
               <strong>Notificaciones</strong>
-              <button className="close-btn" onClick={toggleNotifications}>X</button>
+              <button className="close-btn" onClick={() => setShowNotifications(false)}>X</button>
             </div>
             <ul>
               <li>Notificación 1</li>
@@ -99,34 +68,36 @@ function VerTipoProducto() {
           <div className="notification-bubble user-options">
             <div className="notification-header">
               <strong>Usuario</strong>
-              <button className="close-btn" onClick={toggleUserOptions}>X</button>
+              <button className="close-btn" onClick={() => setShowUserOptions(false)}>X</button>
             </div>
             <ul>
-              <li>
-                <button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button>
-              </li>
-              <li>
-                <button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button>
-              </li>
-              <li>
-                <button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button>
-              </li>
+              <li><button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button></li>
+              <li><button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button></li>
+              <li><button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button></li>
             </ul>
           </div>
         )}
+
         <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
-        <h1>{categoria.emoticono} {categoria.nombre}</h1>
-        <div className="empleados-grid">
-          {categoria.productos.map((producto, index) => (
-            <div key={index} className="empleado-card" onClick={() => navigate(`/categoria/${categoria.id}/producto/${producto.nombre}`)} style={{ cursor: "pointer" }}>
-            <h3>{producto.nombre}</h3>
-            <p>Cantidad: {producto.cantidad}</p>
-            {producto.cantidad <= producto.alertaStock && (
-              <p style={{ color: "red" }}>⚠ Stock bajo</p>
-            )}
-          </div>          
-          ))}
-        </div>
+        <h1>Productos</h1>
+
+        {productos.length === 0 ? (
+          <h3>No hay productos en esta categoría</h3>
+        ) : (
+          <div className="empleados-grid">
+            {productos.map((producto) => (
+              <div key={producto.id} className="empleado-card" 
+                   onClick={() => navigate(`/categoria/${categoriaId}/producto/${producto.id}`)}
+                   style={{ cursor: "pointer" }}>
+                <h3>{producto.name}</h3>
+                <p>Cantidad: {producto.cantidadDeseada}</p>
+                {producto.cantidadDeseada <= producto.cantidadAviso && (
+                  <p style={{ color: "red" }}>⚠ Stock bajo</p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
