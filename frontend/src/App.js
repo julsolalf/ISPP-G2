@@ -22,7 +22,6 @@ import PantallaAñadirEmpleado from "./screens/añadirEmpleado/index.js";
 import PantallaAñadirProveedor from "./screens/añadirProveedor/index.js";
 import PantallaPerfil from "./screens/perfil/index.js";
 import PantallaAñadirCategoria from "./screens/añadirCategoria/index.js";
-import PantallaAñadirCategoria from "./screens/inventario/añadir.js";
 import VerVentas from "./screens/ventas/index.js";
 import VerVentaEspecifica from "./screens/ventas/ventaEspecifica/index.js";
 
