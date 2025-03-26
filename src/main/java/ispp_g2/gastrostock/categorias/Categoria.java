@@ -3,6 +3,7 @@ package ispp_g2.gastrostock.categorias;
 import ispp_g2.gastrostock.model.NamedEntity;
 import ispp_g2.gastrostock.negocio.Negocio;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
@@ -21,5 +22,8 @@ public class Categoria extends NamedEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "negocio_id")
     private Negocio negocio;
+
+    @NotNull
+    private Pertenece pertenece;
 
 }
