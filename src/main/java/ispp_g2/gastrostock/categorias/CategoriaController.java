@@ -46,6 +46,25 @@ public class CategoriaController {
         return new ResponseEntity<>(categorias, HttpStatus.OK);
     }
 
+    @GetMapping("/negocio/{negocioId}/inventario")
+    public ResponseEntity<List<Categoria>> findByNegocioIdInventario(@PathVariable("negocioId") String negocioId) {
+        List<Categoria> categorias = categoriaService.getCategoriasByNegocioId(negocioId).stream().filter(c->c.getPertenece().equals(Pertenece.INVENTARIO)).toList();
+        if (categorias.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(categorias, HttpStatus.OK);
+    }
+
+    @GetMapping("/negocio/{negocioId}/venta")
+    public ResponseEntity<List<Categoria>> findByNegocioIdVenta(@PathVariable("negocioId") String negocioId) {
+        List<Categoria> categorias = categoriaService.getCategoriasByNegocioId(negocioId).stream().filter(c->c.getPertenece().equals(Pertenece.VENTA)).toList();
+        if (categorias.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(categorias, HttpStatus.OK);
+    }
+
+
     @GetMapping("/nombre/{name}")
     public ResponseEntity<List<Categoria>> findByName(@PathVariable("name") String name) {
         List<Categoria> categorias = categoriaService.getCategoriasByName(name);

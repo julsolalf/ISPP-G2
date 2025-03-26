@@ -1,7 +1,5 @@
 package ispp_g2.gastrostock.lineaDePedido;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import ispp_g2.gastrostock.model.BaseEntity;
 import ispp_g2.gastrostock.pedido.Pedido;
@@ -16,7 +14,6 @@ import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Entity
 @Getter
 @Setter
