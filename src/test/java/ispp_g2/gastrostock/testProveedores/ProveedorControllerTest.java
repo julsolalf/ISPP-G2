@@ -170,7 +170,7 @@ public class ProveedorControllerTest {
         
         // Act & Assert
         mockMvc.perform(get("/api/proveedores/invalid"))
-            .andExpect(status().isInternalServerError());
+            .andExpect(status().isBadRequest());
         
         verify(proveedorService).findById("invalid");
     }
