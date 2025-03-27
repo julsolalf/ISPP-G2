@@ -2,19 +2,19 @@
 title: performanceEvaluation
 groupNumber: 2
 groupName: GastroStock
-deliverable: Sprint 1
+deliverable: Sprint 2
 description: Report of the evaluation on the different tasks of every team member and their performance 
-author: Writing by Raul Toro Romero and reviewed by Mario Zambrano Zapata
+author: Writing by Raul Toro Romero
 ---
 
-# [Sprint 1] Performance Evaluation - GastroStock (Group 2)
+# [Sprint 2] Performance Evaluation - GastroStock (Group 2)
 
 # Agreed Individual Performance Evaluation
 **Date**: 20/2
 
 ## Agreed Individual Performance Evaluation
 
-| **Student**                    | **#DP1** | **#S1** | **#S2** | **#S3** | **#PPL** | **#WPL** | **Total** | **Weight** |
+| **Student**                     | **#DP1** | **#S1** | **#S2** | **#S3** | **#PPL** | **#WPL** | **Total** | **Weight** |
 |---------------------------------|----------|---------|---------|---------|----------|----------|-----------|------------|
 | JOSE MIGUEL IBORRA CONEJO       | 10       | 3       |         |         |          |          |           |            |
 | LIDIA JIMENEZ SORIANO           | 10       | 10      |         |         |          |          |           |            |
