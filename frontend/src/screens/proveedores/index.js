@@ -13,7 +13,7 @@ function Proveedores() {
   useEffect(() => {
     const fetchProveedores = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/proveedores");
+        const response = await axios.get("https://ispp-2425-g2.ew.r.appspot.com/api/proveedores");
         setProveedores(response.data);
       } catch (error) {
         console.error("Error al obtener los proveedores:", error);
