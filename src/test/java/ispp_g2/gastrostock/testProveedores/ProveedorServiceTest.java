@@ -57,7 +57,6 @@ public class ProveedorServiceTest {
         dia2.setDiaSemana(DayOfWeek.WEDNESDAY);
         diasReparto1.add(dia2);
 
-
         proveedor2 = new Proveedor();
         proveedor2.setId(2);
         proveedor2.setName("Productos Frescos del Sur");
@@ -71,7 +70,6 @@ public class ProveedorServiceTest {
         DiaReparto dia4 = new DiaReparto();
         dia4.setDiaSemana(DayOfWeek.FRIDAY);
         diasReparto2.add(dia4);
-
 
         // Crear un tercer proveedor para casos extremos
         proveedor3 = new Proveedor();

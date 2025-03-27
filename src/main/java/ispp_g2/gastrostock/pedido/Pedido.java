@@ -2,8 +2,6 @@ package ispp_g2.gastrostock.pedido;
 
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import ispp_g2.gastrostock.empleado.Empleado;
 import ispp_g2.gastrostock.mesa.Mesa;
@@ -18,7 +16,6 @@ import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Entity
 @Getter
 @Setter

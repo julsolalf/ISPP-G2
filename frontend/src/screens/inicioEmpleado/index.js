@@ -7,6 +7,7 @@ function PantallaInicioDueño() {
   const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
@@ -14,6 +15,11 @@ function PantallaInicioDueño() {
 
   const toggleUserOptions = () => {
     setShowUserOptions(!showUserOptions);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("userToken"); // Eliminamos el token del usuario
+    navigate("/"); // Redirigir a la pantalla de inicio de sesión
   };
 
   return (
@@ -62,7 +68,7 @@ function PantallaInicioDueño() {
                 <button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button>
               </li>
               <li>
-                <button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button>
+                <button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
               </li>
             </ul>
           </div>
@@ -74,9 +80,22 @@ function PantallaInicioDueño() {
 
         <div className="button-container2">
             <button className="menu-btn" onClick={() => navigate("/carta")}><span role="img" aria-label="carta">🍽️</span> Carta</button>
-            <button className="menu-btn" onClick={() => navigate("/inventario")}><span role="img" aria-label="inventario">📦</span> Inventario</button>
+            <button className="menu-btn" onClick={() => navigate("/TPV")}><span role="img" aria-label="inventario">📱</span> TPV</button>
             <button className="menu-btn" onClick={() => navigate("/ventas")}><span role="img" aria-label="ventas">💰</span> Ventas</button>
         </div>
+
+        {/* Modal de Confirmación para Logout */}
+        {showLogoutModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>¿Está seguro que desea abandonar la sesión?</h3>
+              <div className="modal-buttons">
+                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
+                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

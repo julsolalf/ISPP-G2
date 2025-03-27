@@ -173,6 +173,62 @@
   opacity: 0.8;
 }
 
+.search-input {
+  background-color: #a92d4e; /* Mismo color que los botones */
+  color: white;
+  border: none;
+  padding: 8px 15px; /* Ajustado para menor tamaño */
+  font-size: 16px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+  width: auto; /* Se adapta al contenido */
+  height: 38px; /* Ajustado para igualar los botones */
+  min-width: 120px; /* Un tamaño más corto */
+  max-width: 180px; /* Evita que sea demasiado largo */
+}
+
+.search-input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.search-input:focus {
+  background-color: #8b1d3c;
+  outline: none;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+.shared-style {
+  background-color: #a92d4e; /* Color de fondo */
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 160px; /* Ancho fijo para todos */
+  height: 45px; /* Altura uniforme */
+}
+
+.shared-style:hover {
+  background-color: #8b1d3c;
+}
+
+.shared-style svg {
+  margin-right: 8px; /* Espaciado para los iconos */
+}
+
+.search-input {
+  width: 160px; /* Igual que los botones */
+  height: 45px;
+  text-align: center;
+}
+
+
 .button-container3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -271,3 +327,63 @@
 .ver-btn:hover {
   background-color: rgb(102, 215, 111);
 }
+
+/* Estilos para la tarjeta de producto */
+.producto-card {
+  background: #a92d4e;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  width: 50%;
+  text-align: center;
+  margin-top: 60px;
+}
+
+.producto-nombre {
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+}
+
+.producto-atributo {
+  font-size: 1.2rem;
+  color: white;
+  margin: 10px 0;
+}
+
+.producto-alerta {
+  color: red;
+  font-weight: bold;
+  font-size: 1.3rem;
+}
+
+/* Botón de confirmación (Sí) en rojo */
+.confirm-btn {
+  background-color: #ff4d4d;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.confirm-btn:hover {
+  background-color: #cc0000;
+}
+
+/* Botón de cancelar en verde */
+.cancel-btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.cancel-btn:hover {
+  background-color: #388E3C;
+}
+

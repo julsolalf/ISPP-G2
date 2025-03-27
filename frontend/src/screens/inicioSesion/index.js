@@ -1,22 +1,42 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
 import "../../css/paginasBase/styles.css";
 
 function PantallaInicioSesion() {
-  const [email, setEmail] = useState("");
+  const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const role = "dueño";
 
-  const handleLogin = () => {
-    console.log("Iniciando sesión con:", email, password);
+  const handleLogin = async () => {
+    try {
+      const [empleadosResponse, duenosResponse] = await Promise.all([
+        axios.get("http://localhost:8080/api/empleados"),
+        axios.get("http://localhost:8080/api/dueños"),
+      ]);
 
-    // HAY QUE IMPLEMENTAR LA LÓGICA DE INICIO DE SESIÓN
-    // Y REDIRECCIONAMIENTO A LA PÁGINA DE INICIO CORRESPONDIENTE SERA ALGO DE ESTE ESTILO
-    if (role === "dueño") {
-      navigate("/inicioDueño");
-    } else {
-      navigate("/inicioEmpleado");
+      const empleado = empleadosResponse.data.find(
+        (user) =>
+          user.user.username === usuario && user.user.password === password
+      );
+      const dueño = duenosResponse.data.find(
+        (user) =>
+          user.user.username === usuario && user.user.password === password
+      );
+
+      if (empleado) {
+        localStorage.setItem("user", JSON.stringify(empleado));
+        navigate("/inicioEmpleado");
+      }
+      else if (dueño) {
+        localStorage.setItem("user", JSON.stringify(dueño));
+        navigate("/inicioDueño");
+      } else {
+        throw new Error("Credenciales incorrectas.");
+      }
+    } catch (error) {
+      console.error("Error al iniciar sesión:", error);
+      alert("Usuario no encontrado o credenciales incorrectas.");
     }
   };
 
@@ -41,10 +61,10 @@ function PantallaInicioSesion() {
         <h2>Iniciar Sesión</h2>
 
         <input
-          type="email"
-          placeholder="Correo Electrónico"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          type="Usuario"
+          placeholder="Usuario"
+          value={usuario}
+          onChange={(e) => setUsuario(e.target.value)}
         />
         <input
           type="password"

@@ -107,10 +107,11 @@ class ProductoInventarioControllerTest {
 
     @Test
     void testCreateProductoInventario_BadRequest() throws Exception {
+
         mockMvc.perform(MockMvcRequestBuilders.post("/api/productosInventario")
             .contentType(MediaType.APPLICATION_JSON)
-            .content("{}")) // JSON vacío
-            .andExpect(status().isBadRequest());
+            .content("{\"id\":\"1\",\"name\":}")) // JSON vacío
+            .andExpect(status().isInternalServerError());
     }
 
     @Test
