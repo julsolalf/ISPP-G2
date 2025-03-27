@@ -1,10 +1,10 @@
 package ispp_g2.gastrostock.testProveedores;
-/*
+
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.time.DayOfWeek;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -92,7 +92,7 @@ public class ProveedorServiceTest {
         when(proveedorRepository.findAll()).thenReturn(proveedores);
 
         // Act
-        List<Proveedor> result = proveedorService.getAll();
+        List<Proveedor> result = proveedorService.findAll();
 
         // Assert
         assertNotNull(result);
@@ -108,7 +108,7 @@ public class ProveedorServiceTest {
         when(proveedorRepository.findAll()).thenReturn(Collections.emptyList());
 
         // Act
-        List<Proveedor> result = proveedorService.getAll();
+        List<Proveedor> result = proveedorService.findAll();
 
         // Assert
         assertNotNull(result);
@@ -121,29 +121,29 @@ public class ProveedorServiceTest {
     @Test
     void testGetById_Exists() {
         // Arrange
-        when(proveedorRepository.findById(1)).thenReturn(Optional.of(proveedor1));
+        when(proveedorRepository.findById("1")).thenReturn(Optional.of(proveedor1));
 
         // Act
-        Optional<Proveedor> result = proveedorService.getById(1);
+        Optional<Proveedor> result = Optional.of(proveedorService.findById("1"));
 
         // Assert
         assertTrue(result.isPresent());
         assertEquals("Distribuciones Alimentarias S.L.", result.get().getName());
-        verify(proveedorRepository, times(1)).findById(1);
+        verify(proveedorRepository, times(1)).findById("1");
     }
 
-    @Test
-    void testGetById_NotExists() {
-        // Arrange
-        when(proveedorRepository.findById(999)).thenReturn(Optional.empty());
+        @Test
+        void testGetById_NotExists() {
+            // Arrange
+            when(proveedorRepository.findById("999")).thenReturn(Optional.empty());
 
-        // Act
-        Optional<Proveedor> result = proveedorService.getById(999);
+            // Act
+            Proveedor result = proveedorService.findById("999");
 
-        // Assert
-        assertFalse(result.isPresent());
-        verify(proveedorRepository, times(1)).findById(999);
-    }
+            // Assert
+            assertNull(result);
+            verify(proveedorRepository, times(1)).findById("999");
+        }
 
     @Test
     void testGetById_NullId() {
@@ -152,9 +152,177 @@ public class ProveedorServiceTest {
 
         // Act & Assert
         assertThrows(IllegalArgumentException.class, () -> {
-            proveedorService.getById(null);
+            proveedorService.findById(null);
         });
         verify(proveedorRepository, times(1)).findById(null);
+    }
+
+    // Tests para findByEmail
+
+    @Test
+    void testFindByEmail_Found() {
+        // Arrange
+        when(proveedorRepository.findByEmail("distribuciones@example.com")).thenReturn(proveedor1);
+
+        // Act
+        Proveedor result = proveedorService.findByEmail("distribuciones@example.com");
+
+        // Assert
+        assertNotNull(result);
+        assertEquals("Distribuciones Alimentarias S.L.", result.getName());
+        verify(proveedorRepository, times(1)).findByEmail("distribuciones@example.com");
+    }
+
+    @Test
+    void testFindByEmail_NotFound() {
+        // Arrange
+        when(proveedorRepository.findByEmail("noexiste@example.com")).thenReturn(null);
+
+        // Act
+        Proveedor result = proveedorService.findByEmail("noexiste@example.com");
+
+        // Assert
+        assertNull(result);
+        verify(proveedorRepository, times(1)).findByEmail("noexiste@example.com");
+    }
+
+    @Test
+    void testFindByEmail_NullEmail() {
+        // Arrange
+        when(proveedorRepository.findByEmail(null)).thenReturn(null);
+
+        // Act
+        Proveedor result = proveedorService.findByEmail(null);
+
+        // Assert
+        assertNull(result);
+        verify(proveedorRepository, times(1)).findByEmail(null);
+    }
+
+    // Tests para findByTelefono
+
+    @Test
+    void testFindByTelefono_Found() {
+        // Arrange
+        when(proveedorRepository.findByTelefono("954111222")).thenReturn(proveedor1);
+
+        // Act
+        Proveedor result = proveedorService.findByTelefono("954111222");
+
+        // Assert
+        assertNotNull(result);
+        assertEquals("Distribuciones Alimentarias S.L.", result.getName());
+        verify(proveedorRepository, times(1)).findByTelefono("954111222");
+    }
+
+    @Test
+    void testFindByTelefono_NotFound() {
+        // Arrange
+        when(proveedorRepository.findByTelefono("999999999")).thenReturn(null);
+
+        // Act
+        Proveedor result = proveedorService.findByTelefono("999999999");
+
+        // Assert
+        assertNull(result);
+        verify(proveedorRepository, times(1)).findByTelefono("999999999");
+    }
+
+    @Test
+    void testFindByTelefono_NullTelefono() {
+        // Arrange
+        when(proveedorRepository.findByTelefono(null)).thenReturn(null);
+
+        // Act
+        Proveedor result = proveedorService.findByTelefono(null);
+
+        // Assert
+        assertNull(result);
+        verify(proveedorRepository, times(1)).findByTelefono(null);
+    }
+
+    // Tests para findByDireccion
+
+    @Test
+    void testFindByDireccion_Found() {
+        // Arrange
+        when(proveedorRepository.findByDireccion("Polígono Industrial, Nave 7")).thenReturn(proveedor1);
+
+        // Act
+        Proveedor result = proveedorService.findByDireccion("Polígono Industrial, Nave 7");
+
+        // Assert
+        assertNotNull(result);
+        assertEquals("Distribuciones Alimentarias S.L.", result.getName());
+        verify(proveedorRepository, times(1)).findByDireccion("Polígono Industrial, Nave 7");
+    }
+
+    @Test
+    void testFindByDireccion_NotFound() {
+        // Arrange
+        when(proveedorRepository.findByDireccion("Dirección inexistente")).thenReturn(null);
+
+        // Act
+        Proveedor result = proveedorService.findByDireccion("Dirección inexistente");
+
+        // Assert
+        assertNull(result);
+        verify(proveedorRepository, times(1)).findByDireccion("Dirección inexistente");
+    }
+
+    @Test
+    void testFindByDireccion_NullDireccion() {
+        // Arrange
+        when(proveedorRepository.findByDireccion(null)).thenReturn(null);
+
+        // Act
+        Proveedor result = proveedorService.findByDireccion(null);
+
+        // Assert
+        assertNull(result);
+        verify(proveedorRepository, times(1)).findByDireccion(null);
+    }
+
+    // Tests para findByNombre
+
+    @Test
+    void testFindByNombre_Found() {
+        // Arrange
+        when(proveedorRepository.findByNombre("Distribuciones Alimentarias S.L.")).thenReturn(proveedor1);
+
+        // Act
+        Proveedor result = proveedorService.findByNombre("Distribuciones Alimentarias S.L.");
+
+        // Assert
+        assertNotNull(result);
+        assertEquals("Distribuciones Alimentarias S.L.", result.getName());
+        verify(proveedorRepository, times(1)).findByNombre("Distribuciones Alimentarias S.L.");
+    }
+
+    @Test
+    void testFindByNombre_NotFound() {
+        // Arrange
+        when(proveedorRepository.findByNombre("Nombre inexistente")).thenReturn(null);
+
+        // Act
+        Proveedor result = proveedorService.findByNombre("Nombre inexistente");
+
+        // Assert
+        assertNull(result);
+        verify(proveedorRepository, times(1)).findByNombre("Nombre inexistente");
+    }
+
+    @Test
+    void testFindByNombre_NullNombre() {
+        // Arrange
+        when(proveedorRepository.findByNombre(null)).thenReturn(null);
+
+        // Act
+        Proveedor result = proveedorService.findByNombre(null);
+
+        // Assert
+        assertNull(result);
+        verify(proveedorRepository, times(1)).findByNombre(null);
     }
 
     // Tests para getByFirstName()
@@ -163,89 +331,41 @@ public class ProveedorServiceTest {
     void testGetByFirstName_Found() {
         // Arrange
         List<Proveedor> distribuciones = Arrays.asList(proveedor1, proveedor3);
-        when(proveedorRepository.findByFirstNameContainingIgnoreCase("Distri")).thenReturn(distribuciones);
+        when(proveedorRepository.findByNombre("Distri")).thenReturn(proveedor1);
 
         // Act
-        List<Proveedor> result = proveedorService.getByFirstName("Distri");
+        Proveedor result = proveedorService.findByNombre("Distri");
 
         // Assert
         assertNotNull(result);
-        assertEquals(2, result.size());
-        assertTrue(result.get(0).getName().contains("Distribuciones"));
-        assertTrue(result.get(1).getName().contains("Distribuciones"));
-        verify(proveedorRepository, times(1)).findByFirstNameContainingIgnoreCase("Distri");
+        assertTrue(result.getName().contains("Distribuciones"));
+        verify(proveedorRepository, times(1)).findByNombre("Distri");
     }
 
     @Test
     void testGetByFirstName_NotFound() {
         // Arrange
-        when(proveedorRepository.findByFirstNameContainingIgnoreCase("Inexistente")).thenReturn(Collections.emptyList());
+        when(proveedorRepository.findByNombre("Inexistente")).thenReturn(any());
 
         // Act
-        List<Proveedor> result = proveedorService.getByFirstName("Inexistente");
+        Proveedor result = proveedorService.findByNombre("Inexistente");
 
         // Assert
-        assertNotNull(result);
-        assertTrue(result.isEmpty());
-        verify(proveedorRepository, times(1)).findByFirstNameContainingIgnoreCase("Inexistente");
+        assertNull(result);
+        verify(proveedorRepository, times(1)).findByNombre("Inexistente");
     }
 
     @Test
-    void testGetByFirstName_EmptyString() {
+    void testGetByName_EmptyString() {
         // Arrange
-        when(proveedorRepository.findByFirstNameContainingIgnoreCase("")).thenReturn(proveedores);
+        when(proveedorRepository.findByNombre("")).thenReturn(proveedor1);
 
         // Act
-        List<Proveedor> result = proveedorService.getByFirstName("");
+        Proveedor result = proveedorService.findByNombre("");
 
         // Assert
         assertNotNull(result);
-        assertEquals(3, result.size());
-        verify(proveedorRepository, times(1)).findByFirstNameContainingIgnoreCase("");
-    }
-
-    // Tests para getByDiaReparto()
-
-    @Test
-    void testGetByDiaReparto_Found() {
-        // Arrange
-        List<Proveedor> mondayProviders = Collections.singletonList(proveedor1);
-        when(proveedorRepository.findByDiasRepartoContaining(DayOfWeek.MONDAY)).thenReturn(mondayProviders);
-
-        // Act
-        List<Proveedor> result = proveedorService.getByDiaReparto(DayOfWeek.MONDAY);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        assertEquals("Distribuciones Alimentarias S.L.", result.get(0).getName());
-        verify(proveedorRepository, times(1)).findByDiasRepartoContaining(DayOfWeek.MONDAY);
-    }
-
-    @Test
-    void testGetByDiaReparto_NotFound() {
-        // Arrange
-        when(proveedorRepository.findByDiasRepartoContaining(DayOfWeek.SUNDAY)).thenReturn(Collections.emptyList());
-
-        // Act
-        List<Proveedor> result = proveedorService.getByDiaReparto(DayOfWeek.SUNDAY);
-
-        // Assert
-        assertNotNull(result);
-        assertTrue(result.isEmpty());
-        verify(proveedorRepository, times(1)).findByDiasRepartoContaining(DayOfWeek.SUNDAY);
-    }
-
-    @Test
-    void testGetByDiaReparto_NullDia() {
-        // Arrange
-        when(proveedorRepository.findByDiasRepartoContaining(null)).thenThrow(new IllegalArgumentException("Day cannot be null"));
-
-        // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> {
-            proveedorService.getByDiaReparto(null);
-        });
-        verify(proveedorRepository, times(1)).findByDiasRepartoContaining(null);
+        verify(proveedorRepository, times(1)).findByNombre("");
     }
 
     // Tests para save()
@@ -311,25 +431,25 @@ public class ProveedorServiceTest {
     @Test
     void testDeleteById_Success() {
         // Arrange
-        doNothing().when(proveedorRepository).deleteById(1);
+        doNothing().when(proveedorRepository).deleteById("1");
 
         // Act
-        proveedorService.deleteById(1);
+        proveedorService.deleteById("1");
 
         // Assert
-        verify(proveedorRepository, times(1)).deleteById(1);
+        verify(proveedorRepository, times(1)).deleteById("1");
     }
 
     @Test
     void testDeleteById_NotFound() {
         // Arrange
-        doThrow(new RuntimeException("Proveedor not found")).when(proveedorRepository).deleteById(999);
+        doThrow(new RuntimeException("Proveedor not found")).when(proveedorRepository).deleteById("999");
 
         // Act & Assert
         assertThrows(RuntimeException.class, () -> {
-            proveedorService.deleteById(999);
+            proveedorService.deleteById("999");
         });
-        verify(proveedorRepository, times(1)).deleteById(999);
+        verify(proveedorRepository, times(1)).deleteById("999");
     }
 
     @Test
@@ -344,4 +464,3 @@ public class ProveedorServiceTest {
         verify(proveedorRepository, times(1)).deleteById(null);
     }
 }
-*/
