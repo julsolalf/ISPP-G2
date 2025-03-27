@@ -3,67 +3,33 @@ import { useNavigate, useParams } from "react-router-dom";
 import "../../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
-const obtenerCategorias = async () => {
-  return [
-    {
-      id: 1,
-      nombre: "Bebidas",
-      emoticono: "🥤",
-      productos: [
-        { nombre: "Coca-Cola", cantidad: 20, alertaStock: 5, descripcion: "Refresco de cola" },
-        { nombre: "Agua", cantidad: 50, alertaStock: 10, descripcion: "Agua mineral" },
-        { nombre: "Cerveza", cantidad: 15, alertaStock: 3, descripcion: "Bebida alcohólica" },
-        { nombre: "Jugo de Naranja", cantidad: 30, alertaStock: 8, descripcion: "Jugo natural" },
-        { nombre: "Sprite", cantidad: 25, alertaStock: 6, descripcion: "Refresco de lima-limón" },
-      ],
-    },
-    {
-      id: 2,
-      nombre: "Carnes",
-      emoticono: "🥩",
-      productos: [
-        { nombre: "Pollo", cantidad: 10, alertaStock: 2, descripcion: "Carne de ave" },
-        { nombre: "Res", cantidad: 8, alertaStock: 3, descripcion: "Carne roja" },
-        { nombre: "Cerdo", cantidad: 12, alertaStock: 4, descripcion: "Carne de cerdo" },
-        { nombre: "Pavo", cantidad: 5, alertaStock: 1, descripcion: "Carne magra" },
-        { nombre: "Cordero", cantidad: 7, alertaStock: 2, descripcion: "Carne de cordero" },
-      ],
-    },
-  ];
+const obtenerProducto = async () => {
+  try {
+    const response = await fetch(`http://localhost:8080/api/productosInventario/${localStorage.getItem("productoId")}`);
+    if (!response.ok) {
+      throw new Error("Error al obtener el producto");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error al obtener el producto:", error);
+    return null;
+  }
 };
 
 function VerProducto() {
-  const { categoriaId, productoNombre } = useParams();
   const navigate = useNavigate();
   const [producto, setProducto] = useState(null);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
-  const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
-
-  const toggleNotifications = () => {
-    setShowNotifications(!showNotifications);
-  };
-
-  const toggleUserOptions = () => {
-    setShowUserOptions(!showUserOptions);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("userToken"); // Eliminamos el token del usuario
-    navigate("/"); // Redirigir a la pantalla de inicio de sesión
-  };
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   useEffect(() => {
-    const cargarDatos = async () => {
-      const categorias = await obtenerCategorias();
-      const categoria = categorias.find((cat) => cat.id === parseInt(categoriaId));
-      if (categoria) {
-        const productoEncontrado = categoria.productos.find((prod) => prod.nombre === productoNombre);
-        setProducto(productoEncontrado);
-      }
+    const cargarProducto = async () => {
+      const data = await obtenerProducto();
+      setProducto(data);
     };
-    cargarDatos();
-  }, [categoriaId, productoNombre]);
+    cargarProducto();
+  }, []);
 
   if (!producto) {
     return <h2>Producto no encontrado</h2>;
@@ -85,15 +51,15 @@ function VerProducto() {
     >
       <div className="content">
         <div className="icon-container-right">
-          <Bell size={30} className="icon" onClick={toggleNotifications} />
-          <User size={30} className="icon" onClick={toggleUserOptions} />
+          <Bell size={30} className="icon" onClick={() => setShowNotifications(!showNotifications)} />
+          <User size={30} className="icon" onClick={() => setShowUserOptions(!showUserOptions)} />
         </div>
 
         {showNotifications && (
           <div className="notification-bubble">
             <div className="notification-header">
               <strong>Notificaciones</strong>
-              <button className="close-btn" onClick={toggleNotifications}>X</button>
+              <button className="close-btn" onClick={() => setShowNotifications(false)}>X</button>
             </div>
             <ul>
               <li>Notificación 1</li>
@@ -107,18 +73,12 @@ function VerProducto() {
           <div className="notification-bubble user-options">
             <div className="notification-header">
               <strong>Usuario</strong>
-              <button className="close-btn" onClick={toggleUserOptions}>X</button>
+              <button className="close-btn" onClick={() => setShowUserOptions(false)}>X</button>
             </div>
             <ul>
-              <li>
-                <button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button>
-              </li>
-              <li>
-                <button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button>
-              </li>
-              <li>
-              <button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
-              </li>
+              <li><button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button></li>
+              <li><button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button></li>
+              <li><button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button></li>
             </ul>
           </div>
         )}
@@ -126,21 +86,24 @@ function VerProducto() {
         <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
 
         <div className="producto-card">
-          <h1 className="producto-nombre">{producto.nombre}</h1>
-          <p className="producto-atributo"><strong>Cantidad:</strong> {producto.cantidad}</p>
-          <p className="producto-atributo"><strong>Stock mínimo:</strong> {producto.alertaStock}</p>
-          <p className="producto-atributo"><strong>Descripción:</strong> {producto.descripcion}</p>
-          {producto.cantidad <= producto.alertaStock && (
+          <h1 className="producto-nombre">{producto.name}</h1>
+          <p className="producto-atributo"><strong>Precio Compra:</strong> {producto.precioCompra}</p>
+          <p className="producto-atributo"><strong>Cantidad Deseada:</strong> {producto.cantidadDeseada}</p>
+          <p className="producto-atributo"><strong>Cantidad Aviso:</strong> {producto.cantidadAviso}</p>
+          {producto.cantidadDeseada <= producto.cantidadAviso && (
             <p className="producto-alerta">⚠ Stock bajo</p>
           )}
         </div>
-        {/* Modal de Confirmación para Logout */}
+
         {showLogoutModal && (
           <div className="modal-overlay">
             <div className="modal">
               <h3>¿Está seguro que desea abandonar la sesión?</h3>
               <div className="modal-buttons">
-                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
+                <button className="confirm-btn" onClick={() => {
+                  localStorage.removeItem("userToken");
+                  navigate("/");
+                }}>Sí</button>
                 <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
               </div>
             </div>

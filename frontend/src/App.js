@@ -81,8 +81,8 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/inventario" element={<PantallaInventario />} />
         <Route path="/ventas" element={<VerVentas/>} />
-        <Route path="/verTipoProducto/:categoriaId" element={<VerTipoProducto />} />
-        <Route path="/categoria/:categoriaId/producto/:productoNombre" element={<VerProducto />} />
+        <Route path="/verTipoProducto/:categoriaNombre" element={<VerTipoProducto />} />
+        <Route path="/categoria/:categoriaNombre/producto/:productoNombre" element={<VerProducto />} />
         <Route path="/proveedores" element={<PantallaProveedores />} />
         <Route path="/empleados" element={<PantallaEmpleados />} />
         <Route path="/alertaStock" element={<PantallaAlertaStock />} />

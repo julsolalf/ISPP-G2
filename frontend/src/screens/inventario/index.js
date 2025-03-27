@@ -124,9 +124,16 @@ function Inventario() {
         <div className="empleados-grid1">
           {categorias.map((categoria) => (
             <div key={categoria.id} className="empleado-card">
-              <h3>{categoria.name}</h3>
-              <button className="ver-btn" onClick={() => navigate(`/verTipoProducto/${categoria.id}`)}>👁️ Ver</button>
-            </div>
+            <h3>{categoria.name}</h3>
+            <button 
+              className="ver-btn" 
+              onClick={() => {
+                localStorage.setItem("categoriaNombre", categoria.name); // Guardar en localStorage
+                navigate(`/verTipoProducto/${categoria.name}`); // Redirigir a la pantalla
+              }}>
+              👁️ Ver
+            </button>
+          </div>
           ))}
         </div>
         <div className="button-container1">
