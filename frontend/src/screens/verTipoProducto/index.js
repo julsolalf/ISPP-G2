@@ -5,7 +5,7 @@ import { Bell, User } from "lucide-react";
 
 const obtenerProductosPorCategoria = async (categoriaId) => {
   try {
-    const response = await fetch(`http://localhost:8080/api/productosInventario/categoria/${categoriaId}`);
+    const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/productosInventario/categoria/${categoriaId}`);
     if (!response.ok) {
       throw new Error("Error al obtener los productos de la categoría");
     }

@@ -6,7 +6,7 @@ import { Bell, User } from "lucide-react";
 // Función para obtener los pedidos desde la API
 const obtenerPedidos = async () => {
   try {
-    const response = await fetch("http://localhost:8080/api/pedidos");  // URL de la API de pedidos
+    const response = await fetch("https://ispp-2425-g2.ew.r.appspot.com/api/pedidos");  // URL de la API de pedidos
     if (!response.ok) {
       throw new Error("Error al obtener los pedidos");
     }
