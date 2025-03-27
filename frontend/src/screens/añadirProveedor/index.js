@@ -45,7 +45,7 @@ function AñadirProveedor() {
     };
 
     try {
-      const response = await axios.post("http://localhost:8080/api/proveedores", proveedorData);
+      const response = await axios.post("https://ispp-2425-g2.ew.r.appspot.com/api/proveedores", proveedorData);
       if (response.status === 201) {
         navigate("/proveedores"); 
       }

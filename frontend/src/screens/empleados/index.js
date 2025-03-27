@@ -12,7 +12,7 @@ function Empleados() {
 
   const loadEmpleados = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/empleados/negocio/1");  // Arrglar para que coja el negocio del usuario
+      const response = await axios.get("https://ispp-2425-g2.ew.r.appspot.com/api/empleados/negocio/1");  // Arrglar para que coja el negocio del usuario
       setEmpleados(response.data); 
     } catch (error) {
       console.error("Error al cargar los empleados:", error);

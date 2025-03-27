@@ -22,7 +22,7 @@ function Dashboard() {
 
   useEffect(() => {
     // Obtener datos de productos vendidos (Producto más vendido)
-    fetch("http://localhost:8080/api/lineasDePedido")
+    fetch("https://ispp-2425-g2.ew.r.appspot.com/api/lineasDePedido")
       .then((response) => response.json())
       .then((data) => {
         const productsSold = data.reduce((acc, item) => {
@@ -46,7 +46,7 @@ function Dashboard() {
       .catch((error) => console.error("Error al obtener productos vendidos:", error));
 
     // Obtener datos de ventas por semana
-    fetch("http://localhost:8080/api/pedidos")
+    fetch("https://ispp-2425-g2.ew.r.appspot.com/api/pedidos")
       .then((response) => response.json())
       .then((data) => {
         const sales = data.map((pedido) => {
@@ -61,7 +61,7 @@ function Dashboard() {
       .catch((error) => console.error("Error al obtener ventas:", error));
 
     // Obtener ingresos semanales
-    fetch("http://localhost:8080/api/pedidos")
+    fetch("https://ispp-2425-g2.ew.r.appspot.com/api/pedidos")
       .then((response) => response.json())
       .then((data) => {
         const revenue = data.map((pedido) => {
@@ -76,7 +76,7 @@ function Dashboard() {
       .catch((error) => console.error("Error al obtener ingresos:", error));
 
     // Obtener productos con stock bajo
-    fetch("http://localhost:8080/api/productosInventario")
+    fetch("https://ispp-2425-g2.ew.r.appspot.com/api/productosInventario")
       .then((response) => response.json())
       .then((data) => {
         const lowStock = data.filter(item => {
@@ -91,7 +91,7 @@ function Dashboard() {
       .catch((error) => console.error("Error al obtener productos con stock bajo:", error));
 
     // Obtener productos en stock de emergencia
-    fetch("http://localhost:8080/api/productosInventario")
+    fetch("https://ispp-2425-g2.ew.r.appspot.com/api/productosInventario")
       .then((response) => response.json())
       .then((data) => {
         const emergencyStock = data.filter(item => {

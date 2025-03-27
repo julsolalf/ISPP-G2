@@ -57,7 +57,7 @@ function AñadirEmpleado() {
     };
 
     try {
-      const response = await axios.post("http://localhost:8080/api/empleados", empleadoData);
+      const response = await axios.post("https://ispp-2425-g2.ew.r.appspot.com/api/empleados", empleadoData);
       if (response.status === 201) {
         alert("Empleado añadido con éxito");
         navigate("/empleados");  
