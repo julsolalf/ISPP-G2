@@ -25,7 +25,7 @@ import org.springframework.validation.BindingResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ispp_g2.gastrostock.dueño.Dueño;
+import ispp_g2.gastrostock.dueno.Dueno;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioController;
 import ispp_g2.gastrostock.negocio.NegocioService;
@@ -47,7 +47,7 @@ class NegocioControllerTest {
 
     private Negocio negocio1, negocio2;
     private List<Negocio> negocioList;
-    private Dueño dueño;
+    private Dueno dueno;
     private ObjectMapper objectMapper;
 
     @BeforeEach
@@ -59,12 +59,12 @@ class NegocioControllerTest {
         objectMapper = new ObjectMapper();
         
         // Crear datos de prueba
-        dueño = new Dueño();
-        dueño.setId(1);
-        dueño.setFirstName("Juan Propietario");
-        dueño.setLastName("García");
-        dueño.setEmail("juan@gastrostock.com");
-        dueño.setTokenDueño("TOKEN123");
+        dueno = new Dueno();
+        dueno.setId(1);
+        dueno.setFirstName("Juan Propietario");
+        dueno.setLastName("García");
+        dueno.setEmail("juan@gastrostock.com");
+        dueno.setTokenDueno("TOKEN123");
         
         negocio1 = new Negocio();
         negocio1.setId(1);
@@ -74,7 +74,7 @@ class NegocioControllerTest {
         negocio1.setPais("España");
         negocio1.setCodigoPostal("41001");
         negocio1.setTokenNegocio(12345);
-        negocio1.setDueño(dueño);
+        negocio1.setDueno(dueno);
         
         negocio2 = new Negocio();
         negocio2.setId(2);
@@ -84,7 +84,7 @@ class NegocioControllerTest {
         negocio2.setPais("España");
         negocio2.setCodigoPostal("41001");
         negocio2.setTokenNegocio(67890);
-        negocio2.setDueño(dueño);
+        negocio2.setDueno(dueno);
         
         negocioList = Arrays.asList(negocio1, negocio2);
     }
@@ -230,12 +230,12 @@ class NegocioControllerTest {
     @Test
     void testCreateNegocio() throws Exception {
         // Usando save() en lugar de saveNegocio()
-        Dueño dueñoact = new Dueño();
-        dueñoact.setFirstName("Anton");
-        dueñoact.setLastName("García");
-        dueñoact.setEmail("anton@example.com");
-        dueñoact.setNumTelefono("652349978");
-        dueñoact.setTokenDueño("TOKEN333");
+        Dueno duenoact = new Dueno();
+        duenoact.setFirstName("Anton");
+        duenoact.setLastName("García");
+        duenoact.setEmail("anton@example.com");
+        duenoact.setNumTelefono("652349978");
+        duenoact.setTokenDueno("TOKEN333");
 
         // Crear negocio
         Negocio negocioActualizado = new Negocio();
@@ -245,7 +245,7 @@ class NegocioControllerTest {
         negocioActualizado.setPais("España");
         negocioActualizado.setCodigoPostal("41001");
         negocioActualizado.setTokenNegocio(12995);
-        negocioActualizado.setDueño(dueñoact);
+        negocioActualizado.setDueno(duenoact);
 
         when(negocioService.save(any(Negocio.class))).thenReturn(negocioActualizado);
     
@@ -268,7 +268,7 @@ class NegocioControllerTest {
         updatedNegocio.setPais("España");
         updatedNegocio.setCodigoPostal("41001");
         updatedNegocio.setTokenNegocio(12345);
-        updatedNegocio.setDueño(dueño);
+        updatedNegocio.setDueno(dueno);
         
         when(negocioService.getById(String.valueOf(1))).thenReturn(negocio1);
         when(negocioService.save(any(Negocio.class))).thenReturn(updatedNegocio);
@@ -291,7 +291,7 @@ class NegocioControllerTest {
         invalidNegocio.setPais("España");
         invalidNegocio.setCodigoPostal("41001");
         invalidNegocio.setTokenNegocio(9999);
-        invalidNegocio.setDueño(dueño);
+        invalidNegocio.setDueno(dueno);
         
         when(negocioService.getById(String.valueOf(1))).thenReturn(null);
 

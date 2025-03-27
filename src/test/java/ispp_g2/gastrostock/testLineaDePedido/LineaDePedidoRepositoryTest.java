@@ -17,8 +17,8 @@ import org.springframework.test.context.ActiveProfiles;
 import ispp_g2.gastrostock.categorias.Categoria;
 import ispp_g2.gastrostock.categorias.CategoriaRepository;
 import ispp_g2.gastrostock.categorias.Pertenece;
-import ispp_g2.gastrostock.dueño.Dueño;
-import ispp_g2.gastrostock.dueño.DueñoRepository;
+import ispp_g2.gastrostock.dueno.Dueno;
+import ispp_g2.gastrostock.dueno.DuenoRepository;
 import ispp_g2.gastrostock.empleado.Empleado;
 import ispp_g2.gastrostock.empleado.EmpleadoRepository;
 import ispp_g2.gastrostock.lineaDePedido.LineaDePedido;
@@ -53,7 +53,7 @@ public class LineaDePedidoRepositoryTest {
     private EmpleadoRepository empleadoRepository;
     
     @Autowired
-    private DueñoRepository dueñoRepository;
+    private DuenoRepository duenoRepository;
     
     @Autowired
     private MesaRepository mesaRepository;
@@ -64,7 +64,7 @@ public class LineaDePedidoRepositoryTest {
     private LineaDePedido lineaNormal, lineaCantidadGrande, lineaPrecioAlto, lineaMinima;
     private ProductoVenta producto1, producto2;
     private Pedido pedido1, pedido2;
-    private Dueño dueño;
+    private Dueno dueno;
     private Negocio negocio;
     private Empleado empleado;
     private Mesa mesa1, mesa2;
@@ -80,16 +80,16 @@ public class LineaDePedidoRepositoryTest {
         empleadoRepository.deleteAll();
         categoriaRepository.deleteAll();
         negocioRepository.deleteAll();
-        dueñoRepository.deleteAll();
+        duenoRepository.deleteAll();
         
-        // Crear dueño
-        dueño = new Dueño();
-        dueño.setFirstName("Juan");
-        dueño.setLastName("Dueño");
-        dueño.setEmail("juan@gastrostock.com");
-        dueño.setNumTelefono("689594895");
-        dueño.setTokenDueño("TOKEN123");
-        dueño = dueñoRepository.save(dueño);
+        // Crear dueno
+        dueno = new Dueno();
+        dueno.setFirstName("Juan");
+        dueno.setLastName("Dueno");
+        dueno.setEmail("juan@gastrostock.com");
+        dueno.setNumTelefono("689594895");
+        dueno.setTokenDueno("TOKEN123");
+        dueno = duenoRepository.save(dueno);
 
         // Crear negocio
         negocio = new Negocio();
@@ -99,7 +99,7 @@ public class LineaDePedidoRepositoryTest {
         negocio.setPais("España");
         negocio.setCodigoPostal("41001");
         negocio.setTokenNegocio(12345);
-        negocio.setDueño(dueño);
+        negocio.setDueno(dueno);
         negocio = negocioRepository.save(negocio);
 
         // Crear mesas

@@ -2,8 +2,8 @@ package ispp_g2.gastrostock.testDiaReparto;
 
 import ispp_g2.gastrostock.diaReparto.DiaReparto;
 import ispp_g2.gastrostock.diaReparto.DiaRepartoRepository;
-import ispp_g2.gastrostock.dueño.Dueño;
-import ispp_g2.gastrostock.dueño.DueñoRepository;
+import ispp_g2.gastrostock.dueno.Dueno;
+import ispp_g2.gastrostock.dueno.DuenoRepository;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioRepository;
 import ispp_g2.gastrostock.proveedores.Proveedor;
@@ -37,7 +37,7 @@ class DiaRepartoRepositoryTest {
     private NegocioRepository negocioRepository;
     
     @Autowired
-    private DueñoRepository dueñoRepository;
+    private DuenoRepository duenoRepository;
 
     @Autowired
     private ProveedorRepository proveedorRepository;
@@ -49,13 +49,13 @@ class DiaRepartoRepositoryTest {
     @BeforeEach
     void setUp() {
                 
-        Dueño dueño1 = new Dueño();
-        dueño1.setFirstName("Juan");
-        dueño1.setLastName("García");
-        dueño1.setEmail("juan@example.com");
-        dueño1.setNumTelefono("666111222");
-        dueño1.setTokenDueño("TOKEN999");
-        dueño1 = dueñoRepository.save(dueño1);
+        Dueno dueno1 = new Dueno();
+        dueno1.setFirstName("Juan");
+        dueno1.setLastName("García");
+        dueno1.setEmail("juan@example.com");
+        dueno1.setNumTelefono("666111222");
+        dueno1.setTokenDueno("TOKEN999");
+        dueno1 = duenoRepository.save(dueno1);
 
         negocio1 = new Negocio();
         negocio1.setName("Restaurante La Tasca");
@@ -64,7 +64,7 @@ class DiaRepartoRepositoryTest {
         negocio1.setPais("España");
         negocio1.setCodigoPostal("41001");
         negocio1.setTokenNegocio(12345);
-        negocio1.setDueño(dueño1);
+        negocio1.setDueno(dueno1);
         negocio1 = negocioRepository.save(negocio1);
 
         proveedor = new Proveedor();

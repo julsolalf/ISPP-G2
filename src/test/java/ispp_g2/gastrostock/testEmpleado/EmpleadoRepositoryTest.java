@@ -14,8 +14,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 
-import ispp_g2.gastrostock.dueño.Dueño;
-import ispp_g2.gastrostock.dueño.DueñoRepository;
+import ispp_g2.gastrostock.dueno.Dueno;
+import ispp_g2.gastrostock.dueno.DuenoRepository;
 import ispp_g2.gastrostock.empleado.Empleado;
 import ispp_g2.gastrostock.empleado.EmpleadoRepository;
 import ispp_g2.gastrostock.negocio.Negocio;
@@ -43,14 +43,14 @@ public class EmpleadoRepositoryTest {
     private NegocioRepository negocioRepository;
     
     @Autowired
-    private DueñoRepository dueñoRepository;
+    private DuenoRepository duenoRepository;
 
     
     private Empleado empleado1, empleado2, empleado3, empleadoSinToken, empleadoSinEmail;
     private User user1, user2, user3;
     private Authorities authority;
     private Negocio negocio1, negocio2;
-    private Dueño dueño;
+    private Dueno dueno;
     
     @BeforeEach
     void setUp() {
@@ -58,7 +58,7 @@ public class EmpleadoRepositoryTest {
         empleadoRepository.deleteAll();
         userRepository.deleteAll();
         negocioRepository.deleteAll();
-        dueñoRepository.deleteAll();
+        duenoRepository.deleteAll();
         authoritiesRepository.deleteAll();
 
         // Crear rol de autoridad
@@ -66,14 +66,14 @@ public class EmpleadoRepositoryTest {
         authority.setAuthority("EMPLEADO");
         authority = authoritiesRepository.save(authority);
         
-        // Crear dueño para los negocios
-        dueño = new Dueño();
-        dueño.setFirstName("Carlos");
-        dueño.setLastName("Propietario");
-        dueño.setEmail("carlos@example.com");
-        dueño.setNumTelefono("654321987");
-        dueño.setTokenDueño("TOKEN_DUEÑO");
-        dueño = dueñoRepository.save(dueño);
+        // Crear dueno para los negocios
+        dueno = new Dueno();
+        dueno.setFirstName("Carlos");
+        dueno.setLastName("Propietario");
+        dueno.setEmail("carlos@example.com");
+        dueno.setNumTelefono("654321987");
+        dueno.setTokenDueno("TOKEN_DUEÑO");
+        dueno = duenoRepository.save(dueno);
         
         // Crear negocios
         negocio1 = new Negocio();
@@ -83,7 +83,7 @@ public class EmpleadoRepositoryTest {
         negocio1.setPais("España");
         negocio1.setCodigoPostal("41001");
         negocio1.setTokenNegocio(12345);
-        negocio1.setDueño(dueño);
+        negocio1.setDueno(dueno);
         negocio1 = negocioRepository.save(negocio1);
         
         negocio2 = new Negocio();
@@ -93,7 +93,7 @@ public class EmpleadoRepositoryTest {
         negocio2.setPais("España");
         negocio2.setCodigoPostal("41002");
         negocio2.setTokenNegocio(67890);
-        negocio2.setDueño(dueño);
+        negocio2.setDueno(dueno);
         negocio2 = negocioRepository.save(negocio2);
         
         // Crear usuarios para asociar a los empleados

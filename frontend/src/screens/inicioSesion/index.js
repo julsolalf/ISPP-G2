@@ -12,14 +12,14 @@ function PantallaInicioSesion() {
     try {
       const [empleadosResponse, duenosResponse] = await Promise.all([
         axios.get("http://localhost:8080/api/empleados"),
-        axios.get("http://localhost:8080/api/dueños"),
+        axios.get("http://localhost:8080/api/duenos"),
       ]);
 
       const empleado = empleadosResponse.data.find(
         (user) =>
           user.user.username === usuario && user.user.password === password
       );
-      const dueño = duenosResponse.data.find(
+      const dueno = duenosResponse.data.find(
         (user) =>
           user.user.username === usuario && user.user.password === password
       );
@@ -28,9 +28,9 @@ function PantallaInicioSesion() {
         localStorage.setItem("user", JSON.stringify(empleado));
         navigate("/inicioEmpleado");
       }
-      else if (dueño) {
-        localStorage.setItem("user", JSON.stringify(dueño));
-        navigate("/inicioDueño");
+      else if (dueno) {
+        localStorage.setItem("user", JSON.stringify(dueno));
+        navigate("/inicioDueno");
       } else {
         throw new Error("Credenciales incorrectas.");
       }

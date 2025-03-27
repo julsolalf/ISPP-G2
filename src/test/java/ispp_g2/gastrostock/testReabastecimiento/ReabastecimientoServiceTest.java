@@ -18,7 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
-import ispp_g2.gastrostock.dueño.Dueño;
+import ispp_g2.gastrostock.dueno.Dueno;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.proveedores.Proveedor;
 import ispp_g2.gastrostock.reabastecimiento.Reabastecimiento;
@@ -43,14 +43,14 @@ class ReabastecimientoServiceTest {
 
     @BeforeEach
     void setUp() {
-        // Crear dueño
-        Dueño dueño = new Dueño();
-        dueño.setId(1);
-        dueño.setFirstName("Juan");
-        dueño.setLastName("García");
-        dueño.setEmail("juan@example.com");
-        dueño.setNumTelefono("652345678");
-        dueño.setTokenDueño("TOKEN123");
+        // Crear dueno
+        Dueno dueno = new Dueno();
+        dueno.setId(1);
+        dueno.setFirstName("Juan");
+        dueno.setLastName("García");
+        dueno.setEmail("juan@example.com");
+        dueno.setNumTelefono("652345678");
+        dueno.setTokenDueno("TOKEN123");
 
         // Crear negocio
         negocio = new Negocio();
@@ -61,7 +61,7 @@ class ReabastecimientoServiceTest {
         negocio.setPais("España");
         negocio.setCodigoPostal("41001");
         negocio.setTokenNegocio(12345);
-        negocio.setDueño(dueño);
+        negocio.setDueno(dueno);
 
         // Crear proveedor
         proveedor = new Proveedor();

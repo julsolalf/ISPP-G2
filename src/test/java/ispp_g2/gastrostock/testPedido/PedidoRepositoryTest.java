@@ -13,8 +13,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import ispp_g2.gastrostock.dueño.Dueño;
-import ispp_g2.gastrostock.dueño.DueñoRepository;
+import ispp_g2.gastrostock.dueno.Dueno;
+import ispp_g2.gastrostock.dueno.DuenoRepository;
 import ispp_g2.gastrostock.empleado.Empleado;
 import ispp_g2.gastrostock.empleado.EmpleadoRepository;
 import ispp_g2.gastrostock.mesa.Mesa;
@@ -42,13 +42,13 @@ class PedidoRepositoryTest {
     private NegocioRepository negocioRepository;
     
     @Autowired
-    private DueñoRepository dueñoRepository;
+    private DuenoRepository duenoRepository;
     
     private Pedido pedido1, pedido2;
     private Mesa mesa1, mesa2;
     private Empleado empleado;
     private Negocio negocio;
-    private Dueño dueño;
+    private Dueno dueno;
     private LocalDateTime fecha1, fecha2;
     
     @BeforeEach
@@ -58,16 +58,16 @@ class PedidoRepositoryTest {
         mesaRepository.deleteAll();
         empleadoRepository.deleteAll();
         negocioRepository.deleteAll();
-        dueñoRepository.deleteAll();
+        duenoRepository.deleteAll();
         
-        // Create Dueño
-        dueño = new Dueño();
-        dueño.setFirstName("Juan");
-        dueño.setLastName("García");
-        dueño.setEmail("juan@example.com");
-        dueño.setNumTelefono("652345678");
-        dueño.setTokenDueño("TOKEN123");
-        dueño = dueñoRepository.save(dueño);
+        // Create Dueno
+        dueno = new Dueno();
+        dueno.setFirstName("Juan");
+        dueno.setLastName("García");
+        dueno.setEmail("juan@example.com");
+        dueno.setNumTelefono("652345678");
+        dueno.setTokenDueno("TOKEN123");
+        dueno = duenoRepository.save(dueno);
         
         // Create Negocio
         negocio = new Negocio();
@@ -77,7 +77,7 @@ class PedidoRepositoryTest {
         negocio.setPais("España");
         negocio.setCodigoPostal("41001");
         negocio.setTokenNegocio(12345);
-        negocio.setDueño(dueño);
+        negocio.setDueno(dueno);
         negocio = negocioRepository.save(negocio);
         
         // Create Mesas

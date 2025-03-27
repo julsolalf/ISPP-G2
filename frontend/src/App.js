@@ -2,10 +2,10 @@
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import "./App.css";
 import PantallaInicioSesion from "./screens/inicioSesion/index.js";
-import PantallaRegistroDueño from "./screens/registroDueño/index.js";
+import PantallaRegistroDueno from "./screens/registroDueno/index.js";
 import PantallaRecuperarContraseña from "./screens/recuperarContraseña/index.js";
 import PantallaMasInfo from "./screens/masInformacion/index.js";
-import PantallaInicioDueño from "./screens/inicioDueño/index.js";
+import PantallaInicioDueno from "./screens/inicioDueno/index.js";
 import PantallaInicioEmpleado from "./screens/inicioEmpleado/index.js";
 import PantallaPlanes from "./screens/planes/index.js";
 import TPV from "./screens/r/index.js";
@@ -50,7 +50,7 @@ function AppScreen() {
           <button className="login-btn" onClick={() => navigate("/inicioSesion")}>
             Iniciar Sesión
           </button>
-          <button className="register-btn" onClick={() => navigate("/registroDueño")}>
+          <button className="register-btn" onClick={() => navigate("/registroDueno")}>
             Registrarse
           </button>
         </div>
@@ -73,9 +73,9 @@ function App() {
         <Route path="/" element={<AppScreen />} />
         <Route path="/inicioSesion" element={<PantallaInicioSesion />} />
         <Route path="/recuperarContraseña" element={<PantallaRecuperarContraseña />} />
-        <Route path="/registroDueño" element={<PantallaRegistroDueño />} />
+        <Route path="/registroDueno" element={<PantallaRegistroDueno />} />
         <Route path="/masInformacion" element={<PantallaMasInfo />} />
-        <Route path="/inicioDueño" element={<PantallaInicioDueño />} />
+        <Route path="/inicioDueno" element={<PantallaInicioDueno />} />
         <Route path="/inicioEmpleado" element={<PantallaInicioEmpleado />} />
         <Route path="/planes" element={<PantallaPlanes />} />
         <Route path="/dashboard" element={<Dashboard />} />

@@ -1,4 +1,4 @@
-package ispp_g2.gastrostock.testDueño;
+package ispp_g2.gastrostock.testDueno;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -29,33 +29,33 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ispp_g2.gastrostock.dueño.Dueño;
-import ispp_g2.gastrostock.dueño.DueñoController;
-import ispp_g2.gastrostock.dueño.DueñoService;
+import ispp_g2.gastrostock.dueno.Dueno;
+import ispp_g2.gastrostock.dueno.DuenoController;
+import ispp_g2.gastrostock.dueno.DuenoService;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.user.Authorities;
 import ispp_g2.gastrostock.user.User;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-@WebMvcTest(DueñoController.class)
+@WebMvcTest(DuenoController.class)
 @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
-public class DueñoControllerTest {
+public class DuenoControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private DueñoService dueñoService;
+    private DuenoService duenoService;
 
     @InjectMocks
-    private DueñoController dueñoController;
+    private DuenoController duenoController;
 
     private ObjectMapper objectMapper;
-    private Dueño dueñoNormal;
-    private Dueño dueñoConNegocio;
-    private Dueño dueñoInvalidoSinEmail;
-    private List<Dueño> dueñosList;
+    private Dueno duenoNormal;
+    private Dueno duenoConNegocio;
+    private Dueno duenoInvalidoSinEmail;
+    private List<Dueno> duenosList;
     private User user;
     private Negocio negocio;
     private Authorities authoriti;
@@ -68,7 +68,7 @@ public class DueñoControllerTest {
         authoriti = new Authorities();
         authoriti.setAuthority("DUEÑO");
         
-        // Crear usuario para asociar al dueño
+        // Crear usuario para asociar al dueno
         user = new User();
         user.setId(1);
         user.setUsername("juangarcia");
@@ -77,15 +77,15 @@ public class DueñoControllerTest {
         // Crear usuario para pruebas
 
         
-        // Crear un dueño normal
-        dueñoNormal = new Dueño();
-        dueñoNormal.setId(1);
-        dueñoNormal.setFirstName("Juan");
-        dueñoNormal.setLastName("García");
-        dueñoNormal.setEmail("juan@example.com");
-        dueñoNormal.setNumTelefono("652345678");
-        dueñoNormal.setTokenDueño("TOKEN123");
-        dueñoNormal.setUser(user);
+        // Crear un dueno normal
+        duenoNormal = new Dueno();
+        duenoNormal.setId(1);
+        duenoNormal.setFirstName("Juan");
+        duenoNormal.setLastName("García");
+        duenoNormal.setEmail("juan@example.com");
+        duenoNormal.setNumTelefono("652345678");
+        duenoNormal.setTokenDueno("TOKEN123");
+        duenoNormal.setUser(user);
 
         // Crear un negocio
         negocio = new Negocio();
@@ -97,30 +97,30 @@ public class DueñoControllerTest {
         negocio.setCodigoPostal("41001");
         negocio.setTokenNegocio(12345);
 
-        // Crear un dueño con negocio
-        dueñoConNegocio = new Dueño();
-        dueñoConNegocio.setId(2);
-        dueñoConNegocio.setFirstName("Ana");
-        dueñoConNegocio.setLastName("Martínez");
-        dueñoConNegocio.setEmail("ana@example.com");
-        dueñoConNegocio.setNumTelefono("654321987");
-        dueñoConNegocio.setTokenDueño("TOKEN456");
+        // Crear un dueno con negocio
+        duenoConNegocio = new Dueno();
+        duenoConNegocio.setId(2);
+        duenoConNegocio.setFirstName("Ana");
+        duenoConNegocio.setLastName("Martínez");
+        duenoConNegocio.setEmail("ana@example.com");
+        duenoConNegocio.setNumTelefono("654321987");
+        duenoConNegocio.setTokenDueno("TOKEN456");
         
-        // Asignar el dueño al negocio
-        negocio.setDueño(dueñoConNegocio);
+        // Asignar el dueno al negocio
+        negocio.setDueno(duenoConNegocio);
 
-        // Crear un dueño con datos inválidos (sin email)
-        dueñoInvalidoSinEmail = new Dueño();
-        dueñoInvalidoSinEmail.setId(3);
-        dueñoInvalidoSinEmail.setFirstName("Pedro");
-        dueñoInvalidoSinEmail.setLastName("Pérez");
-        dueñoInvalidoSinEmail.setNumTelefono("666777888");
-        dueñoInvalidoSinEmail.setTokenDueño("TOKEN789");
+        // Crear un dueno con datos inválidos (sin email)
+        duenoInvalidoSinEmail = new Dueno();
+        duenoInvalidoSinEmail.setId(3);
+        duenoInvalidoSinEmail.setFirstName("Pedro");
+        duenoInvalidoSinEmail.setLastName("Pérez");
+        duenoInvalidoSinEmail.setNumTelefono("666777888");
+        duenoInvalidoSinEmail.setTokenDueno("TOKEN789");
 
-        // Lista de dueños para tests
-        dueñosList = new ArrayList<>();
-        dueñosList.add(dueñoNormal);
-        dueñosList.add(dueñoConNegocio);
+        // Lista de duenos para tests
+        duenosList = new ArrayList<>();
+        duenosList.add(duenoNormal);
+        duenosList.add(duenoConNegocio);
     }
 
     // TESTS PARA findAll()
@@ -128,10 +128,10 @@ public class DueñoControllerTest {
     @Test
     void testFindAll_Success() throws Exception {
         // Arrange
-        when(dueñoService.getAllDueños()).thenReturn(dueñosList);
+        when(duenoService.getAllDuenos()).thenReturn(duenosList);
         
         // Act & Assert
-        mockMvc.perform(get("/api/dueños")
+        mockMvc.perform(get("/api/duenos")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
@@ -140,20 +140,20 @@ public class DueñoControllerTest {
                 .andExpect(jsonPath("$[1].id", is(2)))
                 .andExpect(jsonPath("$[1].firstName", is("Ana")));
         
-        verify(dueñoService, times(2)).getAllDueños(); // Se llama 2 veces: una para verificar si está vacío y otra para devolver datos
+        verify(duenoService, times(2)).getAllDuenos(); // Se llama 2 veces: una para verificar si está vacío y otra para devolver datos
     }
 
     @Test
     void testFindAll_EmptyList() throws Exception {
         // Arrange
-        when(dueñoService.getAllDueños()).thenReturn(Collections.emptyList());
+        when(duenoService.getAllDuenos()).thenReturn(Collections.emptyList());
         
         // Act & Assert
-        mockMvc.perform(get("/api/dueños")
+        mockMvc.perform(get("/api/duenos")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
         
-        verify(dueñoService).getAllDueños();
+        verify(duenoService).getAllDuenos();
     }
 
     // TESTS PARA findById()
@@ -161,30 +161,30 @@ public class DueñoControllerTest {
     @Test
     void testFindById_Success() throws Exception {
         // Arrange
-        when(dueñoService.getDueñoById("1")).thenReturn(dueñoNormal);
+        when(duenoService.getDuenoById("1")).thenReturn(duenoNormal);
         
         // Act & Assert
-        mockMvc.perform(get("/api/dueños/1")
+        mockMvc.perform(get("/api/duenos/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.firstName", is("Juan")))
                 .andExpect(jsonPath("$.lastName", is("García")));
         
-        verify(dueñoService).getDueñoById("1");
+        verify(duenoService).getDuenoById("1");
     }
 
     @Test
     void testFindById_NotFound() throws Exception {
         // Arrange
-        when(dueñoService.getDueñoById("999")).thenReturn(null);
+        when(duenoService.getDuenoById("999")).thenReturn(null);
         
         // Act & Assert
-        mockMvc.perform(get("/api/dueños/999")
+        mockMvc.perform(get("/api/duenos/999")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
         
-        verify(dueñoService).getDueñoById("999");
+        verify(duenoService).getDuenoById("999");
     }
 
     // TESTS PARA findByToken()
@@ -192,29 +192,29 @@ public class DueñoControllerTest {
     @Test
     void testFindByToken_Success() throws Exception {
         // Arrange
-        when(dueñoService.getDueñoByToken("TOKEN123")).thenReturn(dueñoNormal);
+        when(duenoService.getDuenoByToken("TOKEN123")).thenReturn(duenoNormal);
         
         // Act & Assert
-        mockMvc.perform(get("/api/dueños/token/TOKEN123")
+        mockMvc.perform(get("/api/duenos/token/TOKEN123")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.firstName", is("Juan")));
         
-        verify(dueñoService, times(2)).getDueñoByToken("TOKEN123"); // Se llama 2 veces en el controlador
+        verify(duenoService, times(2)).getDuenoByToken("TOKEN123"); // Se llama 2 veces en el controlador
     }
 
     @Test
     void testFindByToken_NotFound() throws Exception {
         // Arrange
-        when(dueñoService.getDueñoByToken("INVALID_TOKEN")).thenReturn(null);
+        when(duenoService.getDuenoByToken("INVALID_TOKEN")).thenReturn(null);
         
         // Act & Assert
-        mockMvc.perform(get("/api/dueños/token/INVALID_TOKEN")
+        mockMvc.perform(get("/api/duenos/token/INVALID_TOKEN")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
         
-        verify(dueñoService).getDueñoByToken("INVALID_TOKEN");
+        verify(duenoService).getDuenoByToken("INVALID_TOKEN");
     }
 
     // TESTS PARA findByEmail()
@@ -222,29 +222,29 @@ public class DueñoControllerTest {
     @Test
     void testFindByEmail_Success() throws Exception {
         // Arrange
-        when(dueñoService.getDueñoByEmail("juan@example.com")).thenReturn(dueñoNormal);
+        when(duenoService.getDuenoByEmail("juan@example.com")).thenReturn(duenoNormal);
         
         // Act & Assert
-        mockMvc.perform(get("/api/dueños/email/juan@example.com")
+        mockMvc.perform(get("/api/duenos/email/juan@example.com")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.email", is("juan@example.com")));
         
-        verify(dueñoService, times(2)).getDueñoByEmail("juan@example.com"); // Se llama 2 veces en el controlador
+        verify(duenoService, times(2)).getDuenoByEmail("juan@example.com"); // Se llama 2 veces en el controlador
     }
 
     @Test
     void testFindByEmail_NotFound() throws Exception {
         // Arrange
-        when(dueñoService.getDueñoByEmail("nonexistent@example.com")).thenReturn(null);
+        when(duenoService.getDuenoByEmail("nonexistent@example.com")).thenReturn(null);
         
         // Act & Assert
-        mockMvc.perform(get("/api/dueños/email/nonexistent@example.com")
+        mockMvc.perform(get("/api/duenos/email/nonexistent@example.com")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
         
-        verify(dueñoService).getDueñoByEmail("nonexistent@example.com");
+        verify(duenoService).getDuenoByEmail("nonexistent@example.com");
     }
 
     // TESTS PARA findByNombre()
@@ -252,29 +252,29 @@ public class DueñoControllerTest {
     @Test
     void testFindByNombre_Success() throws Exception {
         // Arrange
-        when(dueñoService.getDueñoByNombre("Juan")).thenReturn(Collections.singletonList(dueñoNormal));
+        when(duenoService.getDuenoByNombre("Juan")).thenReturn(Collections.singletonList(duenoNormal));
         
         // Act & Assert
-        mockMvc.perform(get("/api/dueños/nombre/Juan")
+        mockMvc.perform(get("/api/duenos/nombre/Juan")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].firstName", is("Juan")));
         
-        verify(dueñoService).getDueñoByNombre("Juan");
+        verify(duenoService).getDuenoByNombre("Juan");
     }
 
     @Test
     void testFindByNombre_NotFound() throws Exception {
         // Arrange
-        when(dueñoService.getDueñoByNombre("Inexistente")).thenReturn(Collections.emptyList());
+        when(duenoService.getDuenoByNombre("Inexistente")).thenReturn(Collections.emptyList());
         
         // Act & Assert
-        mockMvc.perform(get("/api/dueños/nombre/Inexistente")
+        mockMvc.perform(get("/api/duenos/nombre/Inexistente")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
         
-        verify(dueñoService).getDueñoByNombre("Inexistente");
+        verify(duenoService).getDuenoByNombre("Inexistente");
     }
 
     // TESTS PARA findByApellido()
@@ -282,29 +282,29 @@ public class DueñoControllerTest {
     @Test
     void testFindByApellido_Success() throws Exception {
         // Arrange
-        when(dueñoService.getDueñoByApellido("García")).thenReturn(Collections.singletonList(dueñoNormal));
+        when(duenoService.getDuenoByApellido("García")).thenReturn(Collections.singletonList(duenoNormal));
         
         // Act & Assert
-        mockMvc.perform(get("/api/dueños/apellido/García")
+        mockMvc.perform(get("/api/duenos/apellido/García")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].lastName", is("García")));
         
-        verify(dueñoService, times(2)).getDueñoByApellido("García"); // Se llama 2 veces en el controlador
+        verify(duenoService, times(2)).getDuenoByApellido("García"); // Se llama 2 veces en el controlador
     }
 
     @Test
     void testFindByApellido_NotFound() throws Exception {
         // Arrange
-        when(dueñoService.getDueñoByApellido("Inexistente")).thenReturn(Collections.emptyList());
+        when(duenoService.getDuenoByApellido("Inexistente")).thenReturn(Collections.emptyList());
         
         // Act & Assert
-        mockMvc.perform(get("/api/dueños/apellido/Inexistente")
+        mockMvc.perform(get("/api/duenos/apellido/Inexistente")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
         
-        verify(dueñoService).getDueñoByApellido("Inexistente");
+        verify(duenoService).getDuenoByApellido("Inexistente");
     }
 
     // TESTS PARA findByTelefono()
@@ -312,28 +312,28 @@ public class DueñoControllerTest {
     @Test
     void testFindByTelefono_Success() throws Exception {
         // Arrange
-        when(dueñoService.getDueñoByTelefono("652345678")).thenReturn(dueñoNormal);
+        when(duenoService.getDuenoByTelefono("652345678")).thenReturn(duenoNormal);
         
         // Act & Assert
-        mockMvc.perform(get("/api/dueños/telefono/652345678")
+        mockMvc.perform(get("/api/duenos/telefono/652345678")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.numTelefono", is("652345678")));
         
-        verify(dueñoService, times(2)).getDueñoByTelefono("652345678"); // Se llama 2 veces en el controlador
+        verify(duenoService, times(2)).getDuenoByTelefono("652345678"); // Se llama 2 veces en el controlador
     }
 
     @Test
     void testFindByTelefono_NotFound() throws Exception {
         // Arrange
-        when(dueñoService.getDueñoByTelefono("999999999")).thenReturn(null);
+        when(duenoService.getDuenoByTelefono("999999999")).thenReturn(null);
         
         // Act & Assert
-        mockMvc.perform(get("/api/dueños/telefono/999999999")
+        mockMvc.perform(get("/api/duenos/telefono/999999999")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
         
-        verify(dueñoService).getDueñoByTelefono("999999999");
+        verify(duenoService).getDuenoByTelefono("999999999");
     }
 
     // TESTS PARA findByUser()
@@ -341,28 +341,28 @@ public class DueñoControllerTest {
     @Test
     void testFindByUser_Success() throws Exception {
         // Arrange
-        when(dueñoService.getDueñoByUser("1")).thenReturn(dueñoNormal);
+        when(duenoService.getDuenoByUser("1")).thenReturn(duenoNormal);
         
         // Act & Assert
-        mockMvc.perform(get("/api/dueños/user/1")
+        mockMvc.perform(get("/api/duenos/user/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)));
         
-        verify(dueñoService, times(2)).getDueñoByUser("1"); // Se llama 2 veces en el controlador
+        verify(duenoService, times(2)).getDuenoByUser("1"); // Se llama 2 veces en el controlador
     }
 
     @Test
     void testFindByUser_NotFound() throws Exception {
         // Arrange
-        when(dueñoService.getDueñoByUser("999")).thenReturn(null);
+        when(duenoService.getDuenoByUser("999")).thenReturn(null);
         
         // Act & Assert
-        mockMvc.perform(get("/api/dueños/user/999")
+        mockMvc.perform(get("/api/duenos/user/999")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
         
-        verify(dueñoService).getDueñoByUser("999");
+        verify(duenoService).getDuenoByUser("999");
     }
 
     // TESTS PARA save()
@@ -370,24 +370,24 @@ public class DueñoControllerTest {
     @Test
     void testSave_Success() throws Exception {
         // Arrange
-        when(dueñoService.saveDueño(any(Dueño.class))).thenReturn(dueñoNormal);
+        when(duenoService.saveDueno(any(Dueno.class))).thenReturn(duenoNormal);
             
         // Act & Assert
-        mockMvc.perform(post("/api/dueños")
+        mockMvc.perform(post("/api/duenos")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dueñoNormal)))
+                .content(objectMapper.writeValueAsString(duenoNormal)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.firstName", is("Juan")));
         
-        verify(dueñoService).saveDueño(any(Dueño.class));
+        verify(duenoService).saveDueno(any(Dueno.class));
     }
 
     @Test
-    void testSave_NullDueño() throws Exception {
+    void testSave_NullDueno() throws Exception {
         // Act & Assert - No podemos enviar un cuerpo nulo directamente, pero podemos probar con un objeto vacío
-        mockMvc.perform(post("/api/dueños")
+        mockMvc.perform(post("/api/duenos")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{}")) // Objeto JSON vacío
@@ -395,15 +395,15 @@ public class DueñoControllerTest {
     }
 
     @Test
-    void testSave_InvalidDueño() throws Exception {
+    void testSave_InvalidDueno() throws Exception {
         // Arrange
         // No necesitamos configurar el mock porque esperamos una excepción de validación
         
         // Act & Assert
-        mockMvc.perform(post("/api/dueños")
+        mockMvc.perform(post("/api/duenos")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dueñoInvalidoSinEmail)))
+                .content(objectMapper.writeValueAsString(duenoInvalidoSinEmail)))
                 .andExpect(status().isBadRequest()); // Debería fallar la validación si hay restricciones @NotNull
     }
 
@@ -412,49 +412,49 @@ public class DueñoControllerTest {
     @Test
     void testUpdate_Success() throws Exception {
         // Arrange
-        Dueño dueñoActualizado = new Dueño();
-        dueñoActualizado.setId(1);
-        dueñoActualizado.setFirstName("Juan Actualizado");
-        dueñoActualizado.setLastName("García");
-        dueñoActualizado.setEmail("juan@example.com");
-        dueñoActualizado.setNumTelefono("652345678");
-        dueñoActualizado.setTokenDueño("TOKEN123");
+        Dueno duenoActualizado = new Dueno();
+        duenoActualizado.setId(1);
+        duenoActualizado.setFirstName("Juan Actualizado");
+        duenoActualizado.setLastName("García");
+        duenoActualizado.setEmail("juan@example.com");
+        duenoActualizado.setNumTelefono("652345678");
+        duenoActualizado.setTokenDueno("TOKEN123");
         
-        when(dueñoService.getDueñoById("1")).thenReturn(dueñoNormal);
-        when(dueñoService.saveDueño(any(Dueño.class))).thenReturn(dueñoActualizado);
+        when(duenoService.getDuenoById("1")).thenReturn(duenoNormal);
+        when(duenoService.saveDueno(any(Dueno.class))).thenReturn(duenoActualizado);
         
         // Act & Assert
-        mockMvc.perform(put("/api/dueños/1")
+        mockMvc.perform(put("/api/duenos/1")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dueñoActualizado)))
+                .content(objectMapper.writeValueAsString(duenoActualizado)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName", is("Juan Actualizado")));
         
-        verify(dueñoService).getDueñoById("1");
-        verify(dueñoService).saveDueño(any(Dueño.class));
+        verify(duenoService).getDuenoById("1");
+        verify(duenoService).saveDueno(any(Dueno.class));
     }
 
     @Test
     void testUpdate_NotFound() throws Exception {
         // Arrange
-        when(dueñoService.getDueñoById("999")).thenReturn(null);
+        when(duenoService.getDuenoById("999")).thenReturn(null);
         
         // Act & Assert
-        mockMvc.perform(put("/api/dueños/999")
+        mockMvc.perform(put("/api/duenos/999")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dueñoNormal)))
+                .content(objectMapper.writeValueAsString(duenoNormal)))
                 .andExpect(status().isNotFound());
         
-        verify(dueñoService).getDueñoById("999");
-        verify(dueñoService, never()).saveDueño(any(Dueño.class));
+        verify(duenoService).getDuenoById("999");
+        verify(duenoService, never()).saveDueno(any(Dueno.class));
     }
 
     @Test
-    void testUpdate_NullDueño() throws Exception {
+    void testUpdate_NullDueno() throws Exception {
         // Act & Assert
-        mockMvc.perform(put("/api/dueños/1")
+        mockMvc.perform(put("/api/duenos/1")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{}")) // Objeto JSON vacío
@@ -466,31 +466,31 @@ public class DueñoControllerTest {
     @Test
     void testDelete_Success() throws Exception {
         // Arrange
-        when(dueñoService.getDueñoById("1")).thenReturn(dueñoNormal);
-        doNothing().when(dueñoService).deleteDueño("1");
+        when(duenoService.getDuenoById("1")).thenReturn(duenoNormal);
+        doNothing().when(duenoService).deleteDueno("1");
         
         // Act & Assert
-        mockMvc.perform(delete("/api/dueños/1")
+        mockMvc.perform(delete("/api/duenos/1")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
         
-        verify(dueñoService).getDueñoById("1");
-        verify(dueñoService).deleteDueño("1");
+        verify(duenoService).getDuenoById("1");
+        verify(duenoService).deleteDueno("1");
     }
 
     @Test
     void testDelete_NotFound() throws Exception {
         // Arrange
-        when(dueñoService.getDueñoById("999")).thenReturn(null);
+        when(duenoService.getDuenoById("999")).thenReturn(null);
         
         // Act & Assert
-        mockMvc.perform(delete("/api/dueños/999")
+        mockMvc.perform(delete("/api/duenos/999")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
         
-        verify(dueñoService).getDueñoById("999");
-        verify(dueñoService, never()).deleteDueño("999");
+        verify(duenoService).getDuenoById("999");
+        verify(duenoService, never()).deleteDueno("999");
     }
 }

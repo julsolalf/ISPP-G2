@@ -13,8 +13,8 @@ import org.springframework.test.context.ActiveProfiles;
 import ispp_g2.gastrostock.categorias.Categoria;
 import ispp_g2.gastrostock.categorias.CategoriaRepository;
 import ispp_g2.gastrostock.categorias.Pertenece;
-import ispp_g2.gastrostock.dueño.Dueño;
-import ispp_g2.gastrostock.dueño.DueñoRepository;
+import ispp_g2.gastrostock.dueno.Dueno;
+import ispp_g2.gastrostock.dueno.DuenoRepository;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioRepository;
 import ispp_g2.gastrostock.productoVenta.ProductoVenta;
@@ -31,7 +31,7 @@ class ProductoVentaRepositoryTest {
     private CategoriaRepository categoriaRepository;
 
     @Autowired
-    private DueñoRepository dueñoRepository;
+    private DuenoRepository duenoRepository;
 
     @Autowired
     private NegocioRepository negocioRepository;
@@ -47,13 +47,13 @@ class ProductoVentaRepositoryTest {
     @BeforeEach
     void setUp() {
 
-        Dueño dueño1 = new Dueño();
-        dueño1.setFirstName("Juan");
-        dueño1.setLastName("García");
-        dueño1.setEmail("juan@example.com");
-        dueño1.setNumTelefono("666111222");
-        dueño1.setTokenDueño("TOKEN999");
-        dueñoRepository.save(dueño1);
+        Dueno dueno1 = new Dueno();
+        dueno1.setFirstName("Juan");
+        dueno1.setLastName("García");
+        dueno1.setEmail("juan@example.com");
+        dueno1.setNumTelefono("666111222");
+        dueno1.setTokenDueno("TOKEN999");
+        duenoRepository.save(dueno1);
 
         Negocio negocio1 = new Negocio();
         negocio1.setId(1);
@@ -63,7 +63,7 @@ class ProductoVentaRepositoryTest {
         negocio1.setPais("España");
         negocio1.setCodigoPostal("41001");
         negocio1.setTokenNegocio(12345);
-        negocio1.setDueño(dueño1);
+        negocio1.setDueno(dueno1);
         negocio1 = negocioRepository.save(negocio1);
    
         categoriaBebidas = new Categoria();
