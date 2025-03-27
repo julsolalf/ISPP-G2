@@ -37,8 +37,7 @@ function VerTipoProducto() {
       navigate("/"); // Redirigir a la pantalla de inicio de sesión
     };
   const [productos, setProductos] = useState([]);
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [showUserOptions, setShowUserOptions] = useState(false);
+
 
   useEffect(() => {
     const cargarProductos = async () => {
@@ -129,6 +128,8 @@ function VerTipoProducto() {
               )}
             </div>
           ))}
+        </div>
+        )}
         {/* Modal de Confirmación para Logout */}
         {showLogoutModal && (
           <div className="modal-overlay">

@@ -8,7 +8,8 @@ function AñadirProveedor() {
   const [name, setNombre] = useState("");
   const [email, setEmail] = useState("");
   const [telefono, setTelefono] = useState("");
-  const [direccion, setDireccion] = useState(""); 
+  const [direccion, setDireccion] = useState("");
+  const [descripcion, setDescripcion] = useState("");  
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout

@@ -1,3 +1,9 @@
 runtime: java21
 instance_class: F2
-handlers: ...
+
+handlers:
+  - url: /static
+    static_dir: /static
+
+  - url: /.* 
+    script: auto

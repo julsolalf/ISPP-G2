@@ -1,0 +1,32 @@
+# Excluir directorios de control de versiones
+.git
+.gitignore
+
+# Excluir directorios de construcción de Maven
+target/
+
+# Excluir archivos y carpetas de IDEs
+.idea/
+.vscode/
+
+# Excluir dependencias locales de Node.js (si tu proyecto usa alguna librería o herramienta que requiera Node.js)
+node_modules/
+.npm/
+
+# Excluir archivos de entorno y configuración local
+.env
+.env.local
+
+# Excluir archivos temporales, de respaldo y de logs
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Excluir documentación y archivos de configuración de CI/CD
+README.md
+.docs/
+.github/
+
+# Excluir cualquier otro archivo que no sea necesario para el despliegue
+*.DS_Store

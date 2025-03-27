@@ -23,8 +23,6 @@ function AñadirEmpleado() {
 
   const navigate = useNavigate();
 
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [showUserOptions, setShowUserOptions] = useState(false);
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
@@ -39,7 +37,6 @@ function AñadirEmpleado() {
     navigate("/"); // Redirigir a la pantalla de inicio de sesión
   };
   
-  const navigate = useNavigate();
 
   const handleRegister = async () => {
     const empleadoData = {
