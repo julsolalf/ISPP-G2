@@ -2,12 +2,17 @@ package ispp_g2.gastrostock.testEmpleado;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-
+import ispp_g2.gastrostock.empleado.EmpleadoDTO;
+import static org.mockito.ArgumentMatchers.eq;
+import org.mockito.Mock;
+import ispp_g2.gastrostock.negocio.NegocioService;
+import ispp_g2.gastrostock.user.UserService;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ispp_g2.gastrostock.empleado.Empleado;
 import ispp_g2.gastrostock.empleado.EmpleadoController;
+import ispp_g2.gastrostock.empleado.EmpleadoDTO;
 import ispp_g2.gastrostock.empleado.EmpleadoService;
 import ispp_g2.gastrostock.exceptions.ExceptionHandlerController;
 import ispp_g2.gastrostock.negocio.Negocio;
@@ -44,6 +50,12 @@ class EmpleadoControllerTest {
 
     @InjectMocks
     private EmpleadoController empleadoController;
+
+    @Mock
+    private NegocioService  negocioService;
+
+    @Mock
+    private UserService userService;
 
     private ObjectMapper objectMapper;
     private Empleado empleado1, empleadoNuevo, empleado;
@@ -410,20 +422,36 @@ class EmpleadoControllerTest {
     
     @Test
     void testSave_Success() throws Exception {
-        // Arrange
+        // Arrange - Crear un EmpleadoDTO en lugar de un Empleado
+        EmpleadoDTO empleadoDTO = new EmpleadoDTO();
+        empleadoDTO.setFirstName("Antonio");
+        empleadoDTO.setLastName("Almanza");
+        empleadoDTO.setEmail("antonio@example.com");
+        empleadoDTO.setNumTelefono("666151222");
+        empleadoDTO.setTokenEmpleado("TOKEN129");
+        empleadoDTO.setDescripcion("Camarero principal");
+        empleadoDTO.setUser("1"); // ID como String
+        empleadoDTO.setNegocio("1"); // ID como String
+        
+        // Configurar los mocks necesarios
+        when(negocioService.getById("1")).thenReturn(negocio);
+        when(userService.findUserById("1")).thenReturn(user); // AÑADIR ESTA LÍNEA
+        when(empleadoService.convertirDTOEmpleado(any(EmpleadoDTO.class), eq(negocio), eq(user))).thenReturn(empleado);
         when(empleadoService.saveEmpleado(any(Empleado.class))).thenReturn(empleado1);
         
         // Act & Assert
         mockMvc.perform(post("/api/empleados")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(empleado)))
+                .content(objectMapper.writeValueAsString(empleadoDTO)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.firstName", is("Juan")));
         
+        // Verificar que se llamaron los métodos correctos
+        verify(negocioService).getById("1");
+        verify(userService).findUserById("1"); // AÑADIR ESTA LÍNEA
         verify(empleadoService).saveEmpleado(any(Empleado.class));
     }
-    
     @Test
     void testSave_InvalidData() throws Exception {
         // Act & Assert - Probar con objeto vacío que debería fallar validación
@@ -436,49 +464,79 @@ class EmpleadoControllerTest {
 
     // TESTS PARA update()
     
-    @Test
-    void testUpdate_Success() throws Exception {
-        // Arrange
-        Empleado empleadoActualizado = new Empleado();
-        empleadoActualizado.setFirstName("Juan Actualizado");
-        empleadoActualizado.setLastName("Pérez");
-        empleadoActualizado.setEmail("juan.perez@example.com");
-        empleadoActualizado.setNumTelefono("666111222");
-        empleadoActualizado.setTokenEmpleado("TOKEN123");
-        empleadoActualizado.setDescripcion("Camarero principal actualizado");
-        empleadoActualizado.setUser(user);
-        empleadoActualizado.setNegocio(negocio);
-        
-        when(empleadoService.getEmpleadoById("1")).thenReturn(empleado1);
-        when(empleadoService.saveEmpleado(any(Empleado.class))).thenReturn(empleadoActualizado);
-        
-        // Act & Assert
-        mockMvc.perform(put("/api/empleados/1")
-                .with(csrf())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(empleadoActualizado)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName", is("Juan Actualizado")));
-        
-        verify(empleadoService).getEmpleadoById("1");
-        verify(empleadoService).saveEmpleado(any(Empleado.class));
-    }
+@Test
+void testUpdate_Success() throws Exception {
+    // Arrange
+    // Crear un EmpleadoDTO en lugar de un Empleado
+    EmpleadoDTO empleadoDTO = new EmpleadoDTO();
+    empleadoDTO.setFirstName("Juan Actualizado");
+    empleadoDTO.setLastName("Pérez");
+    empleadoDTO.setEmail("juan.perez@example.com");
+    empleadoDTO.setNumTelefono("666111222");
+    empleadoDTO.setTokenEmpleado("TOKEN123");
+    empleadoDTO.setDescripcion("Camarero principal actualizado");
+    empleadoDTO.setUser("1"); // ID como String
+    empleadoDTO.setNegocio("1"); // ID como String
     
-    @Test
-    void testUpdate_NotFound() throws Exception {
-        // Arrange
-        when(empleadoService.getEmpleadoById("999")).thenReturn(null);
-        
-        // Act & Assert
-        mockMvc.perform(put("/api/empleados/999")
-                .with(csrf())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(empleado)))
-                .andExpect(status().isNotFound());
-        
-        verify(empleadoService).getEmpleadoById("999");
-        verify(empleadoService, never()).saveEmpleado(any(Empleado.class));
-    }
+    // Preparar un Empleado actualizado para el resultado
+    Empleado empleadoActualizado = new Empleado();
+    empleadoActualizado.setId(1);
+    empleadoActualizado.setFirstName("Juan Actualizado");
+    empleadoActualizado.setLastName("Pérez");
+    empleadoActualizado.setEmail("juan.perez@example.com");
+    empleadoActualizado.setNumTelefono("666111222");
+    empleadoActualizado.setTokenEmpleado("TOKEN123");
+    empleadoActualizado.setDescripcion("Camarero principal actualizado");
+    empleadoActualizado.setUser(user);
+    empleadoActualizado.setNegocio(negocio);
+    
+    // Configurar todos los mocks necesarios
+    when(empleadoService.getEmpleadoById("1")).thenReturn(empleado1);
+    when(negocioService.getById("1")).thenReturn(negocio); // Mock para buscar negocio
+    when(empleadoService.convertirDTOEmpleado(any(EmpleadoDTO.class), eq(negocio), eq(empleado1.getUser()))).thenReturn(empleadoActualizado);
+    when(empleadoService.saveEmpleado(any(Empleado.class))).thenReturn(empleadoActualizado);
+    
+    // Act & Assert
+    mockMvc.perform(put("/api/empleados/1")
+            .with(csrf())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(empleadoDTO))) // Enviar el DTO, no la entidad
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.firstName", is("Juan Actualizado")));
+    
+    // Verificar que los métodos correctos fueron llamados
+    verify(empleadoService, atLeastOnce()).getEmpleadoById("1");
+    verify(negocioService).getById("1");
+    verify(empleadoService).saveEmpleado(any(Empleado.class));
+}
+    
+@Test
+void testUpdate_NotFound() throws Exception {
+    // Arrange
+    // Crear un EmpleadoDTO
+    EmpleadoDTO empleadoDTO = new EmpleadoDTO();
+    empleadoDTO.setFirstName("No");
+    empleadoDTO.setLastName("Existe");
+    empleadoDTO.setEmail("noexiste@example.com");
+    empleadoDTO.setNumTelefono("999888777");
+    empleadoDTO.setTokenEmpleado("TOKEN999");
+    empleadoDTO.setDescripcion("Descripción test");
+    empleadoDTO.setUser("1"); // ID como String
+    empleadoDTO.setNegocio("1"); // ID como String
+    
+    // Configurar el mock para retornar null (no encontrado)
+    when(empleadoService.getEmpleadoById("999")).thenReturn(null);
+    
+    // Act & Assert
+    mockMvc.perform(put("/api/empleados/999")
+            .with(csrf())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(empleadoDTO))) // Enviar el DTO, no la entidad
+            .andExpect(status().isNotFound());
+    
+    verify(empleadoService, atLeastOnce()).getEmpleadoById("999");
+    verify(empleadoService, never()).saveEmpleado(any(Empleado.class));
+}
     
     @Test
     void testUpdate_InvalidData() throws Exception {
