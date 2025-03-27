@@ -163,3 +163,4 @@ ISPP-G2
 | 22/03/2025 | Desarrollo frontend android conectar con backend productos de inventario Semana 8 | 02:14:45   | Lidjimsor                 |
 | 22/03/2025 | Conectando endpoints empleados flutter y arreglando dependencias Semana 8 - [Coding] | 03:59:27   | Alvruigut                 |
 | 22/03/2025 | Flyer clientes pilotos existentes Semana 8                                   | 01:16
+ 
