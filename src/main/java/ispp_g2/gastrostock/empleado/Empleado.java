@@ -1,29 +1,32 @@
 package ispp_g2.gastrostock.empleado;
 
-import ispp_g2.gastrostock.model.NamedEntity;
+
+import ispp_g2.gastrostock.model.Person;
 import ispp_g2.gastrostock.negocio.Negocio;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+
 
 @Entity
 @Getter
 @Setter
-public class Empleado extends NamedEntity {
+public class Empleado extends Person {
 
     @NotBlank
+    @Column(unique = true)
     private String tokenEmpleado;
 
-    @NotNull
-    private Rol rol;
+    private String descripcion;
 
-    @ManyToOne
-    @NotNull
+    @ManyToOne(optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "negocio_id")
     private Negocio negocio;
 
-    // En Pedido tendría que haber una relación ManyToOne a Empleado.
     
 }

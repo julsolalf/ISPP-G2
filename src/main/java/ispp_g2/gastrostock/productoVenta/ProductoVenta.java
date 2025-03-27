@@ -1,30 +1,24 @@
 package ispp_g2.gastrostock.productoVenta;
 
-import ispp_g2.gastrostock.lineaDePedido.LineaDePedido;
-import ispp_g2.gastrostock.model.BaseEntity;
+import ispp_g2.gastrostock.categorias.Categoria;
+import ispp_g2.gastrostock.model.NamedEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
 @Setter
-public class ProductoVenta extends BaseEntity {
-
-    @NotBlank
-    private String nombre;
-
-    @Enumerated(EnumType.STRING)
-    @NotNull
-    private CategoriasVenta categoriaVenta;
+public class ProductoVenta extends NamedEntity {
 
     @NotNull
     private Double precioVenta;
 
-    @ManyToOne
-    @JoinColumn(name = "linea_pedido_id")
-    private LineaDePedido lineaDePedido;
-
+    @ManyToOne(optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "categoria_id")
+    private Categoria categoria;
 }

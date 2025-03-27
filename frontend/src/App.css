@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
+
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Arial, sans-serif;
+}
+
+.content {
+  background: rgba(234, 197, 197, 0.8); /* Fondo translúcido */
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.app-logo {
+  width: 250px; /* Aumentado el tamaño del logo */
+  margin-bottom: 10px;
+}
+
+.title {
+  font-size: 48px;
+  font-family: 'Playfair Display', serif;
+  font-weight: bold;
+  color: black;
+  margin-bottom: 20px;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column; /* Alinea los botones verticalmente */
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+button {
+  font-size: 18px;
+  padding: 12px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: none;
+  transition: 0.3s;
+  width: 100%; /* Hace que todos los botones ocupen el mismo ancho */
+  max-width: 300px; /* Define un ancho máximo para los botones */
+}
+
+.login-btn {
+  background-color: #a92d4e;
+  color: white;
+}
+
+.register-btn {
+  background-color: #333;
+  color: white;
+}
+
+.info-btn {
+  background-color: rgb(237, 121, 20);
+  color: white;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+.contact-info {
+  font-size: 16px;
+  margin-top: 20px;
+  font-weight: bold;
+}

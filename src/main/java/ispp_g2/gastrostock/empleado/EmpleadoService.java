@@ -1,74 +1,112 @@
 package ispp_g2.gastrostock.empleado;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.StreamSupport;
 
+import ispp_g2.gastrostock.negocio.Negocio;
+import ispp_g2.gastrostock.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EmpleadoService {
 
-    private final EmpleadoRepository repo;
-    private static final String SECRET_KEY = "mySecretKey";
+    private final EmpleadoRepository empleadoRepository;
 
     @Autowired
-    public EmpleadoService(EmpleadoRepository repo) {
-        this.repo = repo;
+    public EmpleadoService(EmpleadoRepository empleadoRepository) {
+        this.empleadoRepository = empleadoRepository;
     }
 
     // Crear o actualizar un empleado
+    @Transactional
     public Empleado saveEmpleado(Empleado empleado) {
-        return repo.save(empleado);
+        return empleadoRepository.save(empleado);
     }
 
     // Obtener todos los empleados
+    @Transactional(readOnly = true)
     public List<Empleado> getAllEmpleados() {
-        return (List<Empleado>) repo.findAll();
+        Iterable<Empleado> empleados = empleadoRepository.findAll();
+        return StreamSupport.stream(empleados.spliterator(), false).toList();
     }
 
     // Buscar empleado por ID
-    public Optional<Empleado> getEmpleadoById(Integer id) {
-        return repo.findById(id);
+    @Transactional(readOnly = true)
+    public Empleado getEmpleadoById(String id) {
+        return empleadoRepository.findById(id).orElse(null);
     }
 
     // Eliminar empleado
-    public void deleteEmpleado(Integer id) {
-        repo.deleteById(id);
+    @Transactional
+    public void deleteEmpleado(String id) {
+        empleadoRepository.deleteById(id);
     }
 
-    // Generar token JWT
-    public String generateToken(String tokenEmpleado) {
-        return Jwts.builder()
-                .setSubject(tokenEmpleado)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 86400000))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
-                .compact();
+    @Transactional(readOnly = true)
+    public Empleado getEmpleadoByEmail(String email) {
+        return empleadoRepository.findByEmail(email).orElse(null);
     }
 
-    // Autenticación de empleado con JWT
-    public String authenticateEmpleado(String tokenEmpleado) {
-        Optional<Empleado> empleado = repo.findByTokenEmpleado(tokenEmpleado);
-        return empleado.isPresent() ? generateToken(tokenEmpleado) : null;
+    @Transactional(readOnly = true)
+    public List<Empleado> getEmpleadoByNombre(String nombre) {
+        return empleadoRepository.findByNombre(nombre);
     }
 
-    // Validar token JWT
-    public boolean validateToken(String token) {
-        try {
-            Claims claims = Jwts.parser()
-                    .setSigningKey(SECRET_KEY)
-                    .parseClaimsJws(token)
-                    .getBody();
-            return claims.getExpiration().after(new Date());
-        } catch (Exception e) {
-            return false;
-        }
+    @Transactional(readOnly = true)
+    public List<Empleado> getEmpleadoByApellido(String apellido) {
+        return empleadoRepository.findByApellido(apellido);
+    }
+
+    @Transactional(readOnly = true)
+    public Empleado getEmpleadoByTelefono(String telefono) {
+        return empleadoRepository.findByTelefono(telefono).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Empleado> getEmpleadoByNegocio(String id) {
+        return empleadoRepository.findByNegocio(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Empleado getEmpleadoByUser(String userId) {
+        return empleadoRepository.findByUserId(userId).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public Empleado getEmpleadoByTokenEmpleado(String tokenEmpleado) {
+        return empleadoRepository.findByTokenEmpleado(tokenEmpleado).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public Empleado convertirDTOEmpleado(EmpleadoDTO empleadoDTO, Negocio negocio, User user) {
+        Empleado empleado = new Empleado();
+        empleado.setFirstName(empleadoDTO.getFirstName());
+        empleado.setLastName(empleadoDTO.getLastName());
+        empleado.setEmail(empleadoDTO.getEmail());
+        empleado.setTokenEmpleado(empleadoDTO.getTokenEmpleado());
+        empleado.setNumTelefono(empleadoDTO.getNumTelefono());
+        empleado.setDescripcion(empleadoDTO.getDescripcion());
+        empleado.setUser(user);
+        empleado.setNegocio(negocio);
+        return empleado;
+    }
+
+    @Transactional(readOnly = true)
+    public EmpleadoDTO convertirEmpleadoDTO(Empleado empleado) {
+        EmpleadoDTO empleadoDTO = new EmpleadoDTO();
+        empleadoDTO.setFirstName(empleado.getFirstName());
+        empleadoDTO.setLastName(empleado.getLastName());
+        empleadoDTO.setEmail(empleado.getEmail());
+        empleadoDTO.setTokenEmpleado(empleado.getTokenEmpleado());
+        empleadoDTO.setNumTelefono(empleado.getNumTelefono());
+        empleadoDTO.setDescripcion(empleado.getDescripcion());
+        empleadoDTO.setUser(String.valueOf(empleado.getUser().getId()));
+        empleadoDTO.setNegocio(String.valueOf(empleado.getNegocio().getId()));
+        return empleadoDTO;
     }
     
 }

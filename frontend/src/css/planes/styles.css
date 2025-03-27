@@ -1,0 +1,240 @@
+/* Contenedor principal */
+.home-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+    text-align: center;
+    position: relative;
+}
+
+/* Contenedor del contenido principal */
+.content1 {
+    background: rgba(234, 197, 197, 0.85);
+    padding: 40px 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    width: 90%; /* Ancho del 90% */
+    max-width: 800px; /* Puedes aumentar el max-width */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    position: relative;
+    overflow-y: auto;
+}
+
+  /* Contenedor de los planes */
+  .plan {
+    background: rgb(238, 183, 183);
+    padding: 20px 60px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    width: 80%; /* Aumenta el ancho de los planes */
+    max-width: 800px; /* Limitar el ancho máximo si es necesario */
+    margin: 20px auto; /* Centrado horizontalmente */
+    display: flex;
+    flex-direction: column;
+    gap: -10px;
+    position: relative;
+  }
+  
+  /* Contenedor de iconos de notificaciones y perfil a la derecha */
+  .icon-container-right {
+    position: absolute;
+    top: 10px;
+    right: 30px;
+    display: flex;
+    gap: 15px;
+  }
+  
+  /* Estilo para los iconos */
+  .icon {
+    cursor: pointer;
+    color: black;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .icon:hover {
+    transform: scale(1.1);
+  }
+  
+  /* Ventana bocadillo de notificaciones */
+  .notification-bubble {
+    position: absolute;
+    top: 50px;
+    right: 40px;
+    background-color: rgb(238, 183, 183);
+    border: 1px solid rgb(238, 183, 183);
+    border-radius: 10px;
+    width: 200px;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+  }
+  
+  .notification-bubble .notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .notification-bubble ul {
+    margin: 10px 0;
+    padding: 0;
+    list-style-type: none;
+  }
+  
+  .notification-bubble ul li {
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  
+  .close-btn {
+    font-size: 14px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: #a92d4e;
+    position: absolute;
+    right: -70px; 
+    top: -11px; 
+  }
+  
+  .close-btn:hover {
+    color: red;
+  }
+  
+  /* Estilo para las opciones de usuario */
+  .user-options {
+    position: absolute;
+    top: 50px;
+    right: 40px;
+    background-color: rgb(238, 183, 183);
+    border: 1px solid rgb(238, 183, 183);
+    border-radius: 10px;
+    width: 200px;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+  }
+  
+  .user-options .notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .user-options ul {
+    margin: 10px 0;
+    padding: 0;
+    list-style-type: none;
+  }
+  
+  .user-options ul li {
+    margin-bottom: 5px;
+  }
+  
+  .user-btn {
+    background-color: #a92d4e;
+    color: white;
+    font-size: 14px;
+    padding: 8px;
+    width: 100%;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .user-btn:hover {
+    opacity: 0.8;
+  }
+  
+  /* Estilos para los botones */
+.menu-btn {
+    font-size: 18px;
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    border: none;
+    transition: 0.3s;
+    width: 100%;
+    font-weight: bold;
+  }
+  
+  /* Botón activo (cuando el plan está activado) */
+  .menu-btn.active {
+    background-color: #6e6d6c; /* Verde para indicar que está activado */
+    color: white;
+  }
+  
+  .menu-btn.active:hover {
+    opacity: 0.8;
+  }
+  
+  /* Botón inactivo (cuando el plan no está activado) */
+  .menu-btn.inactive {
+    background-color: #a92d4e; /* Rojo para indicar que está inactivo */
+    color: white;
+  }
+  
+  .menu-btn.inactive:hover {
+    opacity: 0.8;
+  }  
+  
+  .button-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 10px;
+    margin-top: 20px;
+    width: 100%;
+  }
+  
+  /* Botón de volver arriba a la izquierda dentro del contenedor */
+.back-button {
+    position: absolute;
+    top: 15px;
+    left: -70px; 
+    background: none;
+    border: none;
+    font-size: 16px;
+    color: #333;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .back-button:hover {
+    text-decoration: underline;
+  }
+
+  /* Botón de confirmación (Sí) en rojo */
+.confirm-btn {
+  background-color: #ff4d4d;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.confirm-btn:hover {
+  background-color: #cc0000;
+}
+
+/* Botón de cancelar en verde */
+.cancel-btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.cancel-btn:hover {
+  background-color: #388E3C;
+}

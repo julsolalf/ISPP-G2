@@ -1,0 +1,23 @@
+package ispp_g2.gastrostock.user;
+
+
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface UserRepository extends  CrudRepository<User, String>{
+
+	@Query("SELECT u FROM User u WHERE u.username = ?1")
+	User findByUsername(String username);
+
+	@Query("SELECT u FROM User u WHERE u.username = ?1 AND u.password = ?2")
+	User findByUsernameAndPassword(String username, String password);
+
+	@Query("SELECT u FROM User u WHERE u.authority.authority = ?1")
+	User findByAuthority(String authority);
+
+
+
+
+}

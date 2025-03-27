@@ -3,87 +3,76 @@ package ispp_g2.gastrostock.dueño;
 import java.util.List;
 import java.util.Optional;
 
+import ispp_g2.gastrostock.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import java.util.Date;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.stream.StreamSupport;
 
 @Service
 public class DueñoService {
 
-    private final DueñoRepository repo;
-    private static final String SECRET_KEY = "mySecretKey";
+    private final DueñoRepository duenoRepository;
 
     @Autowired
-    public DueñoService(DueñoRepository repo) {
-        this.repo = repo;
+    public DueñoService(DueñoRepository duenoRepository) {
+        this.duenoRepository = duenoRepository;
 
     }
 
-     // Crear o actualizar un dueño
-     public Dueño saveDueño(Dueño dueño) {
-        return repo.save(dueño);
+    @Transactional(readOnly = true)
+    public Dueño getDueñoById(String id) {
+        return duenoRepository.findById(id).orElse(null);
     }
 
-    // Obtener todos los dueños
+    @Transactional(readOnly = true)
     public List<Dueño> getAllDueños() {
-        return repo.findAll();
+        Iterable<Dueño> dueños = duenoRepository.findAll();
+        return StreamSupport.stream(dueños.spliterator(), false)
+                .toList();
     }
 
-    // Buscar dueño por ID
-    public Optional<Dueño> getDueñoById(Integer id) {
-        return repo.findById(id);
+    @Transactional(readOnly = true)
+    public Dueño getDueñoByEmail(String email) {
+        return duenoRepository.findDueñoByEmail(email).orElse(null);
     }
 
-    // Buscar dueño por email
-    public Optional<Dueño> getDueñoByEmail(String email) {
-        return repo.findByEmail(email);
+    @Transactional(readOnly = true)
+    public List<Dueño> getDueñoByNombre(String nombre) {
+        return duenoRepository.findDueñoByNombre(nombre);
     }
 
-    // Eliminar dueño
-    public void deleteDueño(Integer id) {
-        repo.deleteById(id);
+    @Transactional(readOnly = true)
+    public List<Dueño> getDueñoByApellido(String apellido) {
+        return duenoRepository.findDueñoByApellido(apellido);
     }
 
-    // // Verificar autenticación básica (sin encriptación)
-    // public boolean authenticateDueño(String email, String contraseña) {
-    //     Optional<Dueño> dueño = repo.findByEmail(email);
-    //     return dueño.isPresent() && dueño.get().getContraseña().equals(contraseña);
-    // }
-
-    // Generar token JWT
-    public String generateToken(String email) {
-        return Jwts.builder()
-                .setSubject(email)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // Expira en 1 día
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
-                .compact();
+    @Transactional(readOnly = true)
+    public Dueño getDueñoByTelefono(String telefono) {
+        return duenoRepository.findDueñoByTelefono(telefono).orElse(null);
     }
 
-    // Verificar autenticación y generar token JWT
-    public String authenticateDueño(String email, String tokenDueño) {
-        Optional<Dueño> dueño = repo.findByEmail(email);
-        if (dueño.isPresent() && dueño.get().getTokenDueño().equals(tokenDueño)) {
-            return generateToken(email);
-        }
-        return null;
+    @Transactional(readOnly = true)
+    public Dueño getDueñoByUser(String userId) {
+        return duenoRepository.findDueñoByUser(userId).orElse(null);
     }
 
-    // Validar token JWT
-    public boolean validateToken(String token) {
-        try {
-            Claims claims = Jwts.parser()
-                    .setSigningKey(SECRET_KEY)
-                    .parseClaimsJws(token)
-                    .getBody();
-            return claims.getExpiration().after(new Date());
-        } catch (Exception e) {
-            return false;
-        }
+    @Transactional(readOnly = true)
+    public Dueño getDueñoByToken(String token) {
+        return duenoRepository.findDueñoByToken(token).orElse(null);
     }
-    
+
+
+    @Transactional
+    public Dueño saveDueño(Dueño dueño) {
+        return duenoRepository.save(dueño);
+    }
+
+    @Transactional
+    public void deleteDueño(String  id) {
+        duenoRepository.deleteById(id);
+    }
+
 }
