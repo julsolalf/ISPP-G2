@@ -10,7 +10,15 @@ env_variables:
 
 handlers:
   - url: /static
-    static_dir: /static
+    static_dir: frontend/build/static
 
-  - url: /.* 
+  - url: /api/.*
     script: auto
+
+  - url: /.*
+    static_files: frontend/build/index.html
+    upload: frontend/build/index.html
+
+  - url: /(.*\.(gif|png|jpg|jpeg|svg|webp))
+    static_files: frontend/public/\1
+    upload: frontend/public/(.*\.(gif|png|jpg|jpeg|svg|webp))
