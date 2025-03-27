@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
-function Inventario() {
+function Carta() {
   const navigate = useNavigate();
   const [categorias, setCategorias] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -28,8 +28,8 @@ function Inventario() {
         return response.json();
       })
       .then((data) => {
-        const categoriasInventario = data
-          .filter((categoria) => categoria.pertenece === "INVENTARIO")
+        const categoriasVenta = data
+          .filter((categoria) => categoria.pertenece === "VENTA")
           .map((categoria) => ({
             id: categoria.id,
             nombre: categoria.name,
@@ -37,7 +37,7 @@ function Inventario() {
             emoticono: obtenerEmoticono(categoria.name),
           }));
 
-        setCategorias(categoriasInventario);
+        setCategorias(categoriasVenta);
       })
       .catch((error) => console.error("Error:", error));
   }, [negocioId]);
@@ -64,8 +64,9 @@ function Inventario() {
   };
 
   const handleCategoriaClick = (categoriaId, nombreCategoria) => {
+    // Aquí estamos navegando al componente /verTipoProducto/:categoriaId con el nombre y tipo de producto como parte del estado
     navigate(`/verTipoProducto/${categoriaId}`, {
-      state: { tipo: "INVENTARIO", nombreCategoria }
+      state: { tipo: "VENTA", nombreCategoria }  // Pasamos el nombre y tipo como parte del state
     });
   };
 
@@ -126,7 +127,7 @@ function Inventario() {
         <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
         <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
         <h1 className="title">GastroStock</h1>
-        <h2>Inventario</h2>
+        <h2>Carta</h2>
         <div className="button-container3">
           <button className="button">📥 Exportar</button>
           <button className="button">🔍 Filtrar</button>
@@ -139,7 +140,7 @@ function Inventario() {
               <h3>{categoria.nombre}</h3>
               <button 
                 className="ver-btn" 
-                onClick={() => handleCategoriaClick(categoria.id, categoria.nombre)}  
+                onClick={() => handleCategoriaClick(categoria.id, categoria.nombre)}  // Usamos la nueva función de clic
               >
                 👁️ Ver
               </button>
@@ -151,4 +152,4 @@ function Inventario() {
   );
 }
 
-export default Inventario;
+export default Carta;

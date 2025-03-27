@@ -22,7 +22,7 @@ import PantallaPerdidas from "./screens/perdidas/index.js";
 import PantallaAñadirEmpleado from "./screens/añadirEmpleado/index.js";
 import PantallaAñadirProveedor from "./screens/añadirProveedor/index.js";
 import PantallaPerfil from "./screens/perfil/index.js";
-import PantallaAñadirCategoria from "./screens/inventario/añadir.js";
+import PantallaCarta from "./screens/carta/index.js";
 
 
 function AppScreen() {
@@ -80,6 +80,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/inventario" element={<PantallaInventario />} />
         <Route path="/verTipoProducto/:categoriaId" element={<VerTipoProducto />} />
+        <Route path="/producto/:productoId" element={<VerProducto/>} />
         <Route path="/categoria/:categoriaId/producto/:productoNombre" element={<VerProducto />} />
         <Route path="/proveedores" element={<PantallaProveedores />} />
         <Route path="/empleados" element={<PantallaEmpleados />} />
@@ -88,7 +89,7 @@ function App() {
         <Route path="/añadirEmpleado" element={<PantallaAñadirEmpleado />} />
         <Route path="/añadirProveedor" element={<PantallaAñadirProveedor />} />
         <Route path="/perfil" element={<PantallaPerfil/>} />
-        <Route path="/añadirCategoria" element={<PantallaAñadirCategoria/>} />
+        <Route path="/carta" element={<PantallaCarta/>} />
       </Routes>
     </Router>
   );

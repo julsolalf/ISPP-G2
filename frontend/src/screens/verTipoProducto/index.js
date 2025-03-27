@@ -1,65 +1,140 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
 const obtenerCategorias = async () => {
-  return [
-    {
-      id: 1,
-      nombre: "Bebidas",
-      emoticono: "🥤",
-      productos: [
-        { nombre: "Coca-Cola", cantidad: 20, alertaStock: 5 },
-        { nombre: "Agua", cantidad: 50, alertaStock: 10 },
-        { nombre: "Cerveza", cantidad: 15, alertaStock: 3 },
-        { nombre: "Jugo de Naranja", cantidad: 30, alertaStock: 8 },
-        { nombre: "Sprite", cantidad: 25, alertaStock: 6 },
-      ],
-    },
-    {
-      id: 2,
-      nombre: "Carnes",
-      emoticono: "🥩",
-      productos: [
-        { nombre: "Pollo", cantidad: 10, alertaStock: 2 },
-        { nombre: "Res", cantidad: 8, alertaStock: 3 },
-        { nombre: "Cerdo", cantidad: 12, alertaStock: 4 },
-        { nombre: "Pavo", cantidad: 5, alertaStock: 1 },
-        { nombre: "Cordero", cantidad: 7, alertaStock: 2 },
-      ],
-    },
-  ];
+  try {
+    const response = await fetch("http://localhost:8080/api/categorias");
+    if (!response.ok) {
+      throw new Error("Error al obtener las categorías");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error al obtener categorías:", error);
+    return [];
+  }
+};
+
+const obtenerProductos = async (nombreCategoria, tipo) => {
+  try {
+    let url =
+      tipo === "VENTA"
+        ? `http://localhost:8080/api/productosVenta/categoriaVenta/${nombreCategoria}`
+        : `http://localhost:8080/api/productosInventario/categoria/${nombreCategoria}`;
+
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error("Error al obtener productos");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error al obtener productos:", error);
+    return [];
+  }
+};
+
+const obtenerIngredientes = async (productoVentaId) => {
+  try {
+    const response = await fetch(
+      `http://localhost:8080/api/ingredientes/productoVenta/${productoVentaId}`
+    );
+    if (!response.ok) {
+      throw new Error("Error al obtener los ingredientes");
+    }
+
+    const ingredientes = await response.json();
+
+    console.log(`Ingredientes para producto ${productoVentaId}:`, ingredientes);
+
+    return ingredientes;
+  } catch (error) {
+    console.error("Error al obtener ingredientes:", error);
+    return [];
+  }
+};
+
+const obtenerLotesPorProducto = async (productoId) => {
+  try {
+    const response = await fetch(`http://localhost:8080/api/lotes/producto/${productoId}`);
+    if (!response.ok) {
+      throw new Error("Error al obtener los lotes");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error al obtener lotes:", error);
+    return [];
+  }
 };
 
 function VerTipoProducto() {
   const { categoriaId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [productos, setProductos] = useState([]);
   const [categoria, setCategoria] = useState(null);
   const [showNotifications, setShowNotifications] = useState(false);
-    const [showUserOptions, setShowUserOptions] = useState(false);
-  
-    const toggleNotifications = () => {
-      setShowNotifications(!showNotifications);
-    };
-  
-    const toggleUserOptions = () => {
-      setShowUserOptions(!showUserOptions);
-    };
+  const [showUserOptions, setShowUserOptions] = useState(false);
+
+  const toggleNotifications = () => {
+    setShowNotifications(!showNotifications);
+  };
+
+  const toggleUserOptions = () => {
+    setShowUserOptions(!showUserOptions);
+  };
 
   useEffect(() => {
     const cargarDatos = async () => {
-      const categorias = await obtenerCategorias();
-      const categoriaEncontrada = categorias.find((cat) => cat.id === parseInt(categoriaId));
-      setCategoria(categoriaEncontrada);
+      try {
+        const categorias = await obtenerCategorias();
+        const categoriaEncontrada = categorias.find(
+          (cat) => cat.id === Number(categoriaId)
+        );
+  
+        if (!categoriaEncontrada) {
+          console.error("Categoría no encontrada");
+          return;
+        }
+  
+        setCategoria(categoriaEncontrada);
+        console.log("Categoría encontrada:", categoriaEncontrada);
+  
+        const nombreCategoria = location.state?.nombreCategoria;
+        if (!nombreCategoria) {
+          console.error("El nombre de la categoría no está disponible.");
+          return;
+        }
+  
+        const tipo = location.state?.tipo || "INVENTARIO";
+        const productosCategoria = await obtenerProductos(nombreCategoria, tipo);
+  
+        console.log("Productos de la categoría:", productosCategoria);
+  
+        const productosConIngredientesYLotes = await Promise.all(
+          productosCategoria.map(async (producto) => {
+            if (producto.categoria.pertenece === "VENTA") {
+              const ingredientes = await obtenerIngredientes(producto.id);
+              console.log(`Producto: ${producto.name}, Ingredientes:`, ingredientes);
+              return { ...producto, ingredientes: ingredientes.length > 0 ? ingredientes : [] };
+            } else {
+              // Si es producto de INVENTARIO, obtener los lotes y calcular la cantidad
+              const lotes = await obtenerLotesPorProducto(producto.id);
+              const cantidadTotal = lotes.reduce((acc, lote) => acc + lote.cantidad, 0);
+              return { ...producto, lotes, cantidadTotal };
+            }
+          })
+        );
+  
+        setProductos(productosConIngredientesYLotes);
+        console.log("Productos con ingredientes y lotes:", productosConIngredientesYLotes);
+      } catch (error) {
+        console.error("Error cargando datos:", error);
+      }
     };
-
+  
     cargarDatos();
-  }, [categoriaId]);
-
-  if (!categoria) {
-    return <h2>Categoría no encontrada</h2>;
-  }
+  }, [categoriaId, location.state?.nombreCategoria, location.state?.tipo]);
 
   return (
     <div
@@ -85,7 +160,9 @@ function VerTipoProducto() {
           <div className="notification-bubble">
             <div className="notification-header">
               <strong>Notificaciones</strong>
-              <button className="close-btn" onClick={toggleNotifications}>X</button>
+              <button className="close-btn" onClick={toggleNotifications}>
+                X
+              </button>
             </div>
             <ul>
               <li>Notificación 1</li>
@@ -99,33 +176,77 @@ function VerTipoProducto() {
           <div className="notification-bubble user-options">
             <div className="notification-header">
               <strong>Usuario</strong>
-              <button className="close-btn" onClick={toggleUserOptions}>X</button>
+              <button className="close-btn" onClick={toggleUserOptions}>
+                X
+              </button>
             </div>
             <ul>
               <li>
-                <button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button>
+                <button className="user-btn" onClick={() => navigate("/perfil")}>
+                  Ver Perfil
+                </button>
               </li>
               <li>
-                <button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button>
+                <button className="user-btn" onClick={() => navigate("/planes")}>
+                  Ver planes
+                </button>
               </li>
               <li>
-                <button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button>
+                <button className="user-btn" onClick={() => navigate("/logout")}>
+                  Cerrar Sesión
+                </button>
               </li>
             </ul>
           </div>
         )}
-        <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
-        <h1>{categoria.emoticono} {categoria.nombre}</h1>
+
+        <button onClick={() => navigate(-1)} className="back-button">
+          ⬅ Volver
+        </button>
+
         <div className="empleados-grid">
-          {categoria.productos.map((producto, index) => (
-            <div key={index} className="empleado-card" onClick={() => navigate(`/categoria/${categoria.id}/producto/${producto.nombre}`)} style={{ cursor: "pointer" }}>
-            <h3>{producto.nombre}</h3>
-            <p>Cantidad: {producto.cantidad}</p>
-            {producto.cantidad <= producto.alertaStock && (
-              <p style={{ color: "red" }}>⚠ Stock bajo</p>
-            )}
-          </div>          
-          ))}
+          {productos.length === 0 ? (
+            <p>No hay productos disponibles en esta categoría.</p>
+          ) : (
+            productos.map((producto, index) => (
+              <div
+                key={index}
+                className="empleado-card"
+                onClick={() =>
+                  navigate(`/producto/${producto.id}`, {
+                    state: {
+                      productoId: producto.id,
+                      categoria: producto.categoria?.pertenece, // "VENTA" o "INVENTARIO"
+                    },
+                  })
+                }
+                style={{ cursor: "pointer" }}
+              >
+                <h3>{producto.name}</h3>
+               
+                {producto.categoria?.pertenece === "INVENTARIO" && (
+                  <div>
+                    <p>Cantidad total: {producto.cantidadTotal}</p>
+                  </div>
+                )}
+
+                {producto.categoria?.pertenece === "VENTA" && 
+                  <div>
+                    <p>Ingredientes:</p>
+                    {producto.ingredientes && producto.ingredientes.length > 0 ? (
+                     <ul>
+                        {producto.ingredientes.map((ingrediente, i) => (
+                          <li key={i}>{ingrediente.productoInventario.name}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p>No tiene ingredientes.</p>
+                    )}
+                  </div>
+                }
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>
