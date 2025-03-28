@@ -46,7 +46,6 @@ class DiaRepartoServiceTest {
         diaReparto = new DiaReparto();
         diaReparto.setId(1);
         diaReparto.setDiaSemana(DayOfWeek.MONDAY);
-        diaReparto.setNegocio(negocio);
         diaReparto.setProveedor(proveedor);
     }
 
@@ -87,7 +86,6 @@ class DiaRepartoServiceTest {
         DiaReparto diaReparto2 = new DiaReparto();
         diaReparto2.setId(2);
         diaReparto2.setDiaSemana(DayOfWeek.TUESDAY);
-        diaReparto2.setNegocio(negocio);
         diaReparto2.setProveedor(proveedor);
 
         when(diaRepartoRepository.findAll()).thenReturn(List.of(diaReparto, diaReparto2));
@@ -124,7 +122,6 @@ class DiaRepartoServiceTest {
     void testSave_InvalidData() {
         DiaReparto invalidDiaReparto = new DiaReparto();
         invalidDiaReparto.setId(2);
-        invalidDiaReparto.setNegocio(null);
         invalidDiaReparto.setProveedor(null);
 
         when(diaRepartoRepository.save(invalidDiaReparto)).thenThrow(IllegalArgumentException.class);

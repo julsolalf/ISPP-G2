@@ -79,19 +79,15 @@ public class ProveedorRepositoryTest {
         // Crear días de reparto
         diaLunes = new DiaReparto();
         diaLunes.setDiaSemana(DayOfWeek.MONDAY);
-        diaLunes.setNegocio(negocio);
         
         diaMartes = new DiaReparto();
         diaMartes.setDiaSemana(DayOfWeek.TUESDAY);
-        diaMartes.setNegocio(negocio);
         
         diaMiercoles = new DiaReparto();
         diaMiercoles.setDiaSemana(DayOfWeek.WEDNESDAY);
-        diaMiercoles.setNegocio(negocio);
         
         diaViernes = new DiaReparto();
         diaViernes.setDiaSemana(DayOfWeek.FRIDAY);
-        diaViernes.setNegocio(negocio);
 
         // Crear proveedores
         proveedor1 = new Proveedor();

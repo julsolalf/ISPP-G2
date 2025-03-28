@@ -57,7 +57,6 @@ class DiaRepartoControllerTest {
         diaReparto = new DiaReparto();
         diaReparto.setId(1);
         diaReparto.setDiaSemana(DayOfWeek.MONDAY);
-        diaReparto.setNegocio(negocio);
         diaReparto.setProveedor(proveedor);
     }
 
