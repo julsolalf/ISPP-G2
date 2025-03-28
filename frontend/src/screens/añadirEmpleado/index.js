@@ -20,11 +20,7 @@ function AñadirEmpleado() {
   const [password, setPassword] = useState("");
   const [negocio, setNegocio] = useState("");  
   const [tokenEmpleado, setTokenEmpleado] = useState("");
-
   const navigate = useNavigate();
-
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [showUserOptions, setShowUserOptions] = useState(false);
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
@@ -38,8 +34,6 @@ function AñadirEmpleado() {
     localStorage.removeItem("userToken"); // Eliminamos el token del usuario
     navigate("/"); // Redirigir a la pantalla de inicio de sesión
   };
-  
-  const navigate = useNavigate();
 
   const handleRegister = async () => {
     const empleadoData = {

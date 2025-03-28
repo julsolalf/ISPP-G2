@@ -23,8 +23,9 @@ function VerTipoProducto() {
   const [categoria, setCategoria] = useState(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
   const [showNotifications, setShowNotifications] = useState(false);
-    const [showUserOptions, setShowUserOptions] = useState(false);
-  
+  const [showUserOptions, setShowUserOptions] = useState(false);
+  const [productos, setProductos] = useState([]);
+    
     const toggleNotifications = () => {
       setShowNotifications(!showNotifications);
     };
@@ -36,9 +37,7 @@ function VerTipoProducto() {
       localStorage.removeItem("userToken"); // Eliminamos el token del usuario
       navigate("/"); // Redirigir a la pantalla de inicio de sesión
     };
-  const [productos, setProductos] = useState([]);
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [showUserOptions, setShowUserOptions] = useState(false);
+
 
   useEffect(() => {
     const cargarProductos = async () => {
