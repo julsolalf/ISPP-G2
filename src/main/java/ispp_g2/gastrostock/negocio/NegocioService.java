@@ -20,7 +20,7 @@ public class NegocioService {
     }
 
     @Transactional(readOnly = true)
-    public Negocio getById(String id) {
+    public Negocio getById(Integer id) {
         return negocioRepository.findById(id).orElse(null);
     }
 
@@ -62,7 +62,7 @@ public class NegocioService {
     }
 
     @Transactional(readOnly = true)
-    public List<Negocio> getByDueño(String dueño) {
+    public List<Negocio> getByDueño(Integer dueño) {
         return negocioRepository.findByDueño(dueño);
     }
 
@@ -72,7 +72,7 @@ public class NegocioService {
     }
 
     @Transactional
-    public void delete(String id){
+    public void delete(Integer id){
         negocioRepository.deleteById(id);
     }
     

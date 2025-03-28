@@ -29,7 +29,7 @@ public class IngredienteController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Ingrediente> findById(@PathVariable("id") String id) {
+    public ResponseEntity<Ingrediente> findById(@PathVariable("id") Integer id) {
         Ingrediente ingrediente = ingredienteService.getById(id);
         if (ingrediente == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -73,19 +73,19 @@ public class IngredienteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Ingrediente> update(@PathVariable("id") String id, @RequestBody @Valid Ingrediente ingrediente) {
+    public ResponseEntity<Ingrediente> update(@PathVariable("id") Integer id, @RequestBody @Valid Ingrediente ingrediente) {
         if(ingrediente == null){
             throw new IllegalArgumentException("Ingrediente should not be null");
         }
         if(ingredienteService.getById(id) == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        ingrediente.setId(Integer.valueOf(id));
+        ingrediente.setId(id);
         return new ResponseEntity<>(ingredienteService.save(ingrediente), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") String id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
         Ingrediente ingrediente = ingredienteService.getById(id);
         if(ingrediente == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

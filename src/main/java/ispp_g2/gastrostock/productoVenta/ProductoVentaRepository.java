@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ProductoVentaRepository extends CrudRepository<ProductoVenta,String>{
+public interface ProductoVentaRepository extends CrudRepository<ProductoVenta,Integer>{
 
     @Query("SELECT p FROM ProductoVenta p WHERE p.name = ?1")
     List<ProductoVenta> findProductoVentaByNombre(String nombre);

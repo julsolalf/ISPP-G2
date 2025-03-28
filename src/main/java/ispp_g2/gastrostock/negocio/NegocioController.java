@@ -30,8 +30,8 @@ public class NegocioController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Negocio> findNegocio(@PathVariable("id") String id) {
-		Negocio negocioToGet = negocioService.getById(String.valueOf(id));
+	public ResponseEntity<Negocio> findNegocio(@PathVariable("id") Integer id) {
+		Negocio negocioToGet = negocioService.getById(id);
 		if (negocioToGet == null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		return new ResponseEntity<>(negocioToGet, HttpStatus.OK);
@@ -86,7 +86,7 @@ public class NegocioController {
 	}
 
 	@GetMapping("/dueño/{dueño}")
-	public ResponseEntity<List<Negocio>> findNegocioByDueño(@PathVariable("dueño") String dueño) {
+	public ResponseEntity<List<Negocio>> findNegocioByDueño(@PathVariable("dueño") Integer dueño) {
 		List<Negocio> negocioToGet = negocioService.getByDueño(dueño);
 		if (negocioToGet == null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -102,17 +102,17 @@ public class NegocioController {
 
 	@PutMapping("/{id}")
 	public ResponseEntity<Negocio> update(@RequestBody @Valid Negocio newNegocio,
-			@PathVariable("id") String id) {
+			@PathVariable("id") Integer id) {
 		if(newNegocio == null)
 			throw new IllegalArgumentException("Negocio cannot be null");
 		if(negocioService.getById(id) == null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		newNegocio.setId(Integer.valueOf(id));
+		newNegocio.setId(id);
 		return new ResponseEntity<>(negocioService.save(newNegocio), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> delete(@PathVariable("id") String id) {
+	public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
 		Negocio negocio = negocioService.getById(id);
 		if (negocio == null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);

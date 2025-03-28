@@ -23,7 +23,7 @@ public class DueñoService {
     }
 
     @Transactional(readOnly = true)
-    public Dueño getDueñoById(String id) {
+    public Dueño getDueñoById(Integer id) {
         return duenoRepository.findById(id).orElse(null);
     }
 
@@ -55,7 +55,7 @@ public class DueñoService {
     }
 
     @Transactional(readOnly = true)
-    public Dueño getDueñoByUser(String userId) {
+    public Dueño getDueñoByUser(Integer userId) {
         return duenoRepository.findDueñoByUser(userId).orElse(null);
     }
 
@@ -71,7 +71,7 @@ public class DueñoService {
     }
 
     @Transactional
-    public void deleteDueño(String  id) {
+    public void deleteDueño(Integer  id) {
         duenoRepository.deleteById(id);
     }
 

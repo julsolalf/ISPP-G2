@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface LoteRepository extends CrudRepository<Lote,String> {
+public interface LoteRepository extends CrudRepository<Lote,Integer> {
 
     @Query("SELECT l FROM Lote l WHERE l.cantidad = ?1")
     List<Lote> findByCantidad(Integer cantidad);

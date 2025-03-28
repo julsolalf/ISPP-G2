@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface DiaRepartoRepository extends CrudRepository<DiaReparto, String> {
+public interface DiaRepartoRepository extends CrudRepository<DiaReparto, Integer> {
 
     @Query("SELECT d FROM DiaReparto d WHERE d.diaSemana = ?1")
     List<DiaReparto> findDiaRepartoByDiaSemana(DayOfWeek diaSemana);
@@ -18,5 +18,5 @@ public interface DiaRepartoRepository extends CrudRepository<DiaReparto, String>
     List<DiaReparto> findDiaRepartoByNegocioId(String negocio);
 
     @Query("SELECT d FROM DiaReparto d WHERE d.proveedor.id = ?1")
-    List<DiaReparto> findDiaRepartoByProveedorId(String proveedor);
+    List<DiaReparto> findDiaRepartoByProveedorId(Integer proveedor);
 }

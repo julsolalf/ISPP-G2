@@ -24,7 +24,7 @@ public class ProveedorService {
     }
 
     @Transactional(readOnly = true)
-    public Proveedor findById(String id) {
+    public Proveedor findById(Integer id) {
         return proveedorRepository.findById(id).orElse(null);
     }
 
@@ -54,7 +54,7 @@ public class ProveedorService {
     }
 
     @Transactional
-    public void deleteById(String id) {
+    public void deleteById(Integer id) {
         proveedorRepository.deleteById(id);
     }
 }

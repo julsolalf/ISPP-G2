@@ -3,13 +3,12 @@ package ispp_g2.gastrostock.dueño;
 import java.util.List;
 import java.util.Optional;
 
-import ispp_g2.gastrostock.user.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface DueñoRepository extends CrudRepository<Dueño,String>{
+public interface DueñoRepository extends CrudRepository<Dueño,Integer>{
 
     @Query("SELECT d FROM Dueño d WHERE d.email = ?1")
     Optional<Dueño> findDueñoByEmail(String email);
@@ -24,7 +23,7 @@ public interface DueñoRepository extends CrudRepository<Dueño,String>{
     Optional<Dueño> findDueñoByTelefono(String telefono);
 
     @Query("SELECT d FROM Dueño d WHERE d.user.id = ?1")
-    Optional<Dueño> findDueñoByUser(String userId);
+    Optional<Dueño> findDueñoByUser(Integer userId);
 
     @Query("SELECT d FROM Dueño d WHERE d.tokenDueño = ?1")
     Optional<Dueño> findDueñoByToken(String token);

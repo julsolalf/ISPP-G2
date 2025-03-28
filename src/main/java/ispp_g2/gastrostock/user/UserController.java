@@ -37,7 +37,7 @@ public class UserController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<User> findById(@PathVariable("id") String id) {
+	public ResponseEntity<User> findById(@PathVariable("id") Integer id) {
 		User user = userService.findUserById(id);
 		if (user == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -81,17 +81,17 @@ public class UserController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<User> update(@PathVariable("id") String id, @RequestBody @Valid User user) {
+	public ResponseEntity<User> update(@PathVariable("id") Integer id, @RequestBody @Valid User user) {
 		if(user==null)
 			throw new IllegalArgumentException("User cannot be null");
 		if(userService.findUserById(id)==null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		user.setId(Integer.valueOf(id));
+		user.setId(id);
 		return new ResponseEntity<>(userService.saveUser(user), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<User> delete(@PathVariable("id") String id) {
+	public ResponseEntity<User> delete(@PathVariable("id") Integer id) {
 		if(userService.findUserById(id)==null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		userService.deleteUser(id);

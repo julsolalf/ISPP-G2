@@ -36,13 +36,13 @@ public class EmpleadoService {
 
     // Buscar empleado por ID
     @Transactional(readOnly = true)
-    public Empleado getEmpleadoById(String id) {
+    public Empleado getEmpleadoById(Integer id) {
         return empleadoRepository.findById(id).orElse(null);
     }
 
     // Eliminar empleado
     @Transactional
-    public void deleteEmpleado(String id) {
+    public void deleteEmpleado(Integer id) {
         empleadoRepository.deleteById(id);
     }
 
@@ -67,12 +67,12 @@ public class EmpleadoService {
     }
 
     @Transactional(readOnly = true)
-    public List<Empleado> getEmpleadoByNegocio(String id) {
+    public List<Empleado> getEmpleadoByNegocio(Integer id) {
         return empleadoRepository.findByNegocio(id);
     }
 
     @Transactional(readOnly = true)
-    public Empleado getEmpleadoByUser(String userId) {
+    public Empleado getEmpleadoByUser(Integer userId) {
         return empleadoRepository.findByUserId(userId).orElse(null);
     }
 
@@ -104,8 +104,8 @@ public class EmpleadoService {
         empleadoDTO.setTokenEmpleado(empleado.getTokenEmpleado());
         empleadoDTO.setNumTelefono(empleado.getNumTelefono());
         empleadoDTO.setDescripcion(empleado.getDescripcion());
-        empleadoDTO.setUser(String.valueOf(empleado.getUser().getId()));
-        empleadoDTO.setNegocio(String.valueOf(empleado.getNegocio().getId()));
+        empleadoDTO.setUser(empleado.getUser().getId());
+        empleadoDTO.setNegocio(empleado.getNegocio().getId());
         return empleadoDTO;
     }
     

@@ -29,7 +29,7 @@ public class DiaRepartoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DiaReparto> findById(@PathVariable("id") String id) {
+    public ResponseEntity<DiaReparto> findById(@PathVariable("id") Integer id) {
         DiaReparto diaReparto = diaRepartoService.getById(id);
         if(diaReparto == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -56,7 +56,7 @@ public class DiaRepartoController {
     }
 
     @GetMapping("/proveedor/{proveedor}")
-    public ResponseEntity<List<DiaReparto>> findByProveedor(@PathVariable("proveedor") String proveedor) {
+    public ResponseEntity<List<DiaReparto>> findByProveedor(@PathVariable("proveedor") Integer proveedor) {
         List<DiaReparto> diasReparto = diaRepartoService.getDiaRepartoByProveedorId(proveedor);
         if(diasReparto.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -73,19 +73,19 @@ public class DiaRepartoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DiaReparto> update(@PathVariable("id") String id, @RequestBody @Valid DiaReparto diaReparto) {
+    public ResponseEntity<DiaReparto> update(@PathVariable("id") Integer id, @RequestBody @Valid DiaReparto diaReparto) {
         if(diaReparto == null) {
             throw new IllegalArgumentException("Linea de pedido no puede ser nula");
         }
         if(diaRepartoService.getById(id) == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        diaReparto.setId(Integer.valueOf(id));
+        diaReparto.setId(id);
         return new ResponseEntity<>(diaRepartoService.save(diaReparto), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") String id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
         DiaReparto diaReparto = diaRepartoService.getById(id);
         if(diaReparto == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

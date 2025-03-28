@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface NegocioRepository extends CrudRepository<Negocio, String> {
+public interface NegocioRepository extends CrudRepository<Negocio, Integer> {
 
     @Query("SELECT n FROM Negocio n WHERE n.name = ?1")
     Negocio findByName(String nombre);
@@ -28,6 +28,6 @@ public interface NegocioRepository extends CrudRepository<Negocio, String> {
     List<Negocio> findByPais(String pais);
 
     @Query("SELECT n FROM Negocio n WHERE n.dueño.id = ?1")
-    List<Negocio> findByDueño(String dueño);
+    List<Negocio> findByDueño(Integer dueño);
 
 }

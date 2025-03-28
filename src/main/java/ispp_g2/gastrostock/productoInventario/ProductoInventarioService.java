@@ -20,7 +20,7 @@ public class ProductoInventarioService {
     }
 
     @Transactional(readOnly = true)
-    public ProductoInventario getById(String id) {
+    public ProductoInventario getById(Integer id) {
         return productoInventarioRepository.findById(id).orElse(null);
     }
 
@@ -62,7 +62,7 @@ public class ProductoInventarioService {
     }
 
     @Transactional
-    public void delete(String id){
+    public void delete(Integer id){
         productoInventarioRepository.deleteById(id);
     }
 }

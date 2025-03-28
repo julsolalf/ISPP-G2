@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface ProveedorRepository extends CrudRepository<Proveedor, String> {
+public interface ProveedorRepository extends CrudRepository<Proveedor, Integer> {
 
     @Query("SELECT p FROM Proveedor p WHERE p.name = ?1")
     Proveedor findByNombre(String nombre);

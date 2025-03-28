@@ -31,7 +31,7 @@ public class LineaDePedidoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineaDePedido> findById(@PathVariable("id") String id) {
+    public ResponseEntity<LineaDePedido> findById(@PathVariable("id") Integer id) {
         LineaDePedido lineaDePedido = lineaDePedidoService.getById(id);
         if (lineaDePedido == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -102,19 +102,19 @@ public class LineaDePedidoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<LineaDePedido> update(@PathVariable("id") String id, @RequestBody @Valid LineaDePedido lineaDePedido) {
+    public ResponseEntity<LineaDePedido> update(@PathVariable("id") Integer id, @RequestBody @Valid LineaDePedido lineaDePedido) {
         if (lineaDePedido == null) {
             throw new IllegalArgumentException("Linea de pedido no puede ser nula");
         }
         if (lineaDePedidoService.getById(id) == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        lineaDePedido.setId(Integer.valueOf(id));
+        lineaDePedido.setId(id);
         return new ResponseEntity<>(lineaDePedidoService.save(lineaDePedido), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") String id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
         LineaDePedido lineaDePedido = lineaDePedidoService.getById(id);
         if (lineaDePedido == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface LineaDePedidoRepository extends CrudRepository<LineaDePedido,String> {
+public interface LineaDePedidoRepository extends CrudRepository<LineaDePedido,Integer> {
 
     @Query("SELECT l FROM LineaDePedido l WHERE l.cantidad = ?1")
     List<LineaDePedido>findLineaDePedidosByCantidad(@Positive Integer cantidad);

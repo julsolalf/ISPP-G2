@@ -31,7 +31,7 @@ public class ReabastecimientoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Reabastecimiento> findById(@PathVariable("id") String id) {
+    public ResponseEntity<Reabastecimiento> findById(@PathVariable("id") Integer id) {
         Reabastecimiento reabastecimiento = reabastecimientoService.getById(id);
         if(reabastecimiento == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -67,7 +67,7 @@ public class ReabastecimientoController {
     }
 
     @GetMapping("/negocio/{negocio}")
-    public ResponseEntity<List<Reabastecimiento>> findByNegocio(@PathVariable("negocio") String negocio) {
+    public ResponseEntity<List<Reabastecimiento>> findByNegocio(@PathVariable("negocio") Integer negocio) {
         List<Reabastecimiento> reabastecimientos = reabastecimientoService.getByNegocio(negocio);
         if(reabastecimientos == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -76,7 +76,7 @@ public class ReabastecimientoController {
     }
 
     @GetMapping("/proveedor/{proveedor}")
-    public ResponseEntity<List<Reabastecimiento>> findByProveedor(@PathVariable("proveedor") String proveedor) {
+    public ResponseEntity<List<Reabastecimiento>> findByProveedor(@PathVariable("proveedor") Integer proveedor) {
         List<Reabastecimiento> reabastecimientos = reabastecimientoService.getByProveedor(proveedor);
         if(reabastecimientos == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -102,19 +102,19 @@ public class ReabastecimientoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Reabastecimiento> update(@PathVariable("id") String id, @RequestBody @Valid Reabastecimiento reabastecimiento) {
+    public ResponseEntity<Reabastecimiento> update(@PathVariable("id") Integer id, @RequestBody @Valid Reabastecimiento reabastecimiento) {
         if(reabastecimiento == null) {
             throw new IllegalArgumentException("Reabastecimiento no puede ser nulo");
         }
         if(reabastecimiento.getId() == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        reabastecimiento.setId(Integer.valueOf(id));
+        reabastecimiento.setId(id);
         return new ResponseEntity<>(reabastecimientoService.save(reabastecimiento), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable("id") String id) {
+    public ResponseEntity<Void> deleteById(@PathVariable("id") Integer id) {
         Reabastecimiento reabastecimiento = reabastecimientoService.getById(id);
         if(reabastecimiento == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

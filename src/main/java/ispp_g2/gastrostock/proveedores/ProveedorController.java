@@ -28,7 +28,7 @@ public class ProveedorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Proveedor> findById(@PathVariable("id") String id) {
+    public ResponseEntity<Proveedor> findById(@PathVariable("id") Integer id) {
         Proveedor proveedor = proveedorService.findById(id);
         if(proveedor == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -81,19 +81,19 @@ public class ProveedorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Proveedor> update(@PathVariable("id") String id, @RequestBody @Valid Proveedor proveedor) {
+    public ResponseEntity<Proveedor> update(@PathVariable("id") Integer id, @RequestBody @Valid Proveedor proveedor) {
         if(proveedor == null){
             throw new IllegalArgumentException("Proveedor no puede ser nulo");
         }
         if(proveedorService.findById(id) == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        proveedor.setId(Integer.valueOf(id));
+        proveedor.setId(id);
         return new ResponseEntity<>(proveedorService.save(proveedor), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable("id") String id) {
+    public ResponseEntity<Void> deleteById(@PathVariable("id") Integer id) {
         Proveedor proveedor = proveedorService.findById(id);
         if(proveedor == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
