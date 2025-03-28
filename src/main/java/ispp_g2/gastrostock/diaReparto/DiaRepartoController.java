@@ -66,7 +66,7 @@ public class DiaRepartoController {
     @PutMapping("/{id}")
     public ResponseEntity<DiaReparto> update(@PathVariable("id") Integer id, @RequestBody @Valid DiaReparto diaReparto) {
         if(diaReparto == null) {
-            throw new IllegalArgumentException("Linea de pedido no puede ser nula");
+            throw new IllegalArgumentException("Dia de reparto no puede ser nulo");
         }
         if(diaRepartoService.getById(id) == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
