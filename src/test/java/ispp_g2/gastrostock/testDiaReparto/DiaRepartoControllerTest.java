@@ -79,7 +79,7 @@ class DiaRepartoControllerTest {
 
     @Test
     void testFindById_WhenExists_ReturnsOk() throws Exception {
-        when(diaRepartoService.getById("1")).thenReturn(diaReparto);
+        when(diaRepartoService.getById(1)).thenReturn(diaReparto);
 
         mockMvc.perform(get("/api/diasReparto/1"))
                 .andExpect(status().isOk());
@@ -87,7 +87,7 @@ class DiaRepartoControllerTest {
 
     @Test
     void testFindById_WhenNotExists_ReturnsNotFound() throws Exception {
-        when(diaRepartoService.getById("99")).thenReturn(null);
+        when(diaRepartoService.getById(99)).thenReturn(null);
 
         mockMvc.perform(get("/api/diasReparto/99"))
                 .andExpect(status().isNotFound());
@@ -129,7 +129,7 @@ class DiaRepartoControllerTest {
 
     @Test
     void testUpdate_WhenExists_ReturnsOk() throws Exception {
-        when(diaRepartoService.getById("1")).thenReturn(diaReparto);
+        when(diaRepartoService.getById(1)).thenReturn(diaReparto);
         when(diaRepartoService.save(any())).thenReturn(diaReparto);
 
         mockMvc.perform(put("/api/diasReparto/1")
@@ -140,7 +140,7 @@ class DiaRepartoControllerTest {
 
     @Test
     void testUpdate_WhenNotExists_ReturnsNotFound() throws Exception {
-        when(diaRepartoService.getById("99")).thenReturn(null);
+        when(diaRepartoService.getById(99)).thenReturn(null);
 
         mockMvc.perform(put("/api/diasReparto/99")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -150,8 +150,8 @@ class DiaRepartoControllerTest {
 
     @Test
     void testDelete_WhenExists_ReturnsNoContent() throws Exception {
-        when(diaRepartoService.getById("1")).thenReturn(diaReparto);
-        doNothing().when(diaRepartoService).deleteById("1");
+        when(diaRepartoService.getById(1)).thenReturn(diaReparto);
+        doNothing().when(diaRepartoService).deleteById(1);
 
         mockMvc.perform(delete("/api/diasReparto/1"))
                 .andExpect(status().isNoContent());
@@ -159,7 +159,7 @@ class DiaRepartoControllerTest {
 
     @Test
     void testDelete_WhenNotExists_ReturnsNotFound() throws Exception {
-        when(diaRepartoService.getById("99")).thenReturn(null);
+        when(diaRepartoService.getById(99)).thenReturn(null);
 
         mockMvc.perform(delete("/api/diasReparto/99"))
                 .andExpect(status().isNotFound());

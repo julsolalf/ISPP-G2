@@ -105,29 +105,29 @@ class NegocioServiceTest {
     @Test
     void testGetById_Success() {
         // Arrange
-        when(negocioRepository.findById("1")).thenReturn(Optional.of(negocio1));
+        when(negocioRepository.findById(1)).thenReturn(Optional.of(negocio1));
 
         // Act
-        Negocio result = negocioService.getById("1");
+        Negocio result = negocioService.getById(1);
 
         // Assert
         assertNotNull(result);
         assertEquals(1, result.getId());
         assertEquals("Restaurante La Tasca", result.getName());
-        verify(negocioRepository).findById("1");
+        verify(negocioRepository).findById(1);
     }
 
     @Test
     void testGetById_NotFound() {
         // Arrange
-        when(negocioRepository.findById("999")).thenReturn(Optional.empty());
+        when(negocioRepository.findById(999)).thenReturn(Optional.empty());
 
         // Act
-        Negocio result = negocioService.getById("999");
+        Negocio result = negocioService.getById(999);
 
         // Assert
         assertNull(result);
-        verify(negocioRepository).findById("999");
+        verify(negocioRepository).findById(999);
     }
 
     @Test
@@ -449,29 +449,29 @@ class NegocioServiceTest {
     void testGetByDueño_Success() {
         // Arrange
         List<Negocio> negociosDueño = Arrays.asList(negocio1, negocio2);
-        when(negocioRepository.findByDueño("1")).thenReturn(negociosDueño);
+        when(negocioRepository.findByDueño(1)).thenReturn(negociosDueño);
 
         // Act
-        List<Negocio> result = negocioService.getByDueño("1");
+        List<Negocio> result = negocioService.getByDueño(1);
 
         // Assert
         assertNotNull(result);
         assertEquals(2, result.size());
-        verify(negocioRepository).findByDueño("1");
+        verify(negocioRepository).findByDueño(1);
     }
 
     @Test
     void testGetByDueño_NotFound() {
         // Arrange
-        when(negocioRepository.findByDueño("999")).thenReturn(Collections.emptyList());
+        when(negocioRepository.findByDueño(999)).thenReturn(Collections.emptyList());
 
         // Act
-        List<Negocio> result = negocioService.getByDueño("999");
+        List<Negocio> result = negocioService.getByDueño(999);
 
         // Assert
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(negocioRepository).findByDueño("999");
+        verify(negocioRepository).findByDueño(999);
     }
 
     @Test
@@ -549,23 +549,23 @@ class NegocioServiceTest {
     @Test
     void testDelete_Success() {
         // Arrange
-        doNothing().when(negocioRepository).deleteById("1");
+        doNothing().when(negocioRepository).deleteById(1);
 
         // Act
-        negocioService.delete("1");
+        negocioService.delete(1);
 
         // Assert
-        verify(negocioRepository).deleteById("1");
+        verify(negocioRepository).deleteById(1);
     }
 
     @Test
     void testDelete_NonExistentId() {
         // Arrange
-        doThrow(new RuntimeException("Negocio no encontrado")).when(negocioRepository).deleteById("999");
+        doThrow(new RuntimeException("Negocio no encontrado")).when(negocioRepository).deleteById(999);
 
         // Act & Assert
-        assertThrows(RuntimeException.class, () -> negocioService.delete("999"));
-        verify(negocioRepository).deleteById("999");
+        assertThrows(RuntimeException.class, () -> negocioService.delete(999));
+        verify(negocioRepository).deleteById(999);
     }
 
     @Test

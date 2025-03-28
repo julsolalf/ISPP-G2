@@ -140,10 +140,10 @@ public class IngredienteServiceTest {
     @Test
     void testGetById_Success() {
         // Arrange
-        when(ingredienteRepository.findById("1")).thenReturn(Optional.of(ingrediente1));
+        when(ingredienteRepository.findById(1)).thenReturn(Optional.of(ingrediente1));
         
         // Act
-        Ingrediente result = ingredienteService.getById("1");
+        Ingrediente result = ingredienteService.getById(1);
         
         // Assert
         assertNotNull(result);
@@ -152,21 +152,21 @@ public class IngredienteServiceTest {
         assertEquals(productoInventario1.getId(), result.getProductoInventario().getId());
         assertEquals(productoVenta1.getId(), result.getProductoVenta().getId());
         
-        verify(ingredienteRepository).findById("1");
+        verify(ingredienteRepository).findById(1);
     }
     
     @Test
     void testGetById_NotFound() {
         // Arrange
-        when(ingredienteRepository.findById("999")).thenReturn(Optional.empty());
+        when(ingredienteRepository.findById(999)).thenReturn(Optional.empty());
         
         // Act
-        Ingrediente result = ingredienteService.getById("999");
+        Ingrediente result = ingredienteService.getById(999);
         
         // Assert
         assertNull(result);
         
-        verify(ingredienteRepository).findById("999");
+        verify(ingredienteRepository).findById(999);
     }
     
     @Test
@@ -484,26 +484,26 @@ public class IngredienteServiceTest {
     @Test
     void testDeleteById_Success() {
         // Arrange
-        doNothing().when(ingredienteRepository).deleteById("1");
+        doNothing().when(ingredienteRepository).deleteById(1);
         
         // Act
-        ingredienteService.deleteById("1");
+        ingredienteService.deleteById(1);
         
         // Assert
-        verify(ingredienteRepository).deleteById("1");
+        verify(ingredienteRepository).deleteById(1);
     }
     
     @Test
     void testDeleteById_NotFound() {
         // Arrange
-        doThrow(new EmptyResultDataAccessException(1)).when(ingredienteRepository).deleteById("999");
+        doThrow(new EmptyResultDataAccessException(1)).when(ingredienteRepository).deleteById(999);
         
         // Act & Assert
         assertThrows(EmptyResultDataAccessException.class, () -> {
-            ingredienteService.deleteById("999");
+            ingredienteService.deleteById(999);
         });
         
-        verify(ingredienteRepository).deleteById("999");
+        verify(ingredienteRepository).deleteById(999);
     }
     
     @Test

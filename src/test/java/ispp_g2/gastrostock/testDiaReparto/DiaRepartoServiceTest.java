@@ -52,23 +52,23 @@ class DiaRepartoServiceTest {
 
     @Test
     void testGetById_ExistingId() {
-        when(diaRepartoRepository.findById("1")).thenReturn(Optional.of(diaReparto));
+        when(diaRepartoRepository.findById(1)).thenReturn(Optional.of(diaReparto));
 
-        DiaReparto result = diaRepartoService.getById("1");
+        DiaReparto result = diaRepartoService.getById(1);
 
         assertNotNull(result);
         assertEquals(1, result.getId());
-        verify(diaRepartoRepository).findById("1");
+        verify(diaRepartoRepository).findById(1);
     }
 
     @Test
     void testGetById_NonExistingId() {
-        when(diaRepartoRepository.findById("99")).thenReturn(Optional.empty());
+        when(diaRepartoRepository.findById(99)).thenReturn(Optional.empty());
 
-        DiaReparto result = diaRepartoService.getById("99");
+        DiaReparto result = diaRepartoService.getById(99);
 
         assertNull(result);
-        verify(diaRepartoRepository).findById("99");
+        verify(diaRepartoRepository).findById(99);
     }
 
 
@@ -134,20 +134,20 @@ class DiaRepartoServiceTest {
 
     @Test
     void testDeleteById_ExistingId() {
-        doNothing().when(diaRepartoRepository).deleteById("1");
+        doNothing().when(diaRepartoRepository).deleteById(1);
 
-        diaRepartoService.deleteById("1");
+        diaRepartoService.deleteById(1);
 
-        verify(diaRepartoRepository).deleteById("1");
+        verify(diaRepartoRepository).deleteById(1);
     }
 
     @Test
     void testDeleteById_NonExistingId() {
-        doNothing().when(diaRepartoRepository).deleteById("99");
+        doNothing().when(diaRepartoRepository).deleteById(99);
 
-        diaRepartoService.deleteById("99");
+        diaRepartoService.deleteById(99);
 
-        verify(diaRepartoRepository).deleteById("99");
+        verify(diaRepartoRepository).deleteById(99);
     }
 
 }

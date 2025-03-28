@@ -47,24 +47,24 @@ class ProductoVentaServiceTest {
 
     @Test
     void testGetById_Found() {
-        when(productoVentaRepository.findById("1")).thenReturn(Optional.of(sampleProduct));
+        when(productoVentaRepository.findById(1)).thenReturn(Optional.of(sampleProduct));
 
-        ProductoVenta result = productoVentaService.getById("1");
+        ProductoVenta result = productoVentaService.getById(1);
         assertNotNull(result);
         assertEquals("Cerveza", result.getName());
     }
 
     @Test
     void testGetById_NotFound() {
-        when(productoVentaRepository.findById("99")).thenReturn(Optional.empty());
+        when(productoVentaRepository.findById(99)).thenReturn(Optional.empty());
 
-        ProductoVenta result = productoVentaService.getById("99");
+        ProductoVenta result = productoVentaService.getById(99);
         assertNull(result);
     }
 
     @Test
     void testGetById_InvalidId() {
-        ProductoVenta result = productoVentaService.getById("invalidId");
+        ProductoVenta result = productoVentaService.getById(999999);
         assertNull(result);
     }
 
@@ -149,20 +149,20 @@ class ProductoVentaServiceTest {
 
     @Test
     void testDelete() {
-        doNothing().when(productoVentaRepository).deleteById("1");
+        doNothing().when(productoVentaRepository).deleteById(1);
 
-        productoVentaService.delete("1");
+        productoVentaService.delete(1);
 
-        verify(productoVentaRepository, times(1)).deleteById("1");
+        verify(productoVentaRepository, times(1)).deleteById(1);
     }
 
     @Test
     void testDelete_InvalidId() {
-        doNothing().when(productoVentaRepository).deleteById("invalidId");
+        doNothing().when(productoVentaRepository).deleteById(999999);
 
-        productoVentaService.delete("invalidId");
+        productoVentaService.delete(999999);
 
-        verify(productoVentaRepository, times(1)).deleteById("invalidId");
+        verify(productoVentaRepository, times(1)).deleteById(999999);
     }
 
     @Test

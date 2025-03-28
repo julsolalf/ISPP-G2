@@ -90,7 +90,7 @@ class DiaRepartoRepositoryTest {
         nuevoDiaReparto.setProveedor(proveedor);
         
         DiaReparto diaRepartoGuardado = diaRepartoRepository.save(nuevoDiaReparto);
-        String id = diaRepartoGuardado.getId().toString();
+        Integer id = diaRepartoGuardado.getId();
         
         Optional<DiaReparto> result = diaRepartoRepository.findById(id);
     
@@ -102,7 +102,7 @@ class DiaRepartoRepositoryTest {
 
     @Test
     void testFindById_NonExistingId() {
-        Optional<DiaReparto> result = diaRepartoRepository.findById("99");
+        Optional<DiaReparto> result = diaRepartoRepository.findById(99);
 
         assertFalse(result.isPresent());
     }
@@ -143,7 +143,7 @@ class DiaRepartoRepositoryTest {
 
     @Test
     void testFindDiaRepartoByProveedorId_ExistingProveedor() {
-        String proveedorId = proveedor.getId().toString();
+        Integer proveedorId = proveedor.getId();
         
         List<DiaReparto> result = diaRepartoRepository.findDiaRepartoByProveedorId(proveedorId);
     
@@ -154,7 +154,7 @@ class DiaRepartoRepositoryTest {
 
     @Test
     void testFindDiaRepartoByProveedorId_NonExistingProveedor() {
-        List<DiaReparto> result = diaRepartoRepository.findDiaRepartoByProveedorId("99");
+        List<DiaReparto> result = diaRepartoRepository.findDiaRepartoByProveedorId(99);
 
         assertTrue(result.isEmpty());
     }

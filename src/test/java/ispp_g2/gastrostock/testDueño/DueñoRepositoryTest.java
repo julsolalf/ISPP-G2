@@ -160,7 +160,7 @@ class DueñoRepositoryTest {
     @Test
     void testFindById() {
         // Buscar por ID existente
-        Optional<Dueño> found = dueñoRepository.findById(Integer.toString(dueño1.getId()));
+        Optional<Dueño> found = dueñoRepository.findById(dueño1.getId());
         
         // Verificar que existe y tiene los datos correctos
         assertTrue(found.isPresent());
@@ -171,7 +171,7 @@ class DueñoRepositoryTest {
     @Test
     void testFindById_NotFound() {
         // Buscar por ID que no existe
-        Optional<Dueño> notFound = dueñoRepository.findById("999");
+        Optional<Dueño> notFound = dueñoRepository.findById(999);
         
         // Verificar que no existe
         assertFalse(notFound.isPresent());
@@ -183,7 +183,7 @@ class DueñoRepositoryTest {
         dueñoRepository.delete(dueño2);
         
         // Verificar que se eliminó
-        Optional<Dueño> shouldBeDeleted = dueñoRepository.findById(Integer.toString(dueño2.getId()));
+        Optional<Dueño> shouldBeDeleted = dueñoRepository.findById(dueño2.getId());
         assertFalse(shouldBeDeleted.isPresent());
         
         // Verificar que el resto sigue existiendo
@@ -343,7 +343,7 @@ class DueñoRepositoryTest {
     @Test
     void testFindDueñoByUser_Success() {
         // Buscar por User ID existente
-        Optional<Dueño> found = dueñoRepository.findDueñoByUser(Integer.toString(user1.getId()));
+        Optional<Dueño> found = dueñoRepository.findDueñoByUser(user1.getId());
         
         // Verificar que existe y tiene los datos correctos
         assertTrue(found.isPresent());
@@ -354,7 +354,7 @@ class DueñoRepositoryTest {
     @Test
     void testFindDueñoByUser_NotFound() {
         // Buscar por User ID que no existe
-        Optional<Dueño> notFound = dueñoRepository.findDueñoByUser("999");
+        Optional<Dueño> notFound = dueñoRepository.findDueñoByUser(999);
         
         // Verificar que no existe
         assertFalse(notFound.isPresent());

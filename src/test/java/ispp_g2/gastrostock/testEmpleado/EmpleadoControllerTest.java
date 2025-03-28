@@ -181,7 +181,7 @@ class EmpleadoControllerTest {
     @Test
     void testFindById_Success() throws Exception {
         // Arrange
-        when(empleadoService.getEmpleadoById("1")).thenReturn(empleado1);
+        when(empleadoService.getEmpleadoById(1)).thenReturn(empleado1);
         
         // Act & Assert
         mockMvc.perform(get("/api/empleados/1")
@@ -190,20 +190,20 @@ class EmpleadoControllerTest {
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.firstName", is("Juan")));
         
-        verify(empleadoService).getEmpleadoById("1");
+        verify(empleadoService).getEmpleadoById(1);
     }
     
     @Test
     void testFindById_NotFound() throws Exception {
         // Arrange
-        when(empleadoService.getEmpleadoById("999")).thenReturn(null);
+        when(empleadoService.getEmpleadoById(999)).thenReturn(null);
         
         // Act & Assert
         mockMvc.perform(get("/api/empleados/999")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
         
-        verify(empleadoService).getEmpleadoById("999");
+        verify(empleadoService).getEmpleadoById(999);
     }
 
     // TESTS PARA findByEmail()
@@ -212,7 +212,7 @@ class EmpleadoControllerTest {
     void testFindByEmail_Success() throws Exception {
         // Arrange
         when(empleadoService.getEmpleadoByEmail("juan.perez@example.com")).thenReturn(empleado1);
-        when(empleadoService.getEmpleadoById("juan.perez@example.com")).thenReturn(empleado1); // Este es un posible bug en el controlador
+        when(empleadoService.getEmpleadoById(1)).thenReturn(empleado1); // Este es un posible bug en el controlador #Arreglado creo :D Fallo en la llamada
         
         // Act & Assert
         mockMvc.perform(get("/api/empleados/email/juan.perez@example.com")
@@ -221,7 +221,7 @@ class EmpleadoControllerTest {
                 .andExpect(jsonPath("$.email", is("juan.perez@example.com")));
         
         verify(empleadoService).getEmpleadoByEmail("juan.perez@example.com");
-        verify(empleadoService).getEmpleadoById("juan.perez@example.com"); // Verificar la llamada incorrecta
+        verify(empleadoService).getEmpleadoById(1); // Verificar la llamada incorrecta #Arreglado creo :D
     }
     
     @Test
@@ -333,7 +333,7 @@ class EmpleadoControllerTest {
     @Test
     void testFindByNegocio_Success() throws Exception {
         // Arrange
-        when(empleadoService.getEmpleadoByNegocio("1")).thenReturn(empleadosList);
+        when(empleadoService.getEmpleadoByNegocio(1)).thenReturn(empleadosList);
         
         // Act & Assert
         mockMvc.perform(get("/api/empleados/negocio/1")
@@ -343,20 +343,20 @@ class EmpleadoControllerTest {
                 .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[1].firstName", is("Ana")));
         
-        verify(empleadoService, times(2)).getEmpleadoByNegocio("1");
+        verify(empleadoService, times(2)).getEmpleadoByNegocio(1);
     }
     
     @Test
     void testFindByNegocio_NotFound() throws Exception {
         // Arrange
-        when(empleadoService.getEmpleadoByNegocio("999")).thenReturn(Collections.emptyList());
+        when(empleadoService.getEmpleadoByNegocio(999)).thenReturn(Collections.emptyList());
         
         // Act & Assert
         mockMvc.perform(get("/api/empleados/negocio/999")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
         
-        verify(empleadoService).getEmpleadoByNegocio("999");
+        verify(empleadoService).getEmpleadoByNegocio(999);
     }
 
     // TESTS PARA findByUser()
@@ -364,7 +364,7 @@ class EmpleadoControllerTest {
     @Test
     void testFindByUser_Success() throws Exception {
         // Arrange
-        when(empleadoService.getEmpleadoByUser("1")).thenReturn(empleado1);
+        when(empleadoService.getEmpleadoByUser(1)).thenReturn(empleado1);
         
         // Act & Assert
         mockMvc.perform(get("/api/empleados/user/1")
@@ -373,20 +373,20 @@ class EmpleadoControllerTest {
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.firstName", is("Juan")));
         
-        verify(empleadoService, times(2)).getEmpleadoByUser("1");
+        verify(empleadoService, times(2)).getEmpleadoByUser(1);
     }
     
     @Test
     void testFindByUser_NotFound() throws Exception {
         // Arrange
-        when(empleadoService.getEmpleadoByUser("999")).thenReturn(null);
+        when(empleadoService.getEmpleadoByUser(999)).thenReturn(null);
         
         // Act & Assert
         mockMvc.perform(get("/api/empleados/user/999")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
         
-        verify(empleadoService).getEmpleadoByUser("999");
+        verify(empleadoService).getEmpleadoByUser(999);
     }
 
     // TESTS PARA findByTokenEmpleado()
@@ -430,12 +430,12 @@ class EmpleadoControllerTest {
         empleadoDTO.setNumTelefono("666151222");
         empleadoDTO.setTokenEmpleado("TOKEN129");
         empleadoDTO.setDescripcion("Camarero principal");
-        empleadoDTO.setUser("1"); // ID como String
-        empleadoDTO.setNegocio("1"); // ID como String
+        empleadoDTO.setUser(1); // ID como String
+        empleadoDTO.setNegocio(1); // ID como String
         
         // Configurar los mocks necesarios
-        when(negocioService.getById("1")).thenReturn(negocio);
-        when(userService.findUserById("1")).thenReturn(user); // AÑADIR ESTA LÍNEA
+        when(negocioService.getById(1)).thenReturn(negocio);
+        when(userService.findUserById(1)).thenReturn(user); // AÑADIR ESTA LÍNEA
         when(empleadoService.convertirDTOEmpleado(any(EmpleadoDTO.class), eq(negocio), eq(user))).thenReturn(empleado);
         when(empleadoService.saveEmpleado(any(Empleado.class))).thenReturn(empleado1);
         
@@ -448,8 +448,8 @@ class EmpleadoControllerTest {
                 .andExpect(jsonPath("$.firstName", is("Juan")));
         
         // Verificar que se llamaron los métodos correctos
-        verify(negocioService).getById("1");
-        verify(userService).findUserById("1"); // AÑADIR ESTA LÍNEA
+        verify(negocioService).getById(1);
+        verify(userService).findUserById(1); // AÑADIR ESTA LÍNEA
         verify(empleadoService).saveEmpleado(any(Empleado.class));
     }
     @Test
@@ -475,8 +475,8 @@ void testUpdate_Success() throws Exception {
     empleadoDTO.setNumTelefono("666111222");
     empleadoDTO.setTokenEmpleado("TOKEN123");
     empleadoDTO.setDescripcion("Camarero principal actualizado");
-    empleadoDTO.setUser("1"); // ID como String
-    empleadoDTO.setNegocio("1"); // ID como String
+    empleadoDTO.setUser(1); // ID como String
+    empleadoDTO.setNegocio(1); // ID como String
     
     // Preparar un Empleado actualizado para el resultado
     Empleado empleadoActualizado = new Empleado();
@@ -491,8 +491,8 @@ void testUpdate_Success() throws Exception {
     empleadoActualizado.setNegocio(negocio);
     
     // Configurar todos los mocks necesarios
-    when(empleadoService.getEmpleadoById("1")).thenReturn(empleado1);
-    when(negocioService.getById("1")).thenReturn(negocio); // Mock para buscar negocio
+    when(empleadoService.getEmpleadoById(1)).thenReturn(empleado1);
+    when(negocioService.getById(1)).thenReturn(negocio); // Mock para buscar negocio
     when(empleadoService.convertirDTOEmpleado(any(EmpleadoDTO.class), eq(negocio), eq(empleado1.getUser()))).thenReturn(empleadoActualizado);
     when(empleadoService.saveEmpleado(any(Empleado.class))).thenReturn(empleadoActualizado);
     
@@ -505,8 +505,8 @@ void testUpdate_Success() throws Exception {
             .andExpect(jsonPath("$.firstName", is("Juan Actualizado")));
     
     // Verificar que los métodos correctos fueron llamados
-    verify(empleadoService, atLeastOnce()).getEmpleadoById("1");
-    verify(negocioService).getById("1");
+    verify(empleadoService, atLeastOnce()).getEmpleadoById(1);
+    verify(negocioService).getById(1);
     verify(empleadoService).saveEmpleado(any(Empleado.class));
 }
     
@@ -521,11 +521,11 @@ void testUpdate_NotFound() throws Exception {
     empleadoDTO.setNumTelefono("999888777");
     empleadoDTO.setTokenEmpleado("TOKEN999");
     empleadoDTO.setDescripcion("Descripción test");
-    empleadoDTO.setUser("1"); // ID como String
-    empleadoDTO.setNegocio("1"); // ID como String
+    empleadoDTO.setUser(1); // ID como String
+    empleadoDTO.setNegocio(1); // ID como String
     
     // Configurar el mock para retornar null (no encontrado)
-    when(empleadoService.getEmpleadoById("999")).thenReturn(null);
+    when(empleadoService.getEmpleadoById(999)).thenReturn(null);
     
     // Act & Assert
     mockMvc.perform(put("/api/empleados/999")
@@ -534,7 +534,7 @@ void testUpdate_NotFound() throws Exception {
             .content(objectMapper.writeValueAsString(empleadoDTO))) // Enviar el DTO, no la entidad
             .andExpect(status().isNotFound());
     
-    verify(empleadoService, atLeastOnce()).getEmpleadoById("999");
+    verify(empleadoService, atLeastOnce()).getEmpleadoById(999);
     verify(empleadoService, never()).saveEmpleado(any(Empleado.class));
 }
     
@@ -559,8 +559,8 @@ void testUpdate_NotFound() throws Exception {
     @Test
     void testDelete_Success() throws Exception {
         // Arrange
-        when(empleadoService.getEmpleadoById("1")).thenReturn(empleado1);
-        doNothing().when(empleadoService).deleteEmpleado("1");
+        when(empleadoService.getEmpleadoById(1)).thenReturn(empleado1);
+        doNothing().when(empleadoService).deleteEmpleado(1);
         
         // Act & Assert
         mockMvc.perform(delete("/api/empleados/1")
@@ -568,14 +568,14 @@ void testUpdate_NotFound() throws Exception {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
         
-        verify(empleadoService).getEmpleadoById("1");
-        verify(empleadoService).deleteEmpleado("1");
+        verify(empleadoService).getEmpleadoById(1);
+        verify(empleadoService).deleteEmpleado(1);
     }
     
     @Test
     void testDelete_NotFound() throws Exception {
         // Arrange
-        when(empleadoService.getEmpleadoById("999")).thenReturn(null);
+        when(empleadoService.getEmpleadoById(999)).thenReturn(null);
         
         // Act & Assert
         mockMvc.perform(delete("/api/empleados/999")
@@ -583,7 +583,7 @@ void testUpdate_NotFound() throws Exception {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
         
-        verify(empleadoService).getEmpleadoById("999");
-        verify(empleadoService, never()).deleteEmpleado(anyString());
+        verify(empleadoService).getEmpleadoById(999);
+        verify(empleadoService, never()).deleteEmpleado(anyInt());
     }
 }

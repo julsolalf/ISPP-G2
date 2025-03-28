@@ -107,7 +107,7 @@ class NegocioControllerTest {
     @Test
     void testFindNegocioById() throws Exception {
 
-        when(negocioService.getById(String.valueOf(1))).thenReturn(negocio1);
+        when(negocioService.getById(1)).thenReturn(negocio1);
         
         mockMvc.perform(get("/api/negocios/1")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -115,19 +115,19 @@ class NegocioControllerTest {
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is("Restaurante La Tasca")));
         
-        verify(negocioService).getById(String.valueOf(1));
+        verify(negocioService).getById(1);
     }
     
     @Test
     void testFindNegocioById_NotFound() throws Exception {
 
-        when(negocioService.getById(String.valueOf(999))).thenReturn(null);
+        when(negocioService.getById(999)).thenReturn(null);
         
         mockMvc.perform(get("/api/negocios/999")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
         
-        verify(negocioService).getById(String.valueOf(999));
+        verify(negocioService).getById(999);
     }
     
     @Test
@@ -270,7 +270,7 @@ class NegocioControllerTest {
         updatedNegocio.setTokenNegocio(12345);
         updatedNegocio.setDueño(dueño);
         
-        when(negocioService.getById(String.valueOf(1))).thenReturn(negocio1);
+        when(negocioService.getById(1)).thenReturn(negocio1);
         when(negocioService.save(any(Negocio.class))).thenReturn(updatedNegocio);
 
         mockMvc.perform(put("/api/negocios/1")
@@ -293,7 +293,7 @@ class NegocioControllerTest {
         invalidNegocio.setTokenNegocio(9999);
         invalidNegocio.setDueño(dueño);
         
-        when(negocioService.getById(String.valueOf(1))).thenReturn(null);
+        when(negocioService.getById(1)).thenReturn(null);
 
         mockMvc.perform(put("/api/negocios/1")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -318,7 +318,7 @@ class NegocioControllerTest {
 @Test
 void testDeleteNegocio_NotFound() throws Exception {
     // Arrange - Usar getById en lugar de getByToken
-    when(negocioService.getById("9999")).thenReturn(null);
+    when(negocioService.getById(9999)).thenReturn(null);
     
     // Act & Assert
     mockMvc.perform(delete("/api/negocios/9999")
@@ -326,6 +326,6 @@ void testDeleteNegocio_NotFound() throws Exception {
             .andExpect(status().isNotFound());
             
     // Verify
-    verify(negocioService).getById("9999");
+    verify(negocioService).getById(9999);
 }
 }

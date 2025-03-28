@@ -154,7 +154,7 @@ public class ReabastecimientoRepositoryTest {
         assertNotNull(savedReabastecimiento.getId());
         
         // Recuperar por ID y verificar todos los campos
-        Optional<Reabastecimiento> retrieved = reabastecimientoRepository.findById(Integer.toString(savedReabastecimiento.getId()));
+        Optional<Reabastecimiento> retrieved = reabastecimientoRepository.findById(savedReabastecimiento.getId());
         assertTrue(retrieved.isPresent());
         assertEquals("REF-NEW", retrieved.get().getReferencia());
         assertEquals(300.00, retrieved.get().getPrecioTotal());
@@ -163,7 +163,7 @@ public class ReabastecimientoRepositoryTest {
     @Test
     void testFindById() {
         // Buscar un reabastecimiento existente
-        Optional<Reabastecimiento> found = reabastecimientoRepository.findById(Integer.toString(reabastecimiento1.getId()));
+        Optional<Reabastecimiento> found = reabastecimientoRepository.findById(reabastecimiento1.getId());
         
         // Verificar que existe y que los datos son correctos
         assertTrue(found.isPresent());
@@ -174,7 +174,7 @@ public class ReabastecimientoRepositoryTest {
     @Test
     void testFindById_NotFound() {
         // Buscar un ID que no existe
-        Optional<Reabastecimiento> notFound = reabastecimientoRepository.findById("999");
+        Optional<Reabastecimiento> notFound = reabastecimientoRepository.findById(999);
         
         // Verificar que no existe
         assertFalse(notFound.isPresent());
@@ -202,17 +202,17 @@ public class ReabastecimientoRepositoryTest {
         assertEquals(2, ((List<Reabastecimiento>) reabastecimientoRepository.findAll()).size());
         
         // Verificar que el eliminado ya no existe
-        Optional<Reabastecimiento> deletedReabastecimiento = reabastecimientoRepository.findById(Integer.toString(reabastecimiento1.getId()));
+        Optional<Reabastecimiento> deletedReabastecimiento = reabastecimientoRepository.findById(reabastecimiento1.getId());
         assertFalse(deletedReabastecimiento.isPresent());
     }
     
     @Test
     void testDeleteById() {
         // Eliminar por ID
-        reabastecimientoRepository.deleteById(Integer.toString(reabastecimiento2.getId()));
+        reabastecimientoRepository.deleteById(reabastecimiento2.getId());
         
         // Verificar que ya no existe
-        Optional<Reabastecimiento> deletedReabastecimiento = reabastecimientoRepository.findById(Integer.toString(reabastecimiento2.getId()));
+        Optional<Reabastecimiento> deletedReabastecimiento = reabastecimientoRepository.findById(reabastecimiento2.getId());
         assertFalse(deletedReabastecimiento.isPresent());
     }
     
@@ -352,7 +352,7 @@ public class ReabastecimientoRepositoryTest {
     @Test
     void testFindByProveedor() {
         // Buscar por ID del proveedor1
-        List<Reabastecimiento> result = reabastecimientoRepository.findByProveedor(proveedor1.getId().toString());
+        List<Reabastecimiento> result = reabastecimientoRepository.findByProveedor(proveedor1.getId());
         
         // Verificar que encuentra los reabastecimientos del proveedor1
         assertEquals(2, result.size());
@@ -362,7 +362,7 @@ public class ReabastecimientoRepositoryTest {
     @Test
     void testFindByProveedor_NotExists() {
         // Buscar por un ID de proveedor que no existe
-        List<Reabastecimiento> result = reabastecimientoRepository.findByProveedor("999");
+        List<Reabastecimiento> result = reabastecimientoRepository.findByProveedor(999);
         
         // Verificar que no encuentra nada
         assertTrue(result.isEmpty());
@@ -371,7 +371,7 @@ public class ReabastecimientoRepositoryTest {
     @Test
     void testFindByNegocio() {
         // Buscar por ID del negocio2
-        List<Reabastecimiento> result = reabastecimientoRepository.findByNegocio(negocio2.getId().toString());
+        List<Reabastecimiento> result = reabastecimientoRepository.findByNegocio(negocio2.getId());
         
         // Verificar que encuentra el reabastecimiento del negocio2
         assertEquals(1, result.size());
@@ -381,7 +381,7 @@ public class ReabastecimientoRepositoryTest {
     @Test
     void testFindByNegocio_NotExists() {
         // Buscar por un ID de negocio que no existe
-        List<Reabastecimiento> result = reabastecimientoRepository.findByNegocio("999");
+        List<Reabastecimiento> result = reabastecimientoRepository.findByNegocio(999);
         
         // Verificar que no encuentra nada
         assertTrue(result.isEmpty());
@@ -410,7 +410,7 @@ public class ReabastecimientoRepositoryTest {
     @Test
     void testCascadeDeleteProveedor() {
         // Contar reabastecimientos del proveedor1
-        int initialCount = reabastecimientoRepository.findByProveedor(proveedor1.getId().toString()).size();
+        int initialCount = reabastecimientoRepository.findByProveedor(proveedor1.getId()).size();
         assertEquals(2, initialCount);
         
         // Intentar eliminar el proveedor1
@@ -419,7 +419,7 @@ public class ReabastecimientoRepositoryTest {
             proveedorRepository.findAll();
             
             // Verificar que los reabastecimientos asociados también se eliminaron (o se comportan según la configuración de CASCADE)
-            List<Reabastecimiento> remaining = reabastecimientoRepository.findByProveedor(proveedor1.getId().toString());
+            List<Reabastecimiento> remaining = reabastecimientoRepository.findByProveedor(proveedor1.getId());
             
             // Si llegamos aquí, es que el proveedor se eliminó. Verificamos el comportamiento esperado según la configuración:
             // - Si hay eliminación en cascada, no debería haber reabastecimientos
@@ -446,7 +446,7 @@ public class ReabastecimientoRepositoryTest {
         reabastecimientoRepository.save(reabastecimiento1);
         
         // Recuperar de nuevo y verificar los cambios
-        Optional<Reabastecimiento> updated = reabastecimientoRepository.findById(Integer.toString(reabastecimiento1.getId()));
+        Optional<Reabastecimiento> updated = reabastecimientoRepository.findById(reabastecimiento1.getId());
         assertTrue(updated.isPresent());
         assertEquals(1500.00, updated.get().getPrecioTotal());
         assertEquals("REF-001-UPDATED", updated.get().getReferencia());
