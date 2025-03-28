@@ -72,6 +72,14 @@ public class ProveedorController {
         return new ResponseEntity<>(proveedor, HttpStatus.OK);
     }
 
+    @GetMapping("/negocio/{negocio}")
+    public ResponseEntity<List<Proveedor>> findProveedorByNegocioId(@PathVariable("negocio") Integer negocio) {
+        if(proveedorService.findProveedorByNegocioId(negocio).isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(proveedorService.findProveedorByNegocioId(negocio), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<Proveedor> save(@RequestBody @Valid Proveedor proveedor) {
         if(proveedor == null){

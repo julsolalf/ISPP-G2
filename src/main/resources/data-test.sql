@@ -124,10 +124,10 @@ INSERT INTO ingrediente (id, cantidad, producto_inventario_id, producto_venta_id
 VALUES (2, 5, (SELECT id FROM producto_inventario WHERE name = 'Carne Buey'), (SELECT id FROM producto_venta WHERE name = 'Hamburguesa'));
 
 -- Insertando proveedores
-INSERT INTO proveedor (id, name, email, telefono, direccion)
-VALUES (1, 'Proveedor A', 'proveedorA@mail.com', '987654321', 'Calle Proveedor A');
-INSERT INTO proveedor (id, name, email, telefono, direccion)
-VALUES (2, 'Proveedor B', 'proveedorB@mail.com', '987654322', 'Calle Proveedor B');
+INSERT INTO proveedor (id, name, email, telefono, direccion, negocio_id)
+VALUES (1, 'Proveedor A', 'proveedorA@mail.com', '987654321', 'Calle Proveedor A',(SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
+INSERT INTO proveedor (id, name, email, telefono, direccion, negocio_id)
+VALUES (2, 'Proveedor B', 'proveedorB@mail.com', '987654322', 'Calle Proveedor B',(SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
 
 -- Insertando reabastecimientos
 INSERT INTO reabastecimiento (id, precio_total, referencia, fecha, proveedor_id, negocio_id)
@@ -140,7 +140,7 @@ INSERT INTO lote (id, cantidad, fecha_caducidad, producto_id, reabastecimiento_i
 VALUES (1, 100, '2025-05-01', (SELECT id FROM producto_inventario WHERE name = 'Harina'), (SELECT id FROM reabastecimiento WHERE referencia = 'REF001'));
 
 --Insertando diaReparto
-INSERT INTO dia_reparto (id, descripcion, dia_semana, negocio_id, proveedor_id)
-VALUES (1, '',5,(SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'),(SELECT id FROM proveedor WHERE name = 'Proveedor A'));
-INSERT INTO dia_reparto (id, descripcion, dia_semana, negocio_id, proveedor_id)
-VALUES (2, 'Suele venir muy pronto',6,(SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'),(SELECT id FROM proveedor WHERE name = 'Proveedor B'))
+INSERT INTO dia_reparto (id, descripcion, dia_semana, proveedor_id)
+VALUES (1, '',5,(SELECT id FROM proveedor WHERE name = 'Proveedor A'));
+INSERT INTO dia_reparto (id, descripcion, dia_semana, proveedor_id)
+VALUES (2, 'Suele venir muy pronto',6,(SELECT id FROM proveedor WHERE name = 'Proveedor B'))

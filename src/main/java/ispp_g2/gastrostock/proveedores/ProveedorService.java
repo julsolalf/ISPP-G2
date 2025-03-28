@@ -48,6 +48,11 @@ public class ProveedorService {
         return proveedorRepository.findByNombre(nombre);
     }
 
+    @Transactional(readOnly = true)
+    public List<Proveedor> findProveedorByNegocioId(Integer negocio) {
+        return proveedorRepository.findProveedorByNegocioId(negocio);
+    }
+
     @Transactional
     public Proveedor save(Proveedor proveedor) {
         return proveedorRepository.save(proveedor);

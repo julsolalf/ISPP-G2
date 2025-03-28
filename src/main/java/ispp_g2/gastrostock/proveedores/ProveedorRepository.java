@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 
 @Repository
 public interface ProveedorRepository extends CrudRepository<Proveedor, Integer> {
@@ -20,5 +22,8 @@ public interface ProveedorRepository extends CrudRepository<Proveedor, Integer> 
 
     @Query("SELECT p FROM Proveedor p WHERE p.direccion = ?1")
     Proveedor findByDireccion(String direccion);
+
+    @Query("SELECT p FROM Proveedor p WHERE p.negocio.id = ?1")
+    List<Proveedor> findProveedorByNegocioId(Integer negocio);
 
 }

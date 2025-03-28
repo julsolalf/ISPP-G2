@@ -13,7 +13,7 @@ import java.util.List;
 @RequestMapping("/api/diasReparto")
 public class DiaRepartoController {
 
-    private DiaRepartoService diaRepartoService;
+    private final DiaRepartoService diaRepartoService;
 
     @Autowired
     public DiaRepartoController(DiaRepartoService diaRepartoService) {
@@ -40,15 +40,6 @@ public class DiaRepartoController {
     @GetMapping("/diaSemana/{diaSemana}")
     public ResponseEntity<List<DiaReparto>> findByDiaSemana(@PathVariable("diaSemana") String diaSemana) {
         List<DiaReparto> diasReparto = diaRepartoService.getDiaRepartoByDiaSemana(DayOfWeek.valueOf(diaSemana));
-        if(diasReparto.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(diasReparto, HttpStatus.OK);
-    }
-
-    @GetMapping("/negocio/{negocio}")
-    public ResponseEntity<List<DiaReparto>> findByNegocio(@PathVariable("negocio") String negocio) {
-        List<DiaReparto> diasReparto = diaRepartoService.getDiaRepartoByNegocioId(negocio);
         if(diasReparto.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

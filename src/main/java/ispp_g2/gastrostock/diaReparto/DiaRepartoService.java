@@ -36,11 +36,6 @@ public class DiaRepartoService {
     }
 
     @Transactional(readOnly = true)
-    public List<DiaReparto> getDiaRepartoByNegocioId(String negocio) {
-        return diaRepartoRepository.findDiaRepartoByNegocioId(negocio);
-    }
-
-    @Transactional(readOnly = true)
     public List<DiaReparto> getDiaRepartoByProveedorId(Integer proveedor) {
         return diaRepartoRepository.findDiaRepartoByProveedorId(proveedor);
     }
