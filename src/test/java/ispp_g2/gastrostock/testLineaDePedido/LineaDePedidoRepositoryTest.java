@@ -212,7 +212,7 @@ public class LineaDePedidoRepositoryTest {
         assertEquals(6.0, saved.getPrecioLinea());
         
         // Verificar que se puede recuperar de la base de datos
-        LineaDePedido retrieved = lineaDePedidoRepository.findById(Integer.toString(saved.getId())).orElse(null);
+        LineaDePedido retrieved = lineaDePedidoRepository.findById(saved.getId()).orElse(null);
         assertNotNull(retrieved);
         assertEquals(2, retrieved.getCantidad());
     }
@@ -243,7 +243,7 @@ public class LineaDePedidoRepositoryTest {
     @Test
     void testFindById() {
         // Buscar una línea existente por ID
-        Optional<LineaDePedido> found = lineaDePedidoRepository.findById(Integer.toString(lineaNormal.getId()));
+        Optional<LineaDePedido> found = lineaDePedidoRepository.findById(lineaNormal.getId());
         
         // Verificar que existe y tiene los datos correctos
         assertTrue(found.isPresent());
@@ -254,7 +254,7 @@ public class LineaDePedidoRepositoryTest {
     @Test
     void testFindById_NotFound() {
         // Buscar una línea que no existe
-        Optional<LineaDePedido> notFound = lineaDePedidoRepository.findById("999");
+        Optional<LineaDePedido> notFound = lineaDePedidoRepository.findById(999);
         
         // Verificar que no existe
         assertFalse(notFound.isPresent());
@@ -281,7 +281,7 @@ public class LineaDePedidoRepositoryTest {
         lineaDePedidoRepository.delete(lineaPrecioAlto);
         
         // Verificar que se eliminó
-        Optional<LineaDePedido> shouldBeDeleted = lineaDePedidoRepository.findById(Integer.toString(lineaPrecioAlto.getId()));
+        Optional<LineaDePedido> shouldBeDeleted = lineaDePedidoRepository.findById(lineaPrecioAlto.getId());
         assertFalse(shouldBeDeleted.isPresent());
         
         // Verificar que el resto sigue existiendo
@@ -296,10 +296,10 @@ public class LineaDePedidoRepositoryTest {
     @Test
     void testDeleteById() {
         // Eliminar una línea por ID
-        lineaDePedidoRepository.deleteById(Integer.toString(lineaMinima.getId()));
+        lineaDePedidoRepository.deleteById(lineaMinima.getId());
         
         // Verificar que se eliminó
-        Optional<LineaDePedido> shouldBeDeleted = lineaDePedidoRepository.findById(Integer.toString(lineaMinima.getId()));
+        Optional<LineaDePedido> shouldBeDeleted = lineaDePedidoRepository.findById(lineaMinima.getId());
         assertFalse(shouldBeDeleted.isPresent());
         
         // Verificar que el resto sigue existiendo

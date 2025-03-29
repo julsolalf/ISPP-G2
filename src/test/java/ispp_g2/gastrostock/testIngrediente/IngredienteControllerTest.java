@@ -139,7 +139,7 @@ public class IngredienteControllerTest {
 
     @Test
     void testFindById_Success() throws Exception {
-        when(ingredienteService.getById("1")).thenReturn(ingrediente1);
+        when(ingredienteService.getById(1)).thenReturn(ingrediente1);
         
         mockMvc.perform(get("/api/ingredientes/1"))
             .andExpect(status().isOk())
@@ -149,27 +149,27 @@ public class IngredienteControllerTest {
             .andExpect(jsonPath("$.productoInventario.id").value(1))
             .andExpect(jsonPath("$.productoVenta.id").value(1));
         
-        verify(ingredienteService).getById("1");
+        verify(ingredienteService).getById(1);
     }
 
     @Test
     void testFindById_NotFound() throws Exception {
-        when(ingredienteService.getById("999")).thenReturn(null);
+        when(ingredienteService.getById(999)).thenReturn(null);
         
         mockMvc.perform(get("/api/ingredientes/999"))
             .andExpect(status().isNotFound());
         
-        verify(ingredienteService).getById("999");
+        verify(ingredienteService).getById(999);
     }
 
     @Test
     void testFindById_InvalidId() throws Exception {
-        when(ingredienteService.getById("invalid")).thenThrow(new NumberFormatException("Invalid ID"));
+        when(ingredienteService.getById(999)).thenThrow(new NumberFormatException("Invalid ID"));
         
         mockMvc.perform(get("/api/ingredientes/invalid"))
             .andExpect(status().isBadRequest());
         
-        verify(ingredienteService).getById("invalid");
+        verify(ingredienteService).getById(999);
     }
 
     // TESTS PARA findByCantidad()
@@ -372,7 +372,7 @@ void testSave_NullRequest() throws Exception {
         ingredienteGuardado.setProductoInventario(productoInventario2);
         ingredienteGuardado.setProductoVenta(productoVenta1);
         
-        when(ingredienteService.getById("1")).thenReturn(ingrediente1);
+        when(ingredienteService.getById(1)).thenReturn(ingrediente1);
         when(ingredienteService.save(any(Ingrediente.class))).thenReturn(ingredienteGuardado);
         
         mockMvc.perform(put("/api/ingredientes/1")
@@ -386,7 +386,7 @@ void testSave_NullRequest() throws Exception {
             .andExpect(jsonPath("$.productoInventario.id").value(2))
             .andExpect(jsonPath("$.productoVenta.id").value(1));
         
-        verify(ingredienteService).getById("1");
+        verify(ingredienteService).getById(1);
         verify(ingredienteService).save(any(Ingrediente.class));
     }
 
@@ -397,7 +397,7 @@ void testSave_NullRequest() throws Exception {
         ingredienteActualizado.setProductoInventario(productoInventario2);
         ingredienteActualizado.setProductoVenta(productoVenta1);
         
-        when(ingredienteService.getById("999")).thenReturn(null);
+        when(ingredienteService.getById(999)).thenReturn(null);
         
         mockMvc.perform(put("/api/ingredientes/999")
                 .with(csrf())
@@ -405,13 +405,13 @@ void testSave_NullRequest() throws Exception {
                 .content(objectMapper.writeValueAsString(ingredienteActualizado)))
             .andExpect(status().isNotFound());
         
-        verify(ingredienteService).getById("999");
+        verify(ingredienteService).getById(999);
         verify(ingredienteService, never()).save(any(Ingrediente.class));
     }
 
     @Test
     void testUpdate_MissingRequiredFields() throws Exception {
-        when(ingredienteService.getById("1")).thenReturn(ingrediente1);
+        when(ingredienteService.getById(1)).thenReturn(ingrediente1);
         
         mockMvc.perform(put("/api/ingredientes/1")
         .with(csrf())
@@ -429,7 +429,7 @@ void testSave_NullRequest() throws Exception {
         ingredienteActualizado.setProductoInventario(productoInventario2);
         ingredienteActualizado.setProductoVenta(productoVenta1);
         
-        when(ingredienteService.getById("invalid")).thenThrow(new NumberFormatException("Invalid ID"));
+        when(ingredienteService.getById(999)).thenThrow(new NumberFormatException("Invalid ID"));
         
         mockMvc.perform(put("/api/ingredientes/invalid")    
         .with(csrf())
@@ -437,7 +437,7 @@ void testSave_NullRequest() throws Exception {
                 .content(objectMapper.writeValueAsString(ingredienteActualizado)))
             .andExpect(status().isBadRequest());
         
-        verify(ingredienteService).getById("invalid");
+        verify(ingredienteService).getById(999);
         verify(ingredienteService, never()).save(any(Ingrediente.class));
     }
 
@@ -445,48 +445,48 @@ void testSave_NullRequest() throws Exception {
 
     @Test
     void testDelete_Success() throws Exception {
-        when(ingredienteService.getById("1")).thenReturn(ingrediente1);
-        doNothing().when(ingredienteService).deleteById("1");
+        when(ingredienteService.getById(1)).thenReturn(ingrediente1);
+        doNothing().when(ingredienteService).deleteById(1);
         
         mockMvc.perform(delete("/api/ingredientes/1").with(csrf()))
             .andExpect(status().isNoContent());
         
-        verify(ingredienteService).getById("1");
-        verify(ingredienteService).deleteById("1");
+        verify(ingredienteService).getById(1);
+        verify(ingredienteService).deleteById(1);
     }
 
     @Test
     void testDelete_NotFound() throws Exception {
-        when(ingredienteService.getById("999")).thenReturn(null);
+        when(ingredienteService.getById(999)).thenReturn(null);
         
         mockMvc.perform(delete("/api/ingredientes/999").with(csrf()))
             .andExpect(status().isNotFound());
         
-        verify(ingredienteService).getById("999");
-        verify(ingredienteService, never()).deleteById("999");
+        verify(ingredienteService).getById(999);
+        verify(ingredienteService, never()).deleteById(999);
     }
 
     @Test
     void testDelete_InvalidId() throws Exception {
-        when(ingredienteService.getById("invalid")).thenThrow(new NumberFormatException("Invalid ID"));
+        when(ingredienteService.getById(999)).thenThrow(new NumberFormatException("Invalid ID"));
         
         mockMvc.perform(delete("/api/ingredientes/invalid").with(csrf()))
             .andExpect(status().isBadRequest());
         
-        verify(ingredienteService).getById("invalid");
-        verify(ingredienteService, never()).deleteById("invalid");
+        verify(ingredienteService).getById(999);
+        verify(ingredienteService, never()).deleteById(999);
     }
 
     @Test
     void testDelete_ServiceError() throws Exception {
-        when(ingredienteService.getById("1")).thenReturn(ingrediente1);
-        doThrow(new RuntimeException("Database error")).when(ingredienteService).deleteById("1");
+        when(ingredienteService.getById(1)).thenReturn(ingrediente1);
+        doThrow(new RuntimeException("Database error")).when(ingredienteService).deleteById(1);
         
         mockMvc.perform(delete("/api/ingredientes/1")
         .with(csrf()))
             .andExpect(status().isInternalServerError());
         
-        verify(ingredienteService).getById("1");
-        verify(ingredienteService).deleteById("1");
+        verify(ingredienteService).getById(1);
+        verify(ingredienteService).deleteById(1);
     }
 }

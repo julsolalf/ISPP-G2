@@ -112,7 +112,7 @@ class CategoriaRepositoryTest {
     @Test
     void testFindById() {
         // Buscar categoría por ID existente convirtiendo el id a String
-        Optional<Categoria> found = categoriaRepository.findById(categoria1.getId().toString());
+        Optional<Categoria> found = categoriaRepository.findById(categoria1.getId());
         
         assertTrue(found.isPresent());
         assertEquals("Bebidas", found.get().getName());
@@ -121,7 +121,7 @@ class CategoriaRepositoryTest {
     @Test
     void testFindById_NotFound() {
         // Buscar categoría por un ID que no existe
-        Optional<Categoria> notFound = categoriaRepository.findById("999");
+        Optional<Categoria> notFound = categoriaRepository.findById(999);
         assertFalse(notFound.isPresent());
     }
     
@@ -131,7 +131,7 @@ class CategoriaRepositoryTest {
         categoriaRepository.delete(categoria2);
         
         // Verificar que se eliminó
-        Optional<Categoria> shouldBeDeleted = categoriaRepository.findById(categoria2.getId().toString());
+        Optional<Categoria> shouldBeDeleted = categoriaRepository.findById(categoria2.getId());
         assertFalse(shouldBeDeleted.isPresent());
         
         // Verificar que queda 1 categoría (la de Bebidas)
@@ -162,7 +162,7 @@ class CategoriaRepositoryTest {
     @Test
     void testFindByNegocioId_Success() {
         // Buscar categorías asociadas al negocio con ID "1"
-        List<Categoria> found = categoriaRepository.findByNegocioId(negocio.getId().toString());
+        List<Categoria> found = categoriaRepository.findByNegocioId(negocio.getId());
         assertNotNull(found);
         // Se esperan al menos 2 categorías creadas en setUp
         assertTrue(found.size() >= 2);
@@ -171,7 +171,7 @@ class CategoriaRepositoryTest {
     @Test
     void testFindByNegocioId_NotFound() {
         // Buscar categorías para un negocio que no existe
-        List<Categoria> notFound = categoriaRepository.findByNegocioId("999");
+        List<Categoria> notFound = categoriaRepository.findByNegocioId(999);
         assertNotNull(notFound);
         assertTrue(notFound.isEmpty());
     }

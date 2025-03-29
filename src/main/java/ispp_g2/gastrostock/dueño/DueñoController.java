@@ -28,7 +28,7 @@ public class DueñoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Dueño> findById(@PathVariable("id") String id) {
+    public ResponseEntity<Dueño> findById(@PathVariable("id") Integer id) {
         Dueño dueno = duenoService.getDueñoById(id);
         if(dueno == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -77,7 +77,7 @@ public class DueñoController {
 
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<Dueño> findByUser(@PathVariable("id") String id) {
+    public ResponseEntity<Dueño> findByUser(@PathVariable("id") Integer id) {
         Dueño dueno = duenoService.getDueñoByUser(id);
         if(dueno == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -92,20 +92,20 @@ public class DueñoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Dueño> update(@PathVariable("id") String id, @RequestBody @Valid Dueño dueño) {
+    public ResponseEntity<Dueño> update(@PathVariable("id") Integer id, @RequestBody @Valid Dueño dueño) {
         if (dueño == null) {
             throw new IllegalArgumentException("Dueño no puede ser nulo");
         }
         if (duenoService.getDueñoById(id) == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        dueño.setId(Integer.valueOf(id));
+        dueño.setId(id);
         return new ResponseEntity<>(duenoService.saveDueño(dueño), HttpStatus.OK);
 
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") String id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
         Dueño dueño = duenoService.getDueñoById(id);
         if (dueño == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

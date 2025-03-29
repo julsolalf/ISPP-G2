@@ -18,7 +18,7 @@ public class IngredienteService {
     }
 
     @Transactional(readOnly = true)
-    public Ingrediente getById(String id) {
+    public Ingrediente getById(Integer id) {
         return ingredienteRepository.findById(id).orElse(null);
     }
 
@@ -50,7 +50,7 @@ public class IngredienteService {
     }
 
     @Transactional
-    public void deleteById(String id) {
+    public void deleteById(Integer id) {
         ingredienteRepository.deleteById(id);
     }
 

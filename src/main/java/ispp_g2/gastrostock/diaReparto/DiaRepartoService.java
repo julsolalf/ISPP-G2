@@ -19,7 +19,7 @@ public class DiaRepartoService {
     }
 
     @Transactional(readOnly = true)
-    public DiaReparto getById(String id) {
+    public DiaReparto getById(Integer id) {
         return diaRepartoRepository.findById(id).orElse(null);
     }
 
@@ -36,12 +36,7 @@ public class DiaRepartoService {
     }
 
     @Transactional(readOnly = true)
-    public List<DiaReparto> getDiaRepartoByNegocioId(String negocio) {
-        return diaRepartoRepository.findDiaRepartoByNegocioId(negocio);
-    }
-
-    @Transactional(readOnly = true)
-    public List<DiaReparto> getDiaRepartoByProveedorId(String proveedor) {
+    public List<DiaReparto> getDiaRepartoByProveedorId(Integer proveedor) {
         return diaRepartoRepository.findDiaRepartoByProveedorId(proveedor);
     }
 
@@ -51,7 +46,7 @@ public class DiaRepartoService {
     }
 
     @Transactional
-    public void deleteById(String id) {
+    public void deleteById(Integer id) {
         diaRepartoRepository.deleteById(id);
     }
 

@@ -221,7 +221,7 @@ public class EmpleadoRepositoryTest {
     @Test
     void testFindById() {
         // Buscar por ID existente
-        Optional<Empleado> found = empleadoRepository.findById(empleado1.getId().toString());
+        Optional<Empleado> found = empleadoRepository.findById(empleado1.getId());
         
         // Verificar que existe y tiene los datos correctos
         assertTrue(found.isPresent());
@@ -232,7 +232,7 @@ public class EmpleadoRepositoryTest {
     @Test
     void testFindById_NotFound() {
         // Buscar por ID que no existe
-        Optional<Empleado> notFound = empleadoRepository.findById("999");
+        Optional<Empleado> notFound = empleadoRepository.findById(999);
         
         // Verificar que no existe
         assertFalse(notFound.isPresent());
@@ -244,7 +244,7 @@ public class EmpleadoRepositoryTest {
         empleadoRepository.delete(empleado2);
         
         // Verificar que se eliminó
-        Optional<Empleado> shouldBeDeleted = empleadoRepository.findById(empleado2.getId().toString());
+        Optional<Empleado> shouldBeDeleted = empleadoRepository.findById(empleado2.getId());
         assertFalse(shouldBeDeleted.isPresent());
         
         // Verificar que el resto sigue existiendo
@@ -374,7 +374,7 @@ public class EmpleadoRepositoryTest {
     @Test
     void testFindByNegocio_Success() {
         // Buscar por ID de negocio existente
-        List<Empleado> found = empleadoRepository.findByNegocio(negocio1.getId().toString());
+        List<Empleado> found = empleadoRepository.findByNegocio(negocio1.getId());
         
         // Verificar que se encuentran los empleados del negocio1
         assertEquals(2, found.size());
@@ -399,7 +399,7 @@ public class EmpleadoRepositoryTest {
     @Test
     void testFindByNegocio_NotFound() {
         // Buscar por ID de negocio que no existe
-        List<Empleado> notFound = empleadoRepository.findByNegocio("999");
+        List<Empleado> notFound = empleadoRepository.findByNegocio(999);
         
         // Verificar que la lista está vacía
         assertTrue(notFound.isEmpty());
@@ -408,7 +408,7 @@ public class EmpleadoRepositoryTest {
     @Test
     void testFindByUserId_Success() {
         // Buscar por ID de usuario existente
-        Optional<Empleado> found = empleadoRepository.findByUserId(user1.getId().toString());
+        Optional<Empleado> found = empleadoRepository.findByUserId(user1.getId());
         
         // Verificar que existe y tiene los datos correctos
         assertTrue(found.isPresent());
@@ -419,7 +419,7 @@ public class EmpleadoRepositoryTest {
     @Test
     void testFindByUserId_NotFound() {
         // Buscar por ID de usuario que no existe
-        Optional<Empleado> notFound = empleadoRepository.findByUserId("999");
+        Optional<Empleado> notFound = empleadoRepository.findByUserId(999);
         
         // Verificar que no existe
         assertFalse(notFound.isPresent());

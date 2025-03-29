@@ -128,7 +128,7 @@ public class MesaRepositoryTest {
         assertEquals(8, saved.getNumeroAsientos());
         
         // Verificar que se puede recuperar de la base de datos
-        Optional<Mesa> retrieved = mesaRepository.findById(Integer.toString(saved.getId()));
+        Optional<Mesa> retrieved = mesaRepository.findById(saved.getId());
         assertTrue(retrieved.isPresent());
         assertEquals("Mesa Nueva", retrieved.get().getName());
     }
@@ -150,7 +150,7 @@ public class MesaRepositoryTest {
     @Test
     void testFindById() {
         // Buscar una mesa existente por ID
-        Optional<Mesa> found = mesaRepository.findById(Integer.toString(mesa1.getId()));
+        Optional<Mesa> found = mesaRepository.findById(mesa1.getId());
         
         // Verificar que existe y tiene los datos correctos
         assertTrue(found.isPresent());
@@ -161,7 +161,7 @@ public class MesaRepositoryTest {
     @Test
     void testFindById_NotFound() {
         // Buscar una mesa que no existe
-        Optional<Mesa> notFound = mesaRepository.findById("999");
+        Optional<Mesa> notFound = mesaRepository.findById(999);
         
         // Verificar que no existe
         assertFalse(notFound.isPresent());
@@ -197,7 +197,7 @@ public class MesaRepositoryTest {
         mesaRepository.delete(mesa2);
         
         // Verificar que se eliminó
-        Optional<Mesa> shouldBeDeleted = mesaRepository.findById(Integer.toString(mesa2.getId()));
+        Optional<Mesa> shouldBeDeleted = mesaRepository.findById(mesa2.getId());
         assertFalse(shouldBeDeleted.isPresent());
         
         // Verificar que el resto sigue existiendo
@@ -207,10 +207,10 @@ public class MesaRepositoryTest {
     @Test
     void testDeleteById() {
         // Eliminar una mesa por ID
-        mesaRepository.deleteById(Integer.toString(mesa3.getId()));
+        mesaRepository.deleteById(mesa3.getId());
         
         // Verificar que se eliminó
-        Optional<Mesa> shouldBeDeleted = mesaRepository.findById(Integer.toString(mesa3.getId()));
+        Optional<Mesa> shouldBeDeleted = mesaRepository.findById(mesa3.getId());
         assertFalse(shouldBeDeleted.isPresent());
         
         // Verificar que el resto sigue existiendo
@@ -253,7 +253,7 @@ public class MesaRepositoryTest {
     @Test
     void testFindMesasByNegocio_Success() {
         // Buscar mesas por ID de negocio
-        List<Mesa> found = mesaRepository.findMesasByNegocio(negocio.getId().toString());
+        List<Mesa> found = mesaRepository.findMesasByNegocio(negocio.getId());
         
         // Verificar que se encontraron todas las mesas del negocio
         assertEquals(3, found.size());
@@ -262,7 +262,7 @@ public class MesaRepositoryTest {
     @Test
     void testFindMesasByNegocio_NotFound() {
         // Buscar mesas por ID de negocio que no existe
-        List<Mesa> notFound = mesaRepository.findMesasByNegocio("999");
+        List<Mesa> notFound = mesaRepository.findMesasByNegocio(999);
         
         // Verificar que la lista está vacía
         assertTrue(notFound.isEmpty());

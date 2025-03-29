@@ -29,7 +29,7 @@ public class PedidoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Pedido> findById(@PathVariable("id") String id) {
+    public ResponseEntity<Pedido> findById(@PathVariable("id") Integer id) {
         Pedido pedido = pedidoService.getById(id);
         if (pedido == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -91,7 +91,7 @@ public class PedidoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Pedido> update(@PathVariable("id") String id, @RequestBody @Valid Pedido pedido) {
+    public ResponseEntity<Pedido> update(@PathVariable("id") Integer id, @RequestBody @Valid Pedido pedido) {
         if(pedido == null){
             throw new IllegalArgumentException("Pedido no puede ser nulo");
         }
@@ -99,12 +99,12 @@ public class PedidoController {
         if(existingPedido.getId() == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        pedido.setId(Integer.valueOf(id));
+        pedido.setId(id);
         return new ResponseEntity<>(pedidoService.save(pedido), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") String id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
         pedidoService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

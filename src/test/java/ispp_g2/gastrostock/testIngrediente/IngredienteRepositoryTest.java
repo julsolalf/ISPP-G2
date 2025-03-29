@@ -175,7 +175,7 @@ public class IngredienteRepositoryTest {
         assertEquals(productoVenta2.getId(), saved.getProductoVenta().getId());
 
         // Verificar que se haya guardado en la BD
-        Optional<Ingrediente> fromDb = ingredienteRepository.findById(saved.getId().toString());
+        Optional<Ingrediente> fromDb = ingredienteRepository.findById(saved.getId());
         assertTrue(fromDb.isPresent());
         assertEquals(5, fromDb.get().getCantidad());
     }
@@ -220,7 +220,7 @@ public class IngredienteRepositoryTest {
     @Test
     void testFindById() {
         // Buscar un ingrediente existente
-        Optional<Ingrediente> found = ingredienteRepository.findById(ingrediente1.getId().toString());
+        Optional<Ingrediente> found = ingredienteRepository.findById(ingrediente1.getId());
         
         // Verificar que existe y tiene los datos correctos
         assertTrue(found.isPresent());
@@ -232,7 +232,7 @@ public class IngredienteRepositoryTest {
     @Test
     void testFindById_NotFound() {
         // Buscar un ID que no existe
-        Optional<Ingrediente> notFound = ingredienteRepository.findById("999");
+        Optional<Ingrediente> notFound = ingredienteRepository.findById(999);
         
         // Verificar que no existe
         assertFalse(notFound.isPresent());
@@ -259,7 +259,7 @@ public class IngredienteRepositoryTest {
         ingredienteRepository.delete(ingrediente3);
         
         // Verificar que ya no existe
-        Optional<Ingrediente> shouldBeDeleted = ingredienteRepository.findById(ingrediente3.getId().toString());
+        Optional<Ingrediente> shouldBeDeleted = ingredienteRepository.findById(ingrediente3.getId());
         assertFalse(shouldBeDeleted.isPresent());
         
         // Verificar que solo quedan 2 ingredientes
@@ -274,10 +274,10 @@ public class IngredienteRepositoryTest {
     @Test
     void testDeleteById() {
         // Eliminar un ingrediente por ID
-        ingredienteRepository.deleteById(ingrediente2.getId().toString());
+        ingredienteRepository.deleteById(ingrediente2.getId());
         
         // Verificar que ya no existe
-        Optional<Ingrediente> shouldBeDeleted = ingredienteRepository.findById(ingrediente2.getId().toString());
+        Optional<Ingrediente> shouldBeDeleted = ingredienteRepository.findById(ingrediente2.getId());
         assertFalse(shouldBeDeleted.isPresent());
         
         // Verificar que solo quedan 2 ingredientes
@@ -292,7 +292,7 @@ public class IngredienteRepositoryTest {
     @Test
     void testDeleteById_NotFound() {
         // El comportamiento esperado es que no haga nada sin lanzar excepción
-        ingredienteRepository.deleteById("999");
+        ingredienteRepository.deleteById(999);
         
         // Verificar que siguen existiendo los 3 ingredientes originales
         Iterable<Ingrediente> remaining = ingredienteRepository.findAll();
@@ -459,7 +459,7 @@ public class IngredienteRepositoryTest {
         assertEquals(10, updated.getCantidad());
         
         // Verificar que se actualizó en la BD
-        Optional<Ingrediente> fromDb = ingredienteRepository.findById(ingrediente1.getId().toString());
+        Optional<Ingrediente> fromDb = ingredienteRepository.findById(ingrediente1.getId());
         assertTrue(fromDb.isPresent());
         assertEquals(10, fromDb.get().getCantidad());
     }

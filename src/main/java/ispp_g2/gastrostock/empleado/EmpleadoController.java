@@ -47,7 +47,7 @@ public class EmpleadoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Empleado> findById(@PathVariable("id") String id) {
+    public ResponseEntity<Empleado> findById(@PathVariable("id") Integer id) {
         Empleado empleado = empleadoService.getEmpleadoById(id);
         if(empleado == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -55,7 +55,7 @@ public class EmpleadoController {
     }
 
     @GetMapping("/dto/{id}")
-    public ResponseEntity<EmpleadoDTO> findDTOById(@PathVariable("id") String id) {
+    public ResponseEntity<EmpleadoDTO> findDTOById(@PathVariable("id") Integer id) {
         Empleado empleado = empleadoService.getEmpleadoById(id);
         if(empleado == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -68,7 +68,7 @@ public class EmpleadoController {
         Empleado empleado = empleadoService.getEmpleadoByEmail(email);
         if(empleado == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(empleadoService.getEmpleadoById(email), HttpStatus.OK);
+        return new ResponseEntity<>(empleadoService.getEmpleadoByEmail(email), HttpStatus.OK);
     }
 
     @GetMapping("/dto/email/{email}")
@@ -138,7 +138,7 @@ public class EmpleadoController {
     }
 
     @GetMapping("/negocio/{id}")
-    public ResponseEntity<List<Empleado>> findByNegocio(@PathVariable("id") String id) {
+    public ResponseEntity<List<Empleado>> findByNegocio(@PathVariable("id") Integer id) {
         List<Empleado> empleados = empleadoService.getEmpleadoByNegocio(id);
         if(empleados.isEmpty())
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -146,7 +146,7 @@ public class EmpleadoController {
     }
 
     @GetMapping("/dto/negocio/{id}")
-    public ResponseEntity<List<EmpleadoDTO>> findDTOByNegocio(@PathVariable("id") String id) {
+    public ResponseEntity<List<EmpleadoDTO>> findDTOByNegocio(@PathVariable("id") Integer id) {
         List<Empleado> empleados = empleadoService.getEmpleadoByNegocio(id);
         if(empleados.isEmpty())
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -158,7 +158,7 @@ public class EmpleadoController {
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<Empleado> findByUser(@PathVariable("id") String id) {
+    public ResponseEntity<Empleado> findByUser(@PathVariable("id") Integer id) {
         Empleado empleado = empleadoService.getEmpleadoByUser(id);
         if(empleado == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -166,7 +166,7 @@ public class EmpleadoController {
     }
 
     @GetMapping("/dto/user/{id}")
-    public ResponseEntity<EmpleadoDTO> findDTOByUser(@PathVariable("id") String id) {
+    public ResponseEntity<EmpleadoDTO> findDTOByUser(@PathVariable("id") Integer id) {
         Empleado empleado = empleadoService.getEmpleadoByUser(id);
         if(empleado == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -204,7 +204,7 @@ public class EmpleadoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Empleado> update(@PathVariable("id") String id, @RequestBody @Valid  EmpleadoDTO empleadoDTO) {
+    public ResponseEntity<Empleado> update(@PathVariable("id") Integer id, @RequestBody @Valid  EmpleadoDTO empleadoDTO) {
         if(empleadoDTO==null)
             throw new IllegalArgumentException("Empleado no puede ser nulo");
         Empleado current_empleado= empleadoService.getEmpleadoById(id);
@@ -212,12 +212,12 @@ public class EmpleadoController {
         if(empleadoService.getEmpleadoById(id) == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         Empleado empleado = empleadoService.convertirDTOEmpleado(empleadoDTO,negocio,current_empleado.getUser());
-        empleado.setId(Integer.valueOf(id));
+        empleado.setId(id);
         return new ResponseEntity<>(empleadoService.saveEmpleado(empleado), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") String id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
         Empleado empleado = empleadoService.getEmpleadoById(id);
         if(empleado == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface IngredienteRepository extends CrudRepository<Ingrediente,String>{
+public interface IngredienteRepository extends CrudRepository<Ingrediente,Integer>{
 
     @Query("SELECT i FROM Ingrediente i WHERE i.cantidad = ?1")
     List<Ingrediente> findByCantidad(@Positive Integer cantidad);

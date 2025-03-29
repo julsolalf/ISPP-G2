@@ -115,7 +115,7 @@ class NegocioRepositoryTest {
     
     @Test
     void testFindById() {
-        Optional<Negocio> found = negocioRepository.findById(negocio1.getId().toString());
+        Optional<Negocio> found = negocioRepository.findById(negocio1.getId());
         
         assertTrue(found.isPresent());
         assertEquals("Restaurante La Tasca", found.get().getName());
@@ -124,7 +124,7 @@ class NegocioRepositoryTest {
     
     @Test
     void testFindById_NotFound() {
-        Optional<Negocio> notFound = negocioRepository.findById("9999");
+        Optional<Negocio> notFound = negocioRepository.findById(9999);
         
         assertFalse(notFound.isPresent());
     }
@@ -181,7 +181,7 @@ class NegocioRepositoryTest {
         assertEquals("Córdoba", updated.getCiudad());
         
         // Verificar que se actualizó en la BD
-        Optional<Negocio> retrieved = negocioRepository.findById(negocio1.getId().toString());
+        Optional<Negocio> retrieved = negocioRepository.findById(negocio1.getId());
         assertTrue(retrieved.isPresent());
         assertEquals("Restaurante La Tasca Renovado", retrieved.get().getName());
         assertEquals("Córdoba", retrieved.get().getCiudad());
@@ -207,10 +207,10 @@ class NegocioRepositoryTest {
     @Test
     void testDeleteById() {
         // Eliminar por ID
-        negocioRepository.deleteById(negocio2.getId().toString());
+        negocioRepository.deleteById(negocio2.getId());
         
         // Verificar que se eliminó
-        Optional<Negocio> shouldBeDeleted = negocioRepository.findById(negocio2.getId().toString());
+        Optional<Negocio> shouldBeDeleted = negocioRepository.findById(negocio2.getId());
         assertFalse(shouldBeDeleted.isPresent());
         
         // Verificar que los demás siguen existiendo
@@ -328,7 +328,7 @@ class NegocioRepositoryTest {
     
     @Test
     void testFindByDueño_Success() {
-        List<Negocio> negocios = negocioRepository.findByDueño(dueño1.getId().toString());
+        List<Negocio> negocios = negocioRepository.findByDueño(dueño1.getId());
         
         assertNotNull(negocios);
         assertEquals(2, negocios.size());
@@ -337,7 +337,7 @@ class NegocioRepositoryTest {
     
     @Test
     void testFindByDueño_NotFound() {
-        List<Negocio> notFound = negocioRepository.findByDueño("9999");
+        List<Negocio> notFound = negocioRepository.findByDueño(9999);
         
         assertTrue(notFound.isEmpty());
     }

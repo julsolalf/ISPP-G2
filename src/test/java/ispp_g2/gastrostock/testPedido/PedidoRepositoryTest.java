@@ -144,14 +144,14 @@ class PedidoRepositoryTest {
         assertNotNull(newPedido.getId());
         
         // Verify it can be retrieved
-        Optional<Pedido> found = pedidoRepository.findById(newPedido.getId().toString());
+        Optional<Pedido> found = pedidoRepository.findById(newPedido.getId());
         assertTrue(found.isPresent());
         assertEquals(100.00, found.get().getPrecioTotal());
     }
     
     @Test
     void testFindById() {
-        Optional<Pedido> found = pedidoRepository.findById(pedido1.getId().toString());
+        Optional<Pedido> found = pedidoRepository.findById(pedido1.getId());
         
         // Verify
         assertTrue(found.isPresent());
@@ -160,7 +160,7 @@ class PedidoRepositoryTest {
     
     @Test
     void testFindById_NotFound() {
-        Optional<Pedido> found = pedidoRepository.findById("999999");
+        Optional<Pedido> found = pedidoRepository.findById(999999);
         
         // Verify
         assertFalse(found.isPresent());
@@ -177,25 +177,25 @@ class PedidoRepositoryTest {
     
     @Test
     void testDelete() {
-        assertTrue(pedidoRepository.findById(pedido1.getId().toString()).isPresent());
+        assertTrue(pedidoRepository.findById(pedido1.getId()).isPresent());
         
         // Delete pedido
         pedidoRepository.delete(pedido1);
         
         // Verify it was deleted
-        assertFalse(pedidoRepository.findById(pedido1.getId().toString()).isPresent());
+        assertFalse(pedidoRepository.findById(pedido1.getId()).isPresent());
     }
     
     @Test
     void testDeleteById() {
         // Verify pedido exists
-        assertTrue(pedidoRepository.findById(pedido1.getId().toString()).isPresent());
+        assertTrue(pedidoRepository.findById(pedido1.getId()).isPresent());
         
         // Delete pedido by ID
-        pedidoRepository.deleteById(pedido1.getId().toString());
+        pedidoRepository.deleteById(pedido1.getId());
         
         // Verify it was deleted
-        assertFalse(pedidoRepository.findById(pedido1.getId().toString()).isPresent());
+        assertFalse(pedidoRepository.findById(pedido1.getId()).isPresent());
     }
     
     // Test custom queries

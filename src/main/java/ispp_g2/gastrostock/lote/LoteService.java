@@ -19,7 +19,7 @@ public class LoteService {
     }
 
     @Transactional(readOnly = true)
-    public Lote getById(String id) {
+    public Lote getById(Integer id) {
         return loteRepository.findById(id).orElse(null);
     }
 
@@ -56,7 +56,7 @@ public class LoteService {
     }
 
     @Transactional
-    public void delete(String id) {
+    public void delete(Integer id) {
         loteRepository.deleteById(id);
     }
 

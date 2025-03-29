@@ -40,8 +40,8 @@ class LineaDePedidoServiceTest {
 
     @Test
     void testGetById() {
-        when(repository.findById("1")).thenReturn(Optional.of(linea));
-        LineaDePedido result = service.getById("1");
+        when(repository.findById(1)).thenReturn(Optional.of(linea));
+        LineaDePedido result = service.getById(1);
         assertNotNull(result);
         assertEquals(2, result.getCantidad());
     }
@@ -105,8 +105,8 @@ class LineaDePedidoServiceTest {
 
     @Test
     void testDelete() {
-        doNothing().when(repository).deleteById("1");
-        service.delete("1");
-        verify(repository, times(1)).deleteById("1");
+        doNothing().when(repository).deleteById(1);
+        service.delete(1);
+        verify(repository, times(1)).deleteById(1);
     }
 }

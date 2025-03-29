@@ -80,7 +80,7 @@ class ProductoInventarioControllerTest {
 
     @Test
     void testFindProductoInventario_Found() throws Exception {
-        when(productoInventarioService.getById("1")).thenReturn(sampleProduct);
+        when(productoInventarioService.getById(1)).thenReturn(sampleProduct);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/productosInventario/1"))
             .andExpect(status().isOk())
@@ -89,7 +89,7 @@ class ProductoInventarioControllerTest {
 
     @Test
     void testFindProductoInventario_NotFound() throws Exception {
-        when(productoInventarioService.getById("99")).thenReturn(null);
+        when(productoInventarioService.getById(99)).thenReturn(null);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/productosInventario/99"))
             .andExpect(status().isNotFound());
@@ -116,7 +116,7 @@ class ProductoInventarioControllerTest {
 
     @Test
     void testUpdateProductoInventario_Success() throws Exception {
-        when(productoInventarioService.getById("1")).thenReturn(sampleProduct);
+        when(productoInventarioService.getById(1)).thenReturn(sampleProduct);
         when(productoInventarioService.save(any())).thenReturn(sampleProduct);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/productosInventario/1")
@@ -127,7 +127,7 @@ class ProductoInventarioControllerTest {
 
     @Test
     void testUpdateProductoInventario_NotFound() throws Exception {
-        when(productoInventarioService.getById("99")).thenReturn(null);
+        when(productoInventarioService.getById(99)).thenReturn(null);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/productosInventario/99")
             .contentType(MediaType.APPLICATION_JSON)
@@ -137,8 +137,8 @@ class ProductoInventarioControllerTest {
 
     @Test
     void testDeleteProductoInventario_Success() throws Exception {
-        when(productoInventarioService.getById("1")).thenReturn(sampleProduct);
-        doNothing().when(productoInventarioService).delete("1");
+        when(productoInventarioService.getById(1)).thenReturn(sampleProduct);
+        doNothing().when(productoInventarioService).delete(1);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/productosInventario/1"))
             .andExpect(status().isNoContent());
@@ -146,7 +146,7 @@ class ProductoInventarioControllerTest {
 
     @Test
     void testDeleteProductoInventario_NotFound() throws Exception {
-        when(productoInventarioService.getById("99")).thenReturn(null);
+        when(productoInventarioService.getById(99)).thenReturn(null);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/productosInventario/99"))
             .andExpect(status().isNotFound());
@@ -171,7 +171,7 @@ class ProductoInventarioControllerTest {
 
     @Test
     void testInternalServerError() throws Exception {
-        when(productoInventarioService.getById("1")).thenThrow(new RuntimeException("Error interno"));
+        when(productoInventarioService.getById(1)).thenThrow(new RuntimeException("Error interno"));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/productosInventario/1"))
             .andExpect(status().isInternalServerError());
