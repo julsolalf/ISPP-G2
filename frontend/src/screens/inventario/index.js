@@ -37,13 +37,8 @@ function Inventario() {
 
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
 
-  const toggleNotifications = () => {
-    setShowNotifications(!showNotifications);
-  };
-
-  const toggleUserOptions = () => {
-    setShowUserOptions(!showUserOptions);
-  };
+  const toggleNotifications = () => setShowNotifications(!showNotifications);
+  const toggleUserOptions = () => setShowUserOptions(!showUserOptions);
 
   useEffect(() => {
     const cargarDatos = async () => {
@@ -71,25 +66,25 @@ function Inventario() {
         justifyContent: "center",
         textAlign: "center",
       }}>
-      <div className="content">
-        <div className="icon-container-right">
-          <Bell size={30} className="icon" onClick={() => setShowNotifications(!showNotifications)} />
-          <User size={30} className="icon" onClick={() => setShowUserOptions(!showUserOptions)} />
-        </div>
-
-        {showNotifications && (
-          <div className="notification-bubble">
-            <div className="notification-header">
-              <strong>Notificaciones</strong>
-              <button className="close-btn" onClick={() => setShowNotifications(false)}>X</button>
-            </div>
-            <ul>
-              <li>Notificación 1</li>
-              <li>Notificación 2</li>
-              <li>Notificación 3</li>
-            </ul>
-          </div>
-        )}
+     <div className="content">
+             <div className="icon-container-right">
+               <Bell size={30} className="icon" onClick={toggleNotifications} />
+               <User size={30} className="icon" onClick={toggleUserOptions} />
+             </div>
+     
+             {showNotifications && (
+               <div className="notification-bubble">
+                 <div className="notification-header">
+                   <strong>Notificaciones</strong>
+                   <button className="close-btn" onClick={toggleNotifications}>X</button>
+                 </div>
+                 <ul>
+                   <li>Notificación 1</li>
+                   <li>Notificación 2</li>
+                   <li>Notificación 3</li>
+                 </ul>
+               </div>
+             )}
 
         {showUserOptions && (
           <div className="notification-bubble user-options">
