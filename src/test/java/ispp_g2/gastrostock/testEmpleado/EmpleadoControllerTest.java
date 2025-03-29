@@ -9,7 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.hamcrest.Matchers.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import ispp_g2.gastrostock.empleado.EmpleadoDTO;
-import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.Mock;
 import ispp_g2.gastrostock.negocio.NegocioService;
 import ispp_g2.gastrostock.user.UserService;
@@ -21,7 +20,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -32,7 +30,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ispp_g2.gastrostock.empleado.Empleado;
 import ispp_g2.gastrostock.empleado.EmpleadoController;
-import ispp_g2.gastrostock.empleado.EmpleadoDTO;
 import ispp_g2.gastrostock.empleado.EmpleadoService;
 import ispp_g2.gastrostock.exceptions.ExceptionHandlerController;
 import ispp_g2.gastrostock.negocio.Negocio;
@@ -424,19 +421,20 @@ class EmpleadoControllerTest {
     void testSave_Success() throws Exception {
         // Arrange - Crear un EmpleadoDTO en lugar de un Empleado
         EmpleadoDTO empleadoDTO = new EmpleadoDTO();
+        empleadoDTO.setUsername("anton");
+        empleadoDTO.setPassword("password123");
         empleadoDTO.setFirstName("Antonio");
         empleadoDTO.setLastName("Almanza");
         empleadoDTO.setEmail("antonio@example.com");
         empleadoDTO.setNumTelefono("666151222");
         empleadoDTO.setTokenEmpleado("TOKEN129");
         empleadoDTO.setDescripcion("Camarero principal");
-        empleadoDTO.setUser(1); // ID como String
         empleadoDTO.setNegocio(1); // ID como String
         
         // Configurar los mocks necesarios
         when(negocioService.getById(1)).thenReturn(negocio);
         when(userService.findUserById(1)).thenReturn(user); // AÑADIR ESTA LÍNEA
-        when(empleadoService.convertirDTOEmpleado(any(EmpleadoDTO.class), eq(negocio), eq(user))).thenReturn(empleado);
+        when(empleadoService.convertirDTOEmpleado(any(EmpleadoDTO.class), eq(negocio))).thenReturn(empleado);
         when(empleadoService.saveEmpleado(any(Empleado.class))).thenReturn(empleado1);
         
         // Act & Assert
@@ -469,13 +467,14 @@ void testUpdate_Success() throws Exception {
     // Arrange
     // Crear un EmpleadoDTO en lugar de un Empleado
     EmpleadoDTO empleadoDTO = new EmpleadoDTO();
+    empleadoDTO.setUsername("anton");
+    empleadoDTO.setPassword("password123");
     empleadoDTO.setFirstName("Juan Actualizado");
     empleadoDTO.setLastName("Pérez");
     empleadoDTO.setEmail("juan.perez@example.com");
     empleadoDTO.setNumTelefono("666111222");
     empleadoDTO.setTokenEmpleado("TOKEN123");
     empleadoDTO.setDescripcion("Camarero principal actualizado");
-    empleadoDTO.setUser(1); // ID como String
     empleadoDTO.setNegocio(1); // ID como String
     
     // Preparar un Empleado actualizado para el resultado
@@ -493,7 +492,7 @@ void testUpdate_Success() throws Exception {
     // Configurar todos los mocks necesarios
     when(empleadoService.getEmpleadoById(1)).thenReturn(empleado1);
     when(negocioService.getById(1)).thenReturn(negocio); // Mock para buscar negocio
-    when(empleadoService.convertirDTOEmpleado(any(EmpleadoDTO.class), eq(negocio), eq(empleado1.getUser()))).thenReturn(empleadoActualizado);
+    when(empleadoService.convertirDTOEmpleado(any(EmpleadoDTO.class), eq(negocio))).thenReturn(empleadoActualizado);
     when(empleadoService.saveEmpleado(any(Empleado.class))).thenReturn(empleadoActualizado);
     
     // Act & Assert
@@ -515,13 +514,15 @@ void testUpdate_NotFound() throws Exception {
     // Arrange
     // Crear un EmpleadoDTO
     EmpleadoDTO empleadoDTO = new EmpleadoDTO();
+    empleadoDTO.setUsername("noexiste");
+    empleadoDTO.setPassword("password123");
     empleadoDTO.setFirstName("No");
     empleadoDTO.setLastName("Existe");
     empleadoDTO.setEmail("noexiste@example.com");
     empleadoDTO.setNumTelefono("999888777");
     empleadoDTO.setTokenEmpleado("TOKEN999");
     empleadoDTO.setDescripcion("Descripción test");
-    empleadoDTO.setUser(1); // ID como String
+    // ID como String
     empleadoDTO.setNegocio(1); // ID como String
     
     // Configurar el mock para retornar null (no encontrado)

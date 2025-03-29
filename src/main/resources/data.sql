@@ -17,17 +17,16 @@ DELETE FROM authorities;
 
 -- Insertando autoridades
 INSERT INTO authorities (id, authority) VALUES (1,'dueño');
-INSERT INTO authorities (id, authority) VALUES (2,'encargado');
-INSERT INTO authorities (id, authority) VALUES (3, 'camarero');
+INSERT INTO authorities (id, authority) VALUES (2,'empleado');
 
 -- Insertando usuarios
 INSERT INTO app_user (id, username, password, authority_id) VALUES (1, 'admin', 'admin123', (SELECT id FROM authorities WHERE authority = 'dueño'));
 INSERT INTO app_user (id, username, password, authority_id) VALUES (2, 'admin2', 'admin123', (SELECT id FROM authorities WHERE authority = 'dueño'));
-INSERT INTO app_user (id, username, password, authority_id) VALUES (3, 'juan', 'password123', (SELECT id FROM authorities WHERE authority = 'encargado'));
-INSERT INTO app_user (id, username, password, authority_id) VALUES (4, 'alejandro', 'password123', (SELECT id FROM authorities WHERE authority = 'encargado'));
-INSERT INTO app_user (id, username, password, authority_id) VALUES (5, 'antonio', 'password123', (SELECT id FROM authorities WHERE authority = 'camarero'));
-INSERT INTO app_user (id, username, password, authority_id) VALUES (6, 'paco', 'password123', (SELECT id FROM authorities WHERE authority = 'camarero'));
-INSERT INTO app_user (id, username, password, authority_id) VALUES (7, 'fernando', 'password123', (SELECT id FROM authorities WHERE authority = 'camarero'));
+INSERT INTO app_user (id, username, password, authority_id) VALUES (3, 'juan', 'password123', (SELECT id FROM authorities WHERE authority = 'empleado'));
+INSERT INTO app_user (id, username, password, authority_id) VALUES (4, 'alejandro', 'password123', (SELECT id FROM authorities WHERE authority = 'empleado'));
+INSERT INTO app_user (id, username, password, authority_id) VALUES (5, 'antonio', 'password123', (SELECT id FROM authorities WHERE authority = 'empleado'));
+INSERT INTO app_user (id, username, password, authority_id) VALUES (6, 'paco', 'password123', (SELECT id FROM authorities WHERE authority = 'empleado'));
+INSERT INTO app_user (id, username, password, authority_id) VALUES (7, 'fernando', 'password123', (SELECT id FROM authorities WHERE authority = 'empleado'));
 
 -- Insertando dueños
 INSERT INTO dueño (id, first_name, last_name, email, num_telefono, token_dueño, user_id) 
