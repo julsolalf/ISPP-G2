@@ -227,7 +227,7 @@ public class LoteRepositoryTest {
         assertEquals(75, saved.getCantidad());
         
         // Verificar que se puede recuperar de la base de datos
-        Lote retrieved = loteRepository.findById(saved.getId().toString()).orElse(null);
+        Lote retrieved = loteRepository.findById(saved.getId()).orElse(null);
         assertNotNull(retrieved);
         assertEquals(75, retrieved.getCantidad());
         assertEquals(LocalDate.now().plusMonths(5), retrieved.getFechaCaducidad());
@@ -236,7 +236,7 @@ public class LoteRepositoryTest {
     @Test
     void testFindById() {
         // Buscar un lote existente por ID
-        Optional<Lote> found = loteRepository.findById(lote1.getId().toString());
+        Optional<Lote> found = loteRepository.findById(lote1.getId());
         
         // Verificar que existe y tiene los datos correctos
         assertTrue(found.isPresent());
@@ -247,7 +247,7 @@ public class LoteRepositoryTest {
     @Test
     void testFindById_NotFound() {
         // Buscar un lote que no existe
-        Optional<Lote> notFound = loteRepository.findById("999");
+        Optional<Lote> notFound = loteRepository.findById(999);
         
         // Verificar que no existe
         assertFalse(notFound.isPresent());
@@ -271,7 +271,7 @@ public class LoteRepositoryTest {
         loteRepository.delete(lote1);
         
         // Verificar que se eliminó
-        Optional<Lote> shouldBeDeleted = loteRepository.findById(lote1.getId().toString());
+        Optional<Lote> shouldBeDeleted = loteRepository.findById(lote1.getId());
         assertFalse(shouldBeDeleted.isPresent());
         
         // Verificar que sólo quedan 2 lotes
@@ -281,10 +281,10 @@ public class LoteRepositoryTest {
     @Test
     void testDeleteById() {
         // Eliminar un lote por ID
-        loteRepository.deleteById(lote2.getId().toString());
+        loteRepository.deleteById(lote2.getId());
         
         // Verificar que se eliminó
-        Optional<Lote> shouldBeDeleted = loteRepository.findById(lote2.getId().toString());
+        Optional<Lote> shouldBeDeleted = loteRepository.findById(lote2.getId());
         assertFalse(shouldBeDeleted.isPresent());
         
         // Verificar que sólo quedan 2 lotes

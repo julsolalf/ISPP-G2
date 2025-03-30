@@ -218,7 +218,7 @@ public class LineaDePedidoControllerTest {
     @Test
     void testFindById_Success() throws Exception {
         // Given
-        when(lineaDePedidoService.getById("1")).thenReturn(linea);
+        when(lineaDePedidoService.getById(1)).thenReturn(linea);
         
         // When & Then
         mockMvc.perform(get("/api/lineasDePedido/1"))
@@ -227,19 +227,19 @@ public class LineaDePedidoControllerTest {
                 .andExpect(jsonPath("$.cantidad", is(3)))
                 .andExpect(jsonPath("$.precioLinea", is(9.0)));
         
-        verify(lineaDePedidoService).getById("1");
+        verify(lineaDePedidoService).getById(1);
     }
     
     @Test
     void testFindById_NotFound() throws Exception {
         // Given
-        when(lineaDePedidoService.getById("999")).thenReturn(null);
+        when(lineaDePedidoService.getById(999)).thenReturn(null);
         
         // When & Then
         mockMvc.perform(get("/api/lineasDePedido/999"))
                 .andExpect(status().isNotFound());
         
-        verify(lineaDePedidoService).getById("999");
+        verify(lineaDePedidoService).getById(999);
     }
     
     // TESTS PARA findByCantidad()
@@ -541,7 +541,7 @@ public class LineaDePedidoControllerTest {
         updatedLinea.setProducto(producto1);
         updatedLinea.setPedido(pedido1);
         
-        when(lineaDePedidoService.getById("1")).thenReturn(linea);
+        when(lineaDePedidoService.getById(1)).thenReturn(linea);
         when(lineaDePedidoService.save(any(LineaDePedido.class))).thenReturn(updatedLinea);
         
         // When & Then
@@ -552,14 +552,14 @@ public class LineaDePedidoControllerTest {
                 .andExpect(jsonPath("$.cantidad", is(5)))
                 .andExpect(jsonPath("$.precioLinea", is(15.0)));
         
-        verify(lineaDePedidoService).getById("1");
+        verify(lineaDePedidoService).getById(1);
         verify(lineaDePedidoService).save(any(LineaDePedido.class));
     }
     
     @Test
     void testUpdate_NotFound() throws Exception {
         // Given
-        when(lineaDePedidoService.getById("999")).thenReturn(null);
+        when(lineaDePedidoService.getById(999)).thenReturn(null);
         
         // When & Then
         mockMvc.perform(put("/api/lineasDePedido/999")
@@ -567,7 +567,7 @@ public class LineaDePedidoControllerTest {
                 .content(objectMapper.writeValueAsString(linea)))
                 .andExpect(status().isNotFound());
         
-        verify(lineaDePedidoService).getById("999");
+        verify(lineaDePedidoService).getById(999);
         verify(lineaDePedidoService, never()).save(any(LineaDePedido.class));
     }
     
@@ -596,27 +596,27 @@ public class LineaDePedidoControllerTest {
     @Test
     void testDelete_Success() throws Exception {
         // Given
-        when(lineaDePedidoService.getById("1")).thenReturn(lineaNormal);
-        doNothing().when(lineaDePedidoService).delete("1");
+        when(lineaDePedidoService.getById(1)).thenReturn(lineaNormal);
+        doNothing().when(lineaDePedidoService).delete(1);
         
         // When & Then
         mockMvc.perform(delete("/api/lineasDePedido/1"))
                 .andExpect(status().isNoContent());
         
-        verify(lineaDePedidoService).getById("1");
-        verify(lineaDePedidoService).delete("1");
+        verify(lineaDePedidoService).getById(1);
+        verify(lineaDePedidoService).delete(1);
     }
     
     @Test
     void testDelete_NotFound() throws Exception {
         // Given
-        when(lineaDePedidoService.getById("999")).thenReturn(null);
+        when(lineaDePedidoService.getById(999)).thenReturn(null);
         
         // When & Then
         mockMvc.perform(delete("/api/lineasDePedido/999"))
                 .andExpect(status().isNotFound());
         
-        verify(lineaDePedidoService).getById("999");
-        verify(lineaDePedidoService, never()).delete(anyString());
+        verify(lineaDePedidoService).getById(999);
+        verify(lineaDePedidoService, never()).delete(anyInt());
     }
 }

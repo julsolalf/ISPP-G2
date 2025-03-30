@@ -29,7 +29,7 @@ public class MesaController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Mesa> findById(@PathVariable("id") String id) {
+	public ResponseEntity<Mesa> findById(@PathVariable("id") Integer id) {
 		Mesa mesa = mesaService.getById(id);
 		if (mesa == null) {
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -47,7 +47,7 @@ public class MesaController {
 	}
 
 	@GetMapping("/negocio/{negocioId}")
-	public ResponseEntity<List<Mesa>> findByNegocio(@PathVariable("negocioId") String negocioId) {
+	public ResponseEntity<List<Mesa>> findByNegocio(@PathVariable("negocioId") Integer negocioId) {
 		List<Mesa> mesas = mesaService.getMesasByNegocio(negocioId);
 		if (mesas == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -64,7 +64,7 @@ public class MesaController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<Mesa> update(@PathVariable("id") String id, @RequestBody @Valid Mesa mesa) {
+	public ResponseEntity<Mesa> update(@PathVariable("id") Integer id, @RequestBody @Valid Mesa mesa) {
 		if(mesa == null) {
 			throw new IllegalArgumentException("Mesa cannot be null");
 		}
@@ -72,12 +72,12 @@ public class MesaController {
 		if (existingMesa == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		mesa.setId(Integer.valueOf(id));
+		mesa.setId(id);
 		return new ResponseEntity<>(mesaService.save(mesa), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> delete(@PathVariable("id") String id) {
+	public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
 		Mesa mesa = mesaService.getById(id);
 		if (mesa == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -20,7 +20,7 @@ public class MesaService {
     }
 
     @Transactional(readOnly = true)
-    public Mesa getById(String id) {
+    public Mesa getById(Integer id) {
         return mesaRepository.findById(id).orElse(null);
     }
 
@@ -42,7 +42,7 @@ public class MesaService {
     }
 
     @Transactional(readOnly = true)
-    public List<Mesa> getMesasByNegocio(String negocioId) {
+    public List<Mesa> getMesasByNegocio(Integer negocioId) {
         return mesaRepository.findMesasByNegocio(negocioId);
     }
 
@@ -52,7 +52,7 @@ public class MesaService {
     }
 
     @Transactional
-    public void deleteById(String id) {
+    public void deleteById(Integer id) {
         mesaRepository.deleteById(id);
     }
 }

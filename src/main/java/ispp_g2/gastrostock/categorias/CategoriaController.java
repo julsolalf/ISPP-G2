@@ -29,7 +29,7 @@ public class CategoriaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Categoria> findById(@PathVariable("id") String id) {
+    public ResponseEntity<Categoria> findById(@PathVariable("id") Integer id) {
         Categoria categoria = categoriaService.getById(id);
         if (categoria == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -38,7 +38,7 @@ public class CategoriaController {
     }
 
     @GetMapping("/negocio/{negocioId}")
-    public ResponseEntity<List<Categoria>> findByNegocioId(@PathVariable("negocioId") String negocioId) {
+    public ResponseEntity<List<Categoria>> findByNegocioId(@PathVariable("negocioId") Integer negocioId) {
         List<Categoria> categorias = categoriaService.getCategoriasByNegocioId(negocioId);
         if (categorias.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -47,7 +47,7 @@ public class CategoriaController {
     }
 
     @GetMapping("/negocio/{negocioId}/inventario")
-    public ResponseEntity<List<Categoria>> findByNegocioIdInventario(@PathVariable("negocioId") String negocioId) {
+    public ResponseEntity<List<Categoria>> findByNegocioIdInventario(@PathVariable("negocioId") Integer negocioId) {
         List<Categoria> categorias = categoriaService.getCategoriasByNegocioId(negocioId).stream().filter(c->c.getPertenece().equals(Pertenece.INVENTARIO)).toList();
         if (categorias.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -56,7 +56,7 @@ public class CategoriaController {
     }
 
     @GetMapping("/negocio/{negocioId}/venta")
-    public ResponseEntity<List<Categoria>> findByNegocioIdVenta(@PathVariable("negocioId") String negocioId) {
+    public ResponseEntity<List<Categoria>> findByNegocioIdVenta(@PathVariable("negocioId") Integer negocioId) {
         List<Categoria> categorias = categoriaService.getCategoriasByNegocioId(negocioId).stream().filter(c->c.getPertenece().equals(Pertenece.VENTA)).toList();
         if (categorias.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -82,17 +82,17 @@ public class CategoriaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Categoria> update(@PathVariable("id") String id, @Valid @RequestBody Categoria categoria) {
+    public ResponseEntity<Categoria> update(@PathVariable("id") Integer id, @Valid @RequestBody Categoria categoria) {
         Categoria categoriaActual = categoriaService.getById(id);
         if (categoriaActual == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        categoria.setId(Integer.valueOf(id));
+        categoria.setId(id);
         return new ResponseEntity<>(categoriaService.save(categoria), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") String id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
         Categoria categoria = categoriaService.getById(id);
         if (categoria == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

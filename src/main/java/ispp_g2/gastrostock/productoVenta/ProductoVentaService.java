@@ -18,7 +18,7 @@ public class ProductoVentaService {
     }
 
     @Transactional(readOnly = true)
-    public ProductoVenta getById(String id) {
+    public ProductoVenta getById(Integer id) {
         return productoVentaRepository.findById(id).orElse(null);
     }
 
@@ -55,7 +55,7 @@ public class ProductoVentaService {
     }
 
     @Transactional
-    public void delete(String id) {
+    public void delete(Integer id) {
         productoVentaRepository.deleteById(id);
     }
     

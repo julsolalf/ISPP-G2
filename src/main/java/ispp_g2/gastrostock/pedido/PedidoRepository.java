@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface PedidoRepository extends CrudRepository<Pedido,String>{
+public interface PedidoRepository extends CrudRepository<Pedido,Integer>{
 
     @Query("SELECT p FROM Pedido p WHERE p.fecha = ?1")
     List<Pedido> findPedidoByFecha(LocalDateTime fecha);

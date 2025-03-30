@@ -158,7 +158,7 @@ public class MesaControllerTest {
     @Test
     void testFindById_Success() throws Exception {
         // Arrange
-        when(mesaService.getById("1")).thenReturn(mesa1);
+        when(mesaService.getById(1)).thenReturn(mesa1);
         
         // Act & Assert
         mockMvc.perform(get("/api/mesas/1"))
@@ -168,19 +168,19 @@ public class MesaControllerTest {
                 .andExpect(jsonPath("$.name", is("Mesa Exterior")))
                 .andExpect(jsonPath("$.numeroAsientos", is(4)));
         
-        verify(mesaService).getById("1");
+        verify(mesaService).getById(1);
     }
     
     @Test
     void testFindById_NotFound() throws Exception {
         // Arrange
-        when(mesaService.getById("999")).thenReturn(null);
+        when(mesaService.getById(999)).thenReturn(null);
         
         // Act & Assert
         mockMvc.perform(get("/api/mesas/999"))
                 .andExpect(status().isNotFound());
         
-        verify(mesaService).getById("999");
+        verify(mesaService).getById(999);
     }
 
     // TESTS PARA findByNumeroAsientos()
@@ -258,7 +258,7 @@ public class MesaControllerTest {
     @Test
     void testFindByNegocio_Success() throws Exception {
         // Arrange
-        when(mesaService.getMesasByNegocio("1")).thenReturn(mesasList);
+        when(mesaService.getMesasByNegocio(1)).thenReturn(mesasList);
         
         // Act & Assert
         mockMvc.perform(get("/api/mesas/negocio/1"))
@@ -269,32 +269,32 @@ public class MesaControllerTest {
                 .andExpect(jsonPath("$[1].id", is(2)))
                 .andExpect(jsonPath("$[2].id", is(3)));
         
-        verify(mesaService).getMesasByNegocio("1");
+        verify(mesaService).getMesasByNegocio(1);
     }
     
     @Test
     void testFindByNegocio_NotFound() throws Exception {
         // Arrange
-        when(mesaService.getMesasByNegocio("999")).thenReturn(null);
+        when(mesaService.getMesasByNegocio(999)).thenReturn(null);
         
         // Act & Assert
         mockMvc.perform(get("/api/mesas/negocio/999"))
                 .andExpect(status().isNotFound());
         
-        verify(mesaService).getMesasByNegocio("999");
+        verify(mesaService).getMesasByNegocio(999);
     }
     
     @Test
     void testFindByNegocio_EmptyList() throws Exception {
         // Arrange
-        when(mesaService.getMesasByNegocio("999")).thenReturn(Collections.emptyList());
+        when(mesaService.getMesasByNegocio(999)).thenReturn(Collections.emptyList());
         
         // Act & Assert
         mockMvc.perform(get("/api/mesas/negocio/999"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
         
-        verify(mesaService).getMesasByNegocio("999");
+        verify(mesaService).getMesasByNegocio(999);
     }
 
     // TESTS PARA create()
@@ -391,7 +391,7 @@ public class MesaControllerTest {
         mesaActualizada.setNumeroAsientos(5);
         mesaActualizada.setNegocio(negocioActualizado);
         
-        when(mesaService.getById("1")).thenReturn(mesa1);
+        when(mesaService.getById(1)).thenReturn(mesa1);
         when(mesaService.save(any(Mesa.class))).thenReturn(mesaActualizada);
         
         // Act & Assert
@@ -403,7 +403,7 @@ public class MesaControllerTest {
                 .andExpect(jsonPath("$.name", is("Mesa Exterior Actualizada")))
                 .andExpect(jsonPath("$.numeroAsientos", is(5)));
         
-        verify(mesaService).getById("1");
+        verify(mesaService).getById(1);
         verify(mesaService).save(any(Mesa.class));
     }
     /*
@@ -456,29 +456,29 @@ public class MesaControllerTest {
     @Test
     void testDelete_Success() throws Exception {
         // Arrange
-        when(mesaService.getById("1")).thenReturn(mesa1);
-        doNothing().when(mesaService).deleteById("1");
+        when(mesaService.getById(1)).thenReturn(mesa1);
+        doNothing().when(mesaService).deleteById(1);
         
         // Act & Assert
         mockMvc.perform(delete("/api/mesas/1")
                 .with(csrf()))
                 .andExpect(status().isNoContent());
         
-        verify(mesaService).getById("1");
-        verify(mesaService).deleteById("1");
+        verify(mesaService).getById(1);
+        verify(mesaService).deleteById(1);
     }
     
     @Test
     void testDelete_NotFound() throws Exception {
         // Arrange
-        when(mesaService.getById("999")).thenReturn(null);
+        when(mesaService.getById(999)).thenReturn(null);
         
         // Act & Assert
         mockMvc.perform(delete("/api/mesas/999")
                 .with(csrf()))
                 .andExpect(status().isNotFound());
         
-        verify(mesaService).getById("999");
-        verify(mesaService, never()).deleteById(anyString());
+        verify(mesaService).getById(999);
+        verify(mesaService, never()).deleteById(anyInt());
     }
 }

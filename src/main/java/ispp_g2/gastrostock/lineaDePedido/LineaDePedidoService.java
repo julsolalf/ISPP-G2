@@ -18,7 +18,7 @@ public class LineaDePedidoService {
     }
 
     @Transactional(readOnly = true)
-    public LineaDePedido getById(String id) {
+    public LineaDePedido getById(Integer id) {
         return lineaDePedidoRepository.findById(id).orElse(null);
     }
 
@@ -65,7 +65,7 @@ public class LineaDePedidoService {
     }
 
     @Transactional
-    public void delete(String id) {
+    public void delete(Integer id) {
         lineaDePedidoRepository.deleteById(id);
     }
 

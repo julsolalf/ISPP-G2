@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ProductoInventarioRepository extends CrudRepository<ProductoInventario,String>{
+public interface ProductoInventarioRepository extends CrudRepository<ProductoInventario,Integer>{
 
     @Query("SELECT p FROM ProductoInventario p WHERE p.name = ?1")
     ProductoInventario findByName(String name);

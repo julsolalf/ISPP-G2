@@ -24,7 +24,7 @@ public class ProveedorService {
     }
 
     @Transactional(readOnly = true)
-    public Proveedor findById(String id) {
+    public Proveedor findById(Integer id) {
         return proveedorRepository.findById(id).orElse(null);
     }
 
@@ -48,13 +48,18 @@ public class ProveedorService {
         return proveedorRepository.findByNombre(nombre);
     }
 
+    @Transactional(readOnly = true)
+    public List<Proveedor> findProveedorByNegocioId(Integer negocio) {
+        return proveedorRepository.findProveedorByNegocioId(negocio);
+    }
+
     @Transactional
     public Proveedor save(Proveedor proveedor) {
         return proveedorRepository.save(proveedor);
     }
 
     @Transactional
-    public void deleteById(String id) {
+    public void deleteById(Integer id) {
         proveedorRepository.deleteById(id);
     }
 }

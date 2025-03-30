@@ -7,8 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import ispp_g2.gastrostock.exceptions.BadRequestException;
-import ispp_g2.gastrostock.exceptions.ResourceNotFoundException;
 import jakarta.validation.Valid;
 
 @RestController
@@ -30,7 +28,7 @@ public class ProductoInventarioController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<ProductoInventario> findProductoInventario(@PathVariable("id") String id) {
+	public ResponseEntity<ProductoInventario> findProductoInventario(@PathVariable("id") Integer id) {
 		ProductoInventario productoInventario = productoInventarioService.getById(id);
 		if (productoInventario == null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -84,18 +82,18 @@ public class ProductoInventarioController {
 	}
 
     @PutMapping("/{id}")
-	public ResponseEntity<ProductoInventario> update(@RequestBody @Valid ProductoInventario newProductoInventario, @PathVariable("id") String id) {
+	public ResponseEntity<ProductoInventario> update(@RequestBody @Valid ProductoInventario newProductoInventario, @PathVariable("id") Integer id) {
 		if (newProductoInventario == null)
-			throw new BadRequestException("ProductoInventario cannot be null");
+			throw new IllegalArgumentException("ProductoInventario cannot be null");
 		ProductoInventario productoInventario = productoInventarioService.getById(id);
 		if (productoInventario == null)
-			throw new ResourceNotFoundException("ProductoInventario not found");
-		newProductoInventario.setId(Integer.valueOf(id));
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		newProductoInventario.setId(id);
 		return new ResponseEntity<>(productoInventarioService.save(newProductoInventario), HttpStatus.OK);
 	}
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") String id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
         ProductoInventario productoInventario = productoInventarioService.getById(id);
 		if (productoInventario == null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);

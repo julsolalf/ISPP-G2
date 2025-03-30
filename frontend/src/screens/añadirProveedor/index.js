@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios"; 
 import "../../css/paginasBase/styles.css";
 import { Bell, User } from "lucide-react"; 
 
 function AñadirProveedor() {
-  const [nombre, setNombre] = useState("");
+  const [name, setNombre] = useState("");
   const [email, setEmail] = useState("");
   const [telefono, setTelefono] = useState("");
   const [direccion, setDireccion] = useState(""); 
-  const [descripcion, setDescripcion] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
@@ -20,18 +21,36 @@ function AñadirProveedor() {
     setShowUserOptions(!showUserOptions);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("userToken"); // Eliminamos el token del usuario
+    navigate("/"); // Redirigir a la pantalla de inicio de sesión
+  };
+
   const navigate = useNavigate();
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     console.log("Añadiendo proveedor con:", {
-      nombre,
+      name,
       email,
       telefono,
-      direccion,
-      descripcion
+      direccion
     });
 
-    navigate("/proveedores"); 
+    const proveedorData = {
+      name,
+      email,
+      telefono,
+      direccion
+    };
+
+    try {
+      const response = await axios.post("http://localhost:8080/api/proveedores", proveedorData);
+      if (response.status === 201) {
+        navigate("/proveedores"); 
+      }
+    } catch (error) {
+      console.error("Error al añadir el proveedor:", error.response ? error.response.data : error.message);
+    }
   };
 
   return (
@@ -79,7 +98,7 @@ function AñadirProveedor() {
             <ul>
               <li><button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button></li>
               <li><button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button></li>
-              <li><button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button></li>
+              <li><button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button></li>
             </ul>
           </div>
         )}
@@ -95,7 +114,7 @@ function AñadirProveedor() {
         <input
           type="text"
           placeholder="Nombre"
-          value={nombre}
+          value={name}
           onChange={(e) => setNombre(e.target.value)}
         />
         <input
@@ -119,11 +138,23 @@ function AñadirProveedor() {
         <input
           type="text"
           placeholder="Descripción"
-          value={direccion}
+          value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
         />
 
         <button onClick={handleRegister} className="login-btn">Añadir Proveedor</button>
+        {/* Modal de Confirmación para Logout */}
+        {showLogoutModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>¿Está seguro que desea abandonar la sesión?</h3>
+              <div className="modal-buttons">
+                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
+                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

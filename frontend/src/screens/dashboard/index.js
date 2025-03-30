@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../css/dashboard/styles.css";
 import { Bell, User } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from "recharts";
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line
+} from "recharts";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 
@@ -10,6 +12,7 @@ function Dashboard() {
   const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const [productsSoldData, setProductsSoldData] = useState([]);
   const [salesData, setSalesData] = useState([]);
@@ -17,80 +20,132 @@ function Dashboard() {
   const [lowStockData, setLowStockData] = useState([]);
   const [emergencyStockData, setEmergencyStockData] = useState([]);
 
-  const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
-
-  const handleLogout = () => {
-    localStorage.removeItem("userToken"); // Eliminamos el token del usuario
-    navigate("/inicioSesion"); // Redirigir a la pantalla de inicio de sesión
-  };
-
   useEffect(() => {
-    // Simulación de la carga de datos
-    setProductsSoldData([15, 30, 25, 40, 60, 80, 100]);
-    setSalesData([100, 150, 200, 250, 300, 350, 400]);
-    setRevenueData([0, 250, 500, 750, 1000, 1250, 1500]);
-    setLowStockData([3, 2, 5, 4, 3, 1, 2]);
-    setEmergencyStockData([1, 1, 0, 1, 2, 0, 0]);
+    // Obtener datos de productos vendidos (Producto más vendido)
+    fetch("http://localhost:8080/api/lineasDePedido")
+      .then((response) => response.json())
+      .then((data) => {
+        const productsSold = data.reduce((acc, item) => {
+          if (acc[item.producto_id]) {
+            acc[item.producto_id].cantidad += item.cantidad;
+            acc[item.producto_id].totalVendido += item.precio_unitario * item.cantidad;
+          } else {
+            acc[item.producto_id] = {
+              nombre: item.name,
+              cantidad: item.cantidad,
+              precio: item.precio_unitario,
+              totalVendido: item.precio_unitario * item.cantidad,
+            };
+          }
+          return acc;
+        }, {});
+
+        const productsArray = Object.values(productsSold);
+        setProductsSoldData(productsArray);
+      })
+      .catch((error) => console.error("Error al obtener productos vendidos:", error));
+
+    // Obtener datos de ventas por semana
+    fetch("http://localhost:8080/api/pedidos")
+      .then((response) => response.json())
+      .then((data) => {
+        const sales = data.map((pedido) => {
+          const day = new Date(pedido.fecha);
+          return {
+            day: day.toLocaleString("es-ES", { weekday: "short" }),
+            total: pedido.precio_total,
+          };
+        });
+        setSalesData(sales);
+      })
+      .catch((error) => console.error("Error al obtener ventas:", error));
+
+    // Obtener ingresos semanales
+    fetch("http://localhost:8080/api/pedidos")
+      .then((response) => response.json())
+      .then((data) => {
+        const revenue = data.map((pedido) => {
+          const day = new Date(pedido.fecha);
+          return {
+            day: day.toLocaleString("es-ES", { weekday: "short" }),
+            revenue: pedido.precio_total,
+          };
+        });
+        setRevenueData(revenue);
+      })
+      .catch((error) => console.error("Error al obtener ingresos:", error));
+
+    // Obtener productos con stock bajo
+    fetch("http://localhost:8080/api/productosInventario")
+      .then((response) => response.json())
+      .then((data) => {
+        const lowStock = data.filter(item => {
+          const cantidadDisponible = item.lotes && Array.isArray(item.lotes)
+            ? item.lotes.reduce((sum, lote) => sum + lote.cantidad, 0)
+            : 0;
+
+          return item.cantidad_deseada - item.cantidad_aviso > cantidadDisponible;
+        });
+        setLowStockData(lowStock);
+      })
+      .catch((error) => console.error("Error al obtener productos con stock bajo:", error));
+
+    // Obtener productos en stock de emergencia
+    fetch("http://localhost:8080/api/productosInventario")
+      .then((response) => response.json())
+      .then((data) => {
+        const emergencyStock = data.filter(item => {
+          const cantidadDisponible = item.lotes && Array.isArray(item.lotes)
+            ? item.lotes.reduce((sum, lote) => sum + lote.cantidad, 0)
+            : 0;
+
+          return cantidadDisponible <= item.cantidad_aviso;
+        });
+        setEmergencyStockData(emergencyStock);
+      })
+      .catch((error) => console.error("Error al obtener productos con stock de emergencia:", error));
   }, []);
 
-  const toggleNotifications = () => setShowNotifications(!showNotifications);
-  const toggleUserOptions = () => setShowUserOptions(!showUserOptions);
+  const handleLogout = () => {
+    localStorage.removeItem("userToken");
+    navigate("/");
+  };
 
-  const salesChartData = [
-    { day: 'Lun', sales: salesData[0] },
-    { day: 'Mar', sales: salesData[1] },
-    { day: 'Mié', sales: salesData[2] },
-    { day: 'Jue', sales: salesData[3] },
-    { day: 'Vie', sales: salesData[4] },
-    { day: 'Sáb', sales: salesData[5] },
-    { day: 'Dom', sales: salesData[6] },
-  ];
+  // Datos para las gráficas
+  const salesChartData = salesData.map((sales) => ({
+    day: sales.day,
+    sales: sales.total,
+  }));
 
-  const revenueChartData = [
-    { day: 'Lun', revenue: revenueData[0] },
-    { day: 'Mar', revenue: revenueData[1] },
-    { day: 'Mié', revenue: revenueData[2] },
-    { day: 'Jue', revenue: revenueData[3] },
-    { day: 'Vie', revenue: revenueData[4] },
-    { day: 'Sáb', revenue: revenueData[5] },
-    { day: 'Dom', revenue: revenueData[6] },
-  ];
+  const revenueChartData = revenueData.map((revenue) => ({
+    day: revenue.day,
+    revenue: revenue.revenue,
+  }));
 
-  const lowStockChartData = [
-    { product: 'Producto 1', stock: lowStockData[0] },
-    { product: 'Producto 2', stock: lowStockData[1] },
-    { product: 'Producto 3', stock: lowStockData[2] },
-    { product: 'Producto 4', stock: lowStockData[3] },
-    { product: 'Producto 5', stock: lowStockData[4] },
-  ];
+  const lowStockChartData = lowStockData.map((item) => ({
+    product: item.name,
+    stock: item.lotes.reduce((sum, lote) => sum + lote.cantidad, 0),
+  }));
 
-  const emergencyStockChartData = [
-    { product: 'Producto 1', stock: emergencyStockData[0] },
-    { product: 'Producto 2', stock: emergencyStockData[1] },
-    { product: 'Producto 3', stock: emergencyStockData[2] },
-    { product: 'Producto 4', stock: emergencyStockData[3] },
-    { product: 'Producto 5', stock: emergencyStockData[4] },
-  ];
+  const emergencyStockChartData = emergencyStockData.map((item) => ({
+    product: item.name,
+    stock: item.lotes.reduce((sum, lote) => sum + lote.cantidad, 0),
+  }));
 
-  // Función para descargar el PDF
   const downloadPDF = () => {
     const pdf = new jsPDF();
-
     const metricElements = document.querySelectorAll(".metric");
 
     metricElements.forEach((element, index) => {
-      // Captura cada gráfica
       html2canvas(element).then((canvas) => {
         const imgData = canvas.toDataURL("image/png");
 
         if (index > 0) {
-          pdf.addPage(); // Agregar nueva página si no es la primera
+          pdf.addPage();
         }
 
-        // Agregar la imagen al PDF
-        pdf.addImage(imgData, "PNG", 10, 10, 180, 100); // Ajusta la posición y el tamaño
+        pdf.addImage(imgData, "PNG", 10, 10, 180, 100);
 
-        // Al finalizar, guarda el PDF
         if (index === metricElements.length - 1) {
           pdf.save("dashboard.pdf");
         }
@@ -99,32 +154,18 @@ function Dashboard() {
   };
 
   return (
-    <div
-      className="home-container"
-      style={{
-        backgroundImage: `url(${process.env.PUBLIC_URL + "/background-spices.jpg"})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        textAlign: "center",
-        padding: "20px",
-        overflow: "hidden",
-      }}
-    >
+    <div className="home-container" style={{ backgroundImage: `url(${process.env.PUBLIC_URL + "/background-spices.jpg"})`, backgroundSize: "cover", backgroundPosition: "center", height: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", textAlign: "center", padding: "20px", overflow: "hidden" }}>
       <div className="content">
         <div className="icon-container-right">
-          <Bell size={30} className="icon" onClick={toggleNotifications} />
-          <User size={30} className="icon" onClick={toggleUserOptions} />
+          <Bell size={30} className="icon" onClick={() => setShowNotifications(!showNotifications)} />
+          <User size={30} className="icon" onClick={() => setShowUserOptions(!showUserOptions)} />
         </div>
+
         {showNotifications && (
           <div className="notification-bubble">
             <div className="notification-header">
               <strong>Notificaciones</strong>
-              <button className="close-btn" onClick={toggleNotifications}>X</button>
+              <button className="close-btn" onClick={() => setShowNotifications(false)}>X</button>
             </div>
             <ul>
               <li>Notificación 1</li>
@@ -133,38 +174,34 @@ function Dashboard() {
             </ul>
           </div>
         )}
+
         {showUserOptions && (
           <div className="notification-bubble user-options">
             <div className="notification-header">
               <strong>Usuario</strong>
-              <button className="close-btn" onClick={toggleUserOptions}>X</button>
+              <button className="close-btn" onClick={() => setShowUserOptions(false)}>X</button>
             </div>
             <ul>
-              <li>
-                <button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button>
-              </li>
-              <li>
-                <button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button>
-              </li>
-              <li>
-                <button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
-              </li>
+              <li><button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button></li>
+              <li><button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button></li>
+              <li><button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button></li>
             </ul>
           </div>
         )}
+
         <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
 
         <div className="dashboard-grid">
           <div className="metric">
-            <h3>Productos más Vendidos</h3>
+            <h3>Producto más Vendido</h3>
             <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={lowStockChartData}>
+              <BarChart data={productsSoldData}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="product" />
+                <XAxis dataKey="nombre" />
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="stock" fill="#8884d8" />
+                <Bar dataKey="cantidad" fill="#8884d8" />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -192,13 +229,13 @@ function Dashboard() {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Line type="monotone" dataKey="revenue" stroke="#8884d8" />
+                <Line type="monotone" dataKey="revenue" stroke="#82ca9d" />
               </LineChart>
             </ResponsiveContainer>
           </div>
 
           <div className="metric">
-            <h3>Artículos con Menos Stock</h3>
+            <h3>Productos con Stock Bajo</h3>
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={lowStockChartData}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -206,13 +243,13 @@ function Dashboard() {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="stock" fill="#FF5733" />
+                <Bar dataKey="stock" fill="#82ca9d" />
               </BarChart>
             </ResponsiveContainer>
           </div>
 
           <div className="metric">
-            <h3>Artículos por Debajo del Stock de Emergencia</h3>
+            <h3>Productos Bajo Stock de Emergencia</h3>
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={emergencyStockChartData}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -220,18 +257,15 @@ function Dashboard() {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="stock" fill="#FF8C00" />
+                <Bar dataKey="stock" fill="#82ca9d" />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Botón de descarga PDF dentro de la cuadrícula */}
         <div className="download-button-container">
           <button onClick={downloadPDF} className="download-pdf-button">Descargar PDF</button>
         </div>
-
-        {/* Modal de Confirmación para Logout */}
         {showLogoutModal && (
           <div className="modal-overlay">
             <div className="modal">

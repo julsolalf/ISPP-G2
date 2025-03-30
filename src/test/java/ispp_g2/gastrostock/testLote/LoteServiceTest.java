@@ -86,29 +86,29 @@ public class LoteServiceTest {
     @Test
     void testGetById_Success() {
         // Arrange
-        when(loteRepository.findById("1")).thenReturn(Optional.of(lote1));
+        when(loteRepository.findById(1)).thenReturn(Optional.of(lote1));
         
         // Act
-        Lote result = loteService.getById("1");
+        Lote result = loteService.getById(1);
         
         // Assert
         assertNotNull(result);
         assertEquals(1, result.getId());
         assertEquals(100, result.getCantidad());
-        verify(loteRepository).findById("1");
+        verify(loteRepository).findById(1);
     }
     
     @Test
     void testGetById_NotFound() {
         // Arrange
-        when(loteRepository.findById("999")).thenReturn(Optional.empty());
+        when(loteRepository.findById(999)).thenReturn(Optional.empty());
         
         // Act
-        Lote result = loteService.getById("999");
+        Lote result = loteService.getById(999);
         
         // Assert
         assertNull(result);
-        verify(loteRepository).findById("999");
+        verify(loteRepository).findById(999);
     }
     /* 
     @Test
@@ -374,25 +374,25 @@ public class LoteServiceTest {
     @Test
     void testDelete_Success() {
         // Arrange - No setup needed for void methods
-        doNothing().when(loteRepository).deleteById("1");
+        doNothing().when(loteRepository).deleteById(1);
         
         // Act
-        loteService.delete("1");
+        loteService.delete(1);
         
         // Assert
-        verify(loteRepository).deleteById("1");
+        verify(loteRepository).deleteById(1);
     }
     
     @Test
     void testDelete_NonExistentId() {
         // Arrange
-        doThrow(new RuntimeException("ID not found")).when(loteRepository).deleteById("999");
+        doThrow(new RuntimeException("ID not found")).when(loteRepository).deleteById(999);
         
         // Act & Assert
         assertThrows(RuntimeException.class, () -> {
-            loteService.delete("999");
+            loteService.delete(999);
         });
-        verify(loteRepository).deleteById("999");
+        verify(loteRepository).deleteById(999);
     }
     /* 
     @Test

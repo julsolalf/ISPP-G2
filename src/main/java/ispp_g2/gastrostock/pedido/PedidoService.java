@@ -20,7 +20,7 @@ public class PedidoService {
     }
 
     @Transactional(readOnly = true)
-    public Pedido getById(String id) {
+    public Pedido getById(Integer id) {
         return pedidoRepository.findById(id).orElse(null);
     }
 
@@ -62,7 +62,7 @@ public class PedidoService {
     }
 
     @Transactional
-    public void delete(String id) {
+    public void delete(Integer id) {
         pedidoRepository.deleteById(id);
     }
     

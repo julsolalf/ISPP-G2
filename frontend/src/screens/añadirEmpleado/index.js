@@ -1,45 +1,68 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios"; 
 import "../../css/paginasBase/styles.css";
 import { Bell, User } from "lucide-react"; 
 
 function AñadirEmpleado() {
-  const [nombre, setNombre] = useState("");
-  const [apellidos, setApellidos] = useState("");
-  const [genero, setGenero] = useState("");
-  const [correo, setCorreo] = useState("");
-  const [telefono, setTelefono] = useState("");
-  const [codigoEmpleado, setCodigoEmpleado] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [numTelefono, setNumTelefono] = useState("");
   const [rol, setRol] = useState("");
   const [turno, setTurno] = useState("");
   const [posicion, setPosicion] = useState("");
-const [showNotifications, setShowNotifications] = useState(false);
-const [showUserOptions, setShowUserOptions] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showUserOptions, setShowUserOptions] = useState(false);
+  const [descripcion, setDescripcion] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [negocio, setNegocio] = useState("");  
+  const [tokenEmpleado, setTokenEmpleado] = useState("");
+  const navigate = useNavigate();
 
-const toggleNotifications = () => {
+  const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
   };
 
   const toggleUserOptions = () => {
     setShowUserOptions(!showUserOptions);
   };
-  
-  const navigate = useNavigate();
 
-  const handleRegister = () => {
-    console.log("Añadiendo empleado con:", {
-      nombre,
-      apellidos,
-      genero,
-      correo,
-      telefono,
-      codigoEmpleado,
-      rol,
-      turno,
-      posicion
-    });
+  const handleLogout = () => {
+    localStorage.removeItem("userToken"); // Eliminamos el token del usuario
+    navigate("/"); // Redirigir a la pantalla de inicio de sesión
+  };
 
-    navigate("/empleados");
+  const handleRegister = async () => {
+    const empleadoData = {
+      firstName,
+      lastName,
+      email,
+      numTelefono,
+      user: {
+        username,
+        password,
+        authority: {
+          authority: rol,
+        },
+      },
+      tokenEmpleado,
+      descripcion,
+      negocio,
+    };
+
+    try {
+      const response = await axios.post("http://localhost:8080/api/empleados", empleadoData);
+      if (response.status === 201) {
+        alert("Empleado añadido con éxito");
+        navigate("/empleados");  
+      }
+    } catch (error) {
+      console.error("Error al añadir empleado:", error);
+      alert("Hubo un problema al añadir el empleado");
+    }
   };
 
   return (
@@ -59,25 +82,25 @@ const toggleNotifications = () => {
       }}
     >
       <div className="content">
-        <div className="icon-container-right">
-            <Bell size={30} className="icon" onClick={toggleNotifications} />
-            <User size={30} className="icon" onClick={toggleUserOptions} />
-            </div>
+      <div className="icon-container-right">
+          <Bell size={30} className="icon" onClick={toggleNotifications} />
+          <User size={30} className="icon" onClick={toggleUserOptions} />
+        </div>
 
-            {showNotifications && (
-            <div className="notification-bubble">
-                <div className="notification-header">
-                <strong>Notificaciones</strong>
-                <button className="close-btn" onClick={toggleNotifications}>X</button>
-                </div>
-                <ul>
-                <li>Notificación 1</li>
-                <li>Notificación 2</li>
-                <li>Notificación 3</li>
-                </ul>
+        {showNotifications && (
+          <div className="notification-bubble">
+            <div className="notification-header">
+              <strong>Notificaciones</strong>
+              <button className="close-btn" onClick={toggleNotifications}>X</button>
             </div>
-            )}
-
+            <ul>
+              <li>Notificación 1</li>
+              <li>Notificación 2</li>
+              <li>Notificación 3</li>
+            </ul>
+          </div>
+        )}
+        
             {showUserOptions && (
             <div className="notification-bubble user-options">
                 <div className="notification-header">
@@ -92,11 +115,11 @@ const toggleNotifications = () => {
                     <button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button>
                 </li>
                 <li>
-                    <button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button>
+                    <button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
                 </li>
                 </ul>
-            </div>
-            )}
+          </div>
+        )}
 
         <button className="back-button" onClick={() => navigate(-1)}>
           ← Volver
@@ -109,38 +132,38 @@ const toggleNotifications = () => {
         <input
           type="text"
           placeholder="Nombre"
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
         />
         <input
           type="text"
           placeholder="Apellidos"
-          value={apellidos}
-          onChange={(e) => setApellidos(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Género"
-          value={genero}
-          onChange={(e) => setGenero(e.target.value)}
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
         />
         <input
           type="email"
           placeholder="Correo Electrónico"
-          value={correo}
-          onChange={(e) => setCorreo(e.target.value)}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
         <input
           type="tel"
-          placeholder="Teléfono"
-          value={telefono}
-          onChange={(e) => setTelefono(e.target.value)}
+          placeholder="Número de Teléfono"
+          value={numTelefono}
+          onChange={(e) => setNumTelefono(e.target.value)}
         />
         <input
           type="text"
-          placeholder="Código Empleado"
-          value={codigoEmpleado}
-          onChange={(e) => setCodigoEmpleado(e.target.value)}
+          placeholder="Nombre de Usuario"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Contraseña"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
         <input
           type="text"
@@ -150,18 +173,36 @@ const toggleNotifications = () => {
         />
         <input
           type="text"
-          placeholder="Turno"
-          value={turno}
-          onChange={(e) => setTurno(e.target.value)}
+          placeholder="Token Empleado"
+          value={tokenEmpleado}
+          onChange={(e) => setTokenEmpleado(e.target.value)}
         />
         <input
           type="text"
-          placeholder="Posición"
-          value={posicion}
-          onChange={(e) => setPosicion(e.target.value)}
+          placeholder="Descripción del puesto"
+          value={descripcion}
+          onChange={(e) => setDescripcion(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Negocio"
+          value={negocio}
+          onChange={(e) => setNegocio(e.target.value)}
         />
 
         <button onClick={handleRegister} className="login-btn">Añadir Empleado</button>
+        {/* Modal de Confirmación para Logout */}
+        {showLogoutModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>¿Está seguro que desea abandonar la sesión?</h3>
+              <div className="modal-buttons">
+                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
+                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -11,8 +11,9 @@ function PantallaInicioSesion() {
   const handleLogin = async () => {
     try {
       const [empleadosResponse, duenosResponse] = await Promise.all([
-        axios.get("http://localhost:8080/api/empleados"),
-        axios.get("http://localhost:8080/api/dueños"),
+
+        axios.get("https://ispp-2425-g2.ew.r.appspot.com/api/empleados"),
+        axios.get("https://ispp-2425-g2.ew.r.appspot.com/api/dueños"),
       ]);
 
       const empleado = empleadosResponse.data.find(

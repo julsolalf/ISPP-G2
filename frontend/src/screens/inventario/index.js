@@ -3,14 +3,15 @@ import { useNavigate } from "react-router-dom";
 import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
+
 function Inventario() {
   const navigate = useNavigate();
   const [categorias, setCategorias] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
-
+  
   const negocioId = "1"; 
-
+  const [showLogoutModal, setShowLogoutModal] = useState(false); 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
   };
@@ -68,10 +69,14 @@ function Inventario() {
       state: { tipo: "INVENTARIO", nombreCategoria }
     });
   };
+  
+  const handleLogout = () => {
+    localStorage.removeItem("userToken"); // Eliminamos el token del usuario
+    navigate("/"); // Redirigir a la pantalla de inicio de sesión
+  };
 
   return (
-    <div
-      className="home-container"
+    <div className="home-container"
       style={{
         backgroundImage: `url(${process.env.PUBLIC_URL + "/background-spices.jpg"})`,
         backgroundSize: "cover",
@@ -81,19 +86,19 @@ function Inventario() {
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center",
-      }}
-    >
+      }}>
+      
       <div className="content">
         <div className="icon-container-right">
-          <Bell size={30} className="icon" onClick={toggleNotifications} />
-          <User size={30} className="icon" onClick={toggleUserOptions} />
+          <Bell size={30} className="icon" onClick={() => setShowNotifications(!showNotifications)} />
+          <User size={30} className="icon" onClick={() => setShowUserOptions(!showUserOptions)} />
         </div>
 
         {showNotifications && (
           <div className="notification-bubble">
             <div className="notification-header">
               <strong>Notificaciones</strong>
-              <button className="close-btn" onClick={toggleNotifications}>X</button>
+              <button className="close-btn" onClick={() => setShowNotifications(false)}>X</button>
             </div>
             <ul>
               <li>Notificación 1</li>
@@ -107,7 +112,7 @@ function Inventario() {
           <div className="notification-bubble user-options">
             <div className="notification-header">
               <strong>Usuario</strong>
-              <button className="close-btn" onClick={toggleUserOptions}>X</button>
+              <button className="close-btn" onClick={() => setShowUserOptions(false)}>X</button>
             </div>
             <ul>
               <li>
@@ -117,7 +122,7 @@ function Inventario() {
                 <button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button>
               </li>
               <li>
-                <button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button>
+              <button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
               </li>
             </ul>
           </div>
@@ -146,8 +151,28 @@ function Inventario() {
             </div>
           ))}
         </div>
+
+        <div className="button-container1">
+          <button className="button" onClick={() => navigate("/alertaStock")}>⚠️ Alerta Stock</button>
+          <button className="button" onClick={() => navigate("/perdidas")}>📉 Pérdidas</button>
+        </div>
+        
+        {/* Modal de Confirmación para Logout */}
+        {showLogoutModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>¿Está seguro que desea abandonar la sesión?</h3>
+              <div className="modal-buttons">
+                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
+                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
+    
+
   );
 }
 

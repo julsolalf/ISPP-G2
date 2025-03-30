@@ -31,9 +31,9 @@ public class EmpleadoDTO {
     private String descripcion;
 
     @NotBlank
-    private String user;
+    private Integer user;
 
     @NotBlank
-    private String negocio;
+    private Integer negocio;
 
 }

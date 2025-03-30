@@ -125,7 +125,7 @@ public class LoteControllerTest {
     @Test
     void testFindById_Success() throws Exception {
         // Arrange
-        when(loteService.getById("1")).thenReturn(lote1);
+        when(loteService.getById(1)).thenReturn(lote1);
         
         // Act & Assert
         mockMvc.perform(get("/api/lotes/1"))
@@ -134,19 +134,19 @@ public class LoteControllerTest {
             .andExpect(jsonPath("$.id", is(1)))
             .andExpect(jsonPath("$.cantidad", is(100)));
         
-        verify(loteService).getById("1");
+        verify(loteService).getById(1);
     }
     
     @Test
     void testFindById_NotFound() throws Exception {
         // Arrange
-        when(loteService.getById("999")).thenReturn(null);
+        when(loteService.getById(999)).thenReturn(null);
         
         // Act & Assert
         mockMvc.perform(get("/api/lotes/999"))
             .andExpect(status().isNotFound());
         
-        verify(loteService).getById("999");
+        verify(loteService).getById(999);
     }
     
     // TESTS PARA findByCantidad
@@ -356,7 +356,7 @@ public class LoteControllerTest {
         loteGuardado.setProducto(producto);
         loteGuardado.setReabastecimiento(reabastecimiento);
         
-        when(loteService.getById("1")).thenReturn(lote1);
+        when(loteService.getById(1)).thenReturn(lote1);
         when(loteService.save(any(Lote.class))).thenReturn(loteGuardado);
         
         // Act & Assert
@@ -368,7 +368,7 @@ public class LoteControllerTest {
             .andExpect(jsonPath("$.id", is(1)))
             .andExpect(jsonPath("$.cantidad", is(150)));
         
-        verify(loteService).getById("1");
+        verify(loteService).getById(1);
         verify(loteService).save(any(Lote.class));
     }
     
@@ -381,7 +381,7 @@ public class LoteControllerTest {
         loteActualizado.setProducto(producto);
         loteActualizado.setReabastecimiento(reabastecimiento);
         
-        when(loteService.getById("999")).thenReturn(null);
+        when(loteService.getById(999)).thenReturn(null);
         
         // Act & Assert
         mockMvc.perform(put("/api/lotes/999")
@@ -389,7 +389,7 @@ public class LoteControllerTest {
                 .content(objectMapper.writeValueAsString(loteActualizado)))
             .andExpect(status().isNotFound());
         
-        verify(loteService).getById("999");
+        verify(loteService).getById(999);
         verify(loteService, never()).save(any(Lote.class));
     }
     
@@ -398,27 +398,27 @@ public class LoteControllerTest {
     @Test
     void testDelete_Success() throws Exception {
         // Arrange
-        when(loteService.getById("1")).thenReturn(lote1);
-        doNothing().when(loteService).delete("1");
+        when(loteService.getById(1)).thenReturn(lote1);
+        doNothing().when(loteService).delete(1);
         
         // Act & Assert
         mockMvc.perform(delete("/api/lotes/1"))
             .andExpect(status().isNoContent());
         
-        verify(loteService).getById("1");
-        verify(loteService).delete("1");
+        verify(loteService).getById(1);
+        verify(loteService).delete(1);
     }
     
     @Test
     void testDelete_NotFound() throws Exception {
         // Arrange
-        when(loteService.getById("999")).thenReturn(null);
+        when(loteService.getById(999)).thenReturn(null);
         
         // Act & Assert
         mockMvc.perform(delete("/api/lotes/999"))
             .andExpect(status().isNotFound());
         
-        verify(loteService).getById("999");
-        verify(loteService, never()).delete(anyString());
+        verify(loteService).getById(999);
+        verify(loteService, never()).delete(anyInt());
     }
 }

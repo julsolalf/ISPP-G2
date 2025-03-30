@@ -2,7 +2,7 @@
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import "./App.css";
 import PantallaInicioSesion from "./screens/inicioSesion/index.js";
-import PantallaRegistro from "./screens/registro/index.js";
+import PantallaRegistroDueño from "./screens/registroDueño/index.js";
 import PantallaRecuperarContraseña from "./screens/recuperarContraseña/index.js";
 import PantallaMasInfo from "./screens/masInformacion/index.js";
 import PantallaInicioDueño from "./screens/inicioDueño/index.js";
@@ -11,7 +11,6 @@ import PantallaPlanes from "./screens/planes/index.js";
 import TPV from "./screens/r/index.js";
 
 import Dashboard from "./screens/dashboard/index.js";
-
 import PantallaInventario from "./screens/inventario/index.js";
 import PantallaProveedores from "./screens/proveedores/index.js";
 import PantallaEmpleados from "./screens/empleados/index.js";
@@ -23,6 +22,9 @@ import PantallaAñadirEmpleado from "./screens/añadirEmpleado/index.js";
 import PantallaAñadirProveedor from "./screens/añadirProveedor/index.js";
 import PantallaPerfil from "./screens/perfil/index.js";
 import PantallaCarta from "./screens/carta/index.js";
+import PantallaAñadirCategoria from "./screens/añadirCategoria/index.js";
+import VerVentas from "./screens/ventas/index.js";
+import VerVentaEspecifica from "./screens/ventas/ventaEspecifica/index.js";
 
 
 function AppScreen() {
@@ -49,7 +51,7 @@ function AppScreen() {
           <button className="login-btn" onClick={() => navigate("/inicioSesion")}>
             Iniciar Sesión
           </button>
-          <button className="register-btn" onClick={() => navigate("/registrarse")}>
+          <button className="register-btn" onClick={() => navigate("/registroDueño")}>
             Registrarse
           </button>
         </div>
@@ -72,13 +74,14 @@ function App() {
         <Route path="/" element={<AppScreen />} />
         <Route path="/inicioSesion" element={<PantallaInicioSesion />} />
         <Route path="/recuperarContraseña" element={<PantallaRecuperarContraseña />} />
-        <Route path="/registrarse" element={<PantallaRegistro />} />
+        <Route path="/registroDueño" element={<PantallaRegistroDueño />} />
         <Route path="/masInformacion" element={<PantallaMasInfo />} />
         <Route path="/inicioDueño" element={<PantallaInicioDueño />} />
         <Route path="/inicioEmpleado" element={<PantallaInicioEmpleado />} />
         <Route path="/planes" element={<PantallaPlanes />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/inventario" element={<PantallaInventario />} />
+        <Route path="/ventas" element={<VerVentas/>} />
         <Route path="/verTipoProducto/:categoriaId" element={<VerTipoProducto />} />
         <Route path="/producto/:productoId" element={<VerProducto/>} />
         <Route path="/categoria/:categoriaId/producto/:productoNombre" element={<VerProducto />} />
@@ -90,6 +93,9 @@ function App() {
         <Route path="/añadirProveedor" element={<PantallaAñadirProveedor />} />
         <Route path="/perfil" element={<PantallaPerfil/>} />
         <Route path="/carta" element={<PantallaCarta/>} />
+        <Route path="/añadirCategoria" element={<PantallaAñadirCategoria/>} />
+        <Route path="/ventas/:ventaId" element={<VerVentaEspecifica />} />
+
       </Routes>
     </Router>
   );

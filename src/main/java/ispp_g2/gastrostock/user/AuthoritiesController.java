@@ -28,7 +28,7 @@ public class AuthoritiesController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Authorities> findById(@PathVariable("id") String id) {
+    public ResponseEntity<Authorities> findById(@PathVariable("id") Integer id) {
         Authorities authorities = authoritiesService.findById(id);
         if(authorities == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -53,17 +53,17 @@ public class AuthoritiesController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Authorities> update(@PathVariable("id") String id, @RequestBody @Valid Authorities authorities) {
+    public ResponseEntity<Authorities> update(@PathVariable("id") Integer id, @RequestBody @Valid Authorities authorities) {
         Authorities authorities1 = authoritiesService.findById(id);
         if(authorities1 == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        authorities.setId(Integer.valueOf(id));
+        authorities.setId(id);
         return new ResponseEntity<>(authoritiesService.saveAuthorities(authorities), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") String id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
         Authorities authorities = authoritiesService.findById(id);
         if(authorities == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

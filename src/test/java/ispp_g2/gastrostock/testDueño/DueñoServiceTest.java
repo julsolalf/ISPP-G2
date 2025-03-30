@@ -198,29 +198,29 @@ class DueñoServiceTest {
     @Test
     void testGetDueñoById_Success() {
         // Arrange
-        when(dueñoRepository.findById("1")).thenReturn(Optional.of(dueñoNormal));
+        when(dueñoRepository.findById(1)).thenReturn(Optional.of(dueñoNormal));
 
         // Act
-        Dueño result = dueñoService.getDueñoById("1");
+        Dueño result = dueñoService.getDueñoById(1);
 
         // Assert
         assertNotNull(result);
         assertEquals(1, result.getId());
         assertEquals("juan@example.com", result.getEmail());
-        verify(dueñoRepository, times(1)).findById("1");
+        verify(dueñoRepository, times(1)).findById(1);
     }
 
     @Test
     void testGetDueñoById_NotFound() {
         // Arrange
-        when(dueñoRepository.findById("999")).thenReturn(Optional.empty());
+        when(dueñoRepository.findById(999)).thenReturn(Optional.empty());
 
         // Act
-        Dueño result = dueñoService.getDueñoById("999");
+        Dueño result = dueñoService.getDueñoById(999);
 
         // Assert
         assertNull(result);
-        verify(dueñoRepository, times(1)).findById("999");
+        verify(dueñoRepository, times(1)).findById(999);
     }
 
     @Test
@@ -297,26 +297,26 @@ class DueñoServiceTest {
     @Test
     void testDeleteDueño_Success() {
         // Arrange
-        doNothing().when(dueñoRepository).deleteById("1");
+        doNothing().when(dueñoRepository).deleteById(1);
 
         // Act
-        dueñoService.deleteDueño("1");
+        dueñoService.deleteDueño(1);
 
         // Assert
-        verify(dueñoRepository, times(1)).deleteById("1");
+        verify(dueñoRepository, times(1)).deleteById(1);
     }
 
     @Test
     void testDeleteDueño_NotFound() {
         // Arrange
-        doThrow(new RuntimeException("Dueño not found")).when(dueñoRepository).deleteById("999");
+        doThrow(new RuntimeException("Dueño not found")).when(dueñoRepository).deleteById(999);
 
         // Act & Assert
         Exception exception = assertThrows(RuntimeException.class, () -> {
-            dueñoService.deleteDueño("999");
+            dueñoService.deleteDueño(999);
         });
         assertEquals("Dueño not found", exception.getMessage());
-        verify(dueñoRepository, times(1)).deleteById("999");
+        verify(dueñoRepository, times(1)).deleteById(999);
     }
 
     @Test

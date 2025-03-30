@@ -3,7 +3,6 @@ package ispp_g2.gastrostock.diaReparto;
 import java.time.DayOfWeek;
 
 import ispp_g2.gastrostock.model.BaseEntity;
-import ispp_g2.gastrostock.negocio.Negocio;
 
 import ispp_g2.gastrostock.proveedores.Proveedor;
 import jakarta.persistence.Entity;
@@ -25,11 +24,6 @@ public class DiaReparto extends BaseEntity {
     private DayOfWeek diaSemana;
 
     private String descripcion;
-
-    @ManyToOne(optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "negocio_id")
-    private Negocio negocio;
 
     @ManyToOne(optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)

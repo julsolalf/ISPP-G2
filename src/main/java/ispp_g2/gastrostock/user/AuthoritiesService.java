@@ -24,7 +24,7 @@ public class AuthoritiesService {
 	}
 
 	@Transactional(readOnly = true)
-	public Authorities findById(String id) {
+	public Authorities findById(Integer id) {
 		return authoritiesRepository.findById(id).orElse(null);
 	}
 
@@ -41,7 +41,7 @@ public class AuthoritiesService {
 	}
 
 	@Transactional
-	public void delete(String id){
+	public void delete(Integer id){
 		authoritiesRepository.deleteById(id);
 	}
 

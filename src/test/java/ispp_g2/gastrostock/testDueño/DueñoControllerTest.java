@@ -161,7 +161,7 @@ public class DueñoControllerTest {
     @Test
     void testFindById_Success() throws Exception {
         // Arrange
-        when(dueñoService.getDueñoById("1")).thenReturn(dueñoNormal);
+        when(dueñoService.getDueñoById(1)).thenReturn(dueñoNormal);
         
         // Act & Assert
         mockMvc.perform(get("/api/dueños/1")
@@ -171,20 +171,20 @@ public class DueñoControllerTest {
                 .andExpect(jsonPath("$.firstName", is("Juan")))
                 .andExpect(jsonPath("$.lastName", is("García")));
         
-        verify(dueñoService).getDueñoById("1");
+        verify(dueñoService).getDueñoById(1);
     }
 
     @Test
     void testFindById_NotFound() throws Exception {
         // Arrange
-        when(dueñoService.getDueñoById("999")).thenReturn(null);
+        when(dueñoService.getDueñoById(999)).thenReturn(null);
         
         // Act & Assert
         mockMvc.perform(get("/api/dueños/999")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
         
-        verify(dueñoService).getDueñoById("999");
+        verify(dueñoService).getDueñoById(999);
     }
 
     // TESTS PARA findByToken()
@@ -341,7 +341,7 @@ public class DueñoControllerTest {
     @Test
     void testFindByUser_Success() throws Exception {
         // Arrange
-        when(dueñoService.getDueñoByUser("1")).thenReturn(dueñoNormal);
+        when(dueñoService.getDueñoByUser(1)).thenReturn(dueñoNormal);
         
         // Act & Assert
         mockMvc.perform(get("/api/dueños/user/1")
@@ -349,20 +349,20 @@ public class DueñoControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)));
         
-        verify(dueñoService, times(2)).getDueñoByUser("1"); // Se llama 2 veces en el controlador
+        verify(dueñoService, times(2)).getDueñoByUser(1); // Se llama 2 veces en el controlador
     }
 
     @Test
     void testFindByUser_NotFound() throws Exception {
         // Arrange
-        when(dueñoService.getDueñoByUser("999")).thenReturn(null);
+        when(dueñoService.getDueñoByUser(999)).thenReturn(null);
         
         // Act & Assert
         mockMvc.perform(get("/api/dueños/user/999")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
         
-        verify(dueñoService).getDueñoByUser("999");
+        verify(dueñoService).getDueñoByUser(999);
     }
 
     // TESTS PARA save()
@@ -391,7 +391,7 @@ public class DueñoControllerTest {
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{}")) // Objeto JSON vacío
-                .andExpect(status().isInternalServerError()); // Debería fallar la validación
+                .andExpect(status().isBadRequest()); // Debería fallar la validación
     }
 
     @Test
@@ -420,7 +420,7 @@ public class DueñoControllerTest {
         dueñoActualizado.setNumTelefono("652345678");
         dueñoActualizado.setTokenDueño("TOKEN123");
         
-        when(dueñoService.getDueñoById("1")).thenReturn(dueñoNormal);
+        when(dueñoService.getDueñoById(1)).thenReturn(dueñoNormal);
         when(dueñoService.saveDueño(any(Dueño.class))).thenReturn(dueñoActualizado);
         
         // Act & Assert
@@ -431,14 +431,14 @@ public class DueñoControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName", is("Juan Actualizado")));
         
-        verify(dueñoService).getDueñoById("1");
+        verify(dueñoService).getDueñoById(1);
         verify(dueñoService).saveDueño(any(Dueño.class));
     }
 
     @Test
     void testUpdate_NotFound() throws Exception {
         // Arrange
-        when(dueñoService.getDueñoById("999")).thenReturn(null);
+        when(dueñoService.getDueñoById(999)).thenReturn(null);
         
         // Act & Assert
         mockMvc.perform(put("/api/dueños/999")
@@ -447,7 +447,7 @@ public class DueñoControllerTest {
                 .content(objectMapper.writeValueAsString(dueñoNormal)))
                 .andExpect(status().isNotFound());
         
-        verify(dueñoService).getDueñoById("999");
+        verify(dueñoService).getDueñoById(999);
         verify(dueñoService, never()).saveDueño(any(Dueño.class));
     }
 
@@ -458,7 +458,7 @@ public class DueñoControllerTest {
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{}")) // Objeto JSON vacío
-                .andExpect(status().isInternalServerError()); // Debería fallar la validación
+                .andExpect(status().isBadRequest()); // Cambiado a BAD_REQUEST (400)
     }
 
     // TESTS PARA delete()
@@ -466,8 +466,8 @@ public class DueñoControllerTest {
     @Test
     void testDelete_Success() throws Exception {
         // Arrange
-        when(dueñoService.getDueñoById("1")).thenReturn(dueñoNormal);
-        doNothing().when(dueñoService).deleteDueño("1");
+        when(dueñoService.getDueñoById(1)).thenReturn(dueñoNormal);
+        doNothing().when(dueñoService).deleteDueño(1);
         
         // Act & Assert
         mockMvc.perform(delete("/api/dueños/1")
@@ -475,14 +475,14 @@ public class DueñoControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
         
-        verify(dueñoService).getDueñoById("1");
-        verify(dueñoService).deleteDueño("1");
+        verify(dueñoService).getDueñoById(1);
+        verify(dueñoService).deleteDueño(1);
     }
 
     @Test
     void testDelete_NotFound() throws Exception {
         // Arrange
-        when(dueñoService.getDueñoById("999")).thenReturn(null);
+        when(dueñoService.getDueñoById(999)).thenReturn(null);
         
         // Act & Assert
         mockMvc.perform(delete("/api/dueños/999")
@@ -490,7 +490,7 @@ public class DueñoControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
         
-        verify(dueñoService).getDueñoById("999");
-        verify(dueñoService, never()).deleteDueño("999");
+        verify(dueñoService).getDueñoById(999);
+        verify(dueñoService, never()).deleteDueño(999);
     }
 }

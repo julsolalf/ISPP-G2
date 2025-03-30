@@ -30,7 +30,7 @@ public class ProductoVentaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductoVenta> findById(@PathVariable("id") String id) {
+    public ResponseEntity<ProductoVenta> findById(@PathVariable("id") Integer id) {
         ProductoVenta productoVenta = productoVentaService.getById(id);
         if (productoVenta == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -83,19 +83,19 @@ public class ProductoVentaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductoVenta> update(@PathVariable("id") String id, @RequestBody @Valid ProductoVenta productoVenta) {
+    public ResponseEntity<ProductoVenta> update(@PathVariable("id") Integer id, @RequestBody @Valid ProductoVenta productoVenta) {
         if (productoVenta == null) {
             throw new IllegalArgumentException("Producto de venta no puede ser nulo");
         }
         if(productoVentaService.getById(id) == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        productoVenta.setId(Integer.valueOf(id));
+        productoVenta.setId(id);
         return new ResponseEntity<>(productoVentaService.save(productoVenta), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") String id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
         ProductoVenta productoVenta = productoVentaService.getById(id);
         if (productoVenta == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

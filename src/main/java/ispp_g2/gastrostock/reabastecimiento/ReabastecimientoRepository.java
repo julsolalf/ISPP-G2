@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface ReabastecimientoRepository extends CrudRepository<Reabastecimiento, String> {
+public interface ReabastecimientoRepository extends CrudRepository<Reabastecimiento, Integer> {
 
     @Query("SELECT r FROM Reabastecimiento r WHERE r.fecha = ?1")
     List<Reabastecimiento> findByFecha(LocalDate fecha);
@@ -24,9 +24,9 @@ public interface ReabastecimientoRepository extends CrudRepository<Reabastecimie
     List<Reabastecimiento> findByReferencia(String referencia);
 
     @Query("SELECT r FROM Reabastecimiento r WHERE r.proveedor.id = ?1")
-    List<Reabastecimiento> findByProveedor(String proveedor);
+    List<Reabastecimiento> findByProveedor(Integer proveedor);
 
     @Query("SELECT r FROM Reabastecimiento r WHERE r.negocio.id = ?1")
-    List<Reabastecimiento> findByNegocio(String negocio);
+    List<Reabastecimiento> findByNegocio(Integer negocio);
 
 }
