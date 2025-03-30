@@ -5,7 +5,6 @@ import java.util.List;
 
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioService;
-import ispp_g2.gastrostock.user.User;
 import ispp_g2.gastrostock.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -195,24 +194,44 @@ public class EmpleadoController {
     public ResponseEntity<Empleado> save(@RequestBody @Valid EmpleadoDTO empleadoDTO) {
         if(empleadoDTO==null)
             throw new IllegalArgumentException("Empleado no puede ser nulo");
-        User usuario = userService.findUserById(empleadoDTO.getUser());
         Negocio negocio = negocioService.getById(empleadoDTO.getNegocio());
-        if(usuario == null || negocio == null)
+        if(negocio == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        Empleado empleado = empleadoService.convertirDTOEmpleado(empleadoDTO, negocio, usuario);
+        Empleado empleado = empleadoService.convertirDTOEmpleado(empleadoDTO, negocio);
+        if(userService.findUserByUsername(empleadoDTO.getUsername())!=null){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
         return new ResponseEntity<>(empleadoService.saveEmpleado(empleado), HttpStatus.CREATED);
+    }
+
+    private boolean checkUsernameNonAvailable(String username, Integer id){
+        if(userService.findUserByUsername(username) == null){
+            return false;
+        }
+        Integer empleadoToUpdate = userService.findUserByUsername(username).getId();
+        Integer currEmpleadoWithUsername = empleadoService.getEmpleadoById(id).getUser().getId();
+        return !empleadoToUpdate.equals(currEmpleadoWithUsername);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Empleado> update(@PathVariable("id") Integer id, @RequestBody @Valid  EmpleadoDTO empleadoDTO) {
+        // Check if the data is empty
         if(empleadoDTO==null)
             throw new IllegalArgumentException("Empleado no puede ser nulo");
-        Empleado current_empleado= empleadoService.getEmpleadoById(id);
         Negocio negocio = negocioService.getById(empleadoDTO.getNegocio());
+        // Check if the employee exists
         if(empleadoService.getEmpleadoById(id) == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        Empleado empleado = empleadoService.convertirDTOEmpleado(empleadoDTO,negocio,current_empleado.getUser());
+        // Convert the DTO to an employee
+        Empleado empleado = empleadoService.convertirDTOEmpleado(empleadoDTO,negocio);
         empleado.setId(id);
+        // Check if the username is available
+        if(checkUsernameNonAvailable(empleadoDTO.getUsername(),id)){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+
+        // Save the user
+        empleado.getUser().setId(empleadoService.getEmpleadoById(id).getUser().getId());
         return new ResponseEntity<>(empleadoService.saveEmpleado(empleado), HttpStatus.OK);
     }
 

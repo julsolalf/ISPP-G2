@@ -1,17 +1,15 @@
-package ispp_g2.gastrostock.empleado;
-
+package ispp_g2.gastrostock.dueño;
 
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class EmpleadoDTO {
+public class DueñoDTO {
 
     @Column(unique=true)
     @NotBlank
@@ -35,11 +33,6 @@ public class EmpleadoDTO {
     private String numTelefono;
 
     @NotBlank
-    private String tokenEmpleado;
-
-    private String descripcion;
-
-    @NotNull
-    private Integer negocio;
-
+    @Column(unique = true)
+    private String tokenDueño;
 }

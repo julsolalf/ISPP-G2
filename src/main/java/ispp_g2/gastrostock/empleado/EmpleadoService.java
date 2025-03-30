@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.stream.StreamSupport;
 
 import ispp_g2.gastrostock.negocio.Negocio;
+import ispp_g2.gastrostock.user.AuthoritiesRepository;
 import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,15 +17,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class EmpleadoService {
 
     private final EmpleadoRepository empleadoRepository;
+    private final AuthoritiesRepository authoritiesRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public EmpleadoService(EmpleadoRepository empleadoRepository) {
+    public EmpleadoService(EmpleadoRepository empleadoRepository, AuthoritiesRepository authoritiesRepository, UserRepository userRepository) {
         this.empleadoRepository = empleadoRepository;
+        this.authoritiesRepository = authoritiesRepository;
+        this.userRepository = userRepository;
     }
 
     // Crear o actualizar un empleado
     @Transactional
     public Empleado saveEmpleado(Empleado empleado) {
+        userRepository.save(empleado.getUser());
         return empleadoRepository.save(empleado);
     }
 
@@ -82,8 +89,12 @@ public class EmpleadoService {
     }
 
     @Transactional(readOnly = true)
-    public Empleado convertirDTOEmpleado(EmpleadoDTO empleadoDTO, Negocio negocio, User user) {
+    public Empleado convertirDTOEmpleado(EmpleadoDTO empleadoDTO, Negocio negocio) {
         Empleado empleado = new Empleado();
+        User user = new User();
+        user.setUsername(empleadoDTO.getUsername());
+        user.setPassword(empleadoDTO.getPassword());
+        user.setAuthority(authoritiesRepository.findByAuthority("empleado"));
         empleado.setFirstName(empleadoDTO.getFirstName());
         empleado.setLastName(empleadoDTO.getLastName());
         empleado.setEmail(empleadoDTO.getEmail());
@@ -104,7 +115,8 @@ public class EmpleadoService {
         empleadoDTO.setTokenEmpleado(empleado.getTokenEmpleado());
         empleadoDTO.setNumTelefono(empleado.getNumTelefono());
         empleadoDTO.setDescripcion(empleado.getDescripcion());
-        empleadoDTO.setUser(empleado.getUser().getId());
+        empleadoDTO.setUsername(empleado.getUser().getUsername());
+        empleadoDTO.setPassword(empleado.getUser().getPassword());
         empleadoDTO.setNegocio(empleado.getNegocio().getId());
         return empleadoDTO;
     }
