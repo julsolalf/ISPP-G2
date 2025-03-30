@@ -1,47 +1,40 @@
-package ispp_g2.gastrostock.pedido;
+package ispp_g2.gastrostock.carrito;
 
-import java.time.LocalDateTime;
-
-
-import ispp_g2.gastrostock.empleado.Empleado;
-import ispp_g2.gastrostock.mesa.Mesa;
 import ispp_g2.gastrostock.model.BaseEntity;
 import ispp_g2.gastrostock.negocio.Negocio;
-import jakarta.persistence.*;
+import ispp_g2.gastrostock.proveedores.Proveedor;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @Setter
-public class Pedido extends BaseEntity{
+public class Carrito extends BaseEntity {
 
-    @NotNull
-    @PastOrPresent
-    private LocalDateTime fecha;
 
     @NotNull
     @Positive
     private Double precioTotal;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "mesa_id")
-    private Mesa mesa;
-
-    @ManyToOne(optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "empleado_id")
-    private Empleado empleado;
+    @JoinColumn(name = "proveedor_id")
+    private Proveedor proveedor;
 
     @ManyToOne(optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "negocio_id")
     private Negocio negocio;
 
+    @NotNull
+    private LocalDate diaEntrega;
 }
