@@ -142,4 +142,17 @@ VALUES (1, 100, '2025-05-01', (SELECT id FROM producto_inventario WHERE name = '
 INSERT INTO dia_reparto (id, descripcion, dia_semana, proveedor_id)
 VALUES (1, '',5,(SELECT id FROM proveedor WHERE name = 'Proveedor A'));
 INSERT INTO dia_reparto (id, descripcion, dia_semana, proveedor_id)
-VALUES (2, 'Suele venir muy pronto',6,(SELECT id FROM proveedor WHERE name = 'Proveedor B'))
+VALUES (2, 'Suele venir muy pronto',6,(SELECT id FROM proveedor WHERE name = 'Proveedor B'));
+
+-- Insertando carritos
+INSERT INTO carrito (id, precio_total, proveedor_id, dia_entrega)
+VALUES (1, 160, (SELECT id FROM proveedor WHERE name = 'Proveedor A'), '2025-03-01');
+INSERT INTO carrito (id, precio_total, proveedor_id, dia_entrega)
+VALUES (2, 0, (SELECT id FROM proveedor WHERE name = 'Proveedor B'), '2025-03-02');
+
+-- Insertando lineasDeCarrito
+INSERT INTO linea_de_carrito (id, cantidad, precio_linea, producto_id, carrito_id)
+VALUES (1, 200, 100, (SELECT id FROM producto_inventario WHERE name = 'Harina'), (SELECT id FROM carrito WHERE id = 1));
+INSERT INTO linea_de_carrito (id, cantidad, precio_linea, producto_id, carrito_id)
+VALUES (2, 200, 60,(SELECT id FROM producto_inventario WHERE name = 'Tomate'), (SELECT id FROM carrito WHERE id = 1));
+
