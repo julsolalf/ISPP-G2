@@ -12,6 +12,6 @@ public interface CarritoRepository extends CrudRepository<Carrito, Integer> {
     @Query("SELECT c FROM Carrito c WHERE c.proveedor.id = ?1")
     List<Carrito> findByProveedorId(Integer id);
 
-    @Query("SELECT c FROM Carrito c WHERE c.negocio.id = ?1")
+    @Query("SELECT c FROM Carrito c WHERE c.proveedor.negocio.id = ?1")
     List<Carrito> findByNegocioId(Integer id);
 }

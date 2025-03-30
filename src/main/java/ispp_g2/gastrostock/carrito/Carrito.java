@@ -1,7 +1,6 @@
 package ispp_g2.gastrostock.carrito;
 
 import ispp_g2.gastrostock.model.BaseEntity;
-import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.proveedores.Proveedor;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -29,11 +28,6 @@ public class Carrito extends BaseEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "proveedor_id")
     private Proveedor proveedor;
-
-    @ManyToOne(optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "negocio_id")
-    private Negocio negocio;
 
     @NotNull
     private LocalDate diaEntrega;
