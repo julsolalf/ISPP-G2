@@ -156,6 +156,12 @@ function VerTipoProducto() {
           <User size={30} className="icon" onClick={toggleUserOptions} />
         </div>
 
+        <div className="icon-container-left">
+          <button className="back-button" onClick={() => navigate(-1)}>
+          ⬅  Volver
+          </button>
+        </div>
+        
         {showNotifications && (
           <div className="notification-bubble">
             <div className="notification-header">
@@ -200,9 +206,6 @@ function VerTipoProducto() {
           </div>
         )}
 
-        <button onClick={() => navigate(-1)} className="back-button">
-          ⬅ Volver
-        </button>
 
         <div className="empleados-grid">
           {productos.length === 0 ? (
@@ -216,22 +219,22 @@ function VerTipoProducto() {
                   navigate(`/producto/${producto.id}`, {
                     state: {
                       productoId: producto.id,
-                      categoria: producto.categoria?.pertenece, // "VENTA" o "INVENTARIO"
+                      categoria: producto.categoria?.pertenece, 
                     },
                   })
                 }
                 style={{ cursor: "pointer" }}
               >
-                <h3>{producto.name}</h3>
+                <div className="producto-nombre">{producto.name}</div>
                
                 {producto.categoria?.pertenece === "INVENTARIO" && (
-                  <div>
+                  <div className="producto-atributo">
                     <p>Cantidad total: {producto.cantidadTotal}</p>
                   </div>
                 )}
 
                 {producto.categoria?.pertenece === "VENTA" && 
-                  <div>
+                  <div className="producto-atributo">
                     <p>Ingredientes:</p>
                     {producto.ingredientes && producto.ingredientes.length > 0 ? (
                      <ul>

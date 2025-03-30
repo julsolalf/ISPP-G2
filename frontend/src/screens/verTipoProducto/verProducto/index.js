@@ -100,6 +100,12 @@ function VerProducto() {
           <User size={30} className="icon" onClick={toggleUserOptions} />
         </div>
 
+        <div className="icon-container-left">
+          <button className="back-button" onClick={() => navigate(-1)}>
+          ⬅  Volver
+          </button>
+        </div>
+
         {showNotifications && (
           <div className="notification-bubble">
             <div className="notification-header">
@@ -138,10 +144,6 @@ function VerProducto() {
           </div>
         )}
 
-        <button onClick={() => navigate(-1)} className="back-button">
-          ⬅ Volver
-        </button>
-
         <div className="producto-card">
           <h1 className="producto-nombre">{producto.name}</h1>
 
@@ -169,8 +171,8 @@ function VerProducto() {
               <p className="producto-atributo">
                 <strong>Precio venta:</strong> ${producto.precioVenta}
               </p>
-              <div>
-                <h3>Ingredientes:</h3>
+              <div className="producto-atributo">
+                <p> <strong>Ingredientes</strong></p>
                 {ingredientes.length > 0 ? (
                   <ul>
                     {ingredientes.map((ingrediente, index) => (

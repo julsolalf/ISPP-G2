@@ -356,3 +356,12 @@
   font-weight: bold;
   font-size: 1.3rem;
 }
+
+.producto-atributo ul {
+  padding-left: 20px; 
+  margin-left: 0; 
+}
+
+.producto-atributo li {
+  list-style-position: inside; 
+}
