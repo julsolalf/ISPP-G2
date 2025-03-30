@@ -82,6 +82,13 @@ function VerTipoProducto() {
 
         <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
         <h1>Productos</h1>
+        <div className="button-container3">
+          <button className="button" onClick={() => {
+            localStorage.setItem("categoriaNombre", localStorage.getItem("categoriaNombre"));
+            navigate("/anadirProductoInventario")}}>➕ Añadir</button>
+          <button className="button">📥 Exportar</button>
+          <button className="button">🔍 Filtrar</button>
+        </div>
 
         {productos.length === 0 ? (
           <h3>No hay productos en esta categoría</h3>

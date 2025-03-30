@@ -24,6 +24,7 @@ import PantallaPerfil from "./screens/perfil/index.js";
 import PantallaAñadirCategoria from "./screens/añadirCategoria/index.js";
 import VerVentas from "./screens/ventas/index.js";
 import VerVentaEspecifica from "./screens/ventas/ventaEspecifica/index.js";
+import AnadirProductoInventario from "./screens/anadirProductoInventario/index.js";
 
 
 function AppScreen() {
@@ -83,6 +84,7 @@ function App() {
         <Route path="/ventas" element={<VerVentas/>} />
         <Route path="/verTipoProducto/:categoriaNombre" element={<VerTipoProducto />} />
         <Route path="/categoria/:categoriaNombre/producto/:productoNombre" element={<VerProducto />} />
+        <Route path="/anadirProductoInventario" element={<AnadirProductoInventario />} />
         <Route path="/proveedores" element={<PantallaProveedores />} />
         <Route path="/empleados" element={<PantallaEmpleados />} />
         <Route path="/alertaStock" element={<PantallaAlertaStock />} />
