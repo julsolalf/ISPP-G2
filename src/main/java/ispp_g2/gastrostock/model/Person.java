@@ -58,6 +58,6 @@ public class Person extends BaseEntity {
 
 	@OneToOne(cascade = { CascadeType.DETACH, CascadeType.REFRESH, CascadeType.PERSIST })
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "user_id", nullable = false, unique = true)
 	private User user;
 }

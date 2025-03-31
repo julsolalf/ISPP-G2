@@ -45,7 +45,7 @@ function PantallaRegistro() {
 
     try {
       setLoading(true);
-      const response = await axios.post("https://ispp-2425-g2.ew.r.appspot.com/api/duenos", data);
+      const response = await axios.post("http://localhost:8080//api/duenos", data);
       console.log("Registro exitoso:", response.data);
       alert("Registro exitoso. Inicia sesión.");
       navigate("/inicioSesion");
