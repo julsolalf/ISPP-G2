@@ -4,15 +4,14 @@ import axios from "axios";
 import { Bell, User } from "lucide-react";
 import "../../css/paginasBase/styles.css";
 
-function PantallaRegistroDueño() {
-  const [ownerFirstName, setOwnerFirstName] = useState("");
-  const [ownerLastName, setOwnerLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [usuario, setUsuario] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [token, setToken] = useState("");
+function PantallaRegistroNegocio() {
+  const [name, setName] = useState("");
+  const [tokenNegocio, setTokenNegocio] = useState("");
+  const [direccion, setDireccion] = useState("");
+  const [codigoPostal, setCodigoPostal] = useState("");
+  const [ciudad, setCiudad] = useState("");
+  const [pais, setPais] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
@@ -22,33 +21,23 @@ function PantallaRegistroDueño() {
   const toggleUserOptions = () => setShowUserOptions(!showUserOptions);
 
   const handleRegister = async () => {
-    if (password !== confirmPassword) {
-      alert("Las contrasenas no coinciden");
-      return;
-    }
 
     const data = {
-      firstName: ownerFirstName,
-      lastName: ownerLastName,
-      email,
-      numTelefono: phone,
-      tokenDueno: token,
-      user: {
-        username: usuario,
-        password: password,
-        authority: {
-          id: 3,
-          authority: "dueno",
-        },
-      },
+      name,
+      tokenNegocio,
+      direccion,
+      codigoPostal,
+      ciudad,
+      pais,
+      dueño: { id: 1 }
     };
 
     try {
       setLoading(true);
-      const response = await axios.post("http://localhost:8080/api/duenos", data);
+      const response = await axios.post("http://localhost:8080/api/negocios", data);
       console.log("Registro exitoso:", response.data);
-      alert("Registro del dueño exitoso. Registre ahora el negocio.");
-      navigate("/registroNegocio");
+      alert("Registro exitoso. Inicia sesión.");
+      navigate("/elegirNegocio");
     } catch (error) {
       console.error("Error en el registro:", error.response?.data || error.message);
       alert(error.response?.data?.message || "Error al registrar. Verifica los datos.");
@@ -83,9 +72,7 @@ function PantallaRegistroDueño() {
           <div className="notification-bubble">
             <div className="notification-header">
               <strong>Notificaciones</strong>
-              <button className="close-btn" onClick={toggleNotifications}>
-                X
-              </button>
+              <button className="close-btn" onClick={toggleNotifications}>X</button>
             </div>
             <ul>
               <li>Notificación 1</li>
@@ -99,9 +86,7 @@ function PantallaRegistroDueño() {
           <div className="notification-bubble user-options">
             <div className="notification-header">
               <strong>Usuario</strong>
-              <button className="close-btn" onClick={toggleUserOptions}>
-                X
-              </button>
+              <button className="close-btn" onClick={toggleUserOptions}>X</button>
             </div>
             <ul>
               <li>
@@ -117,29 +102,24 @@ function PantallaRegistroDueño() {
           </div>
         )}
 
-        <button className="back-button" onClick={() => navigate(-1)}>
-          ← Volver
-        </button>
+        <button className="back-button" onClick={() => navigate(-1)}>← Volver</button>
 
         <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
         <h1 className="title">GastroStock</h1>
-        <h2>Registrarse</h2>
+        <h2>Registrar negocio</h2>
 
-        <input type="text" placeholder="Nombre del dueno" value={ownerFirstName} onChange={(e) => setOwnerFirstName(e.target.value)} />
-        <input type="text" placeholder="Apellidos del dueno" value={ownerLastName} onChange={(e) => setOwnerLastName(e.target.value)} />
-        <input type="email" placeholder="Correo Electrónico" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <input type="tel" placeholder="Teléfono" value={phone} onChange={(e) => setPhone(e.target.value)} />
-        <input type="text" placeholder="Usuario" value={usuario} onChange={(e) => setUsuario(e.target.value)} />
-        <input type="password" placeholder="Contrasena" value={password} onChange={(e) => setPassword(e.target.value)} />
-        <input type="password" placeholder="Confirmar Contrasena" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-        <input type="text" placeholder="Token de dueno" value={token} onChange={(e) => setToken(e.target.value)} />
-        
-        <button onClick={handleRegister} className="login-btn" disabled={loading}>
-          {loading ? "Registrando..." : "Registrarse"}
-        </button>
+        <input type="text" placeholder="Nombre del negocio" value={name} onChange={(e) => setName(e.target.value)} />
+        <input type="text" placeholder="Token de negocio" value={tokenNegocio} onChange={(e) => setTokenNegocio(e.target.value)} />
+        <input type="text" placeholder="Dirección" value={direccion} onChange={(e) => setDireccion(e.target.value)} />
+        <input type="text" placeholder="Código Postal" value={codigoPostal} onChange={(e) => setCodigoPostal(e.target.value)} />
+        <input type="text" placeholder="Ciudad" value={ciudad} onChange={(e) => setCiudad(e.target.value)} />
+        <input type="text" placeholder="País" value={pais} onChange={(e) => setPais(e.target.value)} />
+
+        <button onClick={handleRegister} className="login-btn" disabled={loading}>{loading ? "Registrando..." : "Registrar negocio"}</button>
+        <button  className="login-btn" onClick={() => navigate("/inicioSesion")}>Registrar negocio más tarde</button>
       </div>
     </div>
   );
 }
 
-export default PantallaRegistroDueño;
+export default PantallaRegistroNegocio;
