@@ -1,4 +1,4 @@
-package ispp_g2.gastrostock.dueño;
+package ispp_g2.gastrostock.dueno;
 
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.Digits;
@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class DueñoDTO {
+public class DuenoDTO {
 
     @Column(unique=true)
     @NotBlank
@@ -34,5 +34,5 @@ public class DueñoDTO {
 
     @NotBlank
     @Column(unique = true)
-    private String tokenDueño;
+    private String tokenDueno;
 }

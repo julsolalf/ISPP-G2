@@ -4,7 +4,7 @@ import "../../css/inventario/styles.css";
 import { useNavigate } from "react-router-dom";
 import { Bell, User } from "lucide-react";
 
-function PantallaAñadirCategoria(){
+function PantallaAnadirCategoria(){
     const [negocios, setNegocios] = useState(
         [
             {
@@ -28,7 +28,7 @@ function PantallaAñadirCategoria(){
       const toggleUserOptions = () => setShowUserOptions(!showUserOptions);
     
     const handleSubmit =  async (data) => {
-        await fetch('api/categorias',
+        await fetch('http://localhost:8080/api/categorias',
             {
                 method: 'POST',
                 body: JSON.stringify({
@@ -93,7 +93,7 @@ function PantallaAñadirCategoria(){
                 <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
                 <h1 className="title">GastroStock</h1>
                 <MenuIconos/>
-                <h1>Añadir categoría</h1>
+                <h1>Anadir categoría</h1>
 
                 <form action={handleSubmit}>
                     <label>Nombre</label>
@@ -108,11 +108,11 @@ function PantallaAñadirCategoria(){
                     >
                         {negocios.map(negocio => <option value={negocio.id}>{negocio.name}</option>)}
                     </select>
-                    <input type="submit" value="Añadir"/>
+                    <input type="submit" value="Anadir"/>
                 </form>
         </div>
         </div>
     )
 }
 
-export default PantallaAñadirCategoria
+export default PantallaAnadirCategoria

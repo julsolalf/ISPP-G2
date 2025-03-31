@@ -14,7 +14,7 @@ function Proveedores() {
   useEffect(() => {
     const fetchProveedores = async () => {
       try {
-        const response = await axios.get("https://ispp-2425-g2.ew.r.appspot.com/api/proveedores");
+        const response = await axios.get("http://localhost:8080//api/proveedores");
         setProveedores(response.data);
       } catch (error) {
         console.error("Error al obtener los proveedores:", error);
@@ -101,8 +101,8 @@ function Proveedores() {
         <h2>Proveedores</h2>
 
         <div className="button-container3">
-          <button className="button" onClick={() => navigate("/añadirProveedor")}>
-            ➕ Añadir
+          <button className="button" onClick={() => navigate("/anadirProveedor")}>
+            ➕ Anadir
           </button>
           <button className="button">📥 Exportar</button>
           <button className="button">🔍 Filtrar</button>

@@ -201,7 +201,7 @@ const [searchTerm, setSearchTerm] = useState("");
             onChange={(e) => setSearchTerm(e.target.value)} 
           />
           <button className="button">🔍 Filtrar</button>
-          <button className="ver-btn">➕ Añadir todo al 🛒 </button>
+          <button className="ver-btn">➕ Anadir todo al 🛒 </button>
         </div>
         
         <div className="empleados-grid1">
@@ -210,7 +210,7 @@ const [searchTerm, setSearchTerm] = useState("");
               <h3>{producto.nombre}</h3>
               <p>Cantidad: {producto.cantidad}</p>
               <p>Cantidad Alerta: {producto.cantidadAlerta}</p>
-              <button className="ver-btn" >Añadir al 🛒</button>
+              <button className="ver-btn" >Anadir al 🛒</button>
             </div>
           ))}
         </div>

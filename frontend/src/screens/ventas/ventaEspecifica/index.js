@@ -6,7 +6,7 @@ import { Bell, User } from "lucide-react";
 // Función para obtener la venta desde el backend
 const obtenerVenta = async (ventaId) => {
   try {
-    const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/pedidos/${ventaId}`); // URL de la API de venta
+    const response = await fetch(`http://localhost:8080//api/pedidos/${ventaId}`); // URL de la API de venta
     if (!response.ok) {
       throw new Error("Error al obtener la venta");
     }

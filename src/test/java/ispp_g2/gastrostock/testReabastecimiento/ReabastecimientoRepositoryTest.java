@@ -13,8 +13,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import ispp_g2.gastrostock.dueño.Dueño;
-import ispp_g2.gastrostock.dueño.DueñoRepository;
+import ispp_g2.gastrostock.dueno.Dueno;
+import ispp_g2.gastrostock.dueno.DuenoRepository;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioRepository;
 import ispp_g2.gastrostock.proveedores.Proveedor;
@@ -37,11 +37,11 @@ public class ReabastecimientoRepositoryTest {
     private NegocioRepository negocioRepository;
     
     @Autowired
-    private DueñoRepository dueñoRepository;
+    private DuenoRepository duenoRepository;
     
     private Proveedor proveedor1, proveedor2;
     private Negocio negocio1, negocio2;
-    private Dueño dueño1, dueño2;
+    private Dueno dueno1, dueno2;
     private Reabastecimiento reabastecimiento1, reabastecimiento2, reabastecimiento3;
     private LocalDate fecha1, fecha2, fecha3;
     
@@ -51,44 +51,44 @@ public class ReabastecimientoRepositoryTest {
         reabastecimientoRepository.deleteAll();
         proveedorRepository.deleteAll();
         negocioRepository.deleteAll();
-        dueñoRepository.deleteAll();
+        duenoRepository.deleteAll();
         
-        // Crear dueños
-        dueño1 = new Dueño();
-        dueño1.setFirstName("Juan");
-        dueño1.setLastName("García");
-        dueño1.setEmail("juan@example.com");
-        dueño1.setNumTelefono("652345678");
-        dueño1.setTokenDueño("TOKEN123");
-        dueño1 = dueñoRepository.save(dueño1);
+        // Crear duenos
+        dueno1 = new Dueno();
+        dueno1.setFirstName("Juan");
+        dueno1.setLastName("García");
+        dueno1.setEmail("juan@example.com");
+        dueno1.setNumTelefono("652345678");
+        dueno1.setTokenDueno("TOKEN123");
+        dueno1 = duenoRepository.save(dueno1);
         
-        dueño2 = new Dueño();
-        dueño2.setFirstName("María");
-        dueño2.setLastName("López");
-        dueño2.setEmail("maria@example.com");
-        dueño2.setNumTelefono("652345679");
-        dueño2.setTokenDueño("TOKEN456");
-        dueño2 = dueñoRepository.save(dueño2);
+        dueno2 = new Dueno();
+        dueno2.setFirstName("María");
+        dueno2.setLastName("López");
+        dueno2.setEmail("maria@example.com");
+        dueno2.setNumTelefono("652345679");
+        dueno2.setTokenDueno("TOKEN456");
+        dueno2 = duenoRepository.save(dueno2);
         
         // Crear negocios
         negocio1 = new Negocio();
         negocio1.setName("Restaurante La Tasca");
         negocio1.setDireccion("Calle Principal 123");
         negocio1.setCiudad("Sevilla");
-        negocio1.setPais("España");
+        negocio1.setPais("Espana");
         negocio1.setCodigoPostal("41001");
         negocio1.setTokenNegocio(12345);
-        negocio1.setDueño(dueño1);
+        negocio1.setDueno(dueno1);
         negocio1 = negocioRepository.save(negocio1);
         
         negocio2 = new Negocio();
         negocio2.setName("Bar El Rincón");
         negocio2.setDireccion("Plaza Mayor 10");
         negocio2.setCiudad("Madrid");
-        negocio2.setPais("España");
+        negocio2.setPais("Espana");
         negocio2.setCodigoPostal("28001");
         negocio2.setTokenNegocio(67890);
-        negocio2.setDueño(dueño2);
+        negocio2.setDueno(dueno2);
         negocio2 = negocioRepository.save(negocio2);
         
         // Crear proveedores
@@ -185,7 +185,7 @@ public class ReabastecimientoRepositoryTest {
         // Recuperar todos los reabastecimientos
         Iterable<Reabastecimiento> all = reabastecimientoRepository.findAll();
         
-        // Convertir a lista y verificar el tamaño
+        // Convertir a lista y verificar el tamano
         List<Reabastecimiento> allList = (List<Reabastecimiento>) all;
         assertEquals(3, allList.size());
     }

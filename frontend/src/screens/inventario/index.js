@@ -15,7 +15,7 @@ const obtenerCategorias = async () => {
     }
     const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/categorias/negocio/${negocioId}/inventario`);*/
 
-    const response = await fetch("https://ispp-2425-g2.ew.r.appspot.com/api/categorias/negocio/1");
+    const response = await fetch("http://localhost:8080//api/categorias/negocio/1");
     
     if (!response.ok) {
       throw new Error("Error al obtener las categorías");
@@ -116,7 +116,7 @@ function Inventario() {
         <h1 className="title">GastroStock</h1>
         <h2>Inventario</h2>
         <div className="button-container3">
-          <button className="button" onClick={() => navigate("/añadirCategoria")}>➕ Añadir</button>
+          <button className="button" onClick={() => navigate("/anadirCategoria")}>➕ Anadir</button>
           <button className="button">📥 Exportar</button>
           <button className="button">🔍 Filtrar</button>
         </div>

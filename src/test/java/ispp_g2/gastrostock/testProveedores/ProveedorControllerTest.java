@@ -391,9 +391,9 @@ public class ProveedorControllerTest {
         Proveedor proveedorActualizado = new Proveedor();
         proveedorActualizado.setName("Distribuciones Alimentarias Actualizado");
         proveedorActualizado.setEmail("actualizado@example.com");
-        proveedorActualizado.setTelefono("954111333"); // Añadir teléfono
-        proveedorActualizado.setDireccion("Polígono Industrial, Nave 8"); // Añadir dirección
-        // Añadir otros campos obligatorios si los hay
+        proveedorActualizado.setTelefono("954111333"); // Anadir teléfono
+        proveedorActualizado.setDireccion("Polígono Industrial, Nave 8"); // Anadir dirección
+        // Anadir otros campos obligatorios si los hay
         
         when(proveedorService.findById(999)).thenReturn(null);
         

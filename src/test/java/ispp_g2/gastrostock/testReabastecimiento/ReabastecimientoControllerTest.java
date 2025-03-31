@@ -25,7 +25,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import ispp_g2.gastrostock.dueño.Dueño;
+import ispp_g2.gastrostock.dueno.Dueno;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.proveedores.Proveedor;
 import ispp_g2.gastrostock.reabastecimiento.Reabastecimiento;
@@ -51,7 +51,7 @@ public class ReabastecimientoControllerTest {
     private List<Reabastecimiento> reabastecimientos;
     private Proveedor proveedor;
     private Negocio negocio;
-    private Dueño dueño;
+    private Dueno dueno;
     private LocalDate fecha1;
     private LocalDate fecha2;
 
@@ -66,24 +66,24 @@ public class ReabastecimientoControllerTest {
         objectMapper.registerModule(new JavaTimeModule());
         
 
-        // Crear dueño
-        dueño = new Dueño();
-        dueño.setId(1);
-        dueño.setFirstName("Juan");
-        dueño.setLastName("García");
-        dueño.setEmail("juan@example.com");
-        dueño.setNumTelefono("652345678");
-        dueño.setTokenDueño("TOKEN123");
+        // Crear dueno
+        dueno = new Dueno();
+        dueno.setId(1);
+        dueno.setFirstName("Juan");
+        dueno.setLastName("García");
+        dueno.setEmail("juan@example.com");
+        dueno.setNumTelefono("652345678");
+        dueno.setTokenDueno("TOKEN123");
         // Crear negocio
         negocio = new Negocio();
         negocio.setId(1);
         negocio.setName("Restaurante La Tasca");
         negocio.setDireccion("Calle Principal 123");
         negocio.setCiudad("Sevilla");
-        negocio.setPais("España");
+        negocio.setPais("Espana");
         negocio.setCodigoPostal("41001");
         negocio.setTokenNegocio(12345);
-        negocio.setDueño(dueño);
+        negocio.setDueno(dueno);
 
         // Crear proveedor
         proveedor = new Proveedor();
@@ -358,23 +358,23 @@ public class ReabastecimientoControllerTest {
     
     @Test
     void testSave_Success() throws Exception {
-        // Crear Dueño
-        Dueño nuevoDueño = new Dueño();
-        nuevoDueño.setFirstName("Juan");
-        nuevoDueño.setLastName("García");
-        nuevoDueño.setEmail("juan@example.com");
-        nuevoDueño.setNumTelefono("652345678");
-        nuevoDueño.setTokenDueño("TOKEN123");
+        // Crear Dueno
+        Dueno nuevoDueno = new Dueno();
+        nuevoDueno.setFirstName("Juan");
+        nuevoDueno.setLastName("García");
+        nuevoDueno.setEmail("juan@example.com");
+        nuevoDueno.setNumTelefono("652345678");
+        nuevoDueno.setTokenDueno("TOKEN123");
     
         // Crear Negocio
         Negocio nuevoNegocio = new Negocio();
         nuevoNegocio.setName("Restaurante La Tasca");
         nuevoNegocio.setDireccion("Calle Principal 123");
         nuevoNegocio.setCiudad("Sevilla");
-        nuevoNegocio.setPais("España");
+        nuevoNegocio.setPais("Espana");
         nuevoNegocio.setCodigoPostal("41001");
         nuevoNegocio.setTokenNegocio(12345);
-        nuevoNegocio.setDueño(nuevoDueño);
+        nuevoNegocio.setDueno(nuevoDueno);
     
         // Crear Proveedor
         Proveedor nuevoProveedor = new Proveedor();
@@ -434,23 +434,23 @@ public class ReabastecimientoControllerTest {
     
     @Test
     void testUpdate_Success() throws Exception {
-                // Crear Dueño
-                Dueño nuevoDueño = new Dueño();
-                nuevoDueño.setFirstName("Juan");
-                nuevoDueño.setLastName("García");
-                nuevoDueño.setEmail("juan@example.com");
-                nuevoDueño.setNumTelefono("652345678");
-                nuevoDueño.setTokenDueño("TOKEN123");
+                // Crear Dueno
+                Dueno nuevoDueno = new Dueno();
+                nuevoDueno.setFirstName("Juan");
+                nuevoDueno.setLastName("García");
+                nuevoDueno.setEmail("juan@example.com");
+                nuevoDueno.setNumTelefono("652345678");
+                nuevoDueno.setTokenDueno("TOKEN123");
             
                 // Crear Negocio
                 Negocio nuevoNegocio = new Negocio();
                 nuevoNegocio.setName("Restaurante La Tasca");
                 nuevoNegocio.setDireccion("Calle Principal 123");
                 nuevoNegocio.setCiudad("Sevilla");
-                nuevoNegocio.setPais("España");
+                nuevoNegocio.setPais("Espana");
                 nuevoNegocio.setCodigoPostal("41001");
                 nuevoNegocio.setTokenNegocio(12345);
-                nuevoNegocio.setDueño(nuevoDueño);
+                nuevoNegocio.setDueno(nuevoDueno);
             
                 // Crear Proveedor
                 Proveedor nuevoProveedor = new Proveedor();

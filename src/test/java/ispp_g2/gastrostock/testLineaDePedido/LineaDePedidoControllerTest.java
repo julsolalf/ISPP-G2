@@ -92,7 +92,7 @@ public class LineaDePedidoControllerTest {
         negocio.setName("Restaurante Test");
         negocio.setDireccion("Calle Test 123");
         negocio.setCiudad("Sevilla");
-        negocio.setPais("España");
+        negocio.setPais("Espana");
         negocio.setCodigoPostal("41001");
         negocio.setTokenNegocio(12345);
         
@@ -584,7 +584,7 @@ public class LineaDePedidoControllerTest {
     void testUpdate_InvalidBody() throws Exception {
         // When & Then
         mockMvc.perform(put("/api/lineasDePedido/1")
-                .with(csrf())  // Añade el token CSRF
+                .with(csrf())  // Anade el token CSRF
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(lineaInvalida)))
                 .andExpect(status().isBadRequest());

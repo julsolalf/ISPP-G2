@@ -25,7 +25,7 @@ import org.springframework.validation.BindingResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ispp_g2.gastrostock.dueño.Dueño;
+import ispp_g2.gastrostock.dueno.Dueno;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioController;
 import ispp_g2.gastrostock.negocio.NegocioService;
@@ -47,7 +47,7 @@ class NegocioControllerTest {
 
     private Negocio negocio1, negocio2;
     private List<Negocio> negocioList;
-    private Dueño dueño;
+    private Dueno dueno;
     private ObjectMapper objectMapper;
 
     @BeforeEach
@@ -59,32 +59,32 @@ class NegocioControllerTest {
         objectMapper = new ObjectMapper();
         
         // Crear datos de prueba
-        dueño = new Dueño();
-        dueño.setId(1);
-        dueño.setFirstName("Juan Propietario");
-        dueño.setLastName("García");
-        dueño.setEmail("juan@gastrostock.com");
-        dueño.setTokenDueño("TOKEN123");
+        dueno = new Dueno();
+        dueno.setId(1);
+        dueno.setFirstName("Juan Propietario");
+        dueno.setLastName("García");
+        dueno.setEmail("juan@gastrostock.com");
+        dueno.setTokenDueno("TOKEN123");
         
         negocio1 = new Negocio();
         negocio1.setId(1);
         negocio1.setName("Restaurante La Tasca");
         negocio1.setDireccion("Calle Principal 123");
         negocio1.setCiudad("Sevilla");
-        negocio1.setPais("España");
+        negocio1.setPais("Espana");
         negocio1.setCodigoPostal("41001");
         negocio1.setTokenNegocio(12345);
-        negocio1.setDueño(dueño);
+        negocio1.setDueno(dueno);
         
         negocio2 = new Negocio();
         negocio2.setId(2);
         negocio2.setName("Bar El Rincón");
         negocio2.setDireccion("Avenida de la Constitución 45");
         negocio2.setCiudad("Sevilla");
-        negocio2.setPais("España");
+        negocio2.setPais("Espana");
         negocio2.setCodigoPostal("41001");
         negocio2.setTokenNegocio(67890);
-        negocio2.setDueño(dueño);
+        negocio2.setDueno(dueno);
         
         negocioList = Arrays.asList(negocio1, negocio2);
     }
@@ -200,15 +200,15 @@ class NegocioControllerTest {
     @Test
     void testFindNegocioByPais() throws Exception {
 
-        when(negocioService.getByPais("España")).thenReturn(negocioList);
+        when(negocioService.getByPais("Espana")).thenReturn(negocioList);
         
-        mockMvc.perform(get("/api/negocios/pais/España")
+        mockMvc.perform(get("/api/negocios/pais/Espana")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].pais", is("España")));
+                .andExpect(jsonPath("$[0].pais", is("Espana")));
         
-        verify(negocioService).getByPais("España");
+        verify(negocioService).getByPais("Espana");
     }
     @Test
     void testFindNegocioByDireccion() throws Exception {
@@ -230,22 +230,22 @@ class NegocioControllerTest {
     @Test
     void testCreateNegocio() throws Exception {
         // Usando save() en lugar de saveNegocio()
-        Dueño dueñoact = new Dueño();
-        dueñoact.setFirstName("Anton");
-        dueñoact.setLastName("García");
-        dueñoact.setEmail("anton@example.com");
-        dueñoact.setNumTelefono("652349978");
-        dueñoact.setTokenDueño("TOKEN333");
+        Dueno duenoact = new Dueno();
+        duenoact.setFirstName("Anton");
+        duenoact.setLastName("García");
+        duenoact.setEmail("anton@example.com");
+        duenoact.setNumTelefono("652349978");
+        duenoact.setTokenDueno("TOKEN333");
 
         // Crear negocio
         Negocio negocioActualizado = new Negocio();
         negocioActualizado.setName("Restaurante 2 Tasca");
         negocioActualizado.setDireccion("Calle Principal 123");
         negocioActualizado.setCiudad("Sevilla");
-        negocioActualizado.setPais("España");
+        negocioActualizado.setPais("Espana");
         negocioActualizado.setCodigoPostal("41001");
         negocioActualizado.setTokenNegocio(12995);
-        negocioActualizado.setDueño(dueñoact);
+        negocioActualizado.setDueno(duenoact);
 
         when(negocioService.save(any(Negocio.class))).thenReturn(negocioActualizado);
     
@@ -265,10 +265,10 @@ class NegocioControllerTest {
         updatedNegocio.setName("Restaurante Actualizado");
         updatedNegocio.setDireccion("Nueva Dirección 123");
         updatedNegocio.setCiudad("Sevilla");
-        updatedNegocio.setPais("España");
+        updatedNegocio.setPais("Espana");
         updatedNegocio.setCodigoPostal("41001");
         updatedNegocio.setTokenNegocio(12345);
-        updatedNegocio.setDueño(dueño);
+        updatedNegocio.setDueno(dueno);
         
         when(negocioService.getById(1)).thenReturn(negocio1);
         when(negocioService.save(any(Negocio.class))).thenReturn(updatedNegocio);
@@ -288,10 +288,10 @@ class NegocioControllerTest {
         invalidNegocio.setName("Restaurante Inválido");
         invalidNegocio.setDireccion("Calle Principal 123");
         invalidNegocio.setCiudad("Sevilla");
-        invalidNegocio.setPais("España");
+        invalidNegocio.setPais("Espana");
         invalidNegocio.setCodigoPostal("41001");
         invalidNegocio.setTokenNegocio(9999);
-        invalidNegocio.setDueño(dueño);
+        invalidNegocio.setDueno(dueno);
         
         when(negocioService.getById(1)).thenReturn(null);
 

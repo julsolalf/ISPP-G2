@@ -5,7 +5,7 @@ import { Bell, User } from "lucide-react";
 
 const obtenerProductosPorCategoria = async (categoriaId) => {
   try {
-    const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/productosInventario/categoria/${categoriaId}`);
+    const response = await fetch(`http://localhost:8080/api/productosInventario/categoria/${categoriaId}`);
     if (!response.ok) {
       throw new Error("Error al obtener los productos de la categoría");
     }
@@ -23,9 +23,8 @@ function VerTipoProducto() {
   const [categoria, setCategoria] = useState(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
   const [showNotifications, setShowNotifications] = useState(false);
-  const [showUserOptions, setShowUserOptions] = useState(false);
-  const [productos, setProductos] = useState([]);
-    
+    const [showUserOptions, setShowUserOptions] = useState(false);
+  
     const toggleNotifications = () => {
       setShowNotifications(!showNotifications);
     };
@@ -37,6 +36,7 @@ function VerTipoProducto() {
       localStorage.removeItem("userToken"); // Eliminamos el token del usuario
       navigate("/"); // Redirigir a la pantalla de inicio de sesión
     };
+  const [productos, setProductos] = useState([]);
 
 
   useEffect(() => {
@@ -128,6 +128,8 @@ function VerTipoProducto() {
               )}
             </div>
           ))}
+        </div>
+        )}
         {/* Modal de Confirmación para Logout */}
         {showLogoutModal && (
           <div className="modal-overlay">

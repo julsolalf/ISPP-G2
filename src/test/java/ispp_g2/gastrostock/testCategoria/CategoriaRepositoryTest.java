@@ -17,8 +17,8 @@ import org.springframework.test.context.ActiveProfiles;
 import ispp_g2.gastrostock.categorias.Categoria;
 import ispp_g2.gastrostock.categorias.CategoriaRepository;
 import ispp_g2.gastrostock.categorias.Pertenece;
-import ispp_g2.gastrostock.dueño.Dueño;
-import ispp_g2.gastrostock.dueño.DueñoRepository;
+import ispp_g2.gastrostock.dueno.Dueno;
+import ispp_g2.gastrostock.dueno.DuenoRepository;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioRepository;
 
@@ -34,7 +34,7 @@ class CategoriaRepositoryTest {
     private NegocioRepository negocioRepository;
 
     @Autowired
-    private DueñoRepository dueñoRepository;
+    private DuenoRepository duenoRepository;
     
     private Categoria categoria1, categoria2, categoriaInvalida;
     private Negocio negocio;
@@ -43,22 +43,22 @@ class CategoriaRepositoryTest {
     void setUp() {
         // Limpiar repositorios se realiza automáticamente en un contexto de DataJpaTest
 
-        Dueño dueño1 = new Dueño();
-        dueño1.setFirstName("Juan");
-        dueño1.setLastName("García");
-        dueño1.setEmail("juan@example.com");
-        dueño1.setNumTelefono("666111222");
-        dueño1.setTokenDueño("TOKEN999");
-        dueño1 = dueñoRepository.save(dueño1);
+        Dueno dueno1 = new Dueno();
+        dueno1.setFirstName("Juan");
+        dueno1.setLastName("García");
+        dueno1.setEmail("juan@example.com");
+        dueno1.setNumTelefono("666111222");
+        dueno1.setTokenDueno("TOKEN999");
+        dueno1 = duenoRepository.save(dueno1);
 
         negocio = new Negocio();
         negocio.setName("Restaurante La Tasca");
         negocio.setDireccion("Calle Principal 123");
         negocio.setCiudad("Sevilla");
-        negocio.setPais("España");
+        negocio.setPais("Espana");
         negocio.setCodigoPostal("41001");
         negocio.setTokenNegocio(12345);
-        negocio.setDueño(dueño1);
+        negocio.setDueno(dueno1);
         negocio = negocioRepository.save(negocio);
 
         // Crear categoría válida
