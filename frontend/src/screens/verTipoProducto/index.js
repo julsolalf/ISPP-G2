@@ -99,7 +99,7 @@ function VerTipoProducto() {
                   
                    onClick={() => {
                     localStorage.setItem("productoId", producto.id);
-                    navigate(`/categoria/${categoriaId}/producto/${producto.id}`)}}
+                    navigate(`/categoria/${localStorage.getItem("categoriaNombre")}/producto/${producto.id}`)}}
                    style={{ cursor: "pointer" }}>
                 <h3>{producto.name}</h3>
                 <p>Cantidad: {producto.cantidadDeseada}</p>

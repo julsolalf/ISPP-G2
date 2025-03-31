@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "../../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
@@ -19,9 +19,9 @@ const obtenerProducto = async () => {
 function VerProducto() {
   const navigate = useNavigate();
   const [producto, setProducto] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   useEffect(() => {
     const cargarProducto = async () => {
@@ -31,13 +31,26 @@ function VerProducto() {
     cargarProducto();
   }, []);
 
+  const eliminarProducto = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/productosInventario/${producto.id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error("Error al eliminar el producto");
+      }
+      navigate(`/verTipoProducto/${localStorage.getItem("categoriaNombre")}`);
+    } catch (error) {
+      console.error("Error al eliminar el producto:", error);
+    }
+  };
+
   if (!producto) {
     return <h2>Producto no encontrado</h2>;
   }
 
   return (
-    <div
-      className="home-container"
+    <div className="home-container"
       style={{
         backgroundImage: `url(${process.env.PUBLIC_URL + "/background-spices.jpg"})`,
         backgroundSize: "cover",
@@ -47,8 +60,7 @@ function VerProducto() {
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center",
-      }}
-    >
+      }}>
       <div className="content">
         <div className="icon-container-right">
           <Bell size={30} className="icon" onClick={() => setShowNotifications(!showNotifications)} />
@@ -78,33 +90,32 @@ function VerProducto() {
             <ul>
               <li><button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button></li>
               <li><button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button></li>
-              <li><button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button></li>
+              <li><button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button></li>
             </ul>
           </div>
         )}
 
         <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
-
-        <div className="producto-card">
+        <h1>Producto</h1>
+        <div className="empleado-card">
           <h1 className="producto-nombre">{producto.name}</h1>
-          <p className="producto-atributo"><strong>Precio Compra:</strong> {producto.precioCompra}</p>
-          <p className="producto-atributo"><strong>Cantidad Deseada:</strong> {producto.cantidadDeseada}</p>
-          <p className="producto-atributo"><strong>Cantidad Aviso:</strong> {producto.cantidadAviso}</p>
+          <p><strong>Precio Compra:</strong> {producto.precioCompra}</p>
+          <p><strong>Cantidad Deseada:</strong> {producto.cantidadDeseada}</p>
+          <p><strong>Cantidad Aviso:</strong> {producto.cantidadAviso}</p>
           {producto.cantidadDeseada <= producto.cantidadAviso && (
             <p className="producto-alerta">⚠ Stock bajo</p>
           )}
+          <button style={{background: "#157E03", color: "white"}} onClick={() => navigate(`/editarProductoInventario/${producto.id}`)}>Editar Producto</button>
+          <button style={{background: "#9A031E", color: "white"}} onClick={() => setShowDeleteModal(true)}>Eliminar Producto</button>
         </div>
 
-        {showLogoutModal && (
+        {showDeleteModal && (
           <div className="modal-overlay">
             <div className="modal">
-              <h3>¿Está seguro que desea abandonar la sesión?</h3>
+              <h3>¿Está seguro que desea eliminar este producto?</h3>
               <div className="modal-buttons">
-                <button className="confirm-btn" onClick={() => {
-                  localStorage.removeItem("userToken");
-                  navigate("/");
-                }}>Sí</button>
-                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
+                <button className="confirm-btn" onClick={eliminarProducto}>Sí</button>
+                <button className="cancel-btn" onClick={() => setShowDeleteModal(false)}>No</button>
               </div>
             </div>
           </div>
