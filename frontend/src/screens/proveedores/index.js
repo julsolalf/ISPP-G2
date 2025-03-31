@@ -101,8 +101,8 @@ function Proveedores() {
         <h2>Proveedores</h2>
 
         <div className="button-container3">
-          <button className="button" onClick={() => navigate("/añadirProveedor")}>
-            ➕ Añadir
+          <button className="button" onClick={() => navigate("/anadirProveedor")}>
+            ➕ Anadir
           </button>
           <button className="button">📥 Exportar</button>
           <button className="button">🔍 Filtrar</button>

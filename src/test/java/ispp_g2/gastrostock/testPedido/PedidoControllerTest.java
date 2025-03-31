@@ -309,7 +309,7 @@ class PedidoControllerTest {
         negocioUpdate.setName("Restaurante Actualizado");
         negocioUpdate.setDireccion("Calle Nueva 456");
         negocioUpdate.setCiudad("Madrid");
-        negocioUpdate.setPais("España");
+        negocioUpdate.setPais("Espana");
         negocioUpdate.setCodigoPostal("28001");
         negocioUpdate.setTokenNegocio(54321);
         
@@ -361,7 +361,7 @@ void testUpdate_Success() throws Exception {
     negocioUpdate.setName("Restaurante Actualizado");
     negocioUpdate.setDireccion("Calle Nueva 456");
     negocioUpdate.setCiudad("Madrid");
-    negocioUpdate.setPais("España");
+    negocioUpdate.setPais("Espana");
     negocioUpdate.setCodigoPostal("28001");
     negocioUpdate.setTokenNegocio(54321);
     

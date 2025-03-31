@@ -62,8 +62,8 @@ public class NegocioService {
     }
 
     @Transactional(readOnly = true)
-    public List<Negocio> getByDueño(Integer dueño) {
-        return negocioRepository.findByDueño(dueño);
+    public List<Negocio> getByDueno(Integer dueno) {
+        return negocioRepository.findByDueno(dueno);
     }
 
     @Transactional

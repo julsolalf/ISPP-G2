@@ -116,7 +116,7 @@ function Inventario() {
         <h1 className="title">GastroStock</h1>
         <h2>Inventario</h2>
         <div className="button-container3">
-          <button className="button" onClick={() => navigate("/añadirCategoria")}>➕ Añadir</button>
+          <button className="button" onClick={() => navigate("/anadirCategoria")}>➕ Anadir</button>
           <button className="button">📥 Exportar</button>
           <button className="button">🔍 Filtrar</button>
         </div>

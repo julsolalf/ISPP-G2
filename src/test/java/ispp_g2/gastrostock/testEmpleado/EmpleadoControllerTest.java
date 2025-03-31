@@ -97,7 +97,7 @@ class EmpleadoControllerTest {
         negocio.setName("Restaurante Test");
         negocio.setDireccion("Calle Test 123");
         negocio.setCiudad("Sevilla");
-        negocio.setPais("España");
+        negocio.setPais("Espana");
         negocio.setCodigoPostal("41001");
         negocio.setTokenNegocio(12345);
         
@@ -433,7 +433,7 @@ class EmpleadoControllerTest {
         
         // Configurar los mocks necesarios
         when(negocioService.getById(1)).thenReturn(negocio);
-        when(userService.findUserById(1)).thenReturn(user); // AÑADIR ESTA LÍNEA
+        when(userService.findUserById(1)).thenReturn(user); // AnADIR ESTA LÍNEA
         when(empleadoService.convertirDTOEmpleado(any(EmpleadoDTO.class), eq(negocio))).thenReturn(empleado);
         when(empleadoService.saveEmpleado(any(Empleado.class))).thenReturn(empleado1);
         
@@ -447,7 +447,7 @@ class EmpleadoControllerTest {
         
         // Verificar que se llamaron los métodos correctos
         verify(negocioService).getById(1);
-        verify(userService).findUserById(1); // AÑADIR ESTA LÍNEA
+        verify(userService).findUserById(1); // AnADIR ESTA LÍNEA
         verify(empleadoService).saveEmpleado(any(Empleado.class));
     }
     @Test

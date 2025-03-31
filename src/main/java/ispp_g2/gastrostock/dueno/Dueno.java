@@ -1,4 +1,4 @@
-package ispp_g2.gastrostock.dueño;
+package ispp_g2.gastrostock.dueno;
 
 import ispp_g2.gastrostock.model.Person;
 
@@ -11,10 +11,10 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Dueño extends Person {
+public class Dueno extends Person {
 
     @NotBlank
     @Column(unique = true)
-    private String tokenDueño;
+    private String tokenDueno;
 
 }

@@ -63,7 +63,7 @@ class EmpleadoServiceTest {
         negocio.setName("Restaurante Test");
         negocio.setDireccion("Calle Test 123");
         negocio.setCiudad("Sevilla");
-        negocio.setPais("España");
+        negocio.setPais("Espana");
         negocio.setCodigoPostal("41001");
         negocio.setTokenNegocio(12345);
 

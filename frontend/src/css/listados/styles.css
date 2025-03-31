@@ -18,7 +18,7 @@
   text-align: center;
   max-width: 500px; /* Define un ancho fijo */
   width: 90%;
-  margin: 50px auto; /* Añade espacio arriba y abajo */
+  margin: 50px auto; /* Anade espacio arriba y abajo */
   overflow-y: auto; /* Permite hacer scroll si el contenido es muy largo */
   max-height: 85vh; /* Evita que el contenedor sea demasiado alto */
   display: flex;
@@ -177,14 +177,14 @@
   background-color: #a92d4e; /* Mismo color que los botones */
   color: white;
   border: none;
-  padding: 8px 15px; /* Ajustado para menor tamaño */
+  padding: 8px 15px; /* Ajustado para menor tamano */
   font-size: 16px;
   border-radius: 5px;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
   text-align: center;
   width: auto; /* Se adapta al contenido */
   height: 38px; /* Ajustado para igualar los botones */
-  min-width: 120px; /* Un tamaño más corto */
+  min-width: 120px; /* Un tamano más corto */
   max-width: 180px; /* Evita que sea demasiado largo */
 }
 
@@ -267,7 +267,7 @@
   gap: 20px;
   padding: 20px;
   max-height: 400px;  /* Altura máxima para permitir el scroll */
-  overflow-y: auto;   /* Habilita el scroll si el contenido excede el tamaño */
+  overflow-y: auto;   /* Habilita el scroll si el contenido excede el tamano */
 }
 
 .empleados-grid1 {
@@ -276,7 +276,7 @@
   gap: 20px;
   padding: 20px;
   max-height: 400px;  /* Altura máxima para permitir el scroll */
-  overflow-y: auto;   /* Habilita el scroll si el contenido excede el tamaño */
+  overflow-y: auto;   /* Habilita el scroll si el contenido excede el tamano */
 }
 
 /* Estilos de las tarjetas de empleados */

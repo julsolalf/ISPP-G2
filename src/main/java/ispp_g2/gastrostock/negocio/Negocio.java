@@ -1,6 +1,6 @@
 package ispp_g2.gastrostock.negocio;
 
-import ispp_g2.gastrostock.dueño.Dueño;
+import ispp_g2.gastrostock.dueno.Dueno;
 import ispp_g2.gastrostock.model.NamedEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
@@ -31,7 +31,7 @@ public class Negocio extends NamedEntity {
 
     @ManyToOne(optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "dueño_id")
-    private Dueño dueño;
+    @JoinColumn(name = "dueno_id")
+    private Dueno dueno;
 
 }

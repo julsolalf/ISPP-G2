@@ -23,7 +23,7 @@ function PantallaRegistro() {
 
   const handleRegister = async () => {
     if (password !== confirmPassword) {
-      alert("Las contraseñas no coinciden");
+      alert("Las contrasenas no coinciden");
       return;
     }
 
@@ -32,20 +32,20 @@ function PantallaRegistro() {
       lastName: ownerLastName,
       email,
       numTelefono: phone,
-      tokenDueño: token,
+      tokenDueno: token,
       user: {
         username: usuario,
         password: password,
         authority: {
           id: 3,
-          authority: "dueño",
+          authority: "dueno",
         },
       },
     };
 
     try {
       setLoading(true);
-      const response = await axios.post("https://ispp-2425-g2.ew.r.appspot.com/api/dueños", data);
+      const response = await axios.post("https://ispp-2425-g2.ew.r.appspot.com/api/duenos", data);
       console.log("Registro exitoso:", response.data);
       alert("Registro exitoso. Inicia sesión.");
       navigate("/inicioSesion");
@@ -125,14 +125,14 @@ function PantallaRegistro() {
         <h1 className="title">GastroStock</h1>
         <h2>Registrarse</h2>
 
-        <input type="text" placeholder="Nombre del dueño" value={ownerFirstName} onChange={(e) => setOwnerFirstName(e.target.value)} />
-        <input type="text" placeholder="Apellidos del dueño" value={ownerLastName} onChange={(e) => setOwnerLastName(e.target.value)} />
+        <input type="text" placeholder="Nombre del dueno" value={ownerFirstName} onChange={(e) => setOwnerFirstName(e.target.value)} />
+        <input type="text" placeholder="Apellidos del dueno" value={ownerLastName} onChange={(e) => setOwnerLastName(e.target.value)} />
         <input type="email" placeholder="Correo Electrónico" value={email} onChange={(e) => setEmail(e.target.value)} />
         <input type="tel" placeholder="Teléfono" value={phone} onChange={(e) => setPhone(e.target.value)} />
         <input type="text" placeholder="Usuario" value={usuario} onChange={(e) => setUsuario(e.target.value)} />
-        <input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} />
-        <input type="password" placeholder="Confirmar Contraseña" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-        <input type="text" placeholder="Token de dueño" value={token} onChange={(e) => setToken(e.target.value)} />
+        <input type="password" placeholder="Contrasena" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <input type="password" placeholder="Confirmar Contrasena" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+        <input type="text" placeholder="Token de dueno" value={token} onChange={(e) => setToken(e.target.value)} />
         
         <button onClick={handleRegister} className="login-btn" disabled={loading}>
           {loading ? "Registrando..." : "Registrarse"}
