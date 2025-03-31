@@ -2,10 +2,10 @@
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import "./App.css";
 import PantallaInicioSesion from "./screens/inicioSesion/index.js";
-import PantallaRegistroDueño from "./screens/registroDueño/index.js";
-import PantallaRecuperarContraseña from "./screens/recuperarContraseña/index.js";
+import PantallaRegistroDueno from "./screens/registroDueno/index.js";
+import PantallaRecuperarContrasena from "./screens/recuperarContrasena/index.js";
 import PantallaMasInfo from "./screens/masInformacion/index.js";
-import PantallaInicioDueño from "./screens/inicioDueño/index.js";
+import PantallaInicioDueno from "./screens/inicioDueno/index.js";
 import PantallaInicioEmpleado from "./screens/inicioEmpleado/index.js";
 import PantallaPlanes from "./screens/planes/index.js";
 import TPV from "./screens/r/index.js";
@@ -18,10 +18,10 @@ import VerTipoProducto from "./screens/verTipoProducto/index.js";
 import VerProducto from "./screens/verTipoProducto/verProducto/index.js";
 import PantallaAlertaStock from "./screens/alertaStock/index.js";
 import PantallaPerdidas from "./screens/perdidas/index.js";
-import PantallaAñadirEmpleado from "./screens/añadirEmpleado/index.js";
-import PantallaAñadirProveedor from "./screens/añadirProveedor/index.js";
+import PantallaAnadirEmpleado from "./screens/anadirEmpleado/index.js";
+import PantallaAnadirProveedor from "./screens/anadirProveedor/index.js";
 import PantallaPerfil from "./screens/perfil/index.js";
-import PantallaAñadirCategoria from "./screens/añadirCategoria/index.js";
+import PantallaAnadirCategoria from "./screens/anadirCategoria/index.js";
 import VerVentas from "./screens/ventas/index.js";
 import VerVentaEspecifica from "./screens/ventas/ventaEspecifica/index.js";
 
@@ -50,7 +50,7 @@ function AppScreen() {
           <button className="login-btn" onClick={() => navigate("/inicioSesion")}>
             Iniciar Sesión
           </button>
-          <button className="register-btn" onClick={() => navigate("/registroDueño")}>
+          <button className="register-btn" onClick={() => navigate("/registroDueno")}>
             Registrarse
           </button>
         </div>
@@ -72,10 +72,10 @@ function App() {
       <Routes>
         <Route path="/" element={<AppScreen />} />
         <Route path="/inicioSesion" element={<PantallaInicioSesion />} />
-        <Route path="/recuperarContraseña" element={<PantallaRecuperarContraseña />} />
-        <Route path="/registroDueño" element={<PantallaRegistroDueño />} />
+        <Route path="/recuperarContrasena" element={<PantallaRecuperarContrasena />} />
+        <Route path="/registroDueno" element={<PantallaRegistroDueno />} />
         <Route path="/masInformacion" element={<PantallaMasInfo />} />
-        <Route path="/inicioDueño" element={<PantallaInicioDueño />} />
+        <Route path="/inicioDueno" element={<PantallaInicioDueno />} />
         <Route path="/inicioEmpleado" element={<PantallaInicioEmpleado />} />
         <Route path="/planes" element={<PantallaPlanes />} />
         <Route path="/dashboard" element={<Dashboard />} />
@@ -87,10 +87,10 @@ function App() {
         <Route path="/empleados" element={<PantallaEmpleados />} />
         <Route path="/alertaStock" element={<PantallaAlertaStock />} />
         <Route path="/perdidas" element={<PantallaPerdidas />} />
-        <Route path="/añadirEmpleado" element={<PantallaAñadirEmpleado />} />
-        <Route path="/añadirProveedor" element={<PantallaAñadirProveedor />} />
+        <Route path="/anadirEmpleado" element={<PantallaAnadirEmpleado />} />
+        <Route path="/anadirProveedor" element={<PantallaAnadirProveedor />} />
         <Route path="/perfil" element={<PantallaPerfil/>} />
-        <Route path="/añadirCategoria" element={<PantallaAñadirCategoria/>} />
+        <Route path="/anadirCategoria" element={<PantallaAnadirCategoria/>} />
         <Route path="/ventas/:ventaId" element={<VerVentaEspecifica />} />
 
       </Routes>

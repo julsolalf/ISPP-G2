@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Bell, User } from "lucide-react";
 import "../../css/inicio/styles.css";
 
-function PantallaInicioDueño() {
+function PantallaInicioDueno() {
   const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
@@ -101,4 +101,4 @@ function PantallaInicioDueño() {
   );
 }
 
-export default PantallaInicioDueño;
+export default PantallaInicioDueno;

@@ -11,34 +11,34 @@ DELETE FROM producto_venta;
 DELETE FROM mesa;
 DELETE FROM empleado;
 DELETE FROM negocio;
-DELETE FROM dueño;
+DELETE FROM dueno;
 DELETE FROM app_user;
 DELETE FROM authorities;
 
 -- Insertando autoridades
-INSERT INTO authorities (id, authority) VALUES (1,'dueño');
+INSERT INTO authorities (id, authority) VALUES (1,'dueno');
 INSERT INTO authorities (id, authority) VALUES (2,'empleado');
 
 -- Insertando usuarios
-INSERT INTO app_user (id, username, password, authority_id) VALUES (1, 'admin', 'admin123', (SELECT id FROM authorities WHERE authority = 'dueño'));
-INSERT INTO app_user (id, username, password, authority_id) VALUES (2, 'admin2', 'admin123', (SELECT id FROM authorities WHERE authority = 'dueño'));
+INSERT INTO app_user (id, username, password, authority_id) VALUES (1, 'admin', 'admin123', (SELECT id FROM authorities WHERE authority = 'dueno'));
+INSERT INTO app_user (id, username, password, authority_id) VALUES (2, 'admin2', 'admin123', (SELECT id FROM authorities WHERE authority = 'dueno'));
 INSERT INTO app_user (id, username, password, authority_id) VALUES (3, 'juan', 'password123', (SELECT id FROM authorities WHERE authority = 'empleado'));
 INSERT INTO app_user (id, username, password, authority_id) VALUES (4, 'alejandro', 'password123', (SELECT id FROM authorities WHERE authority = 'empleado'));
 INSERT INTO app_user (id, username, password, authority_id) VALUES (5, 'antonio', 'password123', (SELECT id FROM authorities WHERE authority = 'empleado'));
 INSERT INTO app_user (id, username, password, authority_id) VALUES (6, 'paco', 'password123', (SELECT id FROM authorities WHERE authority = 'empleado'));
 INSERT INTO app_user (id, username, password, authority_id) VALUES (7, 'fernando', 'password123', (SELECT id FROM authorities WHERE authority = 'empleado'));
 
--- Insertando dueños
-INSERT INTO dueño (id, first_name, last_name, email, num_telefono, token_dueño, user_id)
+-- Insertando duenos
+INSERT INTO dueno (id, first_name, last_name, email, num_telefono, token_dueno, user_id)
 VALUES (1, 'Carlos', 'Perez', 'carlos.perez@gmail.com', '123486789', 'tokenD1', (SELECT id FROM app_user WHERE username = 'admin'));
-INSERT INTO dueño (id, first_name, last_name, email, num_telefono, token_dueño, user_id)
+INSERT INTO dueno (id, first_name, last_name, email, num_telefono, token_dueno, user_id)
 VALUES (2, 'Pablo', 'Rivas', 'pablo.rivas@gmail.com', '123456789', 'tokenD2', (SELECT id FROM app_user WHERE username = 'admin2'));
 
 -- Insertando negocios
-INSERT INTO negocio (id, name, token_negocio, direccion, codigo_postal, ciudad, pais, dueño_id)
-VALUES (1, 'Restaurante La Trattoria', 12345, 'Calle Falsa 123', '28001', 'Madrid', 'España', (SELECT id FROM dueño WHERE first_name = 'Carlos'));
-INSERT INTO negocio (id, name, token_negocio, direccion, codigo_postal, ciudad, pais, dueño_id)
-VALUES (2, 'Restaurante Burguer', 09876, 'Calle Falsa 123', '28001', 'Madrid', 'España', (SELECT id FROM dueño WHERE first_name = 'Carlos'));
+INSERT INTO negocio (id, name, token_negocio, direccion, codigo_postal, ciudad, pais, dueno_id)
+VALUES (1, 'Restaurante La Trattoria', 12345, 'Calle Falsa 123', '28001', 'Madrid', 'Espana', (SELECT id FROM dueno WHERE first_name = 'Carlos'));
+INSERT INTO negocio (id, name, token_negocio, direccion, codigo_postal, ciudad, pais, dueno_id)
+VALUES (2, 'Restaurante Burguer', 09876, 'Calle Falsa 123', '28001', 'Madrid', 'Espana', (SELECT id FROM dueno WHERE first_name = 'Carlos'));
 
 -- Insertando empleados
 INSERT INTO empleado (id, first_name, last_name, email, num_telefono, token_empleado, descripcion, negocio_id, user_id)

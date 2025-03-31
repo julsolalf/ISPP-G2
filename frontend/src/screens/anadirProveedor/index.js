@@ -4,11 +4,12 @@ import axios from "axios";
 import "../../css/paginasBase/styles.css";
 import { Bell, User } from "lucide-react"; 
 
-function AñadirProveedor() {
+function AnadirProveedor() {
   const [name, setNombre] = useState("");
   const [email, setEmail] = useState("");
   const [telefono, setTelefono] = useState("");
   const [direccion, setDireccion] = useState(""); 
+  const [descripcion, setDescripcion] = useState(""); 
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
@@ -29,18 +30,20 @@ function AñadirProveedor() {
   const navigate = useNavigate();
 
   const handleRegister = async () => {
-    console.log("Añadiendo proveedor con:", {
+    console.log("Anadiendo proveedor con:", {
       name,
       email,
       telefono,
-      direccion
+      direccion,
+      descripcion
     });
 
     const proveedorData = {
       name,
       email,
       telefono,
-      direccion
+      direccion,
+      descripcion
     };
 
     try {
@@ -49,7 +52,7 @@ function AñadirProveedor() {
         navigate("/proveedores"); 
       }
     } catch (error) {
-      console.error("Error al añadir el proveedor:", error.response ? error.response.data : error.message);
+      console.error("Error al anadir el proveedor:", error.response ? error.response.data : error.message);
     }
   };
 
@@ -109,7 +112,7 @@ function AñadirProveedor() {
 
         <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
         <h1 className="title">GastroStock</h1>
-        <h2>Añadir Proveedor</h2>
+        <h2>Anadir Proveedor</h2>
 
         <input
           type="text"
@@ -142,7 +145,7 @@ function AñadirProveedor() {
           onChange={(e) => setDescripcion(e.target.value)}
         />
 
-        <button onClick={handleRegister} className="login-btn">Añadir Proveedor</button>
+        <button onClick={handleRegister} className="login-btn">Anadir Proveedor</button>
         {/* Modal de Confirmación para Logout */}
         {showLogoutModal && (
           <div className="modal-overlay">
@@ -160,4 +163,4 @@ function AñadirProveedor() {
   );
 }
 
-export default AñadirProveedor;
+export default AnadirProveedor;

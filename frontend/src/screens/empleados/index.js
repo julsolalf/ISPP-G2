@@ -84,7 +84,7 @@ function Empleados() {
         <h2>Empleados</h2>
 
         <div className="button-container3">
-          <button className="button" onClick={() => navigate("/añadirEmpleado")}>➕ Añadir</button>
+          <button className="button" onClick={() => navigate("/anadirEmpleado")}>➕ Anadir</button>
           <button className="button">📥 Exportar</button>
           <button className="button">🔍 Filtrar</button>
         </div>

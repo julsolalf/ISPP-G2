@@ -4,7 +4,7 @@ import axios from "axios";
 import "../../css/paginasBase/styles.css";
 import { Bell, User } from "lucide-react"; 
 
-function AñadirEmpleado() {
+function AnadirEmpleado() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -56,12 +56,12 @@ function AñadirEmpleado() {
     try {
       const response = await axios.post("http://localhost:8080/api/empleados", empleadoData);
       if (response.status === 201) {
-        alert("Empleado añadido con éxito");
+        alert("Empleado anadido con éxito");
         navigate("/empleados");  
       }
     } catch (error) {
-      console.error("Error al añadir empleado:", error);
-      alert("Hubo un problema al añadir el empleado");
+      console.error("Error al anadir empleado:", error);
+      alert("Hubo un problema al anadir el empleado");
     }
   };
 
@@ -127,7 +127,7 @@ function AñadirEmpleado() {
 
         <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
         <h1 className="title">GastroStock</h1>
-        <h2>Añadir Empleado</h2>
+        <h2>Anadir Empleado</h2>
 
         <input
           type="text"
@@ -161,7 +161,7 @@ function AñadirEmpleado() {
         />
         <input
           type="password"
-          placeholder="Contraseña"
+          placeholder="Contrasena"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
@@ -190,7 +190,7 @@ function AñadirEmpleado() {
           onChange={(e) => setNegocio(e.target.value)}
         />
 
-        <button onClick={handleRegister} className="login-btn">Añadir Empleado</button>
+        <button onClick={handleRegister} className="login-btn">Anadir Empleado</button>
         {/* Modal de Confirmación para Logout */}
         {showLogoutModal && (
           <div className="modal-overlay">
@@ -208,4 +208,4 @@ function AñadirEmpleado() {
   );
 }
 
-export default AñadirEmpleado;
+export default AnadirEmpleado;

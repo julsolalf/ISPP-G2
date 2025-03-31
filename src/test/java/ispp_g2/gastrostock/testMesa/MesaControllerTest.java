@@ -30,7 +30,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ispp_g2.gastrostock.dueño.Dueño;
+import ispp_g2.gastrostock.dueno.Dueno;
 import ispp_g2.gastrostock.exceptions.ExceptionHandlerController;
 import ispp_g2.gastrostock.mesa.Mesa;
 import ispp_g2.gastrostock.mesa.MesaController;
@@ -53,7 +53,7 @@ public class MesaControllerTest {
 
     private Mesa mesa1, mesa2, mesa3, mesaInvalida, mesaNueva;
     private Negocio negocio;
-    private Dueño dueño;
+    private Dueno dueno;
     private List<Mesa> mesasList;
 
     @BeforeEach
@@ -66,14 +66,14 @@ public class MesaControllerTest {
         // Configurar ObjectMapper
         objectMapper = new ObjectMapper();
         
-        // Crear dueño
-        dueño = new Dueño();
-        dueño.setId(1);
-        dueño.setFirstName("Juan");
-        dueño.setLastName("García");
-        dueño.setEmail("juan@example.com");
-        dueño.setNumTelefono("652345678");
-        dueño.setTokenDueño("TOKEN123");
+        // Crear dueno
+        dueno = new Dueno();
+        dueno.setId(1);
+        dueno.setFirstName("Juan");
+        dueno.setLastName("García");
+        dueno.setEmail("juan@example.com");
+        dueno.setNumTelefono("652345678");
+        dueno.setTokenDueno("TOKEN123");
 
         // Crear negocio
         negocio = new Negocio();
@@ -81,10 +81,10 @@ public class MesaControllerTest {
         negocio.setName("Restaurante La Tasca");
         negocio.setDireccion("Calle Principal 123");
         negocio.setCiudad("Sevilla");
-        negocio.setPais("España");
+        negocio.setPais("Espana");
         negocio.setCodigoPostal("41001");
         negocio.setTokenNegocio(12345);
-        negocio.setDueño(dueño);
+        negocio.setDueno(dueno);
 
         // Crear mesas
         mesa1 = new Mesa();
@@ -302,22 +302,22 @@ public class MesaControllerTest {
     @Test
     void testCreate_Success() throws Exception {
        
-        Dueño dueñoact = new Dueño();
-        dueñoact.setFirstName("Anton");
-        dueñoact.setLastName("García");
-        dueñoact.setEmail("anton@example.com");
-        dueñoact.setNumTelefono("652349978");
-        dueñoact.setTokenDueño("TOKEN333");
+        Dueno duenoact = new Dueno();
+        duenoact.setFirstName("Anton");
+        duenoact.setLastName("García");
+        duenoact.setEmail("anton@example.com");
+        duenoact.setNumTelefono("652349978");
+        duenoact.setTokenDueno("TOKEN333");
 
         // Crear negocio
         Negocio negocioActualizado = new Negocio();
         negocioActualizado.setName("Restaurante 2 Tasca");
         negocioActualizado.setDireccion("Calle Principal 123");
         negocioActualizado.setCiudad("Sevilla");
-        negocioActualizado.setPais("España");
+        negocioActualizado.setPais("Espana");
         negocioActualizado.setCodigoPostal("41001");
         negocioActualizado.setTokenNegocio(12995);
-        negocioActualizado.setDueño(dueñoact);
+        negocioActualizado.setDueno(duenoact);
         
         Mesa mesaCreada = new Mesa();
         mesaCreada.setName("Mesa Nueva");
@@ -369,22 +369,22 @@ public class MesaControllerTest {
     @Test
     void testUpdate_Success() throws Exception {
        
-        Dueño dueñoact = new Dueño();
-        dueñoact.setFirstName("Anton");
-        dueñoact.setLastName("García");
-        dueñoact.setEmail("anton@example.com");
-        dueñoact.setNumTelefono("652349978");
-        dueñoact.setTokenDueño("TOKEN333");
+        Dueno duenoact = new Dueno();
+        duenoact.setFirstName("Anton");
+        duenoact.setLastName("García");
+        duenoact.setEmail("anton@example.com");
+        duenoact.setNumTelefono("652349978");
+        duenoact.setTokenDueno("TOKEN333");
 
         // Crear negocio
         Negocio negocioActualizado = new Negocio();
         negocioActualizado.setName("Restaurante 2 Tasca");
         negocioActualizado.setDireccion("Calle Principal 123");
         negocioActualizado.setCiudad("Sevilla");
-        negocioActualizado.setPais("España");
+        negocioActualizado.setPais("Espana");
         negocioActualizado.setCodigoPostal("41001");
         negocioActualizado.setTokenNegocio(12995);
-        negocioActualizado.setDueño(dueñoact);
+        negocioActualizado.setDueno(duenoact);
 
         Mesa mesaActualizada = new Mesa();
         mesaActualizada.setName("Mesa Exterior Actualizada");

@@ -11,15 +11,15 @@ function PantallaInicioSesion() {
   const handleLogin = async () => {
     try {
       const [empleadosResponse, duenosResponse] = await Promise.all([
-        axios.get("https://ispp-2425-g2.ew.r.appspot.com/api/empleados"),
-        axios.get("https://ispp-2425-g2.ew.r.appspot.com/api/dueños"),
+        axios.get("http://localhost:8080/api/empleados"),
+        axios.get("http://localhost:8080/api/duenos"),
       ]);
 
       const empleado = empleadosResponse.data.find(
         (user) =>
           user.user.username === usuario && user.user.password === password
       );
-      const dueño = duenosResponse.data.find(
+      const dueno = duenosResponse.data.find(
         (user) =>
           user.user.username === usuario && user.user.password === password
       );
@@ -28,9 +28,9 @@ function PantallaInicioSesion() {
         localStorage.setItem("user", JSON.stringify(empleado));
         navigate("/inicioEmpleado");
       }
-      else if (dueño) {
-        localStorage.setItem("user", JSON.stringify(dueño));
-        navigate("/inicioDueño");
+      else if (dueno) {
+        localStorage.setItem("user", JSON.stringify(dueno));
+        navigate("/inicioDueno");
       } else {
         throw new Error("Credenciales incorrectas.");
       }
@@ -68,14 +68,14 @@ function PantallaInicioSesion() {
         />
         <input
           type="password"
-          placeholder="Contraseña"
+          placeholder="Contrasena"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
         <button onClick={handleLogin} className="login-btn">Iniciar Sesión</button>
 
-        <Link to="/recuperarcontraseña" className="forgot-password-link">
-          ¿Has olvidado la contraseña?
+        <Link to="/recuperarcontrasena" className="forgot-password-link">
+          ¿Has olvidado la contrasena?
         </Link>
       </div>
     </div>
