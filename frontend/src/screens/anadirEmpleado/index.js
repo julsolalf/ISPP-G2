@@ -13,14 +13,15 @@ function AnadirEmpleado() {
   const [turno, setTurno] = useState("");
   const [posicion, setPosicion] = useState("");
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [showUserOptions, setShowUserOptions] = useState(false);
   const [descripcion, setDescripcion] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [negocio, setNegocio] = useState("");  
   const [tokenEmpleado, setTokenEmpleado] = useState("");
   const navigate = useNavigate();
+
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showUserOptions, setShowUserOptions] = useState(false);
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
