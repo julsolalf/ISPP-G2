@@ -4,7 +4,7 @@ import axios from "axios";
 import { Bell, User } from "lucide-react";
 import "../../css/paginasBase/styles.css";
 
-function PantallaRegistroDueño() {
+function PantallaRegistroDueno() {
   const [ownerFirstName, setOwnerFirstName] = useState("");
   const [ownerLastName, setOwnerLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -37,7 +37,7 @@ function PantallaRegistroDueño() {
         username: usuario,
         password: password,
         authority: {
-          id: 3,
+          id: 1,
           authority: "dueno",
         },
       },
@@ -142,4 +142,4 @@ function PantallaRegistroDueño() {
   );
 }
 
-export default PantallaRegistroDueño;
+export default PantallaRegistroDueno;

@@ -29,7 +29,7 @@ function PantallaRegistroNegocio() {
       codigoPostal,
       ciudad,
       pais,
-      dueño: { id: 1 }
+      dueno: { id: 1 }
     };
 
     try {

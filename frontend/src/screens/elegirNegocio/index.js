@@ -12,7 +12,7 @@ function Empleados() {
 
   const loadNegocios = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/negocios/dueño/1");  // Arrglar para que coja el negocio del usuario
+      const response = await axios.get("http://localhost:8080/api/negocios/dueno/1");  // Arrglar para que coja el negocio del usuario
       setNegocios(response.data); 
     } catch (error) {
       console.error("Error al cargar los negocios:", error);
@@ -82,7 +82,7 @@ function Empleados() {
             negocios.map((negocio, index) => (
               <div key={index} className="empleado-card">
                 <h3>{negocio.name}</h3>
-                <button className="ver-btn" onClick={() => navigate("/inicioDueño")}>Ver</button>
+                <button className="ver-btn" onClick={() => navigate("/inicioDueno")}>Ver</button>
               </div>
             ))
           ) : (
