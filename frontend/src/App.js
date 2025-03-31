@@ -25,6 +25,10 @@ import PantallaAnadirCategoria from "./screens/anadirCategoria/index.js";
 import VerVentas from "./screens/ventas/index.js";
 import VerVentaEspecifica from "./screens/ventas/ventaEspecifica/index.js";
 
+import Carta from "./screens/cartaEmpleado/index.js";
+import VerProductosVenta from "./screens/verTipoProductoCarta/index.js";
+import VerProductoCarta from "./screens/verTipoProductoCarta/verProductoCarta/index.js";
+
 
 function AppScreen() {
   const navigate = useNavigate();
@@ -92,6 +96,9 @@ function App() {
         <Route path="/perfil" element={<PantallaPerfil/>} />
         <Route path="/anadirCategoria" element={<PantallaAnadirCategoria/>} />
         <Route path="/ventas/:ventaId" element={<VerVentaEspecifica />} />
+        <Route path="/carta" element={<Carta />} />
+        <Route path="/verTipoProductoCarta/:categoriaId" element={<VerProductosVenta />} />
+        <Route path="/categoria/:categoriaId/productoCarta/:productoNombre" element={<VerProductoCarta />} />
 
       </Routes>
     </Router>
