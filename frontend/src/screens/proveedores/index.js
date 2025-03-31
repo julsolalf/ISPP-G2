@@ -85,9 +85,7 @@ function Proveedores() {
                 </button>
               </li>
               <li>
-                <button className="user-btn" onClick={() => navigate("/logout")}>
-                  Cerrar Sesión
-                </button>
+              <button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
               </li>
             </ul>
           </div>

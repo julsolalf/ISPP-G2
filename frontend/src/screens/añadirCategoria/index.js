@@ -21,11 +21,17 @@ function PantallaAñadirCategoria(){
       const navigate = useNavigate();
     const [showNotifications, setShowNotifications] = useState(false);
       const [showUserOptions, setShowUserOptions] = useState(false);
+      const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
     const [searchTerm, setSearchTerm] = useState("");
       
     
       const toggleNotifications = () => setShowNotifications(!showNotifications);
       const toggleUserOptions = () => setShowUserOptions(!showUserOptions);
+
+      const handleLogout = () => {
+        localStorage.removeItem("userToken"); // Eliminamos el token del usuario
+        navigate("/"); // Redirigir a la pantalla de inicio de sesión
+      };
     
     const handleSubmit =  async (data) => {
         await fetch('api/categorias',
@@ -84,7 +90,7 @@ function PantallaAñadirCategoria(){
                     <ul>
                     <li><button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button></li>
                     <li><button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button></li>
-                    <li><button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button></li>
+                    <li><button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button></li>
                     </ul>
                 </div>
                 )}
@@ -110,6 +116,19 @@ function PantallaAñadirCategoria(){
                     </select>
                     <input type="submit" value="Añadir"/>
                 </form>
+
+                {/* Modal de Confirmación para Logout */}
+         {showLogoutModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>¿Está seguro que desea abandonar la sesión?</h3>
+              <div className="modal-buttons">
+                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
+                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
+              </div>
+            </div>
+          </div>
+        )}
         </div>
         </div>
     )
