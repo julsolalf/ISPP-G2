@@ -28,7 +28,7 @@ function PantallaAnadirCategoria(){
       const toggleUserOptions = () => setShowUserOptions(!showUserOptions);
     
     const handleSubmit =  async (data) => {
-        await fetch('api/categorias',
+        await fetch('http://localhost:8080/api/categorias',
             {
                 method: 'POST',
                 body: JSON.stringify({
