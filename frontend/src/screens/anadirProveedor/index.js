@@ -9,10 +9,13 @@ function AnadirProveedor() {
   const [email, setEmail] = useState("");
   const [telefono, setTelefono] = useState("");
   const [direccion, setDireccion] = useState(""); 
-  const [descripcion, setDescripcion] = useState(""); 
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
-  const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
+  const [showLogoutModal, setShowLogoutModal] = useState(false); 
+  //IMPORTANTE
+  // TODO: Cambiar el negocio_id por el que se obtiene del contexto de autenticación o del estado global
+  //  const { negocio_id } = useAuth(); 
+  const negocio_id = 1; // Simulación de negocio_id, reemplazar con el valor real
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
@@ -30,12 +33,17 @@ function AnadirProveedor() {
   const navigate = useNavigate();
 
   const handleRegister = async () => {
-    console.log("Anadiendo proveedor con:", {
+    if (!negocio_id) {
+      alert("No se ha seleccionado un negocio.");
+      return;
+    }
+
+    console.log("Añadiendo proveedor con:", {
       name,
       email,
       telefono,
       direccion,
-      descripcion
+      negocio_id
     });
 
     const proveedorData = {
@@ -43,7 +51,7 @@ function AnadirProveedor() {
       email,
       telefono,
       direccion,
-      descripcion
+      negocio: { id: negocio_id }
     };
 
     try {
@@ -52,9 +60,10 @@ function AnadirProveedor() {
         navigate("/proveedores"); 
       }
     } catch (error) {
-      console.error("Error al anadir el proveedor:", error.response ? error.response.data : error.message);
+      console.error("Error al añadir el proveedor:", error.response ? error.response.data : error.message);
     }
   };
+
 
   return (
     <div 

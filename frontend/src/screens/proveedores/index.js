@@ -6,22 +6,35 @@ import "../../css/listados/styles.css";
 
 function Proveedores() {
   const navigate = useNavigate();
+  
+//  const { negocioId } = useAuth(); 
+const negocioId = 1; 
   const [proveedores, setProveedores] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
 
   useEffect(() => {
+    if (!negocioId) {
+      console.error("No se ha seleccionado un negocio.");
+      return;
+    }
+
     const fetchProveedores = async () => {
       try {
-        const response = await axios.get("http://localhost:8080//api/proveedores");
+        const response = await axios.get(
+          `http://localhost:8080/api/proveedores/negocio/${negocioId}`
+        );
         setProveedores(response.data);
       } catch (error) {
         console.error("Error al obtener los proveedores:", error);
       }
     };
+
     fetchProveedores();
-  }, []);
+  }, [negocioId]); // Se ejecuta cuando cambia el negocioId
+
+  
 
   const toggleNotifications = () => setShowNotifications(!showNotifications);
   const toggleUserOptions = () => setShowUserOptions(!showUserOptions);
