@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.Base64.Decoder;
 import java.util.function.Function;
 
@@ -29,12 +30,8 @@ import ispp_g2.gastrostock.user.UserService;
 import lombok.AllArgsConstructor;
 
 @Service
-@AllArgsConstructor
 public class JwtService {
 
-    private final DuenoService duenoService;
-    private final EmpleadoService empleadoService;
-    private final UserService userService;
 
     private static final String SECRET_KEY = "GastroStockSecretKeyGastroStockSecretKeyGastroStockSecretKeyGastroStockSecretKeyGastroStockSecretKeyGastroStockSecretKey";
 
@@ -48,27 +45,12 @@ public class JwtService {
             .setSubject(user.getUsername())
             .setIssuedAt(new Date(System.currentTimeMillis()))
             .setExpiration(new Date(System.currentTimeMillis() + 1000*60*24))
-            .signWith(getKey(user),SignatureAlgorithm.HS256)
+            .setId(String.valueOf((new Random()).nextInt(100)))
+            .signWith(getKey(),SignatureAlgorithm.HS256)
             .compact();
     }
 
-    private Key getKey(UserDetails userDetails) {
-        /*User user = userService.findUserByUsername(userDetails.getUsername());
-        Authorities authority = user.getAuthority();
-        switch (authority.getAuthority()) {
-            case "dueno":
-                Dueno dueno = duenoService.getDuenoByUser(user.getId());
-                byte[] keyBytesDueno = Decoders.BASE64.decode(
-                    dueno.getTokenDueno().substring(4)+ 
-                    SECRET_KEY);
-                return Keys.hmacShaKeyFor(keyBytesDueno);
-            default:
-                Empleado empleado = empleadoService.getEmpleadoByUser(user.getId());
-                byte[] keyBytesEmpleado = Decoders.BASE64.decode(
-                    empleado.getTokenEmpleado().substring(4)+ 
-                    SECRET_KEY);
-                return Keys.hmacShaKeyFor(keyBytesEmpleado);
-        }*/
+    private Key getKey() {
         byte[] keyBytesEmpleado = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytesEmpleado);
     }
@@ -85,7 +67,7 @@ public class JwtService {
     private Claims getAllClaims(String jwt) {
 
         return Jwts.parserBuilder()
-            .setSigningKey(getKey(null))
+            .setSigningKey(getKey())
             .build()
             .parseClaimsJws(jwt)
             .getBody();
