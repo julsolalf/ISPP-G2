@@ -2,7 +2,7 @@ name: SonarQube Analysis
 
 on:
   push:
-    branches: [ main, develop, feat/270 ]
+    branches: [ main, develop]
   pull_request:
     branches: [ main, develop ]
   workflow_dispatch:  # Para poder ejecutar manualmente desde la interfaz de GitHub
