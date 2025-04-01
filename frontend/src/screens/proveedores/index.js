@@ -8,13 +8,15 @@ import "../../css/listados/styles.css";
 
 function Proveedores() {
   const navigate = useNavigate();
+  //  const { negocioId } = useAuth(); 
+  //TODO: Cambiar por el negocioId del usuario logueado
   const negocioId = 1; // Simulación de negocio ID
   const [proveedores, setProveedores] = useState([]);
-  const [filtro, setFiltro] = useState(""); // Estado para filtrar proveedores
+  const [filtro, setFiltro] = useState(""); 
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [ordenAscendente, setOrdenAscendente] = useState(true); // Estado para controlar el orden
+  const [ordenAscendente, setOrdenAscendente] = useState(true); 
 
   useEffect(() => {
     if (!negocioId) {
@@ -34,12 +36,10 @@ function Proveedores() {
     fetchProveedores();
   }, [negocioId]);
 
-  // 🔍 Función para filtrar proveedores por nombre
   const proveedoresFiltrados = proveedores.filter((prov) =>
     prov.name.toLowerCase().includes(filtro.toLowerCase())
   );
 
-  // 🧮 Función para ordenar proveedores por nombre
   const proveedoresOrdenados = [...proveedoresFiltrados].sort((a, b) => {
     const nombreA = a.name.toLowerCase();
     const nombreB = b.name.toLowerCase();
@@ -53,7 +53,6 @@ function Proveedores() {
     return 0;
   });
 
-  // 📄 Función para exportar a PDF
   const exportarPDF = () => {
     const doc = new jsPDF();
     
@@ -124,7 +123,6 @@ function Proveedores() {
           <button className="button" onClick={() => navigate("/anadirProveedor")}>➕ Añadir</button>
           <button className="button" onClick={exportarPDF}>📥 Exportar</button>
           
-          {/* Dropdown de filtro */}
           <div className="filter-container">
             <button className="filter-btn">🔍 Filtrar</button>
             <div className="filter-options">

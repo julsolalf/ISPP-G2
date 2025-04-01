@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../../css/listados/styles.css";  // Asegúrate de que tu archivo de estilos tenga las clases necesarias
+import "../../css/listados/styles.css";  
 import { Bell, User } from "lucide-react";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
+//  const { negocioId } = useAuth(); 
+  //TODO: Cambiar por el negocioId del usuario logueado
+  const negocioId = 1; // Simulación de negocio ID
 // Función para obtener los pedidos desde la API
 const obtenerPedidos = async () => {
   try {
-    const response = await fetch("http://localhost:8080//api/pedidos");  // URL de la API de pedidos
+    const response = await fetch(`http://localhost:8080/api/pedidos/negocio/${negocioId}`); 
     if (!response.ok) {
       throw new Error("Error al obtener los pedidos");
     }
@@ -23,6 +28,8 @@ function VerPedidos() {
   const [pedidos, setPedidos] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filter, setFilter] = useState("");  
 
   useEffect(() => {
     const cargarDatos = async () => {
@@ -32,6 +39,48 @@ function VerPedidos() {
 
     cargarDatos();
   }, []);
+
+  const handleFilter = () => {
+    let filteredPedidos = [...pedidos];
+    if (searchTerm) {
+      filteredPedidos = filteredPedidos.filter((pedido) =>
+        `${pedido.empleado.firstName} ${pedido.empleado.lastName}`.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    
+
+    if (filter === "fecha-ascendente") {
+      filteredPedidos.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+    } else if (filter === "fecha-descendente") {
+      filteredPedidos.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+    } else if (filter === "precio-ascendente") {
+      filteredPedidos.sort((a, b) => a.precioTotal - b.precioTotal);
+    } else if (filter === "precio-descendente") {
+      filteredPedidos.sort((a, b) => b.precioTotal - a.precioTotal);
+    }
+
+    return filteredPedidos;
+  };
+
+  const exportarPDF = (pedidos) => {
+    const doc = new jsPDF();
+    const headers = [["ID", "Fecha", "Total", "Mesa", "Empleado", "Negocio"]];  
+    const pedidosData = pedidos.map((pedido) => [
+      pedido.id,
+      new Date(pedido.fecha).toLocaleString(),
+      pedido.precioTotal.toFixed(2),
+      pedido.mesa.name,
+      `${pedido.empleado.firstName} ${pedido.empleado.lastName}`,
+      pedido.mesa.negocio.name
+    ]);
+      autoTable(doc, {
+      head: headers,
+      body: pedidosData,
+      startY: 30, 
+      theme: 'grid', 
+    });  
+    doc.save("pedidos.pdf");
+  };
 
   return (
     <div
@@ -88,9 +137,35 @@ function VerPedidos() {
         )}
 
         <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
-        <h1>📜 Historial de Pedidos</h1>
+        <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+        <h1 className="title">GastroStock</h1>
+        <h2>📜 Historial de Pedidos</h2>
+
+        <div className="button-container">
+          <button className="button" onClick={() => exportarPDF(handleFilter())}>📥 Exportar PDF </button>
+          <input
+            type="text"
+            className="search-input"
+            placeholder="Buscar por empleado"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+
+          <select
+            className="filter-select"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+          >
+            <option value="">Ordenar por</option>
+            <option value="fecha-ascendente">Fecha Ascendente</option>
+            <option value="fecha-descendente">Fecha Descendente</option>
+            <option value="precio-ascendente">Precio Ascendente</option>
+            <option value="precio-descendente">Precio Descendente</option>
+          </select>
+        </div>
+
         <div className="empleados-grid">
-          {pedidos.map((pedido) => (
+          {handleFilter().map((pedido) => (
             <div
               key={pedido.id}
               className="empleado-card"

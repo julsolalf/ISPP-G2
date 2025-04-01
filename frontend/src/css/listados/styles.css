@@ -451,3 +451,18 @@
 .sort-btn:hover {
   background-color: #8b1b39; /* Color más oscuro al pasar el ratón por encima */
 }
+
+.search-input {
+  padding: 8px;
+  margin: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.filter-select {
+  padding: 8px;
+  margin: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
