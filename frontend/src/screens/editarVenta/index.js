@@ -128,7 +128,7 @@ function EditarVenta() {
         <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
         <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
         <h1 className="title">GastroStock</h1>
-        <h2>Editar Venta</h2>
+        <h2>Editar Pedido</h2>
         <form className="form-container" onSubmit={handleSubmit}>
         <input
             type="datetime-local"

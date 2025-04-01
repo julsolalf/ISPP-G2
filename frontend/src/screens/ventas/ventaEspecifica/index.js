@@ -117,22 +117,22 @@ function VerVentaEspecifica() {
         <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
         <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
         <h1 className="title">GastroStock</h1>
-        <h2>Ver Ventas</h2>
+        <h2>Ver Pedido</h2>
 
         <div className="producto-card">
-          <h1 className="producto-nombre">Venta #{venta.id}</h1>
+          <h1 className="producto-nombre">Pedido #{venta.id}</h1>
           <p className="producto-atributo"><strong>Fecha:</strong> {new Date(venta.fecha).toLocaleString()}</p>
           <p className="producto-atributo"><strong>Total:</strong> ${venta.precioTotal.toFixed(2)}</p>
           <p className="producto-atributo"><strong>Mesa:</strong> {venta.mesa.name}</p>
           <p className="producto-atributo"><strong>Empleado:</strong> {venta.empleado.firstName} {venta.empleado.lastName}</p>
           <p className="producto-atributo"><strong>Negocio:</strong> {venta.mesa.negocio.name}</p>
-          <button style={{ background: "#157E03", color: "white" }} onClick={() => navigate(`/editarVenta/${venta.id}`)}>Editar Venta</button>
-          <button style={{ background: "#9A031E", color: "white" }} onClick={() => setShowDeleteModal(true)}>Eliminar Venta</button>
+          <button style={{ background: "#157E03", color: "white" }} onClick={() => navigate(`/editarVenta/${venta.id}`)}>Editar Pedido</button>
+          <button style={{ background: "#9A031E", color: "white" }} onClick={() => setShowDeleteModal(true)}>Eliminar Pedido</button>
         </div>
         {showDeleteModal && (
           <div className="modal-overlay">
             <div className="modal">
-              <h3>¿Está seguro que desea eliminar esta venta?</h3>
+              <h3>¿Está seguro que desea eliminar este pedido?</h3>
               <div className="modal-buttons">
                 <button className="confirm-btn" onClick={eliminarVenta}>Sí</button>
                 <button className="cancel-btn" onClick={() => setShowDeleteModal(false)}>No</button>
