@@ -11,9 +11,15 @@ function PantallaAnadirCategoria() {
   const [showUserOptions, setShowUserOptions] = useState(false);
   const negocioId = 1; //Está puesto de manera manual la ID del negocio, pero debería ser dinámico según el usuario logueado
   // const negocioId = localStorage.getItem("negocioId"); // Obtiene el ID del negocio guardado
+  const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
 
   const toggleNotifications = () => setShowNotifications(!showNotifications);
   const toggleUserOptions = () => setShowUserOptions(!showUserOptions);
+
+  const handleLogout = () => {
+    localStorage.removeItem("userToken"); // Eliminamos el token del usuario
+    navigate("/"); // Redirigir a la pantalla de inicio de sesión
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
