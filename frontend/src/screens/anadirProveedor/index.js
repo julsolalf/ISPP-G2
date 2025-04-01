@@ -38,7 +38,7 @@ function AnadirProveedor() {
       return;
     }
 
-    console.log("Añadiendo proveedor con:", {
+    console.log("Anadiendo proveedor con:", {
       name,
       email,
       telefono,
@@ -60,7 +60,7 @@ function AnadirProveedor() {
         navigate("/proveedores"); 
       }
     } catch (error) {
-      console.error("Error al añadir el proveedor:", error.response ? error.response.data : error.message);
+      console.error("Error al anadir el proveedor:", error.response ? error.response.data : error.message);
     }
   };
 
