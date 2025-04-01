@@ -30,6 +30,7 @@ import PantallaRegistroNegocio from "./screens/registroNegocio/index.js";
 import PantallaElegirNegocio from "./screens/elegirNegocio/index.js";
 import PantallaVerProveedor from "./screens/verProveedor/index.js";
 import PantallaEditarProveedor from "./screens/editarProveedor/index.js";
+import PantallaEditarVenta from "./screens/editarVenta/index.js";
 
 
 function AppScreen() {
@@ -104,6 +105,7 @@ function App() {
         <Route path="/editarProductoInventario/:id" element={<EditarProducto />} />
         <Route path="/verProveedor/:id" element={<PantallaVerProveedor />} />
         <Route path="/editarProveedor/:id" element={<PantallaEditarProveedor />} />
+        <Route path="/editarVenta/:id" element={<PantallaEditarVenta />} />
       </Routes>
     </Router>
   );

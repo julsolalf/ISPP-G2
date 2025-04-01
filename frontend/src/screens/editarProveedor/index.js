@@ -74,7 +74,9 @@ function EditarProveedor() {
           <User size={30} className="icon" />
         </div>
         <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
-        <h1>Editar Proveedor</h1>
+        <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+        <h1 className="title">GastroStock</h1>
+        <h2>Editar Proveedor</h2>
         <form className="form-container" onSubmit={handleSubmit}>
           <input type="text" name="name" value={proveedor.name} onChange={handleChange} placeholder="Nombre" required />
           <input type="text" name="direccion" value={proveedor.direccion} onChange={handleChange} placeholder="Dirección" required />
