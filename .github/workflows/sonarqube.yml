@@ -58,4 +58,4 @@ jobs:
               -Dsonar.automaticAnalysis.enabled=false \
               -Dsonar.alm.enabled=false \
               -Dsonar.scm.provider=git \
-              -Dsonar.branch.name=main
+              -Dsonar.branch.name=${{ github.ref_name }}
