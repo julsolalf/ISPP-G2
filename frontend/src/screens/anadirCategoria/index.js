@@ -100,7 +100,7 @@ function PantallaAnadirCategoria() {
                 <button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button>
               </li>
               <li>
-                <button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button>
+                <button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
               </li>
             </ul>
           </div>
@@ -123,6 +123,19 @@ function PantallaAnadirCategoria() {
           />
           <input type="submit" value="Añadir" className="button" />
         </form>
+
+        {/* Modal de Confirmación para Logout */}
+        {showLogoutModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>¿Está seguro que desea abandonar la sesión?</h3>
+              <div className="modal-buttons">
+                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
+                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

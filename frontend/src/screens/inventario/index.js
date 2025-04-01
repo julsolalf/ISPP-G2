@@ -90,7 +90,7 @@ function Inventario() {
           <div className="notification-bubble user-options">
             <div className="notification-header">
               <strong>Usuario</strong>
-              <button className="close-btn" onClick={() => setShowUserOptions(false)}>X</button>
+              <button className="close-btn" onClick={toggleUserOptions}>X</button>
             </div>
             <ul>
               <li>

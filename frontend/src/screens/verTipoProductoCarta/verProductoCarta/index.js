@@ -63,15 +63,15 @@ function VerProductoCarta() {
       }}>
       <div className="content">
         <div className="icon-container-right">
-          <Bell size={30} className="icon" onClick={() => setShowNotifications(!showNotifications)} />
-          <User size={30} className="icon" onClick={() => setShowUserOptions(!showUserOptions)} />
+          <Bell size={30} className="icon" onClick={toggleNotifications} />
+          <User size={30} className="icon" onClick={toggleUserOptions} />
         </div>
 
         {showNotifications && (
           <div className="notification-bubble">
             <div className="notification-header">
               <strong>Notificaciones</strong>
-              <button className="close-btn" onClick={() => setShowNotifications(false)}>X</button>
+              <button className="close-btn" onClick={toggleNotifications}>X</button>
             </div>
             <ul>
               <li>Notificación 1</li>
@@ -85,7 +85,7 @@ function VerProductoCarta() {
           <div className="notification-bubble user-options">
             <div className="notification-header">
               <strong>Usuario</strong>
-              <button className="close-btn" onClick={() => setShowUserOptions(false)}>X</button>
+              <button className="close-btn" onClick={toggleUserOptions}>X</button>
             </div>
             <ul>
               <li>
@@ -112,6 +112,19 @@ function VerProductoCarta() {
             ))}
           </ul>
         </div>
+
+        {/* Modal de Confirmación para Logout */}
+        {showLogoutModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>¿Está seguro que desea abandonar la sesión?</h3>
+              <div className="modal-buttons">
+                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
+                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
