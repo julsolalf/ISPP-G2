@@ -166,18 +166,16 @@ function VerPedidos() {
 
         <div className="empleados-grid">
           {handleFilter().map((pedido) => (
-            <div
-              key={pedido.id}
-              className="empleado-card"
-              onClick={() => navigate(`/ventas/${pedido.id}`)}
-              style={{ cursor: "pointer" }}
-            >
+            <div key={pedido.id} className="empleado-card">
               <h3>Pedido #{pedido.id}</h3>
               <p>Fecha: {new Date(pedido.fecha).toLocaleString()}</p>
               <p>Total: ${pedido.precioTotal.toFixed(2)}</p>
               <p>Mesa: {pedido.mesa.name}</p>
               <p>Empleado: {pedido.empleado.firstName} {pedido.empleado.lastName}</p>
               <p>Negocio: {pedido.mesa.negocio.name}</p>
+              <button className="ver-btn" onClick={() => navigate(`/ventas/${pedido.id}`)}>
+                Ver
+              </button>
             </div>
           ))}
         </div>
