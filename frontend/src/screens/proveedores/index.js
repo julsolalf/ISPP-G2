@@ -127,7 +127,7 @@ const negocioId = 1;
               <h3>{proveedor.name}</h3>
               <p>{proveedor.direccion}</p>
               <p>{proveedor.telefono}</p>
-              <button className="ver-btn" onClick={() => navigate("/verProveedor")}>
+              <button className="ver-btn" onClick={() => navigate(`/verProveedor/${proveedor.id}`)}>
                 Ver
               </button>
             </div>

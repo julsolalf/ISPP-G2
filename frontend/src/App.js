@@ -28,6 +28,8 @@ import AnadirProductoInventario from "./screens/anadirProductoInventario/index.j
 import EditarProducto from "./screens/verTipoProducto/editarProductoInventario/index.js";
 import PantallaRegistroNegocio from "./screens/registroNegocio/index.js";
 import PantallaElegirNegocio from "./screens/elegirNegocio/index.js";
+import PantallaVerProveedor from "./screens/verProveedor/index.js";
+import PantallaEditarProveedor from "./screens/editarProveedor/index.js";
 
 
 function AppScreen() {
@@ -100,6 +102,8 @@ function App() {
         <Route path="/elegirNegocio" element={<PantallaElegirNegocio/>} />
         <Route path="/ventas/:ventaId" element={<VerVentaEspecifica />} />
         <Route path="/editarProductoInventario/:id" element={<EditarProducto />} />
+        <Route path="/verProveedor/:id" element={<PantallaVerProveedor />} />
+        <Route path="/editarProveedor/:id" element={<PantallaEditarProveedor />} />
       </Routes>
     </Router>
   );
