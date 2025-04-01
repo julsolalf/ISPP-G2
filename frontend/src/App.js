@@ -24,11 +24,14 @@ import PantallaPerfil from "./screens/perfil/index.js";
 import PantallaAnadirCategoria from "./screens/anadirCategoria/index.js";
 import VerVentas from "./screens/ventas/index.js";
 import VerVentaEspecifica from "./screens/ventas/ventaEspecifica/index.js";
+import AnadirProductoInventario from "./screens/anadirProductoInventario/index.js";
+import EditarProducto from "./screens/verTipoProducto/editarProductoInventario/index.js";
+import PantallaRegistroNegocio from "./screens/registroNegocio/index.js";
+import PantallaElegirNegocio from "./screens/elegirNegocio/index.js";
 
 import Carta from "./screens/cartaEmpleado/index.js";
 import VerProductosVenta from "./screens/verTipoProductoCarta/index.js";
 import VerProductoCarta from "./screens/verTipoProductoCarta/verProductoCarta/index.js";
-
 
 function AppScreen() {
   const navigate = useNavigate();
@@ -85,8 +88,9 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/inventario" element={<PantallaInventario />} />
         <Route path="/ventas" element={<VerVentas/>} />
-        <Route path="/verTipoProducto/:categoriaId" element={<VerTipoProducto />} />
-        <Route path="/categoria/:categoriaId/producto/:productoNombre" element={<VerProducto />} />
+        <Route path="/verTipoProducto/:categoriaNombre" element={<VerTipoProducto />} />
+        <Route path="/categoria/:categoriaNombre/producto/:productoNombre" element={<VerProducto />} />
+        <Route path="/anadirProductoInventario" element={<AnadirProductoInventario />} />
         <Route path="/proveedores" element={<PantallaProveedores />} />
         <Route path="/empleados" element={<PantallaEmpleados />} />
         <Route path="/alertaStock" element={<PantallaAlertaStock />} />
@@ -95,11 +99,13 @@ function App() {
         <Route path="/anadirProveedor" element={<PantallaAnadirProveedor />} />
         <Route path="/perfil" element={<PantallaPerfil/>} />
         <Route path="/anadirCategoria" element={<PantallaAnadirCategoria/>} />
+        <Route path="/registroNegocio" element={<PantallaRegistroNegocio/>} />
+        <Route path="/elegirNegocio" element={<PantallaElegirNegocio/>} />
         <Route path="/ventas/:ventaId" element={<VerVentaEspecifica />} />
         <Route path="/carta" element={<Carta />} />
         <Route path="/verTipoProductoCarta/:categoriaId" element={<VerProductosVenta />} />
         <Route path="/categoria/:categoriaId/productoCarta/:productoNombre" element={<VerProductoCarta />} />
-
+        <Route path="/editarProductoInventario/:id" element={<EditarProducto />} />
       </Routes>
     </Router>
   );

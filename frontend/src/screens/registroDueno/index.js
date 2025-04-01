@@ -4,7 +4,7 @@ import axios from "axios";
 import { Bell, User } from "lucide-react";
 import "../../css/paginasBase/styles.css";
 
-function PantallaRegistro() {
+function PantallaRegistroDueno() {
   const [ownerFirstName, setOwnerFirstName] = useState("");
   const [ownerLastName, setOwnerLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -43,7 +43,7 @@ function PantallaRegistro() {
         username: usuario,
         password: password,
         authority: {
-          id: 3,
+          id: 1,
           authority: "dueno",
         },
       },
@@ -51,10 +51,10 @@ function PantallaRegistro() {
 
     try {
       setLoading(true);
-      const response = await axios.post("https://ispp-2425-g2.ew.r.appspot.com/api/duenos", data);
+      const response = await axios.post("http://localhost:8080/api/duenos", data);
       console.log("Registro exitoso:", response.data);
-      alert("Registro exitoso. Inicia sesión.");
-      navigate("/inicioSesion");
+      alert("Registro del dueño exitoso. Registre ahora el negocio.");
+      navigate("/registroNegocio");
     } catch (error) {
       console.error("Error en el registro:", error.response?.data || error.message);
       alert(error.response?.data?.message || "Error al registrar. Verifica los datos.");
@@ -161,4 +161,4 @@ function PantallaRegistro() {
   );
 }
 
-export default PantallaRegistro;
+export default PantallaRegistroDueno;
