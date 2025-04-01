@@ -52,7 +52,7 @@ jobs:
               -Dsonar.projectKey=julsolalf_ISPP-G2 \
               -Dsonar.organization=julsolalf \
               -Dsonar.host.url=$SONAR_HOST_URL \
-              -Dsonar.login=$SONAR_TOKEN \
+              -Dsonar.token=$SONAR_TOKEN \
               -Dsonar.java.coveragePlugin=jacoco \
               -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
               -Dsonar.automaticAnalysis.enabled=false \
