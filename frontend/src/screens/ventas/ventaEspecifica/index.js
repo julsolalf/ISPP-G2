@@ -115,6 +115,9 @@ function VerVentaEspecifica() {
         )}
 
         <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
+        <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+        <h1 className="title">GastroStock</h1>
+        <h2>Ver Ventas</h2>
 
         <div className="producto-card">
           <h1 className="producto-nombre">Venta #{venta.id}</h1>
