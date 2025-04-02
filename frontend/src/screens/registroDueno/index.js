@@ -28,20 +28,15 @@ function PantallaRegistroDueno() {
     }
 
     const data = {
+      username: usuario,
+      password: password,
       firstName: ownerFirstName,
       lastName: ownerLastName,
-      email,
+      email: email,
       numTelefono: phone,
-      tokenDueno: token,
-      user: {
-        username: usuario,
-        password: password,
-        authority: {
-          id: 1,
-          authority: "dueno",
-        },
-      },
+      tokenDueno: token
     };
+    
 
     try {
       setLoading(true);
