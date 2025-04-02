@@ -12,7 +12,6 @@ import ispp_g2.gastrostock.auth.payload.request.RegisterRequest;
 import ispp_g2.gastrostock.auth.payload.response.AuthResponse;
 import ispp_g2.gastrostock.config.jwt.JwtService;
 import ispp_g2.gastrostock.dueno.Dueno;
-import ispp_g2.gastrostock.dueno.DuenoRepository;
 import ispp_g2.gastrostock.dueno.DuenoService;
 import ispp_g2.gastrostock.user.AuthoritiesService;
 import ispp_g2.gastrostock.user.User;

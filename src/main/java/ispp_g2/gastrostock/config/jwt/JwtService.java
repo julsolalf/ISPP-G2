@@ -1,33 +1,21 @@
 package ispp_g2.gastrostock.config.jwt;
 
 import java.security.Key;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.Base64.Decoder;
 import java.util.function.Function;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import ispp_g2.gastrostock.dueno.Dueno;
-import ispp_g2.gastrostock.dueno.DuenoService;
-import ispp_g2.gastrostock.empleado.Empleado;
-import ispp_g2.gastrostock.empleado.EmpleadoService;
-import ispp_g2.gastrostock.user.Authorities;
-import ispp_g2.gastrostock.user.User;
-import ispp_g2.gastrostock.user.UserService;
-import lombok.AllArgsConstructor;
+
 
 @Service
 public class JwtService {

@@ -1,7 +1,6 @@
 package ispp_g2.gastrostock.config.jwt;
 
 import java.io.IOException;
-import java.net.http.HttpHeaders;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
