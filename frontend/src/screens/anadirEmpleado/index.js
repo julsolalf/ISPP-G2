@@ -13,7 +13,6 @@ function AnadirEmpleado() {
   const [descripcion, setDescripcion] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [negocio, setNegocio] = useState("");  
   const [tokenEmpleado, setTokenEmpleado] = useState("");
   const navigate = useNavigate();
 
