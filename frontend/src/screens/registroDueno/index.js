@@ -112,7 +112,7 @@ function PantallaRegistroDueno() {
           </div>
         )}
 
-        <button className="back-button" onClick={() => navigate(-1)}>
+        <button className="back-button" onClick={() => navigate("/")}>
           ← Volver
         </button>
 

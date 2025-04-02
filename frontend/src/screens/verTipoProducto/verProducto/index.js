@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "../../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
@@ -96,7 +96,11 @@ function VerProducto() {
         )}
 
         <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
-        <h1>Producto</h1>
+        <Link to="/inicioDueno">
+          <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+        </Link>        
+        <h1 className="title">GastroStock</h1>
+        <h2>Producto</h2>
         <div className="empleado-card">
           <h1 className="producto-nombre">{producto.name}</h1>
           <p><strong>Precio Compra:</strong> {producto.precioCompra}</p>

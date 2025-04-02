@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Bell, User } from "lucide-react";
 import axios from "axios";
 import jsPDF from "jspdf";
@@ -112,11 +112,12 @@ function Proveedores() {
           </div>
         )}
 
-        <button onClick={() => navigate(-1)} className="back-button">
+        <button onClick={() => navigate("/inicioDueno")} className="back-button">
           ⬅ Volver
         </button>
-        <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
-        <h1 className="title">GastroStock</h1>
+        <Link to="/inicioDueno">
+          <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+        </Link>          <h1 className="title">GastroStock</h1>
         <h2>Proveedores</h2>
 
         <div className="button-container3">

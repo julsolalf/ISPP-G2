@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
@@ -97,7 +97,11 @@ function VerProveedor() {
         )}
 
         <button onClick={() => navigate("/proveedores")} className="back-button">⬅ Volver</button>
-        <h1>Proveedor</h1>
+        <Link to="/inicioDueno">
+          <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+        </Link>        
+        <h1 className="title">GastroStock</h1>
+        <h2>Proveedor</h2>
         <div className="empleado-card">
           <h1 className="proveedor-nombre">{proveedor.name}</h1>
           <p><strong>Email:</strong> {proveedor.email}</p>

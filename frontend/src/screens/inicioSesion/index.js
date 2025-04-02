@@ -55,7 +55,7 @@ function PantallaInicioSesion() {
       }}
     >
       <div className="content">
-        <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
+        <button onClick={() => navigate("/")} className="back-button">⬅ Volver</button>
         <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
         <h1 className="title">GastroStock</h1>
         <h2>Iniciar Sesión</h2>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios"; 
 import "../../css/paginasBase/styles.css";
 import { Bell, User } from "lucide-react"; 
@@ -115,11 +115,13 @@ function AnadirProveedor() {
           </div>
         )}
 
-        <button className="back-button" onClick={() => navigate(-1)}>
+        <button className="back-button" onClick={() => navigate("/proveedores")}>
           ← Volver
         </button>
 
-        <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+        <Link to="/inicioDueno">
+          <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+        </Link>          
         <h1 className="title">GastroStock</h1>
         <h2>Anadir Proveedor</h2>
 
