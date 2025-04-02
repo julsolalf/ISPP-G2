@@ -79,7 +79,7 @@ function PantallaInicioDueno() {
         <h2>Inicio</h2>
 
         <div className="button-container2">
-            <button className="menu-btn" onClick={() => navigate("/carta")}><span role="img" aria-label="carta">🍽️</span> Carta</button>
+            <button className="menu-btn" onClick={() => navigate("/cartaEmpleado")}><span role="img" aria-label="carta">🍽️</span> Carta</button>
             <button className="menu-btn" onClick={() => navigate("/TPV")}><span role="img" aria-label="inventario">📱</span> TPV</button>
             <button className="menu-btn" onClick={() => navigate("/ventas")}><span role="img" aria-label="ventas">💰</span> Ventas</button>
         </div>

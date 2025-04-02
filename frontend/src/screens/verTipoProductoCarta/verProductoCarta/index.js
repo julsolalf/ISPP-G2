@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "../../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
-const obtenerProducto = async (productoId) => {
+const obtenerProducto = async () => {
   try {
-    const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/productosVenta/${productoId}`);
+    const response = await fetch(`http://localhost:8080/api/productosVenta/${localStorage.getItem("productoId")}`);
     if (!response.ok) {
       throw new Error("Error al obtener el producto");
     }
@@ -17,12 +17,11 @@ const obtenerProducto = async (productoId) => {
 };
 
 function VerProductoCarta() {
-  const { productoId } = useParams();
   const navigate = useNavigate();
   const [producto, setProducto] = useState(null);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
@@ -39,11 +38,11 @@ function VerProductoCarta() {
 
   useEffect(() => {
     const cargarProducto = async () => {
-      const productoData = await obtenerProducto(productoId);
-      setProducto(productoData);
+      const data = await obtenerProducto();
+      setProducto(data);
     };
     cargarProducto();
-  }, [productoId]);
+  }, []);
 
   if (!producto) {
     return <h2>Producto no encontrado</h2>;
@@ -88,29 +87,25 @@ function VerProductoCarta() {
               <button className="close-btn" onClick={toggleUserOptions}>X</button>
             </div>
             <ul>
-              <li>
-                <button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button>
-              </li>
-              <li>
-                <button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button>
-              </li>
-              <li>
-                <button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
-              </li>
+              <li><button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button></li>
+              <li><button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button></li>
+              <li><button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button></li>
             </ul>
           </div>
         )}
 
         <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
-
-        <div className="producto-card">
+        <h1>Producto</h1>
+        <div className="empleado-card">
           <h1 className="producto-nombre">{producto.name}</h1>
-          <h3>Ingredientes:</h3>
-          <ul>
-            {producto.ingredientes.map((ingrediente, index) => (
-              <li key={index}>{ingrediente}</li>
-            ))}
-          </ul>
+          <p><strong>Categoría:</strong> {producto.categoria?.name || "Sin categoría"}</p>
+          {/* <p><strong>Ingredientes:</strong> {producto.name}</p> */}
+          <p><strong>Ingredientes:</strong> {producto.ingredientes?.length > 0
+  ? producto.ingredientes.map(ing => `${ing.productoInventario.name} (${ing.cantidad})`).join(", ")
+  : "No tiene ingredientes"}
+</p>
+
+          <p><strong>Precio:</strong> {producto.precioVenta} €</p>
         </div>
 
         {/* Modal de Confirmación para Logout */}

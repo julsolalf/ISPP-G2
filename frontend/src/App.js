@@ -102,9 +102,9 @@ function App() {
         <Route path="/registroNegocio" element={<PantallaRegistroNegocio/>} />
         <Route path="/elegirNegocio" element={<PantallaElegirNegocio/>} />
         <Route path="/ventas/:ventaId" element={<VerVentaEspecifica />} />
-        <Route path="/carta" element={<Carta />} />
+        <Route path="/cartaEmpleado" element={<Carta />} />
         <Route path="/verTipoProductoCarta/:categoriaId" element={<VerProductosVenta />} />
-        <Route path="/categoria/:categoriaId/productoCarta/:productoNombre" element={<VerProductoCarta />} />
+        <Route path="/categoriaVenta/:categoriaNombre/producto/:productoNombre" element={<VerProductoCarta />} />
         <Route path="/editarProductoInventario/:id" element={<EditarProducto />} />
       </Routes>
     </Router>
