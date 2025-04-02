@@ -29,9 +29,25 @@ public class NegocioController {
 		return new ResponseEntity<>(negocioService.getNegocios(), HttpStatus.OK);
 	}
 
+	@GetMapping("/dto")
+	public ResponseEntity<List<NegocioDTO>> findAllDTO() {
+		if(negocioService.getNegocios().isEmpty())
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		List<NegocioDTO> negocios = negocioService.getNegocios().stream().map(negocioService::convertirNegocioDTO).toList();
+		return new ResponseEntity<>(negocios, HttpStatus.OK);
+	}
+
 	@GetMapping("/{id}")
 	public ResponseEntity<Negocio> findNegocio(@PathVariable("id") Integer id) {
 		Negocio negocioToGet = negocioService.getById(id);
+		if (negocioToGet == null)
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(negocioToGet, HttpStatus.OK);
+	}
+
+	@GetMapping("/dto/{id}")
+	public ResponseEntity<NegocioDTO> findNegocioDTO(@PathVariable("id") Integer id) {
+		NegocioDTO negocioToGet = negocioService.convertirNegocioDTO(negocioService.getById(id));
 		if (negocioToGet == null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		return new ResponseEntity<>(negocioToGet, HttpStatus.OK);
@@ -94,21 +110,23 @@ public class NegocioController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Negocio> save(@RequestBody @Valid Negocio newNegocio) {
+	public ResponseEntity<Negocio> save(@RequestBody @Valid NegocioDTO newNegocio) {
 		if (newNegocio == null)
 			throw new IllegalArgumentException("Negocio cannot be null");
-		return new ResponseEntity<>(negocioService.save(newNegocio), HttpStatus.CREATED);
+		Negocio negocio =negocioService.convertirDTONegocio(newNegocio);
+		return new ResponseEntity<>(negocioService.save(negocio), HttpStatus.CREATED);
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<Negocio> update(@RequestBody @Valid Negocio newNegocio,
+	public ResponseEntity<Negocio> update(@RequestBody @Valid NegocioDTO newNegocio,
 			@PathVariable("id") Integer id) {
 		if(newNegocio == null)
 			throw new IllegalArgumentException("Negocio cannot be null");
 		if(negocioService.getById(id) == null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		newNegocio.setId(id);
-		return new ResponseEntity<>(negocioService.save(newNegocio), HttpStatus.OK);
+		Negocio negocio = negocioService.convertirDTONegocio(newNegocio);
+		negocio.setId(id);
+		return new ResponseEntity<>(negocioService.save(negocio), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")

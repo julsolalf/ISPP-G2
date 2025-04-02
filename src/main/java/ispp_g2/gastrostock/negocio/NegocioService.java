@@ -1,5 +1,6 @@
 package ispp_g2.gastrostock.negocio;
 
+import ispp_g2.gastrostock.dueno.DuenoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,10 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class NegocioService {
 
     private final NegocioRepository negocioRepository;
+    private final DuenoRepository duenoRepository;
 
     @Autowired
-    public NegocioService(NegocioRepository negocioRepository) {
+    public NegocioService(NegocioRepository negocioRepository, DuenoRepository duenoRepository) {
         this.negocioRepository = negocioRepository;
+        this.duenoRepository = duenoRepository;
     }
 
     @Transactional(readOnly = true)
@@ -74,6 +77,32 @@ public class NegocioService {
     @Transactional
     public void delete(Integer id){
         negocioRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Negocio convertirDTONegocio(NegocioDTO negocioDTO) {
+        Negocio negocio = new Negocio();
+        negocio.setName(negocioDTO.getName());
+        negocio.setDireccion(negocioDTO.getDireccion());
+        negocio.setCodigoPostal(negocioDTO.getCodigoPostal());
+        negocio.setCiudad(negocioDTO.getCiudad());
+        negocio.setPais(negocioDTO.getPais());
+        negocio.setTokenNegocio(negocioDTO.getTokenNegocio());
+        negocio.setDueno(duenoRepository.findById(negocioDTO.getIdDueno()).orElse(null));
+        return negocio;
+    }
+
+    @Transactional(readOnly = true)
+    public NegocioDTO convertirNegocioDTO(Negocio negocio) {
+        NegocioDTO negocioDTO = new NegocioDTO();
+        negocioDTO.setName(negocio.getName());
+        negocioDTO.setDireccion(negocio.getDireccion());
+        negocioDTO.setCodigoPostal(negocio.getCodigoPostal());
+        negocioDTO.setCiudad(negocio.getCiudad());
+        negocioDTO.setPais(negocio.getPais());
+        negocioDTO.setTokenNegocio(negocio.getTokenNegocio());
+        negocioDTO.setIdDueno(negocio.getDueno().getId());
+        return negocioDTO;
     }
     
 }
