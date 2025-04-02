@@ -2,6 +2,7 @@ package ispp_g2.gastrostock.dueno;
 
 import java.util.List;
 
+import ispp_g2.gastrostock.exceptions.DuenoSaveException;
 import ispp_g2.gastrostock.user.AuthoritiesRepository;
 import ispp_g2.gastrostock.user.User;
 import ispp_g2.gastrostock.user.UserRepository;
@@ -74,8 +75,19 @@ public class DuenoService {
 
     @Transactional
     public Dueno saveDueno(Dueno dueno) {
-        userRepository.save(dueno.getUser());
-        return duenoRepository.save(dueno);
+        if (dueno == null) {
+            throw new IllegalArgumentException("El dueño no puede ser nulo");
+        }
+        if (dueno.getUser() == null) {
+            throw new IllegalArgumentException("El dueño debe tener un usuario asociado");
+        }
+        try {
+            User savedUser = userRepository.save(dueno.getUser());
+            dueno.setUser(savedUser);
+            return duenoRepository.save(dueno);
+        } catch (Exception e) {
+            throw new DuenoSaveException("Error al guardar el dueño: " + e.getMessage(), e);
+        }
     }
 
     @Transactional
