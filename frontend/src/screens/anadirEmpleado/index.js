@@ -9,9 +9,6 @@ function AnadirEmpleado() {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [numTelefono, setNumTelefono] = useState("");
-  const [rol, setRol] = useState("");
-  const [turno, setTurno] = useState("");
-  const [posicion, setPosicion] = useState("");
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
   const [descripcion, setDescripcion] = useState("");
   const [username, setUsername] = useState("");
@@ -36,36 +33,35 @@ function AnadirEmpleado() {
     navigate("/"); // Redirigir a la pantalla de inicio de sesión
   };
 
+  //IMPORTANTE
+  // TODO: Cambiar el negocio_id por el que se obtiene del contexto de autenticación o del estado global
+  //  const { negocio_id } = useAuth(); 
+  const negocio_id = 1; // Simulación de negocio_id, reemplazar con el valor real
   const handleRegister = async () => {
     const empleadoData = {
+      username,
+      password,
       firstName,
       lastName,
       email,
       numTelefono,
-      user: {
-        username,
-        password,
-        authority: {
-          authority: rol,
-        },
-      },
       tokenEmpleado,
       descripcion,
-      negocio,
+      negocio: negocio_id
     };
-
+  
     try {
       const response = await axios.post("http://localhost:8080/api/empleados", empleadoData);
       if (response.status === 201) {
-        alert("Empleado anadido con éxito");
-        navigate("/empleados");  
+        alert("Empleado añadido con éxito");
+        navigate("/empleados");
       }
     } catch (error) {
-      console.error("Error al anadir empleado:", error);
-      alert("Hubo un problema al anadir el empleado");
+      console.error("Error al añadir empleado:", error);
+      alert("Hubo un problema al añadir el empleado");
     }
   };
-
+  
   return (
     <div 
       className="home-container"
@@ -168,12 +164,6 @@ function AnadirEmpleado() {
         />
         <input
           type="text"
-          placeholder="Rol"
-          value={rol}
-          onChange={(e) => setRol(e.target.value)}
-        />
-        <input
-          type="text"
           placeholder="Token Empleado"
           value={tokenEmpleado}
           onChange={(e) => setTokenEmpleado(e.target.value)}
@@ -183,12 +173,6 @@ function AnadirEmpleado() {
           placeholder="Descripción del puesto"
           value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Negocio"
-          value={negocio}
-          onChange={(e) => setNegocio(e.target.value)}
         />
 
         <button onClick={handleRegister} className="login-btn">Anadir Empleado</button>
