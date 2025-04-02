@@ -28,6 +28,9 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
+		<sonar.automaticAnalysis.enabled>false</sonar.automaticAnalysis.enabled>
+   		<sonar.organization>julsolalf</sonar.organization>
+    	<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -141,6 +144,26 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<plugin>
+			<groupId>org.jacoco</groupId>
+			<artifactId>jacoco-maven-plugin</artifactId>
+			<version>0.8.10</version>
+			<executions>
+				<execution>
+					<id>default-prepare-agent</id>
+					<goals>
+						<goal>prepare-agent</goal>
+					</goals>
+				</execution>
+				<execution>
+					<id>default-report</id>
+					<phase>verify</phase>
+					<goals>
+						<goal>report</goal>
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
 		</plugins>
 	</build>
 
