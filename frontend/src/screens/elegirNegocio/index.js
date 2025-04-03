@@ -71,7 +71,6 @@ function Empleados() {
           </div>
         )}
 
-        <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
         <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
         <h1 className="title">GastroStock</h1>
         <h2>Inicia en tu negocio</h2>

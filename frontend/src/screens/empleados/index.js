@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Bell, User } from "lucide-react";
 import axios from "axios"; // Importa axios
 import "../../css/listados/styles.css";
@@ -78,8 +78,10 @@ function Empleados() {
           </div>
         )}
 
-        <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
-        <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+        <button onClick={() => navigate("/inicioDueno")} className="back-button">⬅ Volver</button>
+        <Link to="/inicioDueno">
+          <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+        </Link>        
         <h1 className="title">GastroStock</h1>
         <h2>Empleados</h2>
 

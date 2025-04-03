@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
@@ -99,8 +99,12 @@ function VerTipoProducto() {
           </div>
         )}
 
-        <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
-        <h1>Productos</h1>
+        <button onClick={() => navigate("/inventario")} className="back-button">⬅ Volver</button>
+        <Link to="/inicioDueno">
+          <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+        </Link>        
+        <h1 className="title">GastroStock</h1>
+        <h2>Productos</h2>
         <div className="button-container3">
           <button className="button" onClick={() => {
             localStorage.setItem("categoriaNombre", localStorage.getItem("categoriaNombre"));

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import "../../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
@@ -74,7 +74,11 @@ function EditarProducto() {
           <User size={30} className="icon" />
         </div>
         <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
-        <h1>Editar Producto</h1>
+        <Link to="/inicioDueno">
+          <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+        </Link>        
+        <h1 className="title">GastroStock</h1>
+        <h2>Editar Producto</h2>
         <form className="form-container" onSubmit={handleSubmit}>
           <input type="text" name="name" value={producto.name} onChange={handleChange} placeholder="Nombre" required />
           <input type="number" name="precioCompra" value={producto.precioCompra} onChange={handleChange} placeholder="Precio de Compra" required />
