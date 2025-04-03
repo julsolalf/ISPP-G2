@@ -3,6 +3,7 @@ package ispp_g2.gastrostock.dueno;
 import java.util.ArrayList;
 import java.util.List;
 
+import ispp_g2.gastrostock.user.User;
 import ispp_g2.gastrostock.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,10 +120,11 @@ public class DuenoController {
     }
 
     private boolean checkUsernameNonAvailable(String username, Integer id){
-        if(userService.findUserByUsername(username) == null){
+        User existingUser = userService.findUserByUsername(username);
+        if(existingUser == null){
             return false;
         }
-        Integer duenoToUpdate = userService.findUserByUsername(username).getId();
+        Integer duenoToUpdate = existingUser.getId();
         Integer currDuenoWithUsername = duenoService.getDuenoById(id).getUser().getId();
         return !duenoToUpdate.equals(currDuenoWithUsername);
     }
