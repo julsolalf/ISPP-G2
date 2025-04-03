@@ -1,52 +1,53 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import "../../../css/listados/styles.css";
+import { useNavigate, useParams, Link } from "react-router-dom";
+import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
-const obtenerProducto = async () => {
+const obtenerProveedor = async (id) => {
   try {
-    const response = await fetch(`http://localhost:8080/api/productosInventario/${localStorage.getItem("productoId")}`);
+    const response = await fetch(`http://localhost:8080/api/proveedores/${id}`);
     if (!response.ok) {
-      throw new Error("Error al obtener el producto");
+      throw new Error("Error al obtener el proveedor");
     }
     return await response.json();
   } catch (error) {
-    console.error("Error al obtener el producto:", error);
+    console.error("Error al obtener el proveedor:", error);
     return null;
   }
 };
 
-function VerProducto() {
+function VerProveedor() {
+  const { id } = useParams(); // Obtener ID desde la URL
   const navigate = useNavigate();
-  const [producto, setProducto] = useState(null);
+  const [proveedor, setProveedor] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
 
   useEffect(() => {
-    const cargarProducto = async () => {
-      const data = await obtenerProducto();
-      setProducto(data);
+    const cargarProveedor = async () => {
+      const data = await obtenerProveedor(id);
+      setProveedor(data);
     };
-    cargarProducto();
-  }, []);
+    cargarProveedor();
+  }, [id]);
 
-  const eliminarProducto = async () => {
+  const eliminarProveedor = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/productosInventario/${producto.id}`, {
+      const response = await fetch(`http://localhost:8080/api/proveedores/${id}`, {
         method: "DELETE",
       });
       if (!response.ok) {
-        throw new Error("Error al eliminar el producto");
+        throw new Error("Error al eliminar el proveedor");
       }
-      navigate(`/verTipoProducto/${localStorage.getItem("categoriaNombre")}`);
+      navigate("/proveedores"); 
     } catch (error) {
-      console.error("Error al eliminar el producto:", error);
+      console.error("Error al eliminar el proveedor:", error);
     }
   };
 
-  if (!producto) {
-    return <h2>Producto no encontrado</h2>;
+  if (!proveedor) {
+    return <h2>Proveedor no encontrado</h2>;
   }
 
   return (
@@ -95,30 +96,28 @@ function VerProducto() {
           </div>
         )}
 
-        <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
+        <button onClick={() => navigate("/proveedores")} className="back-button">⬅ Volver</button>
         <Link to="/inicioDueno">
           <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
         </Link>        
         <h1 className="title">GastroStock</h1>
-        <h2>Producto</h2>
+        <h2>Proveedor</h2>
         <div className="empleado-card">
-          <h1 className="producto-nombre">{producto.name}</h1>
-          <p><strong>Precio Compra:</strong> {producto.precioCompra}</p>
-          <p><strong>Cantidad Deseada:</strong> {producto.cantidadDeseada}</p>
-          <p><strong>Cantidad Aviso:</strong> {producto.cantidadAviso}</p>
-          {producto.cantidadDeseada <= producto.cantidadAviso && (
-            <p className="producto-alerta">⚠ Stock bajo</p>
-          )}
-          <button style={{background: "#157E03", color: "white"}} onClick={() => navigate(`/editarProductoInventario/${producto.id}`)}>Editar Producto</button>
-          <button style={{background: "#9A031E", color: "white"}} onClick={() => setShowDeleteModal(true)}>Eliminar Producto</button>
+          <h1 className="proveedor-nombre">{proveedor.name}</h1>
+          <p><strong>Email:</strong> {proveedor.email}</p>
+          <p><strong>Teléfono:</strong> {proveedor.telefono}</p>
+          <p><strong>Dirección:</strong> {proveedor.direccion}</p>
+          
+          <button style={{ background: "#157E03", color: "white" }} onClick={() => navigate(`/editarProveedor/${proveedor.id}`)}>Editar Proveedor</button>
+          <button style={{ background: "#9A031E", color: "white" }} onClick={() => setShowDeleteModal(true)}>Eliminar Proveedor</button>
         </div>
 
         {showDeleteModal && (
           <div className="modal-overlay">
             <div className="modal">
-              <h3>¿Está seguro que desea eliminar este producto?</h3>
+              <h3>¿Está seguro que desea eliminar este proveedor?</h3>
               <div className="modal-buttons">
-                <button className="confirm-btn" onClick={eliminarProducto}>Sí</button>
+                <button className="confirm-btn" onClick={eliminarProveedor}>Sí</button>
                 <button className="cancel-btn" onClick={() => setShowDeleteModal(false)}>No</button>
               </div>
             </div>
@@ -129,4 +128,4 @@ function VerProducto() {
   );
 }
 
-export default VerProducto;
+export default VerProveedor;

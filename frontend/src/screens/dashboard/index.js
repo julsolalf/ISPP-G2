@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "../../css/dashboard/styles.css";
 import { Bell, User } from "lucide-react";
 import {
@@ -190,6 +190,11 @@ function Dashboard() {
         )}
 
         <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
+        <Link to="/inicioDueno">
+          <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+        </Link>        
+        <h1 className="title">GastroStock</h1>
+        <h2>DashBoard</h2>
 
         <div className="dashboard-grid">
           <div className="metric">

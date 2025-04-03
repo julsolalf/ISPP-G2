@@ -1,37 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Bell, User } from "lucide-react";
 import axios from "axios"; // Importa axios
 import "../../css/listados/styles.css";
 
 function Empleados() {
   const navigate = useNavigate();
-  const [empleados, setEmpleados] = useState([]);  // Cambia el estado para manejar empleados vacíos
+  const [negocios, setNegocios] = useState([]);  
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
 
-  const loadEmpleados = async () => {
+  const loadNegocios = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/empleados/negocio/1");  // Arrglar para que coja el negocio del usuario
-      setEmpleados(response.data); 
+      const response = await axios.get("http://localhost:8080/api/negocios/dueno/1");  // Arrglar para que coja el negocio del usuario
+      setNegocios(response.data); 
     } catch (error) {
-      console.error("Error al cargar los empleados:", error);
+      console.error("Error al cargar los negocios:", error);
     }
   };
 
   useEffect(() => {
-    loadEmpleados();  
+    loadNegocios();  
   }, []);  
 
   const toggleNotifications = () => setShowNotifications(!showNotifications);
   const toggleUserOptions = () => setShowUserOptions(!showUserOptions);
-
-  const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
-
-  const handleLogout = () => {
-    localStorage.removeItem("userToken"); // Eliminamos el token del usuario
-    navigate("/inicioSesion"); // Redirigir a la pantalla de inicio de sesión
-  };
 
   return (
     <div
@@ -73,50 +66,28 @@ function Empleados() {
             <ul>
               <li><button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button></li>
               <li><button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button></li>
-              <button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
+              <li><button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button></li>
             </ul>
           </div>
         )}
 
-        <button onClick={() => navigate("/inicioDueno")} className="back-button">⬅ Volver</button>
-        <Link to="/inicioDueno">
-          <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
-        </Link>        
+        <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
         <h1 className="title">GastroStock</h1>
-        <h2>Empleados</h2>
-
-        <div className="button-container3">
-          <button className="button" onClick={() => navigate("/anadirEmpleado")}>➕ Anadir</button>
-          <button className="button">📥 Exportar</button>
-          <button className="button">🔍 Filtrar</button>
-        </div>
+        <h2>Inicia en tu negocio</h2>
+        <button className="login-btn" onClick={() => navigate("/registroNegocio")}>Registrar negocio</button>
 
         <div className="empleados-grid">
-          {empleados.length > 0 ? (
-            empleados.map((empleado, index) => (
+          {negocios.length > 0 ? (
+            negocios.map((negocio, index) => (
               <div key={index} className="empleado-card">
-                <h3>{empleado.firstName}</h3>
-                <p>{empleado.user.authority.authority}</p>
-                <p>{empleado.numTelefono}</p>
-                <button className="ver-btn" onClick={() => navigate("/verEmpleado")}>Ver</button>
+                <h3>{negocio.name}</h3>
+                <button className="ver-btn" onClick={() => navigate("/inicioDueno")}>Ver</button>
               </div>
             ))
           ) : (
-            <p>No hay empleados disponibles</p> 
+            <p>No hay negocios disponibles</p> 
           )}
         </div>
-        {/* Modal de Confirmación para Logout */}
-        {showLogoutModal && (
-          <div className="modal-overlay">
-            <div className="modal">
-              <h3>¿Está seguro que desea abandonar la sesión?</h3>
-              <div className="modal-buttons">
-                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
-                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
