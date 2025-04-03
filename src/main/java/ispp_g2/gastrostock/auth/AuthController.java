@@ -1,5 +1,6 @@
 package ispp_g2.gastrostock.auth;
 
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,7 +26,7 @@ public class AuthController {
     }
 
     @PostMapping("register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) throws BadRequestException {
 
         return ResponseEntity.ok(authService.register(request));
     }

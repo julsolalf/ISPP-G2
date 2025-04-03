@@ -24,6 +24,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
@@ -52,7 +53,6 @@ public class Person extends BaseEntity {
 	protected String email;
 
 	@NotEmpty
-	@Digits(fraction = 0, integer = 9)
 	@Column(unique = true)
 	protected String numTelefono;
 

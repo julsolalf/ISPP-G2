@@ -33,12 +33,12 @@ INSERT INTO app_user (id, username, password, authority_id) VALUES (9, 'empleado
 
 -- Insertando duenos
 INSERT INTO dueno (id, first_name, last_name, email, num_telefono, token_dueno, user_id)
-VALUES (1, 'Carlos', 'Perez', 'carlos.perez@gmail.com', '123486789', 'gst-hoGkisz7nslugPSIbZ8mp0QW3JSYhM1', (SELECT id FROM app_user WHERE username = 'admin'));
+VALUES (1, 'Carlos', 'Perez', 'carlos.perez@gmail.com', '623486789', 'gst-hoGkisz7nslugPSIbZ8mp0QW3JSYhM1', (SELECT id FROM app_user WHERE username = 'admin'));
 INSERT INTO dueno (id, first_name, last_name, email, num_telefono, token_dueno, user_id)
-VALUES (2, 'Pablo', 'Rivas', 'pablo.rivas@gmail.com', '123456789', 'gst-hoGkisz7nslugPSIbZ8m7Tcq3JSYhM2', (SELECT id FROM app_user WHERE username = 'admin2'));
+VALUES (2, 'Pablo', 'Rivas', 'pablo.rivas@gmail.com', '623456789', 'gst-hoGkisz7nslugPSIbZ8m7Tcq3JSYhM2', (SELECT id FROM app_user WHERE username = 'admin2'));
 --Dueño temporal mientras se conecta el frontend con el backend
 INSERT INTO dueno (id, first_name, last_name, email, num_telefono, token_dueno, user_id)
-VALUES (3, 'Owner', 'Temporal', 'owner@gmail.com', '123654789', 'gst-hoGkisz7etabePSIbZ8m7Tcq3JSYhM2', (SELECT id FROM app_user WHERE username = 'owner1'));
+VALUES (3, 'Owner', 'Temporal', 'owner@gmail.com', '623654789', 'gst-hoGkisz7etabePSIbZ8m7Tcq3JSYhM2', (SELECT id FROM app_user WHERE username = 'owner1'));
 
 -- Insertando negocios
 INSERT INTO negocio (id, name, token_negocio, direccion, codigo_postal, ciudad, pais, dueno_id)

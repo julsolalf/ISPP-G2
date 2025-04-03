@@ -1,7 +1,9 @@
 package ispp_g2.gastrostock.auth;
 
 import java.util.Random;
+import java.util.regex.Pattern;
 
+import org.apache.coyote.BadRequestException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -44,34 +46,49 @@ public class AuthService {
     }
 
     @Transactional
-    public AuthResponse register(@Valid RegisterRequest request) {
+    public AuthResponse register(@Valid RegisterRequest request) throws BadRequestException {
+        if(!validarPassword(request.getPassword())) {
+            throw new BadRequestException("La contraseña debe tener entre 8 y 32 caracteres, 1 mayúscula, " +
+            "1 minúscula, un número y un caracter especial");
+        }
+        if(!validarTelefono(request.getNumTelefono())) {
+            throw new BadRequestException("El teléfono debe ser correcto");
+        }
         User user = new User();
         user.setUsername(request.getUsername());
-        System.out.println(user.getUsername());
         user.setPassword(encoder.encode(request.getPassword()));
-        user.setAuthority(authoritiesService.findByAuthority("dueño"));
+        user.setAuthority(authoritiesService.findByAuthority("dueno"));
         userService.saveUser(user);
 
         Dueno owner = new Dueno();
         owner.setFirstName(request.getFirstName());
-        System.out.println(owner.getFirstName());
         owner.setLastName(request.getLastName());
-        System.out.println(owner.getLastName());
         owner.setEmail(request.getEmail());
-        System.out.println(owner.getEmail());
         owner.setNumTelefono(request.getNumTelefono());
-        System.out.println(owner.getNumTelefono());
         owner.setTokenDueno(generarToken()+user.getId());
-        System.out.println(owner.getTokenDueno());
         owner.setUser(user);
-        System.out.println(owner.getUser().getId());
         duenoService.saveDueno(owner);
-        System.out.println(owner.getId());
 
         AuthResponse authResponse = new AuthResponse();
         authResponse.setToken(jwtService.getToken(user));
         return authResponse;
 
+    }
+
+    private boolean validarPassword(String password) {
+        Pattern pattern = Pattern.compile(
+            "^(?=.*[a-z])" +
+            "(?=.*[A-Z])" +
+            "(?=.*\\d)" +
+            "(?=.*[#$@!%&?¡\"+,.:;='^|~_()¿{}\\[\\]\\\\-])" +
+            ".{8,32}$"
+        );
+        return pattern.matcher(password).matches();
+    }
+
+    private boolean validarTelefono(String telefono) {
+        Pattern pattern = Pattern.compile("^[6789]\\d{8}$");
+        return pattern.matcher(telefono).matches();
     }
 
 
