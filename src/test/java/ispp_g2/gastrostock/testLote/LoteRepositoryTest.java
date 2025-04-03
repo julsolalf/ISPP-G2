@@ -108,6 +108,7 @@ public class LoteRepositoryTest {
         proveedor1.setEmail("distri@example.com");
         proveedor1.setTelefono("954111222");
         proveedor1.setDireccion("Polígono Industrial, Nave 7");
+        proveedor1.setNegocio(negocio);
         proveedor1 = proveedorRepository.save(proveedor1);
         
         proveedor2 = new Proveedor();
@@ -115,6 +116,7 @@ public class LoteRepositoryTest {
         proveedor2.setEmail("frescos@example.com");
         proveedor2.setTelefono("954333444");
         proveedor2.setDireccion("Avenida de la Industria, 42");
+        proveedor2.setNegocio(negocio);
         proveedor2 = proveedorRepository.save(proveedor2);
     
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();

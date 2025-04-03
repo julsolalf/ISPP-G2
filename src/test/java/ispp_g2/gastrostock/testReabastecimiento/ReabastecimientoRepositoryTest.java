@@ -96,6 +96,7 @@ public class ReabastecimientoRepositoryTest {
         proveedor1.setName("Distribuciones Alimentarias S.L.");
         proveedor1.setEmail("distribuciones@example.com");
         proveedor1.setTelefono("954111222");
+        proveedor1.setNegocio(negocio1);
         proveedor1.setDireccion("Polígono Industrial, Nave 7");
         proveedor1 = proveedorRepository.save(proveedor1);
         
@@ -104,6 +105,7 @@ public class ReabastecimientoRepositoryTest {
         proveedor2.setEmail("bebidas@example.com");
         proveedor2.setTelefono("954333444");
         proveedor2.setDireccion("Carretera de Málaga km 5");
+        proveedor2.setNegocio(negocio2);
         proveedor2 = proveedorRepository.save(proveedor2);
         
         // Preparar fechas

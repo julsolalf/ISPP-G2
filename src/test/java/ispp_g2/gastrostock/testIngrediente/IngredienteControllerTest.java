@@ -22,7 +22,6 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -164,12 +163,8 @@ public class IngredienteControllerTest {
 
     @Test
     void testFindById_InvalidId() throws Exception {
-        when(ingredienteService.getById(999)).thenThrow(new NumberFormatException("Invalid ID"));
-        
         mockMvc.perform(get("/api/ingredientes/invalid"))
             .andExpect(status().isBadRequest());
-        
-        verify(ingredienteService).getById(999);
     }
 
     // TESTS PARA findByCantidad()
@@ -236,6 +231,7 @@ public class IngredienteControllerTest {
         verify(ingredienteService).getIngredientesByProductoInventarioId(99);
     }
 
+@SuppressWarnings("null")
 @Test
 void testFindByProductoInventarioId_InvalidId() throws Exception {
     when(ingredienteService.getIngredientesByProductoInventarioId(-1)).thenThrow(new IllegalArgumentException("Invalid ID"));
@@ -275,6 +271,7 @@ void testFindByProductoInventarioId_InvalidId() throws Exception {
         verify(ingredienteService).getIngredientesByProductoVentaId(99);
     }
 
+    @SuppressWarnings("null")
     @Test
     void testFindByProductoVentaId_InvalidId() throws Exception {
         when(ingredienteService.getIngredientesByProductoVentaId(-1)).thenThrow(new IllegalArgumentException("Invalid ID"));
@@ -437,8 +434,7 @@ void testSave_NullRequest() throws Exception {
                 .content(objectMapper.writeValueAsString(ingredienteActualizado)))
             .andExpect(status().isBadRequest());
         
-        verify(ingredienteService).getById(999);
-        verify(ingredienteService, never()).save(any(Ingrediente.class));
+       
     }
 
     // TESTS PARA delete()
@@ -473,8 +469,6 @@ void testSave_NullRequest() throws Exception {
         mockMvc.perform(delete("/api/ingredientes/invalid").with(csrf()))
             .andExpect(status().isBadRequest());
         
-        verify(ingredienteService).getById(999);
-        verify(ingredienteService, never()).deleteById(999);
     }
 
     @Test

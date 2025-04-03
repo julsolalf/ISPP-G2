@@ -28,12 +28,17 @@ public class ProveedorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Proveedor> findById(@PathVariable("id") Integer id) {
-        Proveedor proveedor = proveedorService.findById(id);
-        if(proveedor == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<Proveedor> findById(@PathVariable String id) {
+        try {
+            Integer idNum = Integer.parseInt(id);
+            Proveedor proveedor = proveedorService.findById(idNum);
+            if (proveedor == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(proveedor, HttpStatus.OK);
+        } catch (NumberFormatException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(proveedor, HttpStatus.OK);
     }
 
     @GetMapping("/email/{email}")

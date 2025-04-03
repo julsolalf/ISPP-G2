@@ -28,11 +28,17 @@ public class ProductoInventarioController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<ProductoInventario> findProductoInventario(@PathVariable("id") Integer id) {
-		ProductoInventario productoInventario = productoInventarioService.getById(id);
-		if (productoInventario == null)
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		return new ResponseEntity<>(productoInventario, HttpStatus.OK);
+	public ResponseEntity<ProductoInventario> findProductoInventario(@PathVariable String id) {
+		try {
+			Integer idNum = Integer.parseInt(id);
+			ProductoInventario productoInventario = productoInventarioService.getById(idNum);
+			if (productoInventario == null) {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			return new ResponseEntity<>(productoInventario, HttpStatus.OK);
+		} catch (NumberFormatException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
 	}
 
     @GetMapping("/categoria/{categoria}")
@@ -92,13 +98,18 @@ public class ProductoInventarioController {
 		return new ResponseEntity<>(productoInventarioService.save(newProductoInventario), HttpStatus.OK);
 	}
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
-        ProductoInventario productoInventario = productoInventarioService.getById(id);
-		if (productoInventario == null)
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		productoInventarioService.delete(id);
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-    
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> delete(@PathVariable String id) {
+		try {
+			Integer idNum = Integer.parseInt(id);
+			ProductoInventario producto = productoInventarioService.getById(idNum);
+			if (producto == null) {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			productoInventarioService.delete(idNum);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} catch (NumberFormatException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
 }

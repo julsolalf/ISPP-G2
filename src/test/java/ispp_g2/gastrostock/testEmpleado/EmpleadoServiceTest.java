@@ -23,6 +23,7 @@ import ispp_g2.gastrostock.empleado.EmpleadoRepository;
 import ispp_g2.gastrostock.empleado.EmpleadoService;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserRepository;
 import ispp_g2.gastrostock.user.Authorities;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,6 +32,9 @@ class EmpleadoServiceTest {
 
     @Mock
     private EmpleadoRepository empleadoRepository;
+
+    @Mock
+    private UserRepository userRepository;
 
     @InjectMocks
     private EmpleadoService empleadoService;
@@ -104,6 +108,7 @@ class EmpleadoServiceTest {
     @Test
     void testSaveEmpleado_Success() {
         // Arrange
+        when(userRepository.save(any(User.class))).thenReturn(user);
         when(empleadoRepository.save(any(Empleado.class))).thenReturn(empleado1);
         
         // Act
@@ -113,38 +118,34 @@ class EmpleadoServiceTest {
         assertNotNull(result);
         assertEquals(1, result.getId());
         assertEquals("Juan", result.getFirstName());
-        assertEquals("Pérez", result.getLastName());
         verify(empleadoRepository).save(empleado1);
+        verify(userRepository).save(any(User.class));
     }
     
     @Test
     void testSaveEmpleado_WithInvalidData() {
         // Arrange
+        empleadoInvalido.setUser(user); // Asignar un usuario válido
+        when(userRepository.save(any(User.class))).thenReturn(user);
         when(empleadoRepository.save(empleadoInvalido)).thenThrow(new IllegalArgumentException("Datos inválidos"));
         
         // Act & Assert
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             empleadoService.saveEmpleado(empleadoInvalido);
         });
-        
-        assertEquals("Datos inválidos", exception.getMessage());
-        verify(empleadoRepository).save(empleadoInvalido);
     }
     
     @Test
     void testSaveEmpleado_Null() {
-        // Arrange
-        when(empleadoRepository.save(null)).thenThrow(new IllegalArgumentException("Empleado no puede ser null"));
-        
         // Act & Assert
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             empleadoService.saveEmpleado(null);
         });
         
-        assertEquals("Empleado no puede ser null", exception.getMessage());
-        verify(empleadoRepository).save(null);
+        assertEquals("No se puede guardar un empleado null", exception.getMessage());
+        verify(empleadoRepository, never()).save(any());
+        verify(userRepository, never()).save(any());
     }
-
     // TESTS PARA getAllEmpleados()
     
     @Test

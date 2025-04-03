@@ -1,18 +1,15 @@
 package ispp_g2.gastrostock.testProveedores;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,7 +27,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ispp_g2.gastrostock.proveedores.Proveedor;
 import ispp_g2.gastrostock.proveedores.ProveedorController;
 import ispp_g2.gastrostock.proveedores.ProveedorService;
-import ispp_g2.gastrostock.exceptions.ExceptionHandlerController;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -163,17 +159,14 @@ public class ProveedorControllerTest {
         verify(proveedorService).findById(999);
     }
 
-    @Test
-    void testFindById_InvalidId() throws Exception {
-        // Arrange - Simular que el servicio lanza una excepción al recibir un ID no válido
-        when(proveedorService.findById(999999)).thenThrow(new NumberFormatException("Invalid ID"));
-        
-        // Act & Assert
-        mockMvc.perform(get("/api/proveedores/invalid"))
-            .andExpect(status().isBadRequest());
-        
-        verify(proveedorService).findById(999999);
-    }
+@Test
+void testFindById_InvalidId() throws Exception {
+    // Act & Assert
+    mockMvc.perform(get("/api/proveedores/invalid"))
+        .andExpect(status().isBadRequest());
+    
+    verify(proveedorService, never()).findById(anyInt());
+}
 
     // TESTS PARA findByEmail()
 

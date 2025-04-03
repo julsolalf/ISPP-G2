@@ -191,12 +191,12 @@ class ProductoInventarioControllerTest {
     @Test
     void testGetProductoInventario_InvalidId() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/productosInventario/invalidId"))
-            .andExpect(status().isNotFound());
+            .andExpect(status().isBadRequest());
     }
-
+    
     @Test
     void testDeleteProductoInventario_InvalidId() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/productosInventario/invalidId"))
-            .andExpect(status().isNotFound());
+            .andExpect(status().isBadRequest());
     }
 }
