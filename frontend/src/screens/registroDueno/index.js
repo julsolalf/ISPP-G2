@@ -40,7 +40,9 @@ function PantallaRegistroDueno() {
 
     try {
       setLoading(true);
+      
       const response = await axios.post("http://localhost:8080/api/duenos", data);
+      
       console.log("Registro exitoso:", response.data);
       alert("Registro del dueño exitoso. Registre ahora el negocio.");
       navigate("/registroNegocio");

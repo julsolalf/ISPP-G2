@@ -10,14 +10,21 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Collection;
+import java.util.List;
+
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "app_user")
-public class User extends BaseEntity{
+public class User extends BaseEntity implements UserDetails{
     
 
     @Column(unique = true)
@@ -43,5 +50,10 @@ public class User extends BaseEntity{
 				cond = true;
 		}
 		return cond;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return List.of(new SimpleGrantedAuthority(authority.getAuthority()));
 	}
 }
