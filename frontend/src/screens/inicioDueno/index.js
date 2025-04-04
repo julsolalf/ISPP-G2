@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link  } from "react-router-dom";
 import { Bell, User } from "lucide-react";
 import "../../css/inicio/styles.css";
 
@@ -76,7 +76,10 @@ function HomeScreen() {
           </div>
         )}
 
-        <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+        <button onClick={() => navigate("/elegirNegocio")} className="back-button">⬅ Volver</button>
+        <Link to="/inicioDueno">
+          <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+        </Link>        
         <h1 className="title">GastroStock</h1>
         <h2>Inicio</h2>
 

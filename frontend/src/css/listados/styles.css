@@ -114,7 +114,7 @@
   position: absolute;
   top: 50px;
   right: 40px;
-  background-color: rgb(238, 183, 183);
+  background-color: #eeb7b7;
   border: 1px solid rgb(238, 183, 183);
   border-radius: 10px;
   width: 200px;
@@ -387,3 +387,82 @@
   background-color: #388E3C;
 }
 
+
+.filter-container {
+  position: relative;
+  display: inline-block;
+}
+
+.filter-btn {
+  background-color: #a92d4e; /* Usamos el mismo color vibrante */
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.filter-btn:hover {
+  background-color: #8f1d2e;
+  transform: scale(1.05);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.filter-options {
+  display: none;
+  position: absolute;
+  background-color: #eeb7b7;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  width: 200px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.filter-btn:hover + .filter-options,
+.filter-options:hover {
+  display: block;
+}
+
+.filter-input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.sort-btn {
+  background-color: #a92d4e; /* Color del fondo de los botones de ordenación */
+  color: white;
+  padding: 8px;
+  border: none;
+  cursor: pointer;
+  margin-top: 5px;
+  width: 100%;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.sort-btn:hover {
+  background-color: #8b1b39; /* Color más oscuro al pasar el ratón por encima */
+}
+
+.search-input {
+  padding: 8px;
+  margin: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.filter-select {
+  padding: 8px;
+  margin: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}

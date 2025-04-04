@@ -28,24 +28,21 @@ function PantallaRegistroDueno() {
     }
 
     const data = {
+      username: usuario,
+      password: password,
       firstName: ownerFirstName,
       lastName: ownerLastName,
-      email,
+      email: email,
       numTelefono: phone,
-      tokenDueno: token,
-      user: {
-        username: usuario,
-        password: password,
-        authority: {
-          id: 1,
-          authority: "dueno",
-        },
-      },
+      tokenDueno: token
     };
+    
 
     try {
       setLoading(true);
+      
       const response = await axios.post("http://localhost:8080/api/duenos", data);
+      
       console.log("Registro exitoso:", response.data);
       alert("Registro del dueño exitoso. Registre ahora el negocio.");
       navigate("/registroNegocio");
@@ -117,7 +114,7 @@ function PantallaRegistroDueno() {
           </div>
         )}
 
-        <button className="back-button" onClick={() => navigate(-1)}>
+        <button className="back-button" onClick={() => navigate("/")}>
           ← Volver
         </button>
 
