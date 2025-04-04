@@ -29,10 +29,9 @@ public class IngredienteController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Ingrediente> findById(@PathVariable("id") String id) {
+    public ResponseEntity<Ingrediente> findById(@PathVariable("id") Integer id) {
         try {
-            Integer idNum = Integer.parseInt(id);
-            Ingrediente ingrediente = ingredienteService.getById(idNum);
+            Ingrediente ingrediente = ingredienteService.getById(id);
             if (ingrediente == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
@@ -79,16 +78,15 @@ public class IngredienteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Ingrediente> update(@PathVariable String id, @RequestBody @Valid Ingrediente ingrediente) {
+    public ResponseEntity<Ingrediente> update(@PathVariable("id") Integer id, @RequestBody @Valid Ingrediente ingrediente) {
         try {
-            Integer idNum = Integer.parseInt(id);
-            Ingrediente existingIngrediente = ingredienteService.getById(idNum);
+            Ingrediente existingIngrediente = ingredienteService.getById(id);
             
             if (existingIngrediente == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
             
-            ingrediente.setId(idNum);
+            ingrediente.setId(id);
             return new ResponseEntity<>(ingredienteService.save(ingrediente), HttpStatus.OK);
         } catch (NumberFormatException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -96,14 +94,13 @@ public class IngredienteController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") String id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
         try {
-            Integer idNum = Integer.parseInt(id);
-            Ingrediente ingrediente = ingredienteService.getById(idNum);
+            Ingrediente ingrediente = ingredienteService.getById(id);
             if (ingrediente == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-            ingredienteService.deleteById(idNum);
+            ingredienteService.deleteById(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (NumberFormatException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

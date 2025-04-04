@@ -155,4 +155,9 @@ public class ExceptionHandlerController {
 		return new ResponseEntity<>(message, HttpStatus.FORBIDDEN);
 	}
 
+	@ExceptionHandler(NumberFormatException.class)
+	public ResponseEntity<String> handleNumberFormatException(NumberFormatException e) {
+		return new ResponseEntity<>("Invalid ID format", HttpStatus.BAD_REQUEST);
+	}
+
 }
