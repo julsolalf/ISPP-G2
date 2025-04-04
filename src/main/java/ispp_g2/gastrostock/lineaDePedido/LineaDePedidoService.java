@@ -36,7 +36,7 @@ public class LineaDePedidoService {
 
     @Transactional(readOnly = true)
     public List<LineaDePedido> getLineasDePedidoByPrecioLinea(Double precioLinea) {
-        return lineaDePedidoRepository.findLineaDePedidosByPrecioLinea(precioLinea);
+        return lineaDePedidoRepository.findLineaDePedidosByPrecioUnitario(precioLinea);
     }
 
     @Transactional(readOnly = true)
@@ -56,7 +56,7 @@ public class LineaDePedidoService {
 
     @Transactional(readOnly = true)
     public List<LineaDePedido> getLineasDePedidoByProductoIdAndPrecioLinea(Integer producto, Double precioLinea) {
-        return lineaDePedidoRepository.findLineaDePedidosByProductoIdAndPrecioLinea(producto, precioLinea);
+        return lineaDePedidoRepository.findLineaDePedidosByProductoIdAndPrecioUnitario(producto, precioLinea);
     }
 
     @Transactional

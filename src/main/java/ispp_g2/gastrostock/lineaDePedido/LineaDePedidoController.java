@@ -6,6 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import ispp_g2.gastrostock.pedido.PedidoService;
+import ispp_g2.gastrostock.productoVenta.ProductoVentaService;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -14,10 +18,14 @@ public class LineaDePedidoController {
 
 //   TO DO: Implementar la logica de que sololos usuarios del restaurante pueden ver sus lineas de pedido
     private final LineaDePedidoService lineaDePedidoService;
+    private final PedidoService pedidoService;
+    private final ProductoVentaService productoVentaService;
 
     @Autowired
-    public LineaDePedidoController(LineaDePedidoService lineaDePedidoService) {
+    public LineaDePedidoController(LineaDePedidoService lineaDePedidoService, PedidoService pedidoService, ProductoVentaService productoVentaService) {
         this.lineaDePedidoService = lineaDePedidoService;
+        this.pedidoService = pedidoService;
+        this.productoVentaService = productoVentaService;
     }
 
     @GetMapping
@@ -30,6 +38,16 @@ public class LineaDePedidoController {
 
     }
 
+    @GetMapping("/dto")
+    public ResponseEntity<List<LineaDePedidoDTO>> findAllDto() {
+        List<LineaDePedido> lineasDePedido= lineaDePedidoService.getLineasDePedido();
+        if (lineasDePedido.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(lineasDePedido.stream().map(LineaDePedidoDTO::of).toList(), HttpStatus.OK);
+        
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<LineaDePedido> findById(@PathVariable("id") Integer id) {
         LineaDePedido lineaDePedido = lineaDePedidoService.getById(id);
@@ -37,6 +55,15 @@ public class LineaDePedidoController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(lineaDePedido, HttpStatus.OK);
+    }
+
+    @GetMapping("/dto/{id}")
+    public ResponseEntity<LineaDePedidoDTO> findByIdDto(@PathVariable("id") Integer id) {
+        LineaDePedido lineaDePedido = lineaDePedidoService.getById(id);
+        if (lineaDePedido == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(LineaDePedidoDTO.of(lineaDePedido), HttpStatus.OK);
     }
 
     @GetMapping("/cantidad/{cantidad}")
@@ -57,13 +84,23 @@ public class LineaDePedidoController {
         return new ResponseEntity<>(lineasDePedido, HttpStatus.OK);
     }
 
-    @GetMapping("/pedido/{pedido}")
-    public ResponseEntity<List<LineaDePedido>> findByPedidoId(@PathVariable("pedido") Integer pedido) {
-        List<LineaDePedido> lineasDePedido = lineaDePedidoService.getLineasDePedidoByPedidoId(pedido);
+    @GetMapping("/pedido/{pedidoId}")
+    public ResponseEntity<List<LineaDePedido>> findByPedidoId(@PathVariable("pedidoId") Integer pedidoId) {
+        List<LineaDePedido> lineasDePedido = lineaDePedidoService.getLineasDePedidoByPedidoId(pedidoId);
         if (lineasDePedido == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(lineasDePedido, HttpStatus.OK);
+    }
+
+    @GetMapping("/dto/pedido/{pedidoId}")
+    public ResponseEntity<List<LineaDePedidoDTO>> findByPedidoIdDto(@PathVariable("pedidoId") Integer pedidoId) {
+        List<LineaDePedido> lineasDePedido = lineaDePedidoService.getLineasDePedidoByPedidoId(pedidoId);
+        if (lineasDePedido == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        
+        return new ResponseEntity<>(lineasDePedido.stream().map(LineaDePedidoDTO::of).toList(), HttpStatus.OK);
     }
 
     @GetMapping("/producto/{producto}")
