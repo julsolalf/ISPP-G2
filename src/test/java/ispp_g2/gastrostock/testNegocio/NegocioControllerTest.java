@@ -28,7 +28,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ispp_g2.gastrostock.dueno.Dueno;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioController;
+import ispp_g2.gastrostock.negocio.NegocioDTO;
 import ispp_g2.gastrostock.negocio.NegocioService;
+import ispp_g2.gastrostock.user.Authorities;
+import ispp_g2.gastrostock.user.User;
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
@@ -230,13 +233,32 @@ class NegocioControllerTest {
     @Test
     void testCreateNegocio() throws Exception {
         // Usando save() en lugar de saveNegocio()
+        Authorities authority = new Authorities();
+        authority.setId(1);
+        authority.setAuthority("ROLE_DUENO");
+
+        User userTest = new User();
+        userTest.setUsername("anton");
+        userTest.setPassword("anton123");
+        userTest.setAuthority(authority);
+
         Dueno duenoact = new Dueno();
         duenoact.setFirstName("Anton");
         duenoact.setLastName("García");
         duenoact.setEmail("anton@example.com");
         duenoact.setNumTelefono("652349978");
         duenoact.setTokenDueno("TOKEN333");
+        duenoact.setUser(userTest);
+        duenoact.setId(1); // ID del dueño que se va a asignar
 
+            NegocioDTO negocioDTO = new NegocioDTO();
+        negocioDTO.setName("Restaurante 2 Tasca");
+        negocioDTO.setDireccion("Calle Principal 123");
+        negocioDTO.setCiudad("Sevilla");
+        negocioDTO.setPais("Espana");
+        negocioDTO.setCodigoPostal("41001");
+        negocioDTO.setTokenNegocio(12995);
+        negocioDTO.setIdDueno(1); // ID del dueño que se va a asignar
         // Crear negocio
         Negocio negocioActualizado = new Negocio();
         negocioActualizado.setName("Restaurante 2 Tasca");
@@ -248,18 +270,47 @@ class NegocioControllerTest {
         negocioActualizado.setDueno(duenoact);
 
         when(negocioService.save(any(Negocio.class))).thenReturn(negocioActualizado);
-    
+        when(negocioService.convertirDTONegocio(any(NegocioDTO.class))).thenReturn(negocioActualizado);
+
         mockMvc.perform(post("/api/negocios")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(negocioActualizado)))
+                .content(objectMapper.writeValueAsString(negocioDTO)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name", is("Restaurante 2 Tasca")));
-    
+        
+        verify(negocioService).convertirDTONegocio(any(NegocioDTO.class));
         verify(negocioService).save(any(Negocio.class));
     }
     
     @Test
     void testModifyNegocio() throws Exception {
+
+        Authorities authority = new Authorities();
+        authority.setId(1);
+        authority.setAuthority("ROLE_DUENO");
+
+        User userTest = new User();
+        userTest.setUsername("anton");
+        userTest.setPassword("anton123");
+        userTest.setAuthority(authority);
+
+        Dueno duenoact = new Dueno();
+        duenoact.setFirstName("Anton");
+        duenoact.setLastName("García");
+        duenoact.setEmail("anton@example.com");
+        duenoact.setNumTelefono("652349978");
+        duenoact.setTokenDueno("TOKEN333");
+        duenoact.setUser(userTest);
+        duenoact.setId(1); // ID del dueño que se va a asignar
+
+        NegocioDTO negocioDTO = new NegocioDTO();
+        negocioDTO.setName("Restaurante 2 Tasca");
+        negocioDTO.setDireccion("Calle Principal 123");
+        negocioDTO.setCiudad("Sevilla");
+        negocioDTO.setPais("Espana");
+        negocioDTO.setCodigoPostal("41001");
+        negocioDTO.setTokenNegocio(12995);
+        negocioDTO.setIdDueno(1); // ID del dueño que se va a asignar
 
         Negocio updatedNegocio = new Negocio();
         updatedNegocio.setName("Restaurante Actualizado");
@@ -270,34 +321,37 @@ class NegocioControllerTest {
         updatedNegocio.setTokenNegocio(12345);
         updatedNegocio.setDueno(dueno);
         
+        when(negocioService.convertirDTONegocio(any(NegocioDTO.class))).thenReturn(updatedNegocio);
+
+
         when(negocioService.getById(1)).thenReturn(negocio1);
         when(negocioService.save(any(Negocio.class))).thenReturn(updatedNegocio);
 
         mockMvc.perform(put("/api/negocios/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updatedNegocio)))
+                .content(objectMapper.writeValueAsString(negocioDTO)))
                 .andExpect(status().isOk());
         
         verify(negocioService).save(any(Negocio.class));
+        verify(negocioService).convertirDTONegocio(any(NegocioDTO.class));
     }
     
     @Test
     void testModifyNegocio_InvalidId() throws Exception {
-
-        Negocio invalidNegocio = new Negocio();
-        invalidNegocio.setName("Restaurante Inválido");
-        invalidNegocio.setDireccion("Calle Principal 123");
-        invalidNegocio.setCiudad("Sevilla");
-        invalidNegocio.setPais("Espana");
-        invalidNegocio.setCodigoPostal("41001");
-        invalidNegocio.setTokenNegocio(9999);
-        invalidNegocio.setDueno(dueno);
+        NegocioDTO invalidNegocioDTO = new NegocioDTO();
+        invalidNegocioDTO.setName("Restaurante Inválido");
+        invalidNegocioDTO.setDireccion("Calle Principal 123");
+        invalidNegocioDTO.setCiudad("Sevilla");
+        invalidNegocioDTO.setPais("Espana");
+        invalidNegocioDTO.setCodigoPostal("41001");
+        invalidNegocioDTO.setTokenNegocio(9999);
+        invalidNegocioDTO.setIdDueno(dueno.getId()); // Asegúrate de incluir el ID del dueño
         
         when(negocioService.getById(1)).thenReturn(null);
-
+    
         mockMvc.perform(put("/api/negocios/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(invalidNegocio)))
+                .content(objectMapper.writeValueAsString(invalidNegocioDTO)))
                 .andExpect(status().isNotFound());
     }
 // TEMPORAL FIX NOW IS BY ID

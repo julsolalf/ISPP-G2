@@ -1,6 +1,7 @@
 package ispp_g2.gastrostock.testEmpleado;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -208,17 +209,18 @@ class EmpleadoControllerTest {
     @Test
     void testFindByEmail_Success() throws Exception {
         // Arrange
-        when(empleadoService.getEmpleadoByEmail("juan.perez@example.com")).thenReturn(empleado1);
-        when(empleadoService.getEmpleadoById(1)).thenReturn(empleado1); // Este es un posible bug en el controlador #Arreglado creo :D Fallo en la llamada
+        String email = "juan.perez@example.com";
+        when(empleadoService.getEmpleadoByEmail(email)).thenReturn(empleado1);
         
         // Act & Assert
-        mockMvc.perform(get("/api/empleados/email/juan.perez@example.com")
+        mockMvc.perform(get("/api/empleados/email/{email}", email)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.email", is("juan.perez@example.com")));
+                .andExpect(jsonPath("$.email", is(email)))
+                .andExpect(jsonPath("$.firstName", is("Juan")));
         
-        verify(empleadoService).getEmpleadoByEmail("juan.perez@example.com");
-        verify(empleadoService).getEmpleadoById(1); // Verificar la llamada incorrecta #Arreglado creo :D
+        // Verify that the service method was called exactly twice (as per controller implementation)
+        verify(empleadoService, times(1)).getEmpleadoByEmail(email);
     }
     
     @Test
@@ -419,7 +421,7 @@ class EmpleadoControllerTest {
     
     @Test
     void testSave_Success() throws Exception {
-        // Arrange - Crear un EmpleadoDTO en lugar de un Empleado
+        // Arrange - Crear un EmpleadoDTO
         EmpleadoDTO empleadoDTO = new EmpleadoDTO();
         empleadoDTO.setUsername("anton");
         empleadoDTO.setPassword("password123");
@@ -429,11 +431,11 @@ class EmpleadoControllerTest {
         empleadoDTO.setNumTelefono("666151222");
         empleadoDTO.setTokenEmpleado("TOKEN129");
         empleadoDTO.setDescripcion("Camarero principal");
-        empleadoDTO.setNegocio(1); // ID como String
+        empleadoDTO.setNegocio(1);
         
         // Configurar los mocks necesarios
         when(negocioService.getById(1)).thenReturn(negocio);
-        when(userService.findUserById(1)).thenReturn(user); // AnADIR ESTA LÍNEA
+        when(userService.findUserByUsername("anton")).thenReturn(null); // Usuario no existe
         when(empleadoService.convertirDTOEmpleado(any(EmpleadoDTO.class), eq(negocio))).thenReturn(empleado);
         when(empleadoService.saveEmpleado(any(Empleado.class))).thenReturn(empleado1);
         
@@ -445,9 +447,9 @@ class EmpleadoControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.firstName", is("Juan")));
         
-        // Verificar que se llamaron los métodos correctos
+        // Verificar las llamadas correctas
         verify(negocioService).getById(1);
-        verify(userService).findUserById(1); // AnADIR ESTA LÍNEA
+        verify(userService).findUserByUsername("anton"); // Verificar findUserByUsername en lugar de findUserById
         verify(empleadoService).saveEmpleado(any(Empleado.class));
     }
     @Test

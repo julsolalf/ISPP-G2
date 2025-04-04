@@ -58,6 +58,7 @@ class DiaRepartoRepositoryTest {
         dueno1 = duenoRepository.save(dueno1);
 
         negocio1 = new Negocio();
+        negocio1.setId(1);
         negocio1.setName("Restaurante La Tasca");
         negocio1.setDireccion("Calle Principal 123");
         negocio1.setCiudad("Sevilla");
@@ -72,6 +73,7 @@ class DiaRepartoRepositoryTest {
         proveedor.setEmail("distribuciones@example.com");
         proveedor.setTelefono("954111222");
         proveedor.setDireccion("Polígono Industrial, Nave 7");
+        proveedor.setNegocio(negocio1);
         proveedorRepository.save(proveedor);
 
         diaReparto = new DiaReparto();

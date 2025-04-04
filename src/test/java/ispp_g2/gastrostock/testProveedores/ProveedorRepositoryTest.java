@@ -94,6 +94,7 @@ public class ProveedorRepositoryTest {
         proveedor1.setName("Distribuciones Alimentarias S.L.");
         proveedor1.setEmail("distribuciones@example.com");
         proveedor1.setTelefono("954111222");
+        proveedor1.setNegocio(negocio);
         proveedor1.setDireccion("Polígono Industrial, Nave 7");
         proveedor1 = proveedorRepository.save(proveedor1);
         
@@ -107,6 +108,7 @@ public class ProveedorRepositoryTest {
         proveedor2.setName("Productos Frescos del Sur");
         proveedor2.setEmail("frescos@example.com");
         proveedor2.setTelefono("954333444");
+        proveedor2.setNegocio(negocio);
         proveedor2.setDireccion("Avenida de la Industria, 42");
         proveedor2 = proveedorRepository.save(proveedor2);
         
@@ -122,6 +124,7 @@ public class ProveedorRepositoryTest {
         proveedor3.setEmail("rapidas@example.com");
         proveedor3.setTelefono("954555666");
         proveedor3.setDireccion("Calle Comercio, 15");
+        proveedor3.setNegocio(negocio);
         proveedor3 = proveedorRepository.save(proveedor3);
     }
     

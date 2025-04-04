@@ -63,11 +63,11 @@ public class EmpleadoController {
     }
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<Empleado> findByEmail(@PathVariable("email") String email) {
+    public ResponseEntity<Empleado> findByEmail(@PathVariable String email) {
         Empleado empleado = empleadoService.getEmpleadoByEmail(email);
-        if(empleado == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(empleadoService.getEmpleadoByEmail(email), HttpStatus.OK);
+        return empleado != null ? 
+            ResponseEntity.ok(empleado) : 
+            ResponseEntity.notFound().build();
     }
 
     @GetMapping("/dto/email/{email}")

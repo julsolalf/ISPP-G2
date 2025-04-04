@@ -30,6 +30,9 @@ public class EmpleadoService {
     // Crear o actualizar un empleado
     @Transactional
     public Empleado saveEmpleado(Empleado empleado) {
+        if (empleado == null) {
+            throw new IllegalArgumentException("No se puede guardar un empleado null");
+        }
         userRepository.save(empleado.getUser());
         return empleadoRepository.save(empleado);
     }

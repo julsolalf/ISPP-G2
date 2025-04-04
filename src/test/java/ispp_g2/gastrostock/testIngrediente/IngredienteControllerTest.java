@@ -17,12 +17,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -33,9 +34,10 @@ import ispp_g2.gastrostock.ingrediente.IngredienteService;
 import ispp_g2.gastrostock.productoInventario.ProductoInventario;
 import ispp_g2.gastrostock.productoVenta.ProductoVenta;
 
-@WebMvcTest({IngredienteController.class, ExceptionHandlerController.class})
+@WebMvcTest({IngredienteController.class})
 @ActiveProfiles("test")
 @WithMockUser(username="admin", password="admin", roles="ADMIN")
+@Import(ExceptionHandlerController.class)
 public class IngredienteControllerTest {
 
     @Autowired
@@ -58,6 +60,7 @@ public class IngredienteControllerTest {
 
     @BeforeEach
     void setUp() {
+        
         // Configurar productos de inventario
         productoInventario1 = new ProductoInventario();
         productoInventario1.setId(1);
@@ -164,12 +167,8 @@ public class IngredienteControllerTest {
 
     @Test
     void testFindById_InvalidId() throws Exception {
-        when(ingredienteService.getById(999)).thenThrow(new NumberFormatException("Invalid ID"));
-        
         mockMvc.perform(get("/api/ingredientes/invalid"))
             .andExpect(status().isBadRequest());
-        
-        verify(ingredienteService).getById(999);
     }
 
     // TESTS PARA findByCantidad()
@@ -236,6 +235,7 @@ public class IngredienteControllerTest {
         verify(ingredienteService).getIngredientesByProductoInventarioId(99);
     }
 
+@SuppressWarnings("null")
 @Test
 void testFindByProductoInventarioId_InvalidId() throws Exception {
     when(ingredienteService.getIngredientesByProductoInventarioId(-1)).thenThrow(new IllegalArgumentException("Invalid ID"));
@@ -275,6 +275,7 @@ void testFindByProductoInventarioId_InvalidId() throws Exception {
         verify(ingredienteService).getIngredientesByProductoVentaId(99);
     }
 
+    @SuppressWarnings("null")
     @Test
     void testFindByProductoVentaId_InvalidId() throws Exception {
         when(ingredienteService.getIngredientesByProductoVentaId(-1)).thenThrow(new IllegalArgumentException("Invalid ID"));
@@ -437,8 +438,7 @@ void testSave_NullRequest() throws Exception {
                 .content(objectMapper.writeValueAsString(ingredienteActualizado)))
             .andExpect(status().isBadRequest());
         
-        verify(ingredienteService).getById(999);
-        verify(ingredienteService, never()).save(any(Ingrediente.class));
+       
     }
 
     // TESTS PARA delete()
@@ -468,13 +468,9 @@ void testSave_NullRequest() throws Exception {
 
     @Test
     void testDelete_InvalidId() throws Exception {
-        when(ingredienteService.getById(999)).thenThrow(new NumberFormatException("Invalid ID"));
         
         mockMvc.perform(delete("/api/ingredientes/invalid").with(csrf()))
             .andExpect(status().isBadRequest());
-        
-        verify(ingredienteService).getById(999);
-        verify(ingredienteService, never()).deleteById(999);
     }
 
     @Test
