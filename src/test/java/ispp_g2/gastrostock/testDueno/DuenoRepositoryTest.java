@@ -38,6 +38,7 @@ class DuenoRepositoryTest {
     @Autowired
     private AuthoritiesRepository authorities;
     
+    
     @Autowired
     private NegocioRepository negocioRepository;
     
@@ -249,12 +250,24 @@ class DuenoRepositoryTest {
     @Test
     void testFindDuenoByNombre_MultipleResults() {
         // Crear otro dueno con el mismo nombre
+        Authorities authority = new Authorities();
+        authority.setAuthority("DUENO");
+        authority = authorities.save(authority);
+
+        // Crear usuario
+        User user = new User();
+        user.setUsername("juanperez");
+        user.setPassword("password123");
+        user.setAuthority(authority);
+        user = userRepository.save(user);
+
         Dueno otroDueno = new Dueno();
         otroDueno.setFirstName("Juan");
         otroDueno.setLastName("Pérez");
         otroDueno.setEmail("juan.perez@example.com");
         otroDueno.setNumTelefono("678123456");
         otroDueno.setTokenDueno("TOKEN_JUAN2");
+        otroDueno.setUser(user);
         duenoRepository.save(otroDueno);
         
         // Buscar por nombre que tiene múltiples resultados

@@ -3,6 +3,7 @@ package ispp_g2.gastrostock.testIngrediente;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -20,14 +21,16 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ispp_g2.gastrostock.exceptions.ExceptionHandlerController;
+import ispp_g2.gastrostock.config.SecurityConfiguration;
+import ispp_g2.gastrostock.config.jwt.JwtAuthFilter;
+import ispp_g2.gastrostock.config.jwt.JwtService;
 import ispp_g2.gastrostock.ingrediente.Ingrediente;
 import ispp_g2.gastrostock.ingrediente.IngredienteController;
 import ispp_g2.gastrostock.ingrediente.IngredienteService;
@@ -35,16 +38,24 @@ import ispp_g2.gastrostock.productoInventario.ProductoInventario;
 import ispp_g2.gastrostock.productoVenta.ProductoVenta;
 
 @WebMvcTest({IngredienteController.class})
+@Import({SecurityConfiguration.class, JwtAuthFilter.class})
 @ActiveProfiles("test")
-@WithMockUser(username="admin", password="admin", roles="ADMIN")
-@Import(ExceptionHandlerController.class)
 public class IngredienteControllerTest {
 
-    @Autowired
+@Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private IngredienteService ingredienteService;
+
+    @MockBean
+    private JwtService jwtService;
+    
+    @MockBean
+    private AuthenticationProvider authenticationProvider;
+    
+    @MockBean
+    private UserDetailsService userDetailsService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -98,6 +109,8 @@ public class IngredienteControllerTest {
 
         // Lista de ingredientes para tests
         ingredientes = Arrays.asList(ingrediente1, ingrediente2);
+        when(jwtService.getUserNameFromJwtToken(anyString())).thenReturn("admin");
+        when(jwtService.validateJwtToken(anyString(), any())).thenReturn(true);
     }
 
     // TESTS PARA findAll()

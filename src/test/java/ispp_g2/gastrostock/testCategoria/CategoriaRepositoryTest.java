@@ -21,6 +21,10 @@ import ispp_g2.gastrostock.dueno.Dueno;
 import ispp_g2.gastrostock.dueno.DuenoRepository;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioRepository;
+import ispp_g2.gastrostock.user.Authorities;
+import ispp_g2.gastrostock.user.AuthoritiesRepository;
+import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase
@@ -35,6 +39,12 @@ class CategoriaRepositoryTest {
 
     @Autowired
     private DuenoRepository duenoRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AuthoritiesRepository authoritiesRepository;
     
     private Categoria categoria1, categoria2, categoriaInvalida;
     private Negocio negocio;
@@ -43,12 +53,26 @@ class CategoriaRepositoryTest {
     void setUp() {
         // Limpiar repositorios se realiza automáticamente en un contexto de DataJpaTest
 
+        // Crear autoridad
+        Authorities authority = new Authorities();
+        authority.setAuthority("DUENO");
+        authority = authoritiesRepository.save(authority);
+
+        // Crear usuario
+        User user = new User();
+        user.setId(1);
+        user.setUsername("juangarcia");
+        user.setPassword("password123");
+        user.setAuthority(authority);
+        user = userRepository.save(user);
+
         Dueno dueno1 = new Dueno();
         dueno1.setFirstName("Juan");
         dueno1.setLastName("García");
         dueno1.setEmail("juan@example.com");
         dueno1.setNumTelefono("666111222");
         dueno1.setTokenDueno("TOKEN999");
+        dueno1.setUser(user);
         dueno1 = duenoRepository.save(dueno1);
 
         negocio = new Negocio();

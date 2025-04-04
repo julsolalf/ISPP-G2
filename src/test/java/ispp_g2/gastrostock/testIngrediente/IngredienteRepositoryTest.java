@@ -19,6 +19,10 @@ import ispp_g2.gastrostock.productoInventario.ProductoInventario;
 import ispp_g2.gastrostock.productoInventario.ProductoInventarioRepository;
 import ispp_g2.gastrostock.productoVenta.ProductoVenta;
 import ispp_g2.gastrostock.productoVenta.ProductoVentaRepository;
+import ispp_g2.gastrostock.user.Authorities;
+import ispp_g2.gastrostock.user.AuthoritiesRepository;
+import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserRepository;
 import jakarta.validation.ConstraintViolationException;
 import ispp_g2.gastrostock.categorias.Categoria;
 import ispp_g2.gastrostock.categorias.CategoriaRepository;
@@ -51,6 +55,12 @@ public class IngredienteRepositoryTest {
     @Autowired
     private DuenoRepository duenoRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AuthoritiesRepository authoritiesRepository;
+
     private Ingrediente ingrediente1, ingrediente2, ingrediente3;
     private ProductoInventario productoInventario1, productoInventario2;
     private ProductoVenta productoVenta1, productoVenta2;
@@ -68,6 +78,16 @@ public class IngredienteRepositoryTest {
         negocioRepository.deleteAll();
         duenoRepository.deleteAll();
 
+        Authorities authority = new Authorities();
+        authority.setAuthority("DUENO");
+        authority = authoritiesRepository.save(authority);
+
+        // Crear usuario
+        User user = new User();
+        user.setUsername("juangarcia");
+        user.setPassword("password123");
+        user.setAuthority(authority);
+        user = userRepository.save(user);
         // Crear dueno
         dueno = new Dueno();
         dueno.setFirstName("Juan");
@@ -75,6 +95,7 @@ public class IngredienteRepositoryTest {
         dueno.setEmail("juan@example.com");
         dueno.setNumTelefono("652345678");
         dueno.setTokenDueno("TOKEN123");
+        dueno.setUser(user);
         dueno = duenoRepository.save(dueno);
 
         // Crear negocio
