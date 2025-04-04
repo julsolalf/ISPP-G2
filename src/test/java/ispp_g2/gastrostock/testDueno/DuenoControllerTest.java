@@ -15,19 +15,21 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import ispp_g2.gastrostock.config.SecurityConfiguration;
+import ispp_g2.gastrostock.config.jwt.JwtAuthFilter;
+import ispp_g2.gastrostock.config.jwt.JwtService;
 import ispp_g2.gastrostock.dueno.Dueno;
 import ispp_g2.gastrostock.dueno.DuenoController;
 import ispp_g2.gastrostock.dueno.DuenoDTO;
@@ -37,10 +39,9 @@ import ispp_g2.gastrostock.user.Authorities;
 import ispp_g2.gastrostock.user.User;
 import ispp_g2.gastrostock.user.UserService;
 
-@ExtendWith(SpringExtension.class)
+@WebMvcTest(DuenoController.class)
+@Import({SecurityConfiguration.class, JwtAuthFilter.class})
 @ActiveProfiles("test")
-@WebMvcTest(controllers = DuenoController.class)
-@WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
 class DuenoControllerTest {
 
     @Autowired
@@ -49,10 +50,22 @@ class DuenoControllerTest {
     @MockBean
     private DuenoService duenoService;
     
-    @MockBean
+    @MockBean 
     private UserService userService;
 
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private AuthenticationProvider authenticationProvider;
+    
+    @MockBean
+    private UserDetailsService userDetailsService;
+
+    @Autowired
     private ObjectMapper objectMapper;
+
+    
     private Dueno duenoNormal;
     private Dueno duenoConNegocio;
     private Dueno duenoInvalidoSinEmail;
@@ -157,6 +170,8 @@ class DuenoControllerTest {
         // Configurar comportamiento básico del servicio
         when(duenoService.convertirDuenoDTO(any(Dueno.class))).thenReturn(duenoDTO);
         when(duenoService.convertirDTODueno(any(DuenoDTO.class))).thenReturn(duenoNormal);
+        when(jwtService.getUserNameFromJwtToken(anyString())).thenReturn("admin");
+        when(jwtService.validateJwtToken(anyString(), any())).thenReturn(true);
     }
 
     /* TESTS PARA findAll() */

@@ -19,6 +19,10 @@ import org.springframework.test.context.ActiveProfiles;
 
 import ispp_g2.gastrostock.proveedores.Proveedor;
 import ispp_g2.gastrostock.proveedores.ProveedorRepository;
+import ispp_g2.gastrostock.user.Authorities;
+import ispp_g2.gastrostock.user.AuthoritiesRepository;
+import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserRepository;
 import ispp_g2.gastrostock.diaReparto.DiaReparto;
 import ispp_g2.gastrostock.diaReparto.DiaRepartoRepository;
 import ispp_g2.gastrostock.negocio.Negocio;
@@ -43,6 +47,12 @@ public class ProveedorRepositoryTest {
     @Autowired
     private DuenoRepository duenoRepository;
     
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AuthoritiesRepository authoritiesRepository;
+    
     private Proveedor proveedor1, proveedor2, proveedor3;
     private DiaReparto diaLunes, diaMartes, diaMiercoles, diaViernes;
     private Negocio negocio;
@@ -56,6 +66,17 @@ public class ProveedorRepositoryTest {
         negocioRepository.deleteAll();
         duenoRepository.deleteAll();
         
+        Authorities authority = new Authorities();
+        authority.setAuthority("DUENO");
+        authority = authoritiesRepository.save(authority);
+
+        // Crear usuario
+        User user = new User();
+        user.setUsername("juangarcia");
+        user.setPassword("password123");
+        user.setAuthority(authority);
+        user = userRepository.save(user);   
+        
         // Crear un dueno
         dueno = new Dueno();
         dueno.setFirstName("Juan");
@@ -63,6 +84,7 @@ public class ProveedorRepositoryTest {
         dueno.setEmail("juan@example.com");
         dueno.setNumTelefono("652345678");
         dueno.setTokenDueno("TOKEN123");
+        dueno.setUser(user);
         dueno = duenoRepository.save(dueno);
         
         // Crear un negocio

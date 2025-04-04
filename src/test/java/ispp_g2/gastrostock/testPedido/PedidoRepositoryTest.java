@@ -23,6 +23,10 @@ import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioRepository;
 import ispp_g2.gastrostock.pedido.Pedido;
 import ispp_g2.gastrostock.pedido.PedidoRepository;
+import ispp_g2.gastrostock.user.Authorities;
+import ispp_g2.gastrostock.user.AuthoritiesRepository;
+import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase
@@ -43,6 +47,12 @@ class PedidoRepositoryTest {
     
     @Autowired
     private DuenoRepository duenoRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AuthoritiesRepository authoritiesRepository;
     
     private Pedido pedido1, pedido2;
     private Mesa mesa1, mesa2;
@@ -59,6 +69,18 @@ class PedidoRepositoryTest {
         empleadoRepository.deleteAll();
         negocioRepository.deleteAll();
         duenoRepository.deleteAll();
+
+
+        Authorities authority = new Authorities();
+        authority.setAuthority("DUENO");
+        authority = authoritiesRepository.save(authority);
+
+        // Crear usuario
+        User user = new User();
+        user.setUsername("juangarcia");
+        user.setPassword("password123");
+        user.setAuthority(authority);
+        user = userRepository.save(user);
         
         // Create Dueno
         dueno = new Dueno();
@@ -67,6 +89,7 @@ class PedidoRepositoryTest {
         dueno.setEmail("juan@example.com");
         dueno.setNumTelefono("652345678");
         dueno.setTokenDueno("TOKEN123");
+        dueno.setUser(user);
         dueno = duenoRepository.save(dueno);
         
         // Create Negocio
@@ -101,6 +124,7 @@ class PedidoRepositoryTest {
         empleado.setLastName("García");
         empleado.setEmail("antoninio@test.com");
         empleado.setNumTelefono("666111222");
+        empleado.setUser(user);
         empleadoRepository.save(empleado);
         
         // Set up dates

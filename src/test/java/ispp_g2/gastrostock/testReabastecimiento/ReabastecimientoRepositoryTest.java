@@ -21,6 +21,10 @@ import ispp_g2.gastrostock.proveedores.Proveedor;
 import ispp_g2.gastrostock.proveedores.ProveedorRepository;
 import ispp_g2.gastrostock.reabastecimiento.Reabastecimiento;
 import ispp_g2.gastrostock.reabastecimiento.ReabastecimientoRepository;
+import ispp_g2.gastrostock.user.Authorities;
+import ispp_g2.gastrostock.user.AuthoritiesRepository;
+import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase
@@ -38,6 +42,13 @@ public class ReabastecimientoRepositoryTest {
     
     @Autowired
     private DuenoRepository duenoRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AuthoritiesRepository authoritiesRepository;
+
     
     private Proveedor proveedor1, proveedor2;
     private Negocio negocio1, negocio2;
@@ -53,6 +64,22 @@ public class ReabastecimientoRepositoryTest {
         negocioRepository.deleteAll();
         duenoRepository.deleteAll();
         
+        Authorities authority = new Authorities();
+        authority.setAuthority("DUENO");
+        authority = authoritiesRepository.save(authority);
+
+        // Crear usuario
+        User user = new User();
+        user.setUsername("juangarcia");
+        user.setPassword("password123");
+        user.setAuthority(authority);
+        user = userRepository.save(user);   
+        
+        User user2 = new User();
+        user2.setUsername("juanperez");
+        user2.setPassword("password123");
+        user2.setAuthority(authority);
+        user2 = userRepository.save(user2);  
         // Crear duenos
         dueno1 = new Dueno();
         dueno1.setFirstName("Juan");
@@ -60,6 +87,7 @@ public class ReabastecimientoRepositoryTest {
         dueno1.setEmail("juan@example.com");
         dueno1.setNumTelefono("652345678");
         dueno1.setTokenDueno("TOKEN123");
+        dueno1.setUser(user);
         dueno1 = duenoRepository.save(dueno1);
         
         dueno2 = new Dueno();
@@ -68,6 +96,7 @@ public class ReabastecimientoRepositoryTest {
         dueno2.setEmail("maria@example.com");
         dueno2.setNumTelefono("652345679");
         dueno2.setTokenDueno("TOKEN456");
+        dueno2.setUser(user2);
         dueno2 = duenoRepository.save(dueno2);
         
         // Crear negocios

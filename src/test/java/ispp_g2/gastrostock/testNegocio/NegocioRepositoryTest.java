@@ -18,6 +18,10 @@ import ispp_g2.gastrostock.dueno.Dueno;
 import ispp_g2.gastrostock.dueno.DuenoRepository;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioRepository;
+import ispp_g2.gastrostock.user.Authorities;
+import ispp_g2.gastrostock.user.AuthoritiesRepository;
+import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase
@@ -29,6 +33,12 @@ class NegocioRepositoryTest {
     
     @Autowired
     private DuenoRepository duenoRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AuthoritiesRepository authoritiesRepository;
     
     private Dueno dueno1, dueno2;
     private Negocio negocio1, negocio2, negocio3;
@@ -38,6 +48,23 @@ class NegocioRepositoryTest {
         // Limpiar repositorios
         negocioRepository.deleteAll();
         duenoRepository.deleteAll();
+
+        Authorities authority = new Authorities();
+        authority.setAuthority("DUENO");
+        authority = authoritiesRepository.save(authority);
+
+        // Crear usuario
+        User user = new User();
+        user.setUsername("juangarcia");
+        user.setPassword("password123");
+        user.setAuthority(authority);
+        user = userRepository.save(user);
+
+        User user2 = new User();
+        user2.setUsername("marialopez");
+        user2.setPassword("password123");
+        user2.setAuthority(authority);
+        user2 = userRepository.save(user2);
         
         // Crear duenos
         dueno1 = new Dueno();
@@ -46,6 +73,7 @@ class NegocioRepositoryTest {
         dueno1.setEmail("juan@example.com");
         dueno1.setNumTelefono("666111222");
         dueno1.setTokenDueno("TOKEN999");
+        dueno1.setUser(user);
         dueno1 = duenoRepository.save(dueno1);
         
         dueno2 = new Dueno();
@@ -54,6 +82,7 @@ class NegocioRepositoryTest {
         dueno2.setEmail("maria@example.com");
         dueno2.setNumTelefono("666333444");
         dueno2.setTokenDueno("TOKEN456");
+        dueno2.setUser(user2);
         dueno2 = duenoRepository.save(dueno2);
         
         // Crear negocios
