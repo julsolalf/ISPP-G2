@@ -60,7 +60,6 @@ class CategoriaRepositoryTest {
 
         // Crear usuario
         User user = new User();
-        user.setId(1);
         user.setUsername("juangarcia");
         user.setPassword("password123");
         user.setAuthority(authority);
