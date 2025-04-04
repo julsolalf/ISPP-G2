@@ -96,7 +96,9 @@ function Empleados() {
                 <h3>{empleado.firstName}</h3>
                 <p>{empleado.user.authority.authority}</p>
                 <p>{empleado.numTelefono}</p>
-                <button className="ver-btn" onClick={() => navigate("/verEmpleado")}>Ver</button>
+                <button className="ver-btn" onClick={() => {
+                  localStorage.setItem("empleadoId", empleado.id); // Guardar el ID del empleado en localStorage
+                  navigate(`/verEmpleado/${empleado.id}`)}}>Ver</button>
               </div>
             ))
           ) : (
