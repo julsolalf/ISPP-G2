@@ -28,9 +28,12 @@ import AnadirProductoInventario from "./screens/anadirProductoInventario/index.j
 import EditarProducto from "./screens/verTipoProducto/editarProductoInventario/index.js";
 import PantallaRegistroNegocio from "./screens/registroNegocio/index.js";
 import PantallaElegirNegocio from "./screens/elegirNegocio/index.js";
+import PantallaVerEmpleado from "./screens/empleados/verEmpleado/index.js";
+import PantallaEditarEmpleado from "./screens/empleados/editarEmpleado/index.js";
 import PantallaVerProveedor from "./screens/verProveedor/index.js";
 import PantallaEditarProveedor from "./screens/editarProveedor/index.js";
 import PantallaEditarVenta from "./screens/editarVenta/index.js";
+
 
 
 function AppScreen() {
@@ -93,6 +96,8 @@ function App() {
         <Route path="/anadirProductoInventario" element={<AnadirProductoInventario />} />
         <Route path="/proveedores" element={<PantallaProveedores />} />
         <Route path="/empleados" element={<PantallaEmpleados />} />
+        <Route path="/verEmpleado/:empleadoId" element={<PantallaVerEmpleado />} />
+        <Route path="/editarEmpleado/:empleadoId" element={<PantallaEditarEmpleado />} />
         <Route path="/alertaStock" element={<PantallaAlertaStock />} />
         <Route path="/perdidas" element={<PantallaPerdidas />} />
         <Route path="/anadirEmpleado" element={<PantallaAnadirEmpleado />} />
