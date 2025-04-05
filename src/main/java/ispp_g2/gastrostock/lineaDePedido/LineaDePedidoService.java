@@ -4,6 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import ispp_g2.gastrostock.exceptions.ResourceNotFoundException;
+import ispp_g2.gastrostock.pedido.PedidoRepository;
+import ispp_g2.gastrostock.productoVenta.ProductoVentaRepository;
+
 import java.util.List;
 import java.util.stream.StreamSupport;
 
@@ -11,10 +15,14 @@ import java.util.stream.StreamSupport;
 public class LineaDePedidoService {
 
     private final LineaDePedidoRepository lineaDePedidoRepository;
+    private final ProductoVentaRepository productoVentaRepository;
+    private final PedidoRepository pedidoRepository;
 
     @Autowired
-    public LineaDePedidoService(LineaDePedidoRepository lineaDePedidoRepository) {
+    public LineaDePedidoService(LineaDePedidoRepository lineaDePedidoRepository, ProductoVentaRepository productoVentaRepository, PedidoRepository pedidoRepository) {
         this.lineaDePedidoRepository = lineaDePedidoRepository;
+        this.productoVentaRepository = productoVentaRepository;
+        this.pedidoRepository = pedidoRepository;
     }
 
     @Transactional(readOnly = true)
@@ -67,6 +75,16 @@ public class LineaDePedidoService {
     @Transactional
     public void delete(Integer id) {
         lineaDePedidoRepository.deleteById(id);
+    }
+
+    public LineaDePedido convertDtoLineaDePedido(LineaDePedidoDTO lineaDePedidoDTO) {
+        LineaDePedido lineaDePedido = new LineaDePedido();
+        lineaDePedido.setCantidad(lineaDePedidoDTO.getCantidad());
+        lineaDePedido.setPrecioUnitario(lineaDePedidoDTO.getPrecioUnitario());
+        lineaDePedido.setPedido(pedidoRepository.findById(lineaDePedidoDTO.getPedidoId()).orElseThrow(() -> new ResourceNotFoundException("El pedido no existe")));
+        lineaDePedido.setProducto(productoVentaRepository.findProductoVentaByNombreAndNegocioId(lineaDePedidoDTO.getNombreProducto(),
+        lineaDePedido.getPedido().getMesa().getNegocio().getId()).orElseThrow(() -> new ResourceNotFoundException("El producto no existe")));
+        return lineaDePedido;
     }
 
 }

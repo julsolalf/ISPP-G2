@@ -1,6 +1,8 @@
 package ispp_g2.gastrostock.lineaDePedido;
 
 import jakarta.validation.Valid;
+
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import ispp_g2.gastrostock.pedido.PedidoService;
 import ispp_g2.gastrostock.productoVenta.ProductoVentaService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -18,14 +19,10 @@ public class LineaDePedidoController {
 
 //   TO DO: Implementar la logica de que sololos usuarios del restaurante pueden ver sus lineas de pedido
     private final LineaDePedidoService lineaDePedidoService;
-    private final PedidoService pedidoService;
-    private final ProductoVentaService productoVentaService;
 
     @Autowired
     public LineaDePedidoController(LineaDePedidoService lineaDePedidoService, PedidoService pedidoService, ProductoVentaService productoVentaService) {
         this.lineaDePedidoService = lineaDePedidoService;
-        this.pedidoService = pedidoService;
-        this.productoVentaService = productoVentaService;
     }
 
     @GetMapping
@@ -131,23 +128,22 @@ public class LineaDePedidoController {
     }
 
     @PostMapping
-    public ResponseEntity<LineaDePedido> save(@RequestBody @Valid LineaDePedido lineaDePedido) {
-        if (lineaDePedido == null) {
+    public ResponseEntity<LineaDePedidoDTO> save(@RequestBody @Valid LineaDePedidoDTO lineaDePedidoDTO) {
+        if (lineaDePedidoDTO == null) {
             throw new IllegalArgumentException("Linea de pedido no puede ser nula");
         }
-        return new ResponseEntity<>(lineaDePedidoService.save(lineaDePedido), HttpStatus.CREATED);
+        LineaDePedidoDTO res = LineaDePedidoDTO.of(lineaDePedidoService.save(lineaDePedidoService.convertDtoLineaDePedido(lineaDePedidoDTO)));
+        return new ResponseEntity<>(res, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<LineaDePedido> update(@PathVariable("id") Integer id, @RequestBody @Valid LineaDePedido lineaDePedido) {
-        if (lineaDePedido == null) {
+    public ResponseEntity<LineaDePedidoDTO> update(@PathVariable("id") Integer id, @RequestBody @Valid LineaDePedidoDTO lineaDePedidoDTO) {
+        if (lineaDePedidoDTO == null) {
             throw new IllegalArgumentException("Linea de pedido no puede ser nula");
         }
-        if (lineaDePedidoService.getById(id) == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        lineaDePedido.setId(id);
-        return new ResponseEntity<>(lineaDePedidoService.save(lineaDePedido), HttpStatus.OK);
+        LineaDePedido toUpdate = lineaDePedidoService.getById(id);
+        BeanUtils.copyProperties(lineaDePedidoService.convertDtoLineaDePedido(lineaDePedidoDTO), toUpdate,"id");
+        return new ResponseEntity<>(LineaDePedidoDTO.of(lineaDePedidoService.save(toUpdate)), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

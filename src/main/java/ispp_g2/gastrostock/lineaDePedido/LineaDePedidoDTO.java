@@ -10,7 +10,6 @@ import lombok.Setter;
 @Setter
 public class LineaDePedidoDTO {
 
-    @NotNull
     private Integer id;
     @NotNull
     @Positive
@@ -18,8 +17,7 @@ public class LineaDePedidoDTO {
     @NotNull
     @Positive
     private Double precioUnitario;
-    @NotNull
-    @Positive
+    
     private Double precioLinea;
     @NotNull
     private Integer pedidoId;
