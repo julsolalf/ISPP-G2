@@ -65,36 +65,7 @@ public class EmpleadoRepositoryTest {
         authority = new Authorities();
         authority.setAuthority("EMPLEADO");
         authority = authoritiesRepository.save(authority);
-        
-        // Crear dueno para los negocios
-        dueno = new Dueno();
-        dueno.setFirstName("Carlos");
-        dueno.setLastName("Propietario");
-        dueno.setEmail("carlos@example.com");
-        dueno.setNumTelefono("654321987");
-        dueno.setTokenDueno("TOKEN_DUEnO");
-        dueno = duenoRepository.save(dueno);
-        
-        // Crear negocios
-        negocio1 = new Negocio();
-        negocio1.setName("Restaurante La Tasca");
-        negocio1.setDireccion("Calle Principal 123");
-        negocio1.setCiudad("Sevilla");
-        negocio1.setPais("Espana");
-        negocio1.setCodigoPostal("41001");
-        negocio1.setTokenNegocio(12345);
-        negocio1.setDueno(dueno);
-        negocio1 = negocioRepository.save(negocio1);
-        
-        negocio2 = new Negocio();
-        negocio2.setName("Bar El Rincón");
-        negocio2.setDireccion("Avenida Constitución 45");
-        negocio2.setCiudad("Sevilla");
-        negocio2.setPais("Espana");
-        negocio2.setCodigoPostal("41002");
-        negocio2.setTokenNegocio(67890);
-        negocio2.setDueno(dueno);
-        negocio2 = negocioRepository.save(negocio2);
+
         
         // Crear usuarios para asociar a los empleados
         user1 = new User();
@@ -115,6 +86,35 @@ public class EmpleadoRepositoryTest {
         user3.setAuthority(authority);
         user3 = userRepository.save(user3);
         
+        dueno = new Dueno();
+        dueno.setFirstName("Carlos");
+        dueno.setLastName("Propietario");
+        dueno.setEmail("carlos@example.com");
+        dueno.setNumTelefono("654321987");
+        dueno.setTokenDueno("TOKEN_DUEnO");
+        dueno.setUser(user1);
+        dueno = duenoRepository.save(dueno);
+
+        negocio1 = new Negocio();
+        negocio1.setName("Restaurante La Tasca");
+        negocio1.setDireccion("Calle Principal 123");
+        negocio1.setCiudad("Sevilla");
+        negocio1.setPais("Espana");
+        negocio1.setCodigoPostal("41001");
+        negocio1.setTokenNegocio(12345);
+        negocio1.setDueno(dueno);
+        negocio1 = negocioRepository.save(negocio1);
+        
+        negocio2 = new Negocio();
+        negocio2.setName("Bar El Rincón");
+        negocio2.setDireccion("Avenida Constitución 45");
+        negocio2.setCiudad("Sevilla");
+        negocio2.setPais("Espana");
+        negocio2.setCodigoPostal("41002");
+        negocio2.setTokenNegocio(67890);
+        negocio2.setDueno(dueno);
+        negocio2 = negocioRepository.save(negocio2);
+
         // Crear empleados
         empleado1 = new Empleado();
         empleado1.setFirstName("Juan");
@@ -300,6 +300,11 @@ public class EmpleadoRepositoryTest {
     @Test
     void testFindByNombre_PartialMatch() {
         // Agregar un empleado con nombre que contiene "Juan"
+        User user4 = new User();
+        user4.setUsername("Juanpedro");
+        user4.setPassword("password789");
+        user4.setAuthority(authority);
+        user4 = userRepository.save(user4);
         Empleado juanito = new Empleado();
         juanito.setFirstName("Juanito");
         juanito.setLastName("Valderrama");
@@ -307,6 +312,7 @@ public class EmpleadoRepositoryTest {
         juanito.setNumTelefono("666888999");
         juanito.setTokenEmpleado("TOKEN_JUANITO");
         juanito.setNegocio(negocio1);
+        juanito.setUser(user4);
         empleadoRepository.save(juanito);
         
         // Buscar por nombre "Juan" - no debería encontrar "Juanito" por ser JPQL exacto

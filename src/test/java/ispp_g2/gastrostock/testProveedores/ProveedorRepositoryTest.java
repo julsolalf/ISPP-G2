@@ -19,6 +19,10 @@ import org.springframework.test.context.ActiveProfiles;
 
 import ispp_g2.gastrostock.proveedores.Proveedor;
 import ispp_g2.gastrostock.proveedores.ProveedorRepository;
+import ispp_g2.gastrostock.user.Authorities;
+import ispp_g2.gastrostock.user.AuthoritiesRepository;
+import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserRepository;
 import ispp_g2.gastrostock.diaReparto.DiaReparto;
 import ispp_g2.gastrostock.diaReparto.DiaRepartoRepository;
 import ispp_g2.gastrostock.negocio.Negocio;
@@ -43,6 +47,12 @@ public class ProveedorRepositoryTest {
     @Autowired
     private DuenoRepository duenoRepository;
     
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AuthoritiesRepository authoritiesRepository;
+    
     private Proveedor proveedor1, proveedor2, proveedor3;
     private DiaReparto diaLunes, diaMartes, diaMiercoles, diaViernes;
     private Negocio negocio;
@@ -56,6 +66,17 @@ public class ProveedorRepositoryTest {
         negocioRepository.deleteAll();
         duenoRepository.deleteAll();
         
+        Authorities authority = new Authorities();
+        authority.setAuthority("DUENO");
+        authority = authoritiesRepository.save(authority);
+
+        // Crear usuario
+        User user = new User();
+        user.setUsername("juangarcia");
+        user.setPassword("password123");
+        user.setAuthority(authority);
+        user = userRepository.save(user);   
+        
         // Crear un dueno
         dueno = new Dueno();
         dueno.setFirstName("Juan");
@@ -63,6 +84,7 @@ public class ProveedorRepositoryTest {
         dueno.setEmail("juan@example.com");
         dueno.setNumTelefono("652345678");
         dueno.setTokenDueno("TOKEN123");
+        dueno.setUser(user);
         dueno = duenoRepository.save(dueno);
         
         // Crear un negocio
@@ -94,6 +116,7 @@ public class ProveedorRepositoryTest {
         proveedor1.setName("Distribuciones Alimentarias S.L.");
         proveedor1.setEmail("distribuciones@example.com");
         proveedor1.setTelefono("954111222");
+        proveedor1.setNegocio(negocio);
         proveedor1.setDireccion("Polígono Industrial, Nave 7");
         proveedor1 = proveedorRepository.save(proveedor1);
         
@@ -107,6 +130,7 @@ public class ProveedorRepositoryTest {
         proveedor2.setName("Productos Frescos del Sur");
         proveedor2.setEmail("frescos@example.com");
         proveedor2.setTelefono("954333444");
+        proveedor2.setNegocio(negocio);
         proveedor2.setDireccion("Avenida de la Industria, 42");
         proveedor2 = proveedorRepository.save(proveedor2);
         
@@ -122,6 +146,7 @@ public class ProveedorRepositoryTest {
         proveedor3.setEmail("rapidas@example.com");
         proveedor3.setTelefono("954555666");
         proveedor3.setDireccion("Calle Comercio, 15");
+        proveedor3.setNegocio(negocio);
         proveedor3 = proveedorRepository.save(proveedor3);
     }
     

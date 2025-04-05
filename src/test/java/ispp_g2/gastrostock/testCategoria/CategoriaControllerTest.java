@@ -1,11 +1,13 @@
 package ispp_g2.gastrostock.testCategoria;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import ispp_g2.gastrostock.categorias.Categoria;
 import ispp_g2.gastrostock.categorias.CategoriaController;
 import ispp_g2.gastrostock.categorias.CategoriaService;
 import ispp_g2.gastrostock.categorias.Pertenece;
+import ispp_g2.gastrostock.config.SecurityConfiguration;
+import ispp_g2.gastrostock.config.jwt.JwtAuthFilter;
+import ispp_g2.gastrostock.config.jwt.JwtService;
 import ispp_g2.gastrostock.negocio.Negocio;
 import java.util.Collections;
 import java.util.List;
@@ -15,22 +17,21 @@ import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
 @WebMvcTest(CategoriaController.class)
-@WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
+@Import({SecurityConfiguration.class, JwtAuthFilter.class})
+@ActiveProfiles("test")
 public class CategoriaControllerTest {
 
     @Autowired
@@ -38,6 +39,15 @@ public class CategoriaControllerTest {
     
     @MockBean
     private CategoriaService categoriaService;
+
+    @MockBean
+    private JwtService jwtService;
+    
+    @MockBean
+    private AuthenticationProvider authenticationProvider;
+    
+    @MockBean
+    private UserDetailsService userDetailsService;
     
     @Autowired
     private ObjectMapper objectMapper;
@@ -47,6 +57,7 @@ public class CategoriaControllerTest {
     
     @BeforeEach
     void setUp() {
+        // Configurar negocio y categoría
         negocio = new Negocio();
         negocio.setId(1);
         
@@ -55,7 +66,12 @@ public class CategoriaControllerTest {
         categoria.setName("Bebidas");
         categoria.setNegocio(negocio);
         categoria.setPertenece(Pertenece.INVENTARIO);
+
+        // Configurar JWT service con los métodos reales
+        when(jwtService.getUserNameFromJwtToken(anyString())).thenReturn("admin");
+        when(jwtService.validateJwtToken(anyString(), any())).thenReturn(true);
     }
+
     
     // GET /api/categorias
     @Test

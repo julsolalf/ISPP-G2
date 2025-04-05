@@ -24,6 +24,10 @@ import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioRepository;
 import ispp_g2.gastrostock.pedido.Pedido;
 import ispp_g2.gastrostock.pedido.PedidoRepository;
+import ispp_g2.gastrostock.user.Authorities;
+import ispp_g2.gastrostock.user.AuthoritiesRepository;
+import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase
@@ -44,6 +48,12 @@ public class MesaRepositoryTest {
     
     @Autowired
     private PedidoRepository pedidoRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AuthoritiesRepository authoritiesRepository;
     
     private Dueno dueno;
     private Negocio negocio;
@@ -59,6 +69,16 @@ public class MesaRepositoryTest {
         negocioRepository.deleteAll();
         duenoRepository.deleteAll();
         
+        Authorities authority = new Authorities();
+        authority.setAuthority("DUENO");
+        authority = authoritiesRepository.save(authority);
+
+        // Crear usuario
+        User user = new User();
+        user.setUsername("juangarcia");
+        user.setPassword("password123");
+        user.setAuthority(authority);
+        user = userRepository.save(user);
         // Crear un objeto Dueno
         dueno = new Dueno();
         dueno.setFirstName("Juan");
@@ -66,6 +86,7 @@ public class MesaRepositoryTest {
         dueno.setEmail("juan@gastrostock.com");
         dueno.setNumTelefono("689594895");
         dueno.setTokenDueno("TOKEN123");
+        dueno.setUser(user);
         dueno = duenoRepository.save(dueno);
 
         // Crear un objeto Negocio
@@ -87,6 +108,7 @@ public class MesaRepositoryTest {
         empleado.setLastName("García");
         empleado.setEmail("antonio@test.com");
         empleado.setNumTelefono("666111222");
+        empleado.setUser(user);
         empleado = empleadoRepository.save(empleado);
 
         // Crear objetos Mesa para pruebas

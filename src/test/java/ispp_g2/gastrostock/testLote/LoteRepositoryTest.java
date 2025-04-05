@@ -21,6 +21,10 @@ import ispp_g2.gastrostock.productoInventario.ProductoInventario;
 import ispp_g2.gastrostock.productoInventario.ProductoInventarioRepository;
 import ispp_g2.gastrostock.reabastecimiento.Reabastecimiento;
 import ispp_g2.gastrostock.reabastecimiento.ReabastecimientoRepository;
+import ispp_g2.gastrostock.user.Authorities;
+import ispp_g2.gastrostock.user.AuthoritiesRepository;
+import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.ValidatorFactory;
@@ -60,6 +64,12 @@ public class LoteRepositoryTest {
     @Autowired
     private ProveedorRepository proveedorRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AuthoritiesRepository authoritiesRepository;
+
     private jakarta.validation.Validator validator;
 
     
@@ -82,6 +92,17 @@ public class LoteRepositoryTest {
         duenoRepository.deleteAll();
         categoriaRepository.deleteAll();
         
+        Authorities authority = new Authorities();
+        authority.setAuthority("DUENO");
+        authority = authoritiesRepository.save(authority);
+
+        // Crear usuario
+        User user = new User();
+        user.setUsername("juangarcia");
+        user.setPassword("password123");
+        user.setAuthority(authority);
+        user = userRepository.save(user);
+
         // Crear dueno
         dueno = new Dueno();
         dueno.setFirstName("Juan");
@@ -89,6 +110,7 @@ public class LoteRepositoryTest {
         dueno.setEmail("juan@example.com");
         dueno.setNumTelefono("652345678");
         dueno.setTokenDueno("TOKEN123");
+        dueno.setUser(user);
         dueno = duenoRepository.save(dueno);
         
         // Crear negocio
@@ -108,6 +130,7 @@ public class LoteRepositoryTest {
         proveedor1.setEmail("distri@example.com");
         proveedor1.setTelefono("954111222");
         proveedor1.setDireccion("Polígono Industrial, Nave 7");
+        proveedor1.setNegocio(negocio);
         proveedor1 = proveedorRepository.save(proveedor1);
         
         proveedor2 = new Proveedor();
@@ -115,6 +138,7 @@ public class LoteRepositoryTest {
         proveedor2.setEmail("frescos@example.com");
         proveedor2.setTelefono("954333444");
         proveedor2.setDireccion("Avenida de la Industria, 42");
+        proveedor2.setNegocio(negocio);
         proveedor2 = proveedorRepository.save(proveedor2);
     
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();

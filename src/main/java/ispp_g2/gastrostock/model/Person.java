@@ -24,6 +24,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
@@ -52,12 +53,11 @@ public class Person extends BaseEntity {
 	protected String email;
 
 	@NotEmpty
-	@Digits(fraction = 0, integer = 9)
 	@Column(unique = true)
 	protected String numTelefono;
 
 	@OneToOne(cascade = { CascadeType.DETACH, CascadeType.REFRESH, CascadeType.PERSIST })
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "user_id", nullable = false, unique = true)
 	private User user;
 }

@@ -8,6 +8,10 @@ import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioRepository;
 import ispp_g2.gastrostock.proveedores.Proveedor;
 import ispp_g2.gastrostock.proveedores.ProveedorRepository;
+import ispp_g2.gastrostock.user.Authorities;
+import ispp_g2.gastrostock.user.AuthoritiesRepository;
+import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserRepository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,22 +46,41 @@ class DiaRepartoRepositoryTest {
     @Autowired
     private ProveedorRepository proveedorRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AuthoritiesRepository authoritiesRepository;
+
     private DiaReparto diaReparto;
     private Negocio negocio1;
     private Proveedor proveedor;
 
     @BeforeEach
     void setUp() {
-                
+
+        Authorities authority = new Authorities();
+        authority.setAuthority("DUENO");
+        authority = authoritiesRepository.save(authority);
+
+        // Crear usuario
+        User user = new User();
+        user.setUsername("juangarcia");
+        user.setPassword("password123");
+        user.setAuthority(authority);
+        user = userRepository.save(user);        
+
         Dueno dueno1 = new Dueno();
         dueno1.setFirstName("Juan");
         dueno1.setLastName("García");
         dueno1.setEmail("juan@example.com");
         dueno1.setNumTelefono("666111222");
         dueno1.setTokenDueno("TOKEN999");
+        dueno1.setUser(user);
         dueno1 = duenoRepository.save(dueno1);
 
         negocio1 = new Negocio();
+        negocio1.setId(1);
         negocio1.setName("Restaurante La Tasca");
         negocio1.setDireccion("Calle Principal 123");
         negocio1.setCiudad("Sevilla");
@@ -72,6 +95,7 @@ class DiaRepartoRepositoryTest {
         proveedor.setEmail("distribuciones@example.com");
         proveedor.setTelefono("954111222");
         proveedor.setDireccion("Polígono Industrial, Nave 7");
+        proveedor.setNegocio(negocio1);
         proveedorRepository.save(proveedor);
 
         diaReparto = new DiaReparto();

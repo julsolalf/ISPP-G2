@@ -19,38 +19,47 @@ DELETE FROM authorities;
 INSERT INTO authorities (id, authority) VALUES (1,'dueno');
 INSERT INTO authorities (id, authority) VALUES (2,'empleado');
 
--- Insertando usuarios
-INSERT INTO app_user (id, username, password, authority_id) VALUES (1, 'admin', 'admin123', (SELECT id FROM authorities WHERE authority = 'dueno'));
-INSERT INTO app_user (id, username, password, authority_id) VALUES (2, 'admin2', 'admin123', (SELECT id FROM authorities WHERE authority = 'dueno'));
-INSERT INTO app_user (id, username, password, authority_id) VALUES (3, 'juan', 'password123', (SELECT id FROM authorities WHERE authority = 'empleado'));
-INSERT INTO app_user (id, username, password, authority_id) VALUES (4, 'alejandro', 'password123', (SELECT id FROM authorities WHERE authority = 'empleado'));
-INSERT INTO app_user (id, username, password, authority_id) VALUES (5, 'antonio', 'password123', (SELECT id FROM authorities WHERE authority = 'empleado'));
-INSERT INTO app_user (id, username, password, authority_id) VALUES (6, 'paco', 'password123', (SELECT id FROM authorities WHERE authority = 'empleado'));
-INSERT INTO app_user (id, username, password, authority_id) VALUES (7, 'fernando', 'password123', (SELECT id FROM authorities WHERE authority = 'empleado'));
+-- Insertando usuarios todos con password como contraseña
+INSERT INTO app_user (id, username, password, authority_id) VALUES (1, 'admin', '$2a$10$wPqDTEhcLj7vLpEVxvlreehCK1tZl0FtvaxXxTiQoJOIOJL2uXSQm', (SELECT id FROM authorities WHERE authority = 'dueno'));
+INSERT INTO app_user (id, username, password, authority_id) VALUES (2, 'admin2', '$2a$10$wPqDTEhcLj7vLpEVxvlreehCK1tZl0FtvaxXxTiQoJOIOJL2uXSQm', (SELECT id FROM authorities WHERE authority = 'dueno'));
+INSERT INTO app_user (id, username, password, authority_id) VALUES (3, 'juan', '$2a$10$wPqDTEhcLj7vLpEVxvlreehCK1tZl0FtvaxXxTiQoJOIOJL2uXSQm', (SELECT id FROM authorities WHERE authority = 'empleado'));
+INSERT INTO app_user (id, username, password, authority_id) VALUES (4, 'alejandro', '$2a$10$wPqDTEhcLj7vLpEVxvlreehCK1tZl0FtvaxXxTiQoJOIOJL2uXSQm', (SELECT id FROM authorities WHERE authority = 'empleado'));
+INSERT INTO app_user (id, username, password, authority_id) VALUES (5, 'antonio', '$2a$10$wPqDTEhcLj7vLpEVxvlreehCK1tZl0FtvaxXxTiQoJOIOJL2uXSQm', (SELECT id FROM authorities WHERE authority = 'empleado'));
+INSERT INTO app_user (id, username, password, authority_id) VALUES (6, 'paco', '$2a$10$wPqDTEhcLj7vLpEVxvlreehCK1tZl0FtvaxXxTiQoJOIOJL2uXSQm', (SELECT id FROM authorities WHERE authority = 'empleado'));
+INSERT INTO app_user (id, username, password, authority_id) VALUES (7, 'fernando', '$2a$10$wPqDTEhcLj7vLpEVxvlreehCK1tZl0FtvaxXxTiQoJOIOJL2uXSQm', (SELECT id FROM authorities WHERE authority = 'empleado'));
+--Usuarios temporales mientras se conecta el frontend con el backend
+INSERT INTO app_user (id, username, password, authority_id) VALUES (8, 'owner1', 'password', (SELECT id FROM authorities WHERE authority = 'dueno'));
+INSERT INTO app_user (id, username, password, authority_id) VALUES (9, 'empleado', 'password', (SELECT id FROM authorities WHERE authority = 'empleado'));
 
 -- Insertando duenos
 INSERT INTO dueno (id, first_name, last_name, email, num_telefono, token_dueno, user_id)
-VALUES (1, 'Carlos', 'Perez', 'carlos.perez@gmail.com', '123486789', 'tokenD1', (SELECT id FROM app_user WHERE username = 'admin'));
+VALUES (1, 'Carlos', 'Perez', 'carlos.perez@gmail.com', '623486789', 'gst-hoGkisz7nslugPSIbZ8mp0QW3JSYhM1', (SELECT id FROM app_user WHERE username = 'admin'));
 INSERT INTO dueno (id, first_name, last_name, email, num_telefono, token_dueno, user_id)
-VALUES (2, 'Pablo', 'Rivas', 'pablo.rivas@gmail.com', '123456789', 'tokenD2', (SELECT id FROM app_user WHERE username = 'admin2'));
+VALUES (2, 'Pablo', 'Rivas', 'pablo.rivas@gmail.com', '623456789', 'gst-hoGkisz7nslugPSIbZ8m7Tcq3JSYhM2', (SELECT id FROM app_user WHERE username = 'admin2'));
+--Dueño temporal mientras se conecta el frontend con el backend
+INSERT INTO dueno (id, first_name, last_name, email, num_telefono, token_dueno, user_id)
+VALUES (3, 'Owner', 'Temporal', 'owner@gmail.com', '623654789', 'gst-hoGkisz7etabePSIbZ8m7Tcq3JSYhM2', (SELECT id FROM app_user WHERE username = 'owner1'));
 
 -- Insertando negocios
 INSERT INTO negocio (id, name, token_negocio, direccion, codigo_postal, ciudad, pais, dueno_id)
-VALUES (1, 'Restaurante La Trattoria', 12345, 'Calle Falsa 123', '28001', 'Madrid', 'Espana', (SELECT id FROM dueno WHERE first_name = 'Carlos'));
+VALUES (1, 'Restaurante La Trattoria', 12345, 'Calle Falsa 123', '28001', 'Madrid', 'Espana', (SELECT id FROM dueno WHERE first_name = 'Owner')); --Cambiar de dueño cuando se borre el temporal
 INSERT INTO negocio (id, name, token_negocio, direccion, codigo_postal, ciudad, pais, dueno_id)
 VALUES (2, 'Restaurante Burguer', 09876, 'Calle Falsa 123', '28001', 'Madrid', 'Espana', (SELECT id FROM dueno WHERE first_name = 'Carlos'));
 
 -- Insertando empleados
 INSERT INTO empleado (id, first_name, last_name, email, num_telefono, token_empleado, descripcion, negocio_id, user_id)
-VALUES (1,'Juan', 'Garcia', 'juan.garcia@gmail.com', '987654321', 'tokenEmp1', 'Cocina', (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'juan'));
+VALUES (1,'Juan', 'Garcia', 'juan.garcia@gmail.com', '987654321', 'gst-hoGkisz7nspabPSIbZ8mp0QW3JSYhM3', 'Cocina', (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'juan'));
 INSERT INTO empleado (id, first_name, last_name, email, num_telefono, token_empleado, descripcion, negocio_id, user_id)
-VALUES (2, 'Alejandro', 'Vargas', 'alejandro.vargas@gmail.com', '987654322', 'tokenEmp2', 'Exterior', (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'alejandro'));
+VALUES (2, 'Alejandro', 'Vargas', 'alejandro.vargas@gmail.com', '987654322', 'gst-hoGkisz7nslugPSpay8mp0QW3JSYhM4', 'Exterior', (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'alejandro'));
 INSERT INTO empleado (id, first_name, last_name, email, num_telefono, token_empleado, descripcion, negocio_id, user_id)
-VALUES (3, 'Antonio', 'Fernández', 'antonio.fernandez@gmail.com', '987654323', 'tokenEmp3', 'Barra', (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'antonio'));
+VALUES (3, 'Antonio', 'Fernández', 'antonio.fernandez@gmail.com', '987654323', 'gst-hoGkeby7nslugPSIbZ8mp0QW3JSYhM5', 'Barra', (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'antonio'));
 INSERT INTO empleado (id, first_name, last_name, email, num_telefono, token_empleado, descripcion, negocio_id, user_id)
-VALUES (4, 'Paco', 'Hernández', 'paco.hernandez@gmail.com', '987654324', 'tokenEmp4', 'Cocina', (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'paco'));
+VALUES (4, 'Paco', 'Hernández', 'paco.hernandez@gmail.com', '987654324', 'gst-hoGkisz7nslugPfQbZ8mp0QW3JSYhM6', 'Cocina', (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'paco'));
 INSERT INTO empleado (id, first_name, last_name, email, num_telefono, token_empleado, descripcion, negocio_id, user_id)
-VALUES (5, 'Fernando', 'Pérez', 'fernando.perez@gmail.com', '987654325', 'tokenEmp5', null, (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'fernando'));
+VALUES (5, 'Fernando', 'Pérez', 'fernando.perez@gmail.com', '987654325', 'gst-hoGkisz7metalPSIbZ8mp0QW3JSYhM7', null, (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'fernando'));
+--Empleado temporal mientras se conecta el frontend con el backend
+INSERT INTO empleado (id, first_name, last_name, email, num_telefono, token_empleado, descripcion, negocio_id, user_id)
+VALUES (6, 'Empleado', 'Temporal', 'empleado@gmail.com', '987456325', 'gst-hoGkisz7mgoldPSIbZ8mp0QW3JSYhM7', null, (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'empleado'));
 
 -- Insertando mesas
 INSERT INTO mesa (id, name, numero_asientos, negocio_id)

@@ -31,6 +31,10 @@ import ispp_g2.gastrostock.pedido.Pedido;
 import ispp_g2.gastrostock.pedido.PedidoRepository;
 import ispp_g2.gastrostock.productoVenta.ProductoVenta;
 import ispp_g2.gastrostock.productoVenta.ProductoVentaRepository;
+import ispp_g2.gastrostock.user.Authorities;
+import ispp_g2.gastrostock.user.AuthoritiesRepository;
+import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase
@@ -61,6 +65,12 @@ public class LineaDePedidoRepositoryTest {
     @Autowired
     private CategoriaRepository categoriaRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AuthoritiesRepository authoritiesRepository;
+
     private LineaDePedido lineaNormal, lineaCantidadGrande, lineaPrecioAlto, lineaMinima;
     private ProductoVenta producto1, producto2;
     private Pedido pedido1, pedido2;
@@ -82,6 +92,17 @@ public class LineaDePedidoRepositoryTest {
         negocioRepository.deleteAll();
         duenoRepository.deleteAll();
         
+        Authorities authority = new Authorities();
+        authority.setAuthority("DUENO");
+        authority = authoritiesRepository.save(authority);
+
+        // Crear usuario
+        User user = new User();
+        user.setUsername("juangarcia");
+        user.setPassword("password123");
+        user.setAuthority(authority);
+        user = userRepository.save(user);
+
         // Crear dueno
         dueno = new Dueno();
         dueno.setFirstName("Juan");
@@ -89,6 +110,7 @@ public class LineaDePedidoRepositoryTest {
         dueno.setEmail("juan@gastrostock.com");
         dueno.setNumTelefono("689594895");
         dueno.setTokenDueno("TOKEN123");
+        dueno.setUser(user);
         dueno = duenoRepository.save(dueno);
 
         // Crear negocio
@@ -123,6 +145,7 @@ public class LineaDePedidoRepositoryTest {
         empleado.setLastName("García");
         empleado.setEmail("antonio@test.com");
         empleado.setNumTelefono("666111222");
+        empleado.setUser(user);
         empleado = empleadoRepository.save(empleado);
 
         // Crear categoría

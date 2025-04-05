@@ -2,6 +2,8 @@ package ispp_g2.gastrostock.testLote;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import ispp_g2.gastrostock.config.jwt.JwtService;
 import ispp_g2.gastrostock.lote.Lote;
 import ispp_g2.gastrostock.lote.LoteController;
 import ispp_g2.gastrostock.lote.LoteService;
@@ -16,6 +18,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -26,13 +30,13 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(LoteController.class)
-@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
 public class LoteControllerTest {
@@ -42,7 +46,17 @@ public class LoteControllerTest {
     
     @MockBean
     private LoteService loteService;
+
+    @MockBean
+    private JwtService jwtService;
     
+    @MockBean
+    private AuthenticationProvider authenticationProvider;
+    
+    @MockBean
+    private UserDetailsService userDetailsService;
+    
+    @Autowired
     private ObjectMapper objectMapper;
     
     private Lote lote1, lote2, lote3;
@@ -87,6 +101,9 @@ public class LoteControllerTest {
         lote3.setFechaCaducidad(LocalDate.now().minusDays(1)); // Caducado
         lote3.setProducto(producto);
         lote3.setReabastecimiento(reabastecimiento);
+
+        when(jwtService.getUserNameFromJwtToken(anyString())).thenReturn("admin");
+        when(jwtService.validateJwtToken(anyString(), any())).thenReturn(true);
     }
     
     // TESTS PARA findAll
