@@ -3,7 +3,6 @@ package ispp_g2.gastrostock.empleado;
 import java.util.List;
 import java.util.Optional;
 
-import ispp_g2.gastrostock.user.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -25,6 +24,9 @@ public interface EmpleadoRepository extends CrudRepository<Empleado, Integer> {
 
     @Query("SELECT e FROM Empleado e WHERE e.negocio.id = ?1")
     List<Empleado> findByNegocio(Integer id);
+
+    @Query("SELECT e FROM Empleado e WHERE e.negocio.dueno.id = ?1")
+    List<Empleado> findByDueno(Integer id);
 
     @Query("SELECT e FROM Empleado e WHERE e.user.id = ?1")
     Optional<Empleado> findByUserId(Integer userId);
