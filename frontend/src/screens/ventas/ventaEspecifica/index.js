@@ -6,7 +6,15 @@ import { Bell, User } from "lucide-react";
 // Función para obtener la venta desde el backend
 const obtenerVenta = async (ventaId) => {
   try {
-    const response = await fetch(`http://localhost:8080/api/pedidos/${ventaId}`);
+    const response = await fetch(`http://localhost:8080/api/pedidos/${ventaId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
     if (!response.ok) {
       throw new Error("Error al obtener la venta");
     }

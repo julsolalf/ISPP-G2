@@ -5,13 +5,19 @@ import { Bell, User } from "lucide-react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
-//  const { negocioId } = useAuth(); 
-  //TODO: Cambiar por el negocioId del usuario logueado
-  const negocioId = 1; // Simulación de negocio ID
+const token = localStorage.getItem("token");
+const negocioId = localStorage.getItem("negocioId");
+
 // Función para obtener los pedidos desde la API
 const obtenerPedidos = async () => {
   try {
-    const response = await fetch(`http://localhost:8080/api/pedidos/negocio/${negocioId}`); 
+    const response = await fetch(`http://localhost:8080/api/pedidos/negocio/${negocioId}`,{
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }); 
     if (!response.ok) {
       throw new Error("Error al obtener los pedidos");
     }

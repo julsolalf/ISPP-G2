@@ -3,15 +3,16 @@ import { useNavigate } from "react-router-dom";
 import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 import { MenuIconos } from "../../components/MenuIconos";
+import { jwtDecode } from "jwt-decode";
 
 function PantallaAnadirCategoria() {
   const navigate = useNavigate();
   const [nombre, setNombre] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
-  const negocioId = 1; //Está puesto de manera manual la ID del negocio, pero debería ser dinámico según el usuario logueado
-  // const negocioId = localStorage.getItem("negocioId"); // Obtiene el ID del negocio guardado
-
+  const token = localStorage.getItem("token");
+  const negocioId = localStorage.getItem("negocioId");
+  
   const toggleNotifications = () => setShowNotifications(!showNotifications);
   const toggleUserOptions = () => setShowUserOptions(!showUserOptions);
 
@@ -27,6 +28,7 @@ function PantallaAnadirCategoria() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           name: nombre,

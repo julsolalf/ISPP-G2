@@ -14,11 +14,16 @@ const obtenerEmpleado = async () => {
   }
 };
 
+const token = localStorage.getItem("token");
+const negocioId = localStorage.getItem("negocioId")
+
 const actualizarEmpleado = async (id, empleado) => {
     try {
       const response = await fetch(`http://localhost:8080/api/empleados/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+         },
         body: JSON.stringify(empleado),
       });
       
@@ -46,7 +51,7 @@ function EditarEmpleado() {
     numTelefono: "",
     tokenEmpleado: "",
     descripcion: "",
-    negocio: 1
+    negocio: negocioId
   });
 
   useEffect(() => {

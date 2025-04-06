@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Bell, User } from "lucide-react";
-import axios from "axios"; // Importa axios
 import "../../css/listados/styles.css";
 
 function Empleados() {
@@ -9,15 +8,36 @@ function Empleados() {
   const [negocios, setNegocios] = useState([]);  
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
+  const token = localStorage.getItem("token");
 
   const loadNegocios = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/negocios/dueno/1");  // Arrglar para que coja el negocio del usuario
-      setNegocios(response.data); 
+      const user = JSON.parse(localStorage.getItem("user")); // Recuperamos y parseamos el objeto del localStorage
+      const userId = user?.id; // Accedemos al id del usuario
+  
+      if (userId) {
+        const response = await fetch(`http://localhost:8080/api/negocios/dueno/${userId}`, {
+          method: "GET", 
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        if (response.ok) {
+          const data = await response.json(); // Parseamos la respuesta JSON
+          setNegocios(data); // Establecemos los negocios en el estado
+        } else {
+          console.error("Error al cargar los negocios:", response.statusText);
+        }
+      } else {
+        console.log("No se pudo obtener el negocioId.");
+      }
     } catch (error) {
       console.error("Error al cargar los negocios:", error);
     }
   };
+  
 
   useEffect(() => {
     loadNegocios();  
@@ -25,6 +45,13 @@ function Empleados() {
 
   const toggleNotifications = () => setShowNotifications(!showNotifications);
   const toggleUserOptions = () => setShowUserOptions(!showUserOptions);
+
+  const handleVerNegocio = (negocioId) => {
+    // Guardamos el negocioId en localStorage
+    localStorage.setItem("negocioId", negocioId);
+    // Navegamos a la pantalla de inicio del dueño
+    navigate("/inicioDueno");
+  };
 
   return (
     <div
@@ -81,7 +108,7 @@ function Empleados() {
             negocios.map((negocio, index) => (
               <div key={index} className="empleado-card">
                 <h3>{negocio.name}</h3>
-                <button className="ver-btn" onClick={() => navigate("/inicioDueno")}>Ver</button>
+                <button className="ver-btn" onClick={() => handleVerNegocio(negocio.id)}>Ver</button>
               </div>
             ))
           ) : (

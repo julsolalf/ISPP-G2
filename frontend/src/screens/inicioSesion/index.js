@@ -10,35 +10,36 @@ function PantallaInicioSesion() {
 
   const handleLogin = async () => {
     try {
-      const [empleadosResponse, duenosResponse] = await Promise.all([
-        axios.get("http://localhost:8080/api/empleados"),
-        axios.get("http://localhost:8080/api/duenos"),
-      ]);
-
-      const empleado = empleadosResponse.data.find(
-        (user) =>
-          user.user.username === usuario && user.user.password === password
-      );
-      const dueno = duenosResponse.data.find(
-        (user) =>
-          user.user.username === usuario && user.user.password === password
-      );
-
-      if (empleado) {
-        localStorage.setItem("user", JSON.stringify(empleado));
+      const response = await axios.post("http://localhost:8080/api/auth/login", {
+        username: usuario,
+        password: password
+      });
+  
+      const token = response.data.token;
+      localStorage.setItem("token", token);
+  
+      const userResponse = await axios.get("http://localhost:8080/api/users/me", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const user = userResponse.data;
+      localStorage.setItem("user", JSON.stringify(user));
+  
+      if (user.authority.authority === "empleado") {
         navigate("/inicioEmpleado");
-      }
-      else if (dueno) {
-        localStorage.setItem("user", JSON.stringify(dueno));
+      } else if (user.authority.authority === "dueno") {
         navigate("/elegirNegocio");
       } else {
-        throw new Error("Credenciales incorrectas.");
+        navigate("/"); 
       }
+  
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
       alert("Usuario no encontrado o credenciales incorrectas.");
     }
   };
+  
 
   return (
     <div 

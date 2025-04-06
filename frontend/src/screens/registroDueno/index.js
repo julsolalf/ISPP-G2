@@ -12,7 +12,6 @@ function PantallaRegistroDueno() {
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [token, setToken] = useState("");
   const [loading, setLoading] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
@@ -23,10 +22,10 @@ function PantallaRegistroDueno() {
 
   const handleRegister = async () => {
     if (password !== confirmPassword) {
-      alert("Las contrasenas no coinciden");
+      alert("Las contraseñas no coinciden");
       return;
     }
-
+  
     const data = {
       username: usuario,
       password: password,
@@ -34,15 +33,11 @@ function PantallaRegistroDueno() {
       lastName: ownerLastName,
       email: email,
       numTelefono: phone,
-      tokenDueno: token
     };
-    
 
     try {
       setLoading(true);
-      
-      const response = await axios.post("http://localhost:8080/api/duenos", data);
-      
+      const response = await axios.post("http://localhost:8080/api/auth/register", data);  
       console.log("Registro exitoso:", response.data);
       alert("Registro del dueño exitoso. Registre ahora el negocio.");
       navigate("/registroNegocio");
@@ -53,7 +48,7 @@ function PantallaRegistroDueno() {
       setLoading(false);
     }
   };
-
+  
   return (
     <div 
       className="home-container"
@@ -129,7 +124,6 @@ function PantallaRegistroDueno() {
         <input type="text" placeholder="Usuario" value={usuario} onChange={(e) => setUsuario(e.target.value)} />
         <input type="password" placeholder="Contrasena" value={password} onChange={(e) => setPassword(e.target.value)} />
         <input type="password" placeholder="Confirmar Contrasena" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-        <input type="text" placeholder="Token de dueno" value={token} onChange={(e) => setToken(e.target.value)} />
         
         <button onClick={handleRegister} className="login-btn" disabled={loading}>
           {loading ? "Registrando..." : "Registrarse"}

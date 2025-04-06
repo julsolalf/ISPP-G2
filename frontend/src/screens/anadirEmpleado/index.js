@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios"; 
 import "../../css/paginasBase/styles.css";
 import { Bell, User } from "lucide-react"; 
+import { jwtDecode } from "jwt-decode";
 
 function AnadirEmpleado() {
   const [firstName, setFirstName] = useState("");
@@ -18,6 +19,7 @@ function AnadirEmpleado() {
 
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
+  const token = localStorage.getItem("token");
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
@@ -32,10 +34,8 @@ function AnadirEmpleado() {
     navigate("/"); // Redirigir a la pantalla de inicio de sesión
   };
 
-  //IMPORTANTE
-  // TODO: Cambiar el negocio_id por el que se obtiene del contexto de autenticación o del estado global
-  //  const { negocio_id } = useAuth(); 
-  const negocio_id = 1; // Simulación de negocio_id, reemplazar con el valor real
+  const negocioId = localStorage.getItem("negocioId");
+
   const handleRegister = async () => {
     const empleadoData = {
       username,
@@ -46,11 +46,18 @@ function AnadirEmpleado() {
       numTelefono,
       tokenEmpleado,
       descripcion,
-      negocio: negocio_id
+      negocio: negocioId
     };
   
     try {
-      const response = await axios.post("http://localhost:8080/api/empleados", empleadoData);
+      const response = await fetch("http://localhost:8080/api/empleados", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(empleadoData),
+      });
       if (response.status === 201) {
         alert("Empleado añadido con éxito");
         navigate("/empleados");

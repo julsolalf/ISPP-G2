@@ -3,17 +3,17 @@ import { useNavigate, Link } from "react-router-dom";
 import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
+const token = localStorage.getItem("token");
+const negocioId = localStorage.getItem("negocioId");
+
 const obtenerCategorias = async () => {
   try {
-    /*
-    Falta una lógica de que en cada pantalla esté guardada la información del usuario logueado y por tanto el respectivo negocioId
-    const negocioId = localStorage.getItem("negocioId"); // Obtiene el ID del negocio guardado
-    if (!negocioId) {
-      throw new Error("No se encontró el ID del negocio");
-    }
-    const response = await fetch(`http://localhost:8080/api/categorias/negocio/${negocioId}/inventario`);*/
-
-    const response = await fetch("http://localhost:8080/api/categorias/negocio/1");
+    const response = await fetch(`http://localhost:8080/api/categorias/negocio/${negocioId}/inventario`,
+    {
+      method: "GET",
+        headers: { "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+         }});
     
     if (!response.ok) {
       throw new Error("Error al obtener las categorías");
@@ -111,7 +111,7 @@ function Inventario() {
         <h1 className="title">GastroStock</h1>
         <h2>Inventario</h2>
         <div className="button-container3">
-          <button className="button" onClick={() => navigate("/añadirCategoria")}>➕ Añadir</button>
+          <button className="button" onClick={() => navigate("/anadirCategoria")}>➕ Añadir</button>
           <button className="button">📥 Exportar</button>
           <button className="button">🔍 Filtrar</button>
         </div>
