@@ -32,7 +32,5 @@ public class DuenoDTO {
     @Digits(fraction = 0, integer = 9)
     private String numTelefono;
 
-    @NotBlank
-    @Column(unique = true)
     private String tokenDueno;
 }
