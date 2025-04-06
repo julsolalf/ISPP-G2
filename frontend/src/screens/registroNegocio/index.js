@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { Bell, User } from "lucide-react";
 import "../../css/paginasBase/styles.css";
 
@@ -11,7 +10,8 @@ function PantallaRegistroNegocio() {
   const [codigoPostal, setCodigoPostal] = useState("");
   const [ciudad, setCiudad] = useState("");
   const [pais, setPais] = useState("");
-
+  const token = localStorage.getItem("token");
+  const duenoId = localStorage.getItem("duenoId");
   const [loading, setLoading] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
@@ -29,18 +29,32 @@ function PantallaRegistroNegocio() {
       codigoPostal,
       ciudad,
       pais,
-      dueno: { id: 1 }
+      idDueno: duenoId
     };
 
     try {
       setLoading(true);
-      const response = await axios.post("http://localhost:8080/api/negocios", data);
-      console.log("Registro exitoso:", response.data);
-      alert("Registro exitoso. Inicia sesión.");
+      const response = await fetch("http://localhost:8080/api/negocios", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data)
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Error al registrar. Verifica los datos.");
+      }
+  
+      const result = await response.json();
+      console.log("Registro exitoso:", result);
+      alert("Registro del negocio exitoso.");
       navigate("/elegirNegocio");
     } catch (error) {
-      console.error("Error en el registro:", error.response?.data || error.message);
-      alert(error.response?.data?.message || "Error al registrar. Verifica los datos.");
+      console.error("Error en el registro:", error.message);
+      alert(error.message);
     } finally {
       setLoading(false);
     }
@@ -116,7 +130,7 @@ function PantallaRegistroNegocio() {
         <input type="text" placeholder="País" value={pais} onChange={(e) => setPais(e.target.value)} />
 
         <button onClick={handleRegister} className="login-btn" disabled={loading}>{loading ? "Registrando..." : "Registrar negocio"}</button>
-        <button  className="login-btn" onClick={() => navigate("/inicioSesion")}>Registrar negocio más tarde</button>
+        <button  className="login-btn" onClick={() => navigate("/elegirNegocio")}>Registrar negocio más tarde</button>
       </div>
     </div>
   );

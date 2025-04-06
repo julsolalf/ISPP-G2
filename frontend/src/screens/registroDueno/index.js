@@ -34,20 +34,54 @@ function PantallaRegistroDueno() {
       email: email,
       numTelefono: phone,
     };
-
+  
     try {
       setLoading(true);
-      const response = await axios.post("http://localhost:8080/api/auth/register", data);  
-      console.log("Registro exitoso:", response.data);
-      alert("Registro del dueno exitoso. Registre ahora el negocio.");
-      navigate("/registroNegocio");
+      
+      const registerResponse = await axios.post("http://localhost:8080/api/auth/register", data);
+      console.log("Registro exitoso:", registerResponse.data);
+  
+      const loginResponse = await fetch("http://localhost:8080/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: usuario,
+          password: password,
+        }),
+      });
+  
+      const loginData = await loginResponse.json();
+      const token = loginData.token;
+      localStorage.setItem("token", token);
+  
+      const userResponse = await fetch("http://localhost:8080/api/users/me", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const user = await userResponse.json();
+      localStorage.setItem("user", JSON.stringify(user));
+  
+      const duenoResponse = await fetch(`http://localhost:8080/api/duenos/user/${user.id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const dueno = await duenoResponse.json();
+      localStorage.setItem("duenoId", dueno.id);
+      navigate("/elegirNegocio");
     } catch (error) {
-      console.error("Error en el registro:", error.response?.data || error.message);
-      alert(error.response?.data?.message || "Error al registrar. Verifica los datos.");
+      console.error("Error en el registro o login:", error.response?.data || error.message);
+      alert(error.response?.data?.message || "Error al registrar/iniciar sesión.");
     } finally {
       setLoading(false);
     }
   };
+  
   
   return (
     <div 
