@@ -33,17 +33,24 @@ function PantallaInicioSesion() {
       const user = await userResponse.json();
       localStorage.setItem("user", JSON.stringify(user));
 
-      const duenoResponse = await fetch(`http://localhost:8080/api/duenos/user/${user.id}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const dueno = await duenoResponse.json();
-
       if (user.authority.authority === "empleado") {
+        const empleadoResponse = await fetch(`http://localhost:8080/api/empleados/user/${user.id}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const empleado = await empleadoResponse.json();
+        localStorage.setItem("duenoId", empleado.id); 
         navigate("/inicioEmpleado");
       } else if (user.authority.authority === "dueno") {
+        const duenoResponse = await fetch(`http://localhost:8080/api/duenos/user/${user.id}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const dueno = await duenoResponse.json();
         localStorage.setItem("duenoId", dueno.id); 
         navigate("/elegirNegocio");
       } else {
