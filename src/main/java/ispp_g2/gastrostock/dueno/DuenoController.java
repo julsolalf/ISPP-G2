@@ -3,7 +3,6 @@ package ispp_g2.gastrostock.dueno;
 import java.util.ArrayList;
 import java.util.List;
 
-import ispp_g2.gastrostock.config.jwt.JwtService;
 import ispp_g2.gastrostock.user.User;
 import ispp_g2.gastrostock.user.UserService;
 import jakarta.validation.Valid;
@@ -19,27 +18,19 @@ public class DuenoController {
 
     private final DuenoService duenoService;
     private final UserService userService;
-    private final JwtService jwtService;
 
-    private final String admin = "admin";
+    private final String adminAuth = "admin";
 
     @Autowired
-    public DuenoController(DuenoService duenoService, UserService userService, JwtService jwtService) {
+    public DuenoController(DuenoService duenoService, UserService userService) {
         this.duenoService = duenoService;
         this.userService = userService;
-        this.jwtService = jwtService;
-    }
-
-    private User findUserByJWT(String authToken) {
-        String token =authToken.substring("Bearer ".length());
-        String username = jwtService.getUserNameFromJwtToken(token);
-        return userService.findUserByUsername(username);
     }
 
     @GetMapping
-    public ResponseEntity<List<Dueno>> findAll(@RequestHeader("Authorization") String authHeader) {
-        User u = findUserByJWT(authHeader);
-        if(!(u.getAuthority().getAuthority().equals(admin))) {
+    public ResponseEntity<List<Dueno>> findAll() {
+        User u = userService.findCurrentUser();
+        if(!(u.getAuthority().getAuthority().equals(adminAuth))) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         if (duenoService.getAllDuenos().isEmpty())
@@ -48,9 +39,9 @@ public class DuenoController {
     }
 
     @GetMapping("/dto")
-    public ResponseEntity<List<DuenoDTO>> findAllDTO(@RequestHeader("Authorization") String authHeader) {
-        User u = findUserByJWT(authHeader);
-        if(!(u.getAuthority().getAuthority().equals(admin))) {
+    public ResponseEntity<List<DuenoDTO>> findAllDTO() {
+        User u = userService.findCurrentUser();
+        if(!(u.getAuthority().getAuthority().equals(adminAuth))) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         if (duenoService.getAllDuenos().isEmpty())
@@ -63,25 +54,24 @@ public class DuenoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Dueno> findById(@RequestHeader("Authorization") String authHeader, @PathVariable("id") Integer id ) {
-        User user = findUserByJWT(authHeader);
+    public ResponseEntity<Dueno> findById(@PathVariable("id") Integer id ) {
+        User user = userService.findCurrentUser();
         Dueno dueno = duenoService.getDuenoById(id);
         if(dueno == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        if (!((user.getId().equals(dueno.getUser().getId())) || user.getAuthority().getAuthority().equals(admin))){
+        if (!((user.getId().equals(dueno.getUser().getId())) || user.getAuthority().getAuthority().equals(adminAuth))){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         return new ResponseEntity<>(dueno, HttpStatus.OK);
     }
 
     @GetMapping("/dto/{id}")
-    public ResponseEntity<DuenoDTO> findDTOById(@RequestHeader("Authorization") String authHeader,
-                                                @PathVariable("id") Integer id) {
-        User user = findUserByJWT(authHeader);
+    public ResponseEntity<DuenoDTO> findDTOById(@PathVariable("id") Integer id) {
+        User user = userService.findCurrentUser();
         Dueno duenoToGet = duenoService.getDuenoById(id);
         if(duenoToGet == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        if (!((user.getId().equals(duenoToGet.getUser().getId())) || user.getAuthority().getAuthority().equals(admin))){
+        if (!((user.getId().equals(duenoToGet.getUser().getId())) || user.getAuthority().getAuthority().equals(adminAuth))){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         DuenoDTO dueno = duenoService.convertirDuenoDTO(duenoToGet);
@@ -90,9 +80,9 @@ public class DuenoController {
     }
 
     @GetMapping("/token/{token}")
-    public ResponseEntity<Dueno> findByToken(@RequestHeader("Authorization") String authHeader, @PathVariable("token") String token) {
-        User user = findUserByJWT(authHeader);
-        if(!(user.getAuthority().getAuthority().equals(admin))) {
+    public ResponseEntity<Dueno> findByToken(@PathVariable("token") String token) {
+        User user = userService.findCurrentUser();
+        if(!(user.getAuthority().getAuthority().equals(adminAuth))) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         Dueno dueno = duenoService.getDuenoByToken(token);
@@ -102,9 +92,9 @@ public class DuenoController {
     }
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<Dueno> findByEmail(@RequestHeader("Authorization") String authHeader,@PathVariable("email") String email) {
-        User user = findUserByJWT(authHeader);
-        if(!(user.getAuthority().getAuthority().equals(admin))) {
+    public ResponseEntity<Dueno> findByEmail(@PathVariable("email") String email) {
+        User user = userService.findCurrentUser();
+        if(!(user.getAuthority().getAuthority().equals(adminAuth))) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         Dueno dueno = duenoService.getDuenoByEmail(email);
@@ -114,9 +104,9 @@ public class DuenoController {
     }
 
     @GetMapping("/nombre/{nombre}")
-    public ResponseEntity<List<Dueno>> findByNombre(@RequestHeader("Authorization") String authHeader,@PathVariable("nombre") String nombre) {
-        User user = findUserByJWT(authHeader);
-        if(!(user.getAuthority().getAuthority().equals(admin))) {
+    public ResponseEntity<List<Dueno>> findByNombre(@PathVariable("nombre") String nombre) {
+        User user = userService.findCurrentUser();
+        if(!(user.getAuthority().getAuthority().equals(adminAuth))) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         List<Dueno> duenos = duenoService.getDuenoByNombre(nombre);
@@ -126,9 +116,9 @@ public class DuenoController {
     }
 
     @GetMapping("/apellido/{apellido}")
-    public ResponseEntity<List<Dueno>> findByApellido(@RequestHeader("Authorization") String authHeader,@PathVariable("apellido") String apellido) {
-        User user = findUserByJWT(authHeader);
-        if(!(user.getAuthority().getAuthority().equals(admin))) {
+    public ResponseEntity<List<Dueno>> findByApellido(@PathVariable("apellido") String apellido) {
+        User user = userService.findCurrentUser();
+        if(!(user.getAuthority().getAuthority().equals(adminAuth))) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         List<Dueno> duenos = duenoService.getDuenoByApellido(apellido);
@@ -138,9 +128,9 @@ public class DuenoController {
     }
 
     @GetMapping("/telefono/{telefono}")
-    public ResponseEntity<Dueno> findByTelefono(@RequestHeader("Authorization") String authHeader,@PathVariable("telefono") String telefono) {
-        User user = findUserByJWT(authHeader);
-        if(!(user.getAuthority().getAuthority().equals(admin))) {
+    public ResponseEntity<Dueno> findByTelefono(@PathVariable("telefono") String telefono) {
+        User user = userService.findCurrentUser();
+        if(!(user.getAuthority().getAuthority().equals(adminAuth))) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         Dueno dueno = duenoService.getDuenoByTelefono(telefono);
@@ -151,9 +141,9 @@ public class DuenoController {
 
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<Dueno> findByUser(@RequestHeader("Authorization") String authHeader,@PathVariable("id") Integer id) {
-        User user = findUserByJWT(authHeader);
-        if(!((user.getAuthority().getAuthority().equals(admin)) || user.getId().equals(id))) {
+    public ResponseEntity<Dueno> findByUser(@PathVariable("id") Integer id) {
+        User user = userService.findCurrentUser();
+        if(!((user.getAuthority().getAuthority().equals(adminAuth)) || user.getId().equals(id))) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         Dueno dueno = duenoService.getDuenoByUser(id);
@@ -163,9 +153,9 @@ public class DuenoController {
     }
 
     @PostMapping
-    public ResponseEntity<Dueno> save(@RequestHeader("Authorization") String authHeader,@RequestBody @Valid DuenoDTO duenoDTO) {
-        User user = findUserByJWT(authHeader);
-        if(!(user.getAuthority().getAuthority().equals(admin))) {
+    public ResponseEntity<Dueno> save(@RequestBody @Valid DuenoDTO duenoDTO) {
+        User user = userService.findCurrentUser();
+        if(!(user.getAuthority().getAuthority().equals(adminAuth))) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         if(duenoDTO == null)
@@ -188,13 +178,13 @@ public class DuenoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Dueno> update(@RequestHeader("Authorization") String authHeader, @PathVariable("id") Integer id, @RequestBody @Valid DuenoDTO duenoDTO) {
-        User user = findUserByJWT(authHeader);
+    public ResponseEntity<Dueno> update(@PathVariable("id") Integer id, @RequestBody @Valid DuenoDTO duenoDTO) {
+        User user = userService.findCurrentUser();
         Dueno duenoToGet = duenoService.getDuenoById(id);
         if (duenoToGet == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        if(!(user.getAuthority().getAuthority().equals(admin) || user.getId().equals(duenoToGet.getUser().getId()))) {
+        if(!(user.getAuthority().getAuthority().equals(adminAuth) || user.getId().equals(duenoToGet.getUser().getId()))) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         // Check if the data is empty
@@ -214,13 +204,13 @@ public class DuenoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@RequestHeader("Authorization") String authHeader,@PathVariable("id") Integer id) {
-        User user = findUserByJWT(authHeader);
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
+        User user = userService.findCurrentUser();
         Dueno dueno = duenoService.getDuenoById(id);
         if (dueno == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        if(!(user.getAuthority().getAuthority().equals(admin) || user.getId().equals(dueno.getUser().getId()))) {
+        if(!(user.getAuthority().getAuthority().equals(adminAuth) || user.getId().equals(dueno.getUser().getId()))) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         duenoService.deleteDueno(id);

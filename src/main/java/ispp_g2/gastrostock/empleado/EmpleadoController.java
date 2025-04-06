@@ -3,7 +3,6 @@ package ispp_g2.gastrostock.empleado;
 import java.util.ArrayList;
 import java.util.List;
 
-import ispp_g2.gastrostock.config.jwt.JwtService;
 import ispp_g2.gastrostock.dueno.Dueno;
 import ispp_g2.gastrostock.dueno.DuenoService;
 import ispp_g2.gastrostock.negocio.Negocio;
@@ -23,7 +22,6 @@ public class EmpleadoController {
     private final EmpleadoService empleadoService;
     private final UserService userService;
     private final NegocioService negocioService;
-    private final JwtService jwtService;
     private final DuenoService duenoService;
 
     private final String adminAuth ="admin";
@@ -31,23 +29,16 @@ public class EmpleadoController {
     private final String duenoAuth = "dueno";
 
     @Autowired
-    public EmpleadoController(EmpleadoService empleadoService, UserService userService, NegocioService negocioService,DuenoService duenoService ,JwtService jwtService) {
+    public EmpleadoController(EmpleadoService empleadoService, UserService userService, NegocioService negocioService,DuenoService duenoService) {
         this.empleadoService = empleadoService;
         this.userService = userService;
         this.negocioService = negocioService;
-        this.jwtService = jwtService;
         this.duenoService = duenoService;
     }
 
-    private User findUserByJWT(String authToken) {
-        String token =authToken.substring("Bearer ".length());
-        String username = jwtService.getUserNameFromJwtToken(token);
-        return userService.findUserByUsername(username);
-    }
-
     @GetMapping
-    public ResponseEntity<List<Empleado>> findAll(@RequestHeader("Authorization") String authHeader) {
-        User user = findUserByJWT(authHeader);
+    public ResponseEntity<List<Empleado>> findAll() {
+        User user = userService.findCurrentUser();
 
         if(user.getAuthority().getAuthority().equals(adminAuth)){
             if (empleadoService.getAllEmpleados().isEmpty())
@@ -65,8 +56,8 @@ public class EmpleadoController {
     }
 
     @GetMapping("/dto")
-    public ResponseEntity<List<EmpleadoDTO>> findAllDTO(@RequestHeader("Authorization") String authHeader) {
-        User user = findUserByJWT(authHeader);
+    public ResponseEntity<List<EmpleadoDTO>> findAllDTO() {
+        User user = userService.findCurrentUser();
         if(user.getAuthority().getAuthority().equals(adminAuth)){
 
             if(empleadoService.getAllEmpleados().isEmpty())
@@ -109,14 +100,14 @@ public class EmpleadoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Empleado> findById(@RequestHeader("Authorization") String authHeader,@PathVariable("id") Integer id) {
-        User user = findUserByJWT(authHeader);
+    public ResponseEntity<Empleado> findById(@PathVariable("id") Integer id) {
+        User user = userService.findCurrentUser();
         Empleado empleado = empleadoService.getEmpleadoById(id);
 
         if(empleado == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        if( !(checkUserIsEmpleadoToGet(user, empleado) || checkEmpleadoIsFromDueno(user, empleado))) {
+        if( !(checkUserIsEmpleadoToGet(user, empleado) || checkEmpleadoIsFromDueno(user, empleado) || user.getAuthority().getAuthority().equals(adminAuth))) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
@@ -124,14 +115,14 @@ public class EmpleadoController {
     }
 
     @GetMapping("/dto/{id}")
-    public ResponseEntity<EmpleadoDTO> findDTOById(@RequestHeader("Authorization") String authHeader,@PathVariable("id") Integer id) {
-        User user = findUserByJWT(authHeader);
+    public ResponseEntity<EmpleadoDTO> findDTOById(@PathVariable("id") Integer id) {
+        User user = userService.findCurrentUser();
         Empleado empleado = empleadoService.getEmpleadoById(id);
 
         if(empleado == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        if( !(checkUserIsEmpleadoToGet(user, empleado) || checkEmpleadoIsFromDueno(user, empleado))) {
+        if( !(checkUserIsEmpleadoToGet(user, empleado) || checkEmpleadoIsFromDueno(user, empleado) || user.getAuthority().getAuthority().equals(adminAuth))) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
@@ -140,8 +131,8 @@ public class EmpleadoController {
     }
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<Empleado> findByEmail(@RequestHeader("Authorization") String authHeader,@PathVariable String email) {
-        User user = findUserByJWT(authHeader);
+    public ResponseEntity<Empleado> findByEmail(@PathVariable String email) {
+        User user = userService.findCurrentUser();
 
         if( !(user.getAuthority().getAuthority().equals(adminAuth))){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -154,8 +145,8 @@ public class EmpleadoController {
     }
 
     @GetMapping("/dto/email/{email}")
-    public ResponseEntity<EmpleadoDTO> findDTOByEmail(@RequestHeader("Authorization") String authHeader,@PathVariable("email") String email) {
-        User user = findUserByJWT(authHeader);
+    public ResponseEntity<EmpleadoDTO> findDTOByEmail(@PathVariable("email") String email) {
+        User user = userService.findCurrentUser();
 
         if( !(user.getAuthority().getAuthority().equals(adminAuth))){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -170,8 +161,8 @@ public class EmpleadoController {
     }
 
     @GetMapping("/nombre/{nombre}")
-    public ResponseEntity<List<Empleado>> findByNombre(@RequestHeader("Authorization") String authHeader ,@PathVariable("nombre") String nombre) {
-        User user = findUserByJWT(authHeader);
+    public ResponseEntity<List<Empleado>> findByNombre(@PathVariable("nombre") String nombre) {
+        User user = userService.findCurrentUser();
         if( !(user.getAuthority().getAuthority().equals(adminAuth))){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
@@ -184,8 +175,8 @@ public class EmpleadoController {
     }
 
     @GetMapping("/dto/nombre/{nombre}")
-    public ResponseEntity<List<EmpleadoDTO>> findDTOByNombre(@RequestHeader("Authorization") String authHeader,@PathVariable("nombre") String nombre) {
-        User user = findUserByJWT(authHeader);
+    public ResponseEntity<List<EmpleadoDTO>> findDTOByNombre(@PathVariable("nombre") String nombre) {
+        User user = userService.findCurrentUser();
         if( !(user.getAuthority().getAuthority().equals(adminAuth))){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
@@ -203,8 +194,8 @@ public class EmpleadoController {
     }
 
     @GetMapping("/apellido/{apellido}")
-    public ResponseEntity<List<Empleado>> findByApellido(@RequestHeader("Authorization") String authHeader,@PathVariable("apellido") String apellido) {
-        User user = findUserByJWT(authHeader);
+    public ResponseEntity<List<Empleado>> findByApellido(@PathVariable("apellido") String apellido) {
+        User user = userService.findCurrentUser();
         if( !(user.getAuthority().getAuthority().equals(adminAuth))){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
@@ -217,8 +208,8 @@ public class EmpleadoController {
     }
 
     @GetMapping("/dto/apellido/{apellido}")
-    public ResponseEntity<List<EmpleadoDTO>> findDTOByApellido(@RequestHeader("Authorization") String authHeader, @PathVariable("apellido") String apellido) {
-        User user = findUserByJWT(authHeader);
+    public ResponseEntity<List<EmpleadoDTO>> findDTOByApellido(@PathVariable("apellido") String apellido) {
+        User user = userService.findCurrentUser();
         if( !(user.getAuthority().getAuthority().equals(adminAuth))){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
@@ -236,8 +227,8 @@ public class EmpleadoController {
     }
 
     @GetMapping("/telefono/{telefono}")
-    public ResponseEntity<Empleado> findByTelefono(@RequestHeader("Authorization") String authHeader,@PathVariable("telefono") String telefono) {
-        User user = findUserByJWT(authHeader);
+    public ResponseEntity<Empleado> findByTelefono(@PathVariable("telefono") String telefono) {
+        User user = userService.findCurrentUser();
         if( !(user.getAuthority().getAuthority().equals(adminAuth))){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
@@ -249,8 +240,8 @@ public class EmpleadoController {
     }
 
     @GetMapping("/dto/telefono/{telefono}")
-    public ResponseEntity<EmpleadoDTO> findDTOByTelefono(@RequestHeader("Authorization") String authHeader,@PathVariable("telefono") String telefono) {
-        User user = findUserByJWT(authHeader);
+    public ResponseEntity<EmpleadoDTO> findDTOByTelefono(@PathVariable("telefono") String telefono) {
+        User user = userService.findCurrentUser();
         if( !(user.getAuthority().getAuthority().equals(adminAuth))){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
@@ -263,8 +254,8 @@ public class EmpleadoController {
     }
 
     @GetMapping("/negocio/{id}")
-    public ResponseEntity<List<Empleado>> findByNegocio(@RequestHeader("Authorization") String authHeader,@PathVariable("id") Integer id) {
-        User user = findUserByJWT(authHeader);
+    public ResponseEntity<List<Empleado>> findByNegocio(@PathVariable("id") Integer id) {
+        User user = userService.findCurrentUser();
         Dueno dueno = duenoService.getDuenoByUser(user.getId());
         Negocio negocio = negocioService.getById(id);
         List<Empleado> empleados = empleadoService.getEmpleadoByNegocio(id);
@@ -281,8 +272,8 @@ public class EmpleadoController {
     }
 
     @GetMapping("/dto/negocio/{id}")
-    public ResponseEntity<List<EmpleadoDTO>> findDTOByNegocio(@RequestHeader("Authorization") String authHeader,@PathVariable("id") Integer id) {
-        User user = findUserByJWT(authHeader);
+    public ResponseEntity<List<EmpleadoDTO>> findDTOByNegocio(@PathVariable("id") Integer id) {
+        User user = userService.findCurrentUser();
         Dueno dueno = duenoService.getDuenoByUser(user.getId());
         Negocio negocio = negocioService.getById(id);
 
@@ -303,8 +294,8 @@ public class EmpleadoController {
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<Empleado> findByUser(@RequestHeader("Authorization") String authHeader,@PathVariable("id") Integer id) {
-        User user = findUserByJWT(authHeader);
+    public ResponseEntity<Empleado> findByUser(@PathVariable("id") Integer id) {
+        User user = userService.findCurrentUser();
         if( !(user.getAuthority().getAuthority().equals(adminAuth))){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
@@ -315,8 +306,8 @@ public class EmpleadoController {
     }
 
     @GetMapping("/dto/user/{id}")
-    public ResponseEntity<EmpleadoDTO> findDTOByUser(@RequestHeader("Authorization") String authHeader,@PathVariable("id") Integer id) {
-        User user = findUserByJWT(authHeader);
+    public ResponseEntity<EmpleadoDTO> findDTOByUser(@PathVariable("id") Integer id) {
+        User user = userService.findCurrentUser();
         if( !(user.getAuthority().getAuthority().equals(adminAuth))){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
@@ -328,8 +319,8 @@ public class EmpleadoController {
     }
 
     @GetMapping("/token/{token}")
-    public ResponseEntity<Empleado> findByTokenEmpleado(@RequestHeader("Authorization") String authHeader,@PathVariable("token") String token) {
-        User user = findUserByJWT(authHeader);
+    public ResponseEntity<Empleado> findByTokenEmpleado(@PathVariable("token") String token) {
+        User user = userService.findCurrentUser();
         if( !(user.getAuthority().getAuthority().equals(adminAuth))){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
@@ -340,8 +331,8 @@ public class EmpleadoController {
     }
 
     @GetMapping("/dto/token/{token}")
-    public ResponseEntity<EmpleadoDTO> findDTOByTokenEmpleado(@RequestHeader("Authorization") String authHeader, @PathVariable("token") String token) {
-        User user = findUserByJWT(authHeader);
+    public ResponseEntity<EmpleadoDTO> findDTOByTokenEmpleado(@PathVariable("token") String token) {
+        User user = userService.findCurrentUser();
         if( !(user.getAuthority().getAuthority().equals(adminAuth))){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
@@ -354,8 +345,8 @@ public class EmpleadoController {
     }
 
     @PostMapping
-    public ResponseEntity<Empleado> save(@RequestHeader("Authorization") String authHeader,@RequestBody @Valid EmpleadoDTO empleadoDTO) {
-        User user = findUserByJWT(authHeader);
+    public ResponseEntity<Empleado> save(@RequestBody @Valid EmpleadoDTO empleadoDTO) {
+        User user = userService.findCurrentUser();
         Dueno dueno = duenoService.getDuenoByUser(user.getId());
 
         if(empleadoDTO==null)
@@ -387,8 +378,8 @@ public class EmpleadoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Empleado> update(@RequestHeader("Authorization") String authHeader,@PathVariable("id") Integer id, @RequestBody @Valid  EmpleadoDTO empleadoDTO) {
-        User user = findUserByJWT(authHeader);
+    public ResponseEntity<Empleado> update(@PathVariable("id") Integer id, @RequestBody @Valid  EmpleadoDTO empleadoDTO) {
+        User user = userService.findCurrentUser();
         Dueno dueno = duenoService.getDuenoByUser(user.getId());
 
         // Check if the data is empty
@@ -424,8 +415,8 @@ public class EmpleadoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@RequestHeader("Authorization") String authHeader,@PathVariable("id") Integer id) {
-        User user = findUserByJWT(authHeader);
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
+        User user = userService.findCurrentUser();
         Dueno dueno = duenoService.getDuenoByUser(user.getId());
 
         Empleado empleado = empleadoService.getEmpleadoById(id);
