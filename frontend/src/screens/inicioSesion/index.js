@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
 import "../../css/paginasBase/styles.css";
 
 function PantallaInicioSesion() {
@@ -10,36 +9,52 @@ function PantallaInicioSesion() {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post("http://localhost:8080/api/auth/login", {
-        username: usuario,
-        password: password
-      });
-  
-      const token = response.data.token;
-      localStorage.setItem("token", token);
-  
-      const userResponse = await axios.get("http://localhost:8080/api/users/me", {
+      const response = await fetch("http://localhost:8080/api/auth/login", {
+        method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: usuario,
+          password: password,
+        }),
       });
-      const user = userResponse.data;
+
+      const data = await response.json();
+      const token = data.token;
+      localStorage.setItem("token", token);
+
+      const userResponse = await fetch("http://localhost:8080/api/users/me", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const user = await userResponse.json();
       localStorage.setItem("user", JSON.stringify(user));
-  
+
+      const duenoResponse = await fetch(`http://localhost:8080/api/duenos/user/${user.id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const dueno = await duenoResponse.json();
+
       if (user.authority.authority === "empleado") {
         navigate("/inicioEmpleado");
       } else if (user.authority.authority === "dueno") {
+        localStorage.setItem("duenoId", dueno.id); 
         navigate("/elegirNegocio");
       } else {
         navigate("/"); 
       }
-  
+
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
       alert("Usuario no encontrado o credenciales incorrectas.");
     }
   };
-  
 
   return (
     <div 

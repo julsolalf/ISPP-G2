@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 import { MenuIconos } from "../../components/MenuIconos";
-import { jwtDecode } from "jwt-decode";
 
 function PantallaAnadirCategoria() {
   const navigate = useNavigate();

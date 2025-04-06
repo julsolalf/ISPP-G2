@@ -39,7 +39,7 @@ function PantallaRegistroDueno() {
       setLoading(true);
       const response = await axios.post("http://localhost:8080/api/auth/register", data);  
       console.log("Registro exitoso:", response.data);
-      alert("Registro del dueño exitoso. Registre ahora el negocio.");
+      alert("Registro del dueno exitoso. Registre ahora el negocio.");
       navigate("/registroNegocio");
     } catch (error) {
       console.error("Error en el registro:", error.response?.data || error.message);

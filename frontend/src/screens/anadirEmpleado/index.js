@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios"; 
 import "../../css/paginasBase/styles.css";
 import { Bell, User } from "lucide-react"; 
-import { jwtDecode } from "jwt-decode";
 
 function AnadirEmpleado() {
   const [firstName, setFirstName] = useState("");

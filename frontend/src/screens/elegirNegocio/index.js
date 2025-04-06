@@ -9,14 +9,13 @@ function Empleados() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
   const token = localStorage.getItem("token");
+  const duenoId = localStorage.getItem("duenoId");
 
   const loadNegocios = async () => {
     try {
-      const user = JSON.parse(localStorage.getItem("user")); // Recuperamos y parseamos el objeto del localStorage
-      const userId = user?.id; // Accedemos al id del usuario
   
-      if (userId) {
-        const response = await fetch(`http://localhost:8080/api/negocios/dueno/${userId}`, {
+      if (duenoId) {
+        const response = await fetch(`http://localhost:8080/api/negocios/dueno/${duenoId}`, {
           method: "GET", 
           headers: {
             "Content-Type": "application/json",
@@ -47,9 +46,7 @@ function Empleados() {
   const toggleUserOptions = () => setShowUserOptions(!showUserOptions);
 
   const handleVerNegocio = (negocioId) => {
-    // Guardamos el negocioId en localStorage
     localStorage.setItem("negocioId", negocioId);
-    // Navegamos a la pantalla de inicio del dueño
     navigate("/inicioDueno");
   };
 
