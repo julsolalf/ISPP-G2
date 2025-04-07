@@ -5,6 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductoVentaRepository extends CrudRepository<ProductoVenta,Integer>{
@@ -20,5 +21,8 @@ public interface ProductoVentaRepository extends CrudRepository<ProductoVenta,In
 
     @Query("SELECT p FROM ProductoVenta p WHERE p.categoria.name = ?1 AND p.precioVenta = ?2")
     List<ProductoVenta> findProductoVentaByCategoriaVentaAndPrecioVenta(String categoriaVenta, Double precioVenta);
+
+    @Query("SELECT p FROM ProductoVenta p WHERE p.name = ?1 AND p.categoria.negocio.id = ?2")
+    Optional<ProductoVenta> findProductoVentaByNombreAndNegocioId(String nombre, Integer negocioId);
 
 }

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { Bell, User } from "lucide-react";
 import "../../css/paginasBase/styles.css";
 
@@ -11,14 +10,21 @@ function PantallaRegistroNegocio() {
   const [codigoPostal, setCodigoPostal] = useState("");
   const [ciudad, setCiudad] = useState("");
   const [pais, setPais] = useState("");
-
+  const token = localStorage.getItem("token");
+  const duenoId = localStorage.getItem("duenoId");
   const [loading, setLoading] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
   const navigate = useNavigate();
 
   const toggleNotifications = () => setShowNotifications(!showNotifications);
   const toggleUserOptions = () => setShowUserOptions(!showUserOptions);
+
+  const handleLogout = () => {
+    localStorage.removeItem("userToken"); // Eliminamos el token del usuario
+    navigate("/"); // Redirigir a la pantalla de inicio de sesión
+  };
 
   const handleRegister = async () => {
 
@@ -29,18 +35,32 @@ function PantallaRegistroNegocio() {
       codigoPostal,
       ciudad,
       pais,
-      dueno: { id: 1 }
+      idDueno: duenoId
     };
 
     try {
       setLoading(true);
-      const response = await axios.post("http://localhost:8080/api/negocios", data);
-      console.log("Registro exitoso:", response.data);
-      alert("Registro exitoso. Inicia sesión.");
+      const response = await fetch("http://localhost:8080/api/negocios", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data)
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Error al registrar. Verifica los datos.");
+      }
+  
+      const result = await response.json();
+      console.log("Registro exitoso:", result);
+      alert("Registro del negocio exitoso.");
       navigate("/elegirNegocio");
     } catch (error) {
-      console.error("Error en el registro:", error.response?.data || error.message);
-      alert(error.response?.data?.message || "Error al registrar. Verifica los datos.");
+      console.error("Error en el registro:", error.message);
+      alert(error.message);
     } finally {
       setLoading(false);
     }
@@ -96,7 +116,7 @@ function PantallaRegistroNegocio() {
                 <button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button>
               </li>
               <li>
-                <button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button>
+                <button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
               </li>
             </ul>
           </div>
@@ -116,7 +136,20 @@ function PantallaRegistroNegocio() {
         <input type="text" placeholder="País" value={pais} onChange={(e) => setPais(e.target.value)} />
 
         <button onClick={handleRegister} className="login-btn" disabled={loading}>{loading ? "Registrando..." : "Registrar negocio"}</button>
-        <button  className="login-btn" onClick={() => navigate("/inicioSesion")}>Registrar negocio más tarde</button>
+        <button  className="login-btn" onClick={() => navigate("/elegirNegocio")}>Registrar negocio más tarde</button>
+
+        {/* Modal de Confirmación para Logout */}
+        {showLogoutModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>¿Está seguro que desea abandonar la sesión?</h3>
+              <div className="modal-buttons">
+                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
+                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

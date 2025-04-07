@@ -20,7 +20,7 @@ public class AuthoritiesController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Authorities>> findAll() {
+    public ResponseEntity<List<Authorities>> findAll(@RequestHeader("Authorization") String token) {
         if(authoritiesService.findAll().isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
