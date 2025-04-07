@@ -28,6 +28,6 @@ public class PedidoDto {
     private Integer empleadoId;
 
     @NotNull
-    private Integer ventaId;
+    private Integer negocioId;
 
 }

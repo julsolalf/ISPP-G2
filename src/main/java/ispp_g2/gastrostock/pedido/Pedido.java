@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import ispp_g2.gastrostock.empleado.Empleado;
 import ispp_g2.gastrostock.mesa.Mesa;
 import ispp_g2.gastrostock.model.BaseEntity;
-import ispp_g2.gastrostock.ventas.Venta;
+import ispp_g2.gastrostock.negocio.Negocio;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -41,7 +41,7 @@ public class Pedido extends BaseEntity{
 
     @ManyToOne(optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "venta_id")
-    private Venta venta;
+    @JoinColumn(name = "negocio_id")
+    private Negocio negocio;
 
 }
