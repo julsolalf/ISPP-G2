@@ -1,6 +1,5 @@
 package ispp_g2.gastrostock.proveedores;
 
-import ispp_g2.gastrostock.negocio.Negocio;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -56,17 +55,11 @@ public class ProveedorController {
 
     @GetMapping("/dto/{id}")
     public ResponseEntity<ProveedorDTO> findByIdDTO(@PathVariable String id) {
-        try {
-            Integer idNum = Integer.parseInt(id);
-            Proveedor proveedor = proveedorService.findById(idNum);
-            if (proveedor == null) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-            ProveedorDTO proveedorDto = proveedorService.convertirProveedorDTO(proveedor);
-            return new ResponseEntity<>(proveedorDto, HttpStatus.OK);
-        } catch (NumberFormatException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        ProveedorDTO proveedorDTO = proveedorService.convertirProveedorDTO(proveedorService.findById(Integer.parseInt(id)));
+        if (proveedorDTO == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>(proveedorDTO, HttpStatus.OK);
     }
 
     @GetMapping("/email/{email}")
