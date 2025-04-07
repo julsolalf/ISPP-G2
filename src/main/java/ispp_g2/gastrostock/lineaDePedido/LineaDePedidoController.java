@@ -142,9 +142,13 @@ public class LineaDePedidoController {
             throw new IllegalArgumentException("Linea de pedido no puede ser nula");
         }
         LineaDePedido toUpdate = lineaDePedidoService.getById(id);
+        if (toUpdate == null) { 
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         BeanUtils.copyProperties(lineaDePedidoService.convertDtoLineaDePedido(lineaDePedidoDTO), toUpdate,"id");
         return new ResponseEntity<>(LineaDePedidoDTO.of(lineaDePedidoService.save(toUpdate)), HttpStatus.OK);
     }
+    
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {

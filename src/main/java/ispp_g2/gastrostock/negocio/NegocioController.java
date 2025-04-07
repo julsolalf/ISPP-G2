@@ -187,15 +187,19 @@ public class NegocioController {
 	@PutMapping("/{id}")
 	public ResponseEntity<Negocio> update(@RequestBody @Valid NegocioDTO newNegocio,
 			@PathVariable("id") Integer id) {
-
+		if(newNegocio == null)
+			throw new IllegalArgumentException("Negocio cannot be null");
+	
 		Negocio toUpdate = negocioService.getById(id);
+		if (toUpdate == null)
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	
 		User user = userService.findCurrentUser();
 		if (user.hasAnyAuthority("dueno").equals(true)) {
 			Dueno dueno = duenoService.getDuenoByUser(user.getId());
-			if (newNegocio == null)
-				throw new IllegalArgumentException("Negocio cannot be null");
 			if (!toUpdate.getDueno().getId().equals(dueno.getId()))
 				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+	
 			Negocio nuevo = negocioService.convertirDTONegocio(newNegocio);
 			return new ResponseEntity<>(negocioService.update(id, nuevo), HttpStatus.OK);
 		} else {
