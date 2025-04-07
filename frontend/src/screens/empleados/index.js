@@ -43,7 +43,7 @@ function Empleados() {
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
 
   const handleLogout = () => {
-    localStorage.removeItem("userToken"); // Eliminamos el token del usuario
+    localStorage.clear();
     navigate("/inicioSesion"); // Redirigir a la pantalla de inicio de sesión
   };
 
