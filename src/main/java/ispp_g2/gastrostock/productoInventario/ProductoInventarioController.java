@@ -116,7 +116,7 @@ public class ProductoInventarioController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		ProductoInventario productoInventarioToUpdate = productoInventarioService.convertirDTOProductoInventario(newProductoInventario);
 		productoInventarioToUpdate.setId(id);
-		return new ResponseEntity<>(productoInventarioService.save(productoInventario), HttpStatus.OK);
+		return new ResponseEntity<>(productoInventarioService.save(productoInventarioToUpdate), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
