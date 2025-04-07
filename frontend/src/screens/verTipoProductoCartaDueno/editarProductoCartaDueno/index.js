@@ -29,6 +29,34 @@ const actualizarProducto = async (id, producto) => {
   }
 };
 
+const obtenerIngredientes = async (productoVentaId) => {
+  try {
+    const res = await fetch(`http://localhost:8080/api/ingredientes/productoVenta/${productoVentaId}`);
+    return await res.json();
+  } catch (error) {
+    console.error("Error obteniendo ingredientes:", error);
+    return [];
+  }
+};
+
+const agregarIngrediente = async (productoVentaId, productoInventarioId, cantidad) => {
+  return await fetch("http://localhost:8080/api/ingredientes", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      productoVenta: { id: productoVentaId },
+      productoInventario: { id: productoInventarioId },
+      cantidad: cantidad,
+    }),
+  });
+};
+
+const eliminarIngrediente = async (ingredienteId) => {
+  return await fetch(`http://localhost:8080/api/ingredientes/${ingredienteId}`, {
+    method: "DELETE",
+  });
+};
+
 function EditarProductoCarta() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -37,6 +65,10 @@ function EditarProductoCarta() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
+  const [ingredientes, setIngredientes] = useState([]);
+  const [nuevoIngredienteId, setNuevoIngredienteId] = useState("");
+  const [nuevaCantidad, setNuevaCantidad] = useState("");
+  const [productosInventario, setProductosInventario] = useState([]);
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
@@ -56,8 +88,36 @@ function EditarProductoCarta() {
       const data = await obtenerProducto(id);
       if (data) setProducto(data);
     };
+    const cargarIngredientes = async () => {
+      const data = await obtenerIngredientes(id);
+      setIngredientes(data);
+    };
+
+    const cargarInventario = async () => {
+      const res = await fetch("http://localhost:8080/api/productosInventario");
+      const data = await res.json();
+      setProductosInventario(data);
+    };
+
     cargarProducto();
+    cargarIngredientes();
+    cargarInventario();
   }, [id]);
+
+  const handleAgregarIngrediente = async () => {
+    if (!nuevoIngredienteId || !nuevaCantidad) return alert("Rellena ambos campos");
+
+    await agregarIngrediente(id, nuevoIngredienteId, parseFloat(nuevaCantidad));
+    const actualizados = await obtenerIngredientes(id);
+    setIngredientes(actualizados);
+    setNuevoIngredienteId("");
+    setNuevaCantidad("");
+  };
+
+  const handleEliminarIngrediente = async (ingredienteId) => {
+    await eliminarIngrediente(ingredienteId);
+    setIngredientes(await obtenerIngredientes(id));
+  };
 
   const handleChange = (e) => {
     setProducto({ ...producto, [e.target.name]: e.target.value });
@@ -129,6 +189,36 @@ function EditarProductoCarta() {
         <form className="form-container" onSubmit={handleSubmit}>
           <input type="text" name="name" value={producto.name} onChange={handleChange} placeholder="Nombre" required />
           <input type="number" name="precioVenta" value={producto.precioVenta} onChange={handleChange} placeholder="Precio de Venta" required />
+
+          <h3>Ingredientes</h3>
+          <ul style={{ listStyle: "none", padding: 0 }}>
+            {ingredientes.map((ing) => (
+              <li key={ing.id}>
+                🧂 {ing.productoInventario.name} - {ing.cantidad}
+                <button type="button" onClick={() => handleEliminarIngrediente(ing.id)} style={{ marginLeft: "10px" }}>❌</button>
+              </li>
+            ))}
+          </ul>
+
+          <div style={{ marginTop: "1rem" }}>
+            <select value={nuevoIngredienteId} onChange={(e) => setNuevoIngredienteId(e.target.value)}>
+              <option value="">Selecciona un ingrediente</option>
+              {productosInventario.map((pi) => (
+                <option key={pi.id} value={pi.id}>{pi.name}</option>
+              ))}
+            </select>
+            <input
+              type="number"
+              placeholder="Cantidad"
+              value={nuevaCantidad}
+              onChange={(e) => setNuevaCantidad(e.target.value)}
+              style={{ marginLeft: "10px" }}
+            />
+            <button type="button" onClick={handleAgregarIngrediente} style={{ marginLeft: "10px" }}>
+              ➕ Añadir
+            </button>
+          </div>
+
           <button type="submit" className="button">💾 Guardar</button>
         </form>
 

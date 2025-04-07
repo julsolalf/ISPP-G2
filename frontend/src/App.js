@@ -38,6 +38,9 @@ import VerTipoProductoCartaDueno from "./screens/verTipoProductoCartaDueno/index
 import VerProductoCartaDueno from "./screens/verTipoProductoCartaDueno/verProductoCartaDueno/index.js";
 import PantallaAñadirProductoCarta from "./screens/anadirProductoVenta/index.js";
 import EditarProductoCarta from "./screens/verTipoProductoCartaDueno/editarProductoCartaDueno/index.js";
+import CartaEmpleado from "./screens/cartaEmpleado/index.js";
+import VerProductosVenta from "./screens/verTipoProductoCartaEmpleado/index.js";
+import VerProductoCartaEmpleado from "./screens/verTipoProductoCartaEmpleado/verProductoCartaEmpleado/index.js";
 
 
 
@@ -121,6 +124,9 @@ function App() {
         <Route path="/categoriaVenta/:categoriaNombre/producto/:productoNombre" element={<VerProductoCartaDueno />} />
         <Route path="/anadirProductoVenta" element={<PantallaAñadirProductoCarta />} />
         <Route path="/editarProductoCartaDueno/:id" element={<EditarProductoCarta />} />
+        <Route path="/cartaEmpleado" element={<CartaEmpleado />} />
+        <Route path="/verTipoProductoCartaEmpleado/:categoriaId" element={<VerProductosVenta />} />
+        <Route path="/categoriaVenta/:categoriaNombre/productoVenta/:productoNombre" element={<VerProductoCartaEmpleado />} />
       </Routes>
     </Router>
   );

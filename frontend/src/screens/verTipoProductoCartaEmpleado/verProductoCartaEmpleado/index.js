@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "../../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
@@ -27,11 +27,10 @@ const obtenerIngredientes = async (productoId) => {
   }
 };
 
-function VerProductoCartaDueno() {
+function VerProductoCartaEmpleado() {
   const navigate = useNavigate();
   const [producto, setProducto] = useState(null);
   const [ingredientes, setIngredientes] = useState([]);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -56,31 +55,20 @@ function VerProductoCartaDueno() {
     cargarDatos();
   }, []);
 
-  const eliminarProducto = async () => {
-    try {
-      const response = await fetch(`http://localhost:8080/api/productosVenta/${producto.id}`, {
-        method: "DELETE",
-      });
-      if (!response.ok) throw new Error("Error al eliminar el producto");
-      navigate(`/verTipoProductoCartaDueno/${localStorage.getItem("categoriaNombre")}`);
-    } catch (error) {
-      console.error("Error al eliminar el producto:", error);
-    }
-  };
-
   if (!producto) return <h2>Producto no encontrado</h2>;
 
   return (
-    <div className="home-container" style={{
-      backgroundImage: `url(${process.env.PUBLIC_URL + "/background-spices.jpg"})`,
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      height: "100vh",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      textAlign: "center",
-    }}>
+    <div className="home-container"
+      style={{
+        backgroundImage: `url(${process.env.PUBLIC_URL + "/background-spices.jpg"})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+      }}>
       <div className="content">
         <div className="icon-container-right">
           <Bell size={30} className="icon" onClick={toggleNotifications} />
@@ -91,7 +79,7 @@ function VerProductoCartaDueno() {
           <div className="notification-bubble">
             <div className="notification-header">
               <strong>Notificaciones</strong>
-              <button className="close-btn" onClick={() => setShowNotifications(false)}>X</button>
+              <button className="close-btn" onClick={toggleNotifications}>X</button>
             </div>
             <ul>
               <li>Notificación 1</li>
@@ -116,12 +104,7 @@ function VerProductoCartaDueno() {
         )}
 
         <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
-        <Link to="/inicioDueno">
-          <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
-        </Link>
-        <h1 className="title">GastroStock</h1>
         <h1>Producto</h1>
-
         <div className="empleado-card">
           <h1 className="producto-nombre">{producto.name}</h1>
           <p><strong>Categoría:</strong> {producto.categoria?.name || "Sin categoría"}</p>
@@ -138,8 +121,6 @@ function VerProductoCartaDueno() {
           )}
 
           <p><strong>Precio:</strong> {producto.precioVenta} €</p>
-          <button style={{ background: "#157E03", color: "white" }} onClick={() => navigate(`/editarProductoCartaDueno/${producto.id}`)}>Editar Producto</button>
-          <button style={{ background: "#9A031E", color: "white" }} onClick={() => setShowDeleteModal(true)}>Eliminar Producto</button>
         </div>
 
         {/* Modal de Logout */}
@@ -154,22 +135,9 @@ function VerProductoCartaDueno() {
             </div>
           </div>
         )}
-
-        {/* Modal de Confirmación de eliminación */}
-        {showDeleteModal && (
-          <div className="modal-overlay">
-            <div className="modal">
-              <h3>¿Está seguro que desea eliminar este producto?</h3>
-              <div className="modal-buttons">
-                <button className="confirm-btn" onClick={eliminarProducto}>Sí</button>
-                <button className="cancel-btn" onClick={() => setShowDeleteModal(false)}>No</button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
 }
 
-export default VerProductoCartaDueno;
+export default VerProductoCartaEmpleado;
