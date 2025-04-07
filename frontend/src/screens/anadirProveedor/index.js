@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios"; 
 import "../../css/paginasBase/styles.css";
 import { Bell, User } from "lucide-react"; 
 
@@ -12,10 +11,8 @@ function AnadirProveedor() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false); 
-  //IMPORTANTE
-  // TODO: Cambiar el negocio_id por el que se obtiene del contexto de autenticación o del estado global
-  //  const { negocio_id } = useAuth(); 
-  const negocio_id = 1; // Simulación de negocio_id, reemplazar con el valor real
+  const token = localStorage.getItem("token");
+  const negocio_id = localStorage.getItem("negocioId"); 
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
@@ -33,36 +30,39 @@ function AnadirProveedor() {
   const navigate = useNavigate();
 
   const handleRegister = async () => {
-    if (!negocio_id) {
-      alert("No se ha seleccionado un negocio.");
-      return;
-    }
-
-    console.log("Anadiendo proveedor con:", {
-      name,
-      email,
-      telefono,
-      direccion,
-      negocio_id
-    });
-
-    const proveedorData = {
-      name,
-      email,
-      telefono,
-      direccion,
-      negocio: { id: negocio_id }
-    };
-
     try {
-      const response = await axios.post("http://localhost:8080/api/proveedores", proveedorData);
+      if (!negocio_id) {
+        alert("No se ha seleccionado un negocio.");
+        return;
+      }
+  
+      const proveedorData = {
+        name,
+        email,
+        telefono,
+        direccion,
+        negocio: { id: negocio_id }
+      };
+  
+      const response = await fetch("http://localhost:8080/api/proveedores", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(proveedorData), // Convertimos los datos a JSON
+      });
+  
       if (response.status === 201) {
-        navigate("/proveedores"); 
+        navigate("/proveedores"); // Redirige a la página de proveedores si la creación es exitosa
+      } else {
+        console.error("Error al añadir el proveedor:", response.statusText);
       }
     } catch (error) {
-      console.error("Error al anadir el proveedor:", error.response ? error.response.data : error.message);
+      console.error("Error al añadir el proveedor:", error.message);
     }
   };
+  
 
 
   return (

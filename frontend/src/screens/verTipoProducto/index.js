@@ -106,9 +106,7 @@ function VerTipoProducto() {
         <h1 className="title">GastroStock</h1>
         <h2>Productos</h2>
         <div className="button-container3">
-          <button className="button" onClick={() => {
-            localStorage.setItem("categoriaNombre", localStorage.getItem("categoriaNombre"));
-            navigate("/anadirProductoInventario")}}>➕ Añadir</button>
+          <button className="button" onClick={() => navigate("/anadirProductoInventario")}>➕ Añadir</button>
           <button className="button">📥 Exportar</button>
           <button className="button">🔍 Filtrar</button>
         </div>

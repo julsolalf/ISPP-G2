@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Bell, User } from "lucide-react";
-import axios from "axios"; // Importa axios
 import "../../css/listados/styles.css";
 
 function Empleados() {
@@ -9,15 +8,30 @@ function Empleados() {
   const [empleados, setEmpleados] = useState([]);  // Cambia el estado para manejar empleados vacíos
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
+  const token = localStorage.getItem("userToken"); // Obtener el token del usuario desde localStorage
+  const negocioId = localStorage.getItem("negocioId"); // Obtener el ID del negocio desde localStorage
 
   const loadEmpleados = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/empleados/negocio/1");  // Arrglar para que coja el negocio del usuario
-      setEmpleados(response.data); 
+      const response = await fetch(`http://localhost:8080/api/empleados/negocio/${negocioId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error("Error al cargar los empleados");
+      }
+  
+      const data = await response.json();
+      setEmpleados(data);  // Supongo que 'setEmpleados' es una función para actualizar el estado
     } catch (error) {
       console.error("Error al cargar los empleados:", error);
     }
   };
+  
 
   useEffect(() => {
     loadEmpleados();  

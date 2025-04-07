@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Bell, User } from "lucide-react";
-import axios from "axios"; // Importa axios
 import "../../css/listados/styles.css";
 
 function Empleados() {
@@ -9,16 +8,36 @@ function Empleados() {
   const [negocios, setNegocios] = useState([]);  
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
+  const token = localStorage.getItem("token");
+  const duenoId = localStorage.getItem("duenoId");
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
 
   const loadNegocios = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/negocios/dueno/1");  // Arrglar para que coja el negocio del usuario
-      setNegocios(response.data); 
+  
+      if (duenoId) {
+        const response = await fetch(`http://localhost:8080/api/negocios/dueno/${duenoId}`, {
+          method: "GET", 
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        if (response.ok) {
+          const data = await response.json(); // Parseamos la respuesta JSON
+          setNegocios(data); // Establecemos los negocios en el estado
+        } else {
+          console.error("Error al cargar los negocios:", response.statusText);
+        }
+      } else {
+        console.log("No se pudo obtener el negocioId.");
+      }
     } catch (error) {
       console.error("Error al cargar los negocios:", error);
     }
   };
+  
 
   useEffect(() => {
     loadNegocios();  
@@ -26,6 +45,11 @@ function Empleados() {
 
   const toggleNotifications = () => setShowNotifications(!showNotifications);
   const toggleUserOptions = () => setShowUserOptions(!showUserOptions);
+
+  const handleVerNegocio = (negocioId) => {
+    localStorage.setItem("negocioId", negocioId);
+    navigate("/inicioDueno");
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("userToken"); // Eliminamos el token del usuario
@@ -87,7 +111,7 @@ function Empleados() {
             negocios.map((negocio, index) => (
               <div key={index} className="empleado-card">
                 <h3>{negocio.name}</h3>
-                <button className="ver-btn" onClick={() => navigate("/inicioDueno")}>Ver</button>
+                <button className="ver-btn" onClick={() => handleVerNegocio(negocio.id)}>Ver</button>
               </div>
             ))
           ) : (

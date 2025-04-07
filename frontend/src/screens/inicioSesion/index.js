@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
 import "../../css/paginasBase/styles.css";
 
 function PantallaInicioSesion() {
@@ -10,30 +9,54 @@ function PantallaInicioSesion() {
 
   const handleLogin = async () => {
     try {
-      const [empleadosResponse, duenosResponse] = await Promise.all([
-        axios.get("http://localhost:8080/api/empleados"),
-        axios.get("http://localhost:8080/api/duenos"),
-      ]);
+      const response = await fetch("http://localhost:8080/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: usuario,
+          password: password,
+        }),
+      });
 
-      const empleado = empleadosResponse.data.find(
-        (user) =>
-          user.user.username === usuario && user.user.password === password
-      );
-      const dueno = duenosResponse.data.find(
-        (user) =>
-          user.user.username === usuario && user.user.password === password
-      );
+      const data = await response.json();
+      const token = data.token;
+      localStorage.setItem("token", token);
 
-      if (empleado) {
-        localStorage.setItem("user", JSON.stringify(empleado));
+      const userResponse = await fetch("http://localhost:8080/api/users/me", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const user = await userResponse.json();
+      localStorage.setItem("user", JSON.stringify(user));
+
+      if (user.authority.authority === "empleado") {
+        const empleadoResponse = await fetch(`http://localhost:8080/api/empleados/user/${user.id}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const empleado = await empleadoResponse.json();
+        localStorage.setItem("duenoId", empleado.id); 
         navigate("/inicioEmpleado");
-      }
-      else if (dueno) {
-        localStorage.setItem("user", JSON.stringify(dueno));
+      } else if (user.authority.authority === "dueno") {
+        const duenoResponse = await fetch(`http://localhost:8080/api/duenos/user/${user.id}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const dueno = await duenoResponse.json();
+        localStorage.setItem("duenoId", dueno.id); 
         navigate("/elegirNegocio");
       } else {
-        throw new Error("Credenciales incorrectas.");
+        navigate("/"); 
       }
+
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
       alert("Usuario no encontrado o credenciales incorrectas.");
