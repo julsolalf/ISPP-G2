@@ -188,28 +188,28 @@ public class LineaDePedidoRepositoryTest {
         // Crear líneas de pedido con diferentes características para las pruebas
         lineaNormal = new LineaDePedido();
         lineaNormal.setCantidad(3);
-        lineaNormal.setPrecioLinea(9.0);
+        lineaNormal.setPrecioUnitario(3.0);
         lineaNormal.setProducto(producto1);
         lineaNormal.setPedido(pedido1);
         lineaNormal = lineaDePedidoRepository.save(lineaNormal);
 
         lineaCantidadGrande = new LineaDePedido();
         lineaCantidadGrande.setCantidad(10);
-        lineaCantidadGrande.setPrecioLinea(30.0);
+        lineaCantidadGrande.setPrecioUnitario(3.0);
         lineaCantidadGrande.setProducto(producto1);
         lineaCantidadGrande.setPedido(pedido1);
         lineaCantidadGrande = lineaDePedidoRepository.save(lineaCantidadGrande);
 
         lineaPrecioAlto = new LineaDePedido();
         lineaPrecioAlto.setCantidad(4);
-        lineaPrecioAlto.setPrecioLinea(20.0);
+        lineaPrecioAlto.setPrecioUnitario(5.0);
         lineaPrecioAlto.setProducto(producto2);
         lineaPrecioAlto.setPedido(pedido2);
         lineaPrecioAlto = lineaDePedidoRepository.save(lineaPrecioAlto);
 
         lineaMinima = new LineaDePedido();
         lineaMinima.setCantidad(1);
-        lineaMinima.setPrecioLinea(5.0);
+        lineaMinima.setPrecioUnitario(5.0);
         lineaMinima.setProducto(producto2);
         lineaMinima.setPedido(pedido2);
         lineaMinima = lineaDePedidoRepository.save(lineaMinima);
@@ -222,7 +222,7 @@ public class LineaDePedidoRepositoryTest {
         // Crear una nueva línea de pedido
         LineaDePedido nuevaLinea = new LineaDePedido();
         nuevaLinea.setCantidad(2);
-        nuevaLinea.setPrecioLinea(6.0);
+        nuevaLinea.setPrecioUnitario(3.0);
         nuevaLinea.setProducto(producto1);
         nuevaLinea.setPedido(pedido1);
         
@@ -245,7 +245,7 @@ public class LineaDePedidoRepositoryTest {
         // Intentar guardar una línea sin pedido (debería fallar)
         LineaDePedido invalida = new LineaDePedido();
         invalida.setCantidad(2);
-        invalida.setPrecioLinea(6.0);
+        invalida.setPrecioUnitario(3.0);
         invalida.setProducto(producto1);
         // No establezco pedido
         
@@ -346,7 +346,7 @@ public class LineaDePedidoRepositoryTest {
         // Crear otra línea con la misma cantidad para probar múltiples resultados
         LineaDePedido otraLinea = new LineaDePedido();
         otraLinea.setCantidad(3);
-        otraLinea.setPrecioLinea(15.0);
+        otraLinea.setPrecioUnitario(5.0);
         otraLinea.setProducto(producto2);
         otraLinea.setPedido(pedido1);
         lineaDePedidoRepository.save(otraLinea);
@@ -371,7 +371,7 @@ public class LineaDePedidoRepositoryTest {
     @Test
     void testFindLineaDePedidosByPrecioLinea_Success() {
         // Buscar líneas con precioLinea 9.0
-        List<LineaDePedido> lineas = lineaDePedidoRepository.findLineaDePedidosByPrecioLinea(9.0);
+        List<LineaDePedido> lineas = lineaDePedidoRepository.findLineaDePedidosByPrecioUnitario(9.0);
         
         // Verificar que se encontró 1 línea con precioLinea = 9.0
         assertEquals(1, lineas.size());
@@ -381,7 +381,7 @@ public class LineaDePedidoRepositoryTest {
     @Test
     void testFindLineaDePedidosByPrecioLinea_NotFound() {
         // Buscar líneas con un precio que no existe
-        List<LineaDePedido> lineas = lineaDePedidoRepository.findLineaDePedidosByPrecioLinea(999.0);
+        List<LineaDePedido> lineas = lineaDePedidoRepository.findLineaDePedidosByPrecioUnitario(999.0);
         
         // Verificar que no se encontraron líneas
         assertTrue(lineas.isEmpty());
@@ -391,7 +391,7 @@ public class LineaDePedidoRepositoryTest {
     @Test
     void testFindLineaDePedidosByPrecioLinea_Null() {
         // Buscar con precio null (debería devolver una lista vacía)
-        List<LineaDePedido> lineas = lineaDePedidoRepository.findLineaDePedidosByPrecioLinea(null);
+        List<LineaDePedido> lineas = lineaDePedidoRepository.findLineaDePedidosByPrecioUnitario(null);
         
         // Verificar que devuelve lista vacía
         assertTrue(lineas.isEmpty(), "Se esperaba una lista vacía cuando se busca con precioLinea null");
@@ -477,7 +477,7 @@ public class LineaDePedidoRepositoryTest {
     @Test
     void testFindLineaDePedidosByProductoIdAndPrecioLinea_Success() {
         // Buscar líneas por ID de producto y precio existente
-        List<LineaDePedido> lineas = lineaDePedidoRepository.findLineaDePedidosByProductoIdAndPrecioLinea(
+        List<LineaDePedido> lineas = lineaDePedidoRepository.findLineaDePedidosByProductoIdAndPrecioUnitario(
             producto1.getId(), 9.0);
         
         // Verificar que se encontró 1 línea con el producto y precio correctos
@@ -489,7 +489,7 @@ public class LineaDePedidoRepositoryTest {
     @Test
     void testFindLineaDePedidosByProductoIdAndPrecioLinea_NotFound() {
         // Buscar líneas con combinación que no existe
-        List<LineaDePedido> lineas = lineaDePedidoRepository.findLineaDePedidosByProductoIdAndPrecioLinea(
+        List<LineaDePedido> lineas = lineaDePedidoRepository.findLineaDePedidosByProductoIdAndPrecioUnitario(
             producto1.getId(), 999.0);
         
         // Verificar que no se encontraron líneas
@@ -499,7 +499,7 @@ public class LineaDePedidoRepositoryTest {
     @Test
     void testFindLineaDePedidosByProductoIdAndPrecioLinea_ProductoNoExiste() {
         // Buscar con producto que no existe
-        List<LineaDePedido> lineas = lineaDePedidoRepository.findLineaDePedidosByProductoIdAndPrecioLinea(
+        List<LineaDePedido> lineas = lineaDePedidoRepository.findLineaDePedidosByProductoIdAndPrecioUnitario(
             999, 9.0);
         
         // Verificar que no se encontraron líneas

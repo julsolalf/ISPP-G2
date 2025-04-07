@@ -147,28 +147,28 @@ public class LineaDePedidoControllerTest {
         // Crear líneas de pedido
         lineaNormal = new LineaDePedido();
         lineaNormal.setCantidad(5);
-        lineaNormal.setPrecioLinea(11.0);
+        lineaNormal.setPrecioUnitario(3.0);
         lineaNormal.setProducto(producto1);
         lineaNormal.setPedido(pedido1);
 
         linea = new LineaDePedido();
         linea.setId(1);
         linea.setCantidad(3);
-        linea.setPrecioLinea(9.0);
+        linea.setPrecioUnitario(3.0);
         linea.setProducto(producto1);
         linea.setPedido(pedido1);
         
         lineaCantidadGrande = new LineaDePedido();
         lineaCantidadGrande.setId(2);
         lineaCantidadGrande.setCantidad(10);
-        lineaCantidadGrande.setPrecioLinea(30.0);
+        lineaCantidadGrande.setPrecioUnitario(3.0);
         lineaCantidadGrande.setProducto(producto1);
         lineaCantidadGrande.setPedido(pedido1);
         
         lineaPrecioAlto = new LineaDePedido();
         lineaPrecioAlto.setId(3);
         lineaPrecioAlto.setCantidad(4);
-        lineaPrecioAlto.setPrecioLinea(20.0);
+        lineaPrecioAlto.setPrecioUnitario(4.0);
         lineaPrecioAlto.setProducto(producto2);
         lineaPrecioAlto.setPedido(pedido2);
         
@@ -537,7 +537,7 @@ public class LineaDePedidoControllerTest {
         // Given
         LineaDePedido updatedLinea = new LineaDePedido();
         updatedLinea.setCantidad(5); // Actualizamos cantidad
-        updatedLinea.setPrecioLinea(15.0); // Actualizamos precio
+        updatedLinea.setPrecioUnitario(3.0); // Actualizamos precio
         updatedLinea.setProducto(producto1);
         updatedLinea.setPedido(pedido1);
         
