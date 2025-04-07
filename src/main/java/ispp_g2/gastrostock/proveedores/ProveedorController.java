@@ -1,5 +1,6 @@
 package ispp_g2.gastrostock.proveedores;
 
+import ispp_g2.gastrostock.negocio.Negocio;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,18 @@ public class ProveedorController {
         return new ResponseEntity<>(proveedorService.findAll(), HttpStatus.OK);
     }
 
+    @GetMapping("/dto")
+    public ResponseEntity<List<ProveedorDTO>> findAllDTO() {
+        if(proveedorService.findAll().isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        List<ProveedorDTO> proveedoresDto = proveedorService.findAll()
+                .stream()
+                .map(proveedorService::convertirProveedorDTO)
+                .toList();
+        return new ResponseEntity<>(proveedoresDto, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Proveedor> findById(@PathVariable String id) {
         try {
@@ -36,6 +49,21 @@ public class ProveedorController {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
             return new ResponseEntity<>(proveedor, HttpStatus.OK);
+        } catch (NumberFormatException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/dto/{id}")
+    public ResponseEntity<ProveedorDTO> findByIdDTO(@PathVariable String id) {
+        try {
+            Integer idNum = Integer.parseInt(id);
+            Proveedor proveedor = proveedorService.findById(idNum);
+            if (proveedor == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            ProveedorDTO proveedorDto = proveedorService.convertirProveedorDTO(proveedor);
+            return new ResponseEntity<>(proveedorDto, HttpStatus.OK);
         } catch (NumberFormatException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -86,21 +114,23 @@ public class ProveedorController {
     }
 
     @PostMapping
-    public ResponseEntity<Proveedor> save(@RequestBody @Valid Proveedor proveedor) {
+    public ResponseEntity<Proveedor> save(@RequestBody @Valid ProveedorDTO proveedor) {
         if(proveedor == null){
             throw new IllegalArgumentException("Proveedor no puede ser nulo");
         }
-        return new ResponseEntity<>(proveedorService.save(proveedor), HttpStatus.CREATED);
+        Proveedor newProveedor = proveedorService.convertirDTOProveedor(proveedor);
+        return new ResponseEntity<>(proveedorService.save(newProveedor), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Proveedor> update(@PathVariable("id") Integer id, @RequestBody @Valid Proveedor proveedor) {
-        if(proveedor == null){
+    public ResponseEntity<Proveedor> update(@PathVariable("id") Integer id, @RequestBody @Valid ProveedorDTO newProveedor) {
+        if(newProveedor == null){
             throw new IllegalArgumentException("Proveedor no puede ser nulo");
         }
         if(proveedorService.findById(id) == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        Proveedor proveedor = proveedorService.convertirDTOProveedor(newProveedor);
         proveedor.setId(id);
         return new ResponseEntity<>(proveedorService.save(proveedor), HttpStatus.OK);
     }
