@@ -3,9 +3,16 @@ import { useNavigate, useParams, Link } from "react-router-dom";
 import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
+const token = localStorage.getItem("token");
 const obtenerProveedor = async (id) => {
   try {
-    const response = await fetch(`http://localhost:8080/api/proveedores/${id}`);
+    const response = await fetch(`http://localhost:8080/api/proveedores/${id}`, {
+      method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+    });
     if (!response.ok) {
       throw new Error("Error al obtener el proveedor");
     }
@@ -17,7 +24,7 @@ const obtenerProveedor = async (id) => {
 };
 
 function VerProveedor() {
-  const { id } = useParams(); // Obtener ID desde la URL
+  const { id } = useParams(); 
   const navigate = useNavigate();
   const [proveedor, setProveedor] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -35,6 +42,10 @@ function VerProveedor() {
   const eliminarProveedor = async () => {
     try {
       const response = await fetch(`http://localhost:8080/api/proveedores/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         method: "DELETE",
       });
       if (!response.ok) {
@@ -108,7 +119,9 @@ function VerProveedor() {
           <p><strong>Teléfono:</strong> {proveedor.telefono}</p>
           <p><strong>Dirección:</strong> {proveedor.direccion}</p>
           
-          <button style={{ background: "#157E03", color: "white" }} onClick={() => navigate(`/editarProveedor/${proveedor.id}`)}>Editar Proveedor</button>
+          <button style={{ background: "#157E03", color: "white" }} onClick={() => {
+            localStorage.setItem("proveedorId", proveedor.id)
+            navigate(`/editarProveedor/${proveedor.id}`)}}>Editar Proveedor</button>
           <button style={{ background: "#9A031E", color: "white" }} onClick={() => setShowDeleteModal(true)}>Eliminar Proveedor</button>
         </div>
 

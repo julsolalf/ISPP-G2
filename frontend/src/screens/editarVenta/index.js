@@ -3,9 +3,15 @@ import { useNavigate, useParams, Link } from "react-router-dom";
 import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
+const token = localStorage.getItem("token");
+
 const obtenerVenta = async (id) => {
   try {
-    const response = await fetch(`http://localhost:8080/api/pedidos/${id}`);
+    const response = await fetch(`http://localhost:8080/api/pedidos/${id}`,
+      {headers: { "Content-Type": "application/json" ,
+        Authorization: `Bearer ${token}`,
+      },}
+    );
     if (!response.ok) {
       throw new Error("Error al obtener la venta");
     }
@@ -18,7 +24,11 @@ const obtenerVenta = async (id) => {
 
 const obtenerEmpleados = async (negocioId) => {
   try {
-    const response = await fetch(`http://localhost:8080/api/empleados/negocio/${negocioId}`);
+    const response = await fetch(`http://localhost:8080/api/empleados/negocio/${negocioId}`,
+      {headers: { "Content-Type": "application/json" ,
+        Authorization: `Bearer ${token}`,
+      },}
+    );
     if (!response.ok) {
       throw new Error("Error al obtener los empleados");
     }
@@ -31,7 +41,11 @@ const obtenerEmpleados = async (negocioId) => {
 
 const obtenerMesas = async (negocioId) => {
   try {
-    const response = await fetch(`http://localhost:8080/api/mesas/negocio/${negocioId}`);
+    const response = await fetch(`http://localhost:8080/api/mesas/negocio/${negocioId}`,
+      {headers: { "Content-Type": "application/json" ,
+        Authorization: `Bearer ${token}`,
+      },}
+    );
     if (!response.ok) {
       throw new Error("Error al obtener las mesas");
     }
@@ -46,7 +60,9 @@ const actualizarVenta = async (id, venta, negocioId) => {
     try {
       const response = await fetch(`http://localhost:8080/api/pedidos/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" ,
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
           fecha: venta.fecha,
           precioTotal: venta.precioTotal,
@@ -78,16 +94,14 @@ function EditarVenta() {
   const [empleados, setEmpleados] = useState([]);
   const [mesas, setMesas] = useState([]);
 
+  
+  const negocioId = localStorage.getItem("negocioId");
+
   useEffect(() => {
     const cargarDatos = async () => {
       const ventaData = await obtenerVenta(id);
       if (ventaData) setVenta(ventaData);
 
-      
-      //IMPORTANTE
-    // TODO: Cambiar el negocio_id por el que se obtiene del contexto de autenticación o del estado global
-    //  const { negocioId } = useAuth(); 
-    const negocioId = 1; // Simulación de negocio_id, reemplazar con el valor real 
       const empleadosData = await obtenerEmpleados(negocioId);
       const mesasData = await obtenerMesas(negocioId);
 
@@ -95,14 +109,13 @@ function EditarVenta() {
       setMesas(mesasData);
     };
     cargarDatos();
-  }, [id]);
+  }, [id, negocioId]);
 
   const handleChange = (e) => {
     setVenta({ ...venta, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
-    const negocioId = 1;
     e.preventDefault();
     const actualizado = await actualizarVenta(id, venta,negocioId);
     if (actualizado) navigate(`/ventas/${id}`);

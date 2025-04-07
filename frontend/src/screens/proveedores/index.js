@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Bell, User } from "lucide-react";
-import axios from "axios";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import "../../css/listados/styles.css";
 
 function Proveedores() {
   const navigate = useNavigate();
-  //  const { negocioId } = useAuth(); 
-  //TODO: Cambiar por el negocioId del usuario logueado
-  const negocioId = 1; // Simulación de negocio ID
+  const token = localStorage.getItem("token");
+  const negocioId = localStorage.getItem("negocioId"); // Obtenemos el negocioId del localStorage
   const [proveedores, setProveedores] = useState([]);
   const [filtro, setFiltro] = useState(""); 
   const [showNotifications, setShowNotifications] = useState(false);
@@ -26,15 +24,27 @@ function Proveedores() {
 
     const fetchProveedores = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/proveedores/negocio/${negocioId}`);
-        setProveedores(response.data);
+        const response = await fetch(`http://localhost:8080/api/proveedores/negocio/${negocioId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+    
+        if (response.ok) {
+          const data = await response.json(); // Parseamos la respuesta JSON
+          setProveedores(data); // Establecemos los proveedores en el estado
+        } else {
+          console.error("Error al obtener los proveedores:", response.statusText);
+        }
       } catch (error) {
         console.error("Error al obtener los proveedores:", error);
       }
-    };
+    };    
 
     fetchProveedores();
-  }, [negocioId]);
+  }, [negocioId, token]);
 
   const proveedoresFiltrados = proveedores.filter((prov) =>
     prov.name.toLowerCase().includes(filtro.toLowerCase())

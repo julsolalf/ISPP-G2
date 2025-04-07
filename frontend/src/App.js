@@ -33,7 +33,8 @@ import PantallaEditarEmpleado from "./screens/empleados/editarEmpleado/index.js"
 import PantallaVerProveedor from "./screens/verProveedor/index.js";
 import PantallaEditarProveedor from "./screens/editarProveedor/index.js";
 import PantallaEditarVenta from "./screens/editarVenta/index.js";
-
+import PantallaVentaEmpleado from "./screens/ventasEmpleado/index.js";
+import PantallaVerVentaEmpleado from "./screens/ventasEmpleado/ventaEspecifica/index.js";
 
 
 function AppScreen() {
@@ -111,6 +112,8 @@ function App() {
         <Route path="/verProveedor/:id" element={<PantallaVerProveedor />} />
         <Route path="/editarProveedor/:id" element={<PantallaEditarProveedor />} />
         <Route path="/editarVenta/:id" element={<PantallaEditarVenta />} />
+        <Route path="/ventasEmpleado" element={<PantallaVentaEmpleado />} />
+        <Route path="/ventasEmpleado/:ventaId" element={<PantallaVerVentaEmpleado />} />
       </Routes>
     </Router>
   );

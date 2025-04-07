@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Random;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -106,7 +107,7 @@ public class DuenoService {
         dueno.setLastName(duenoDTO.getLastName());
         dueno.setEmail(duenoDTO.getEmail());
         dueno.setNumTelefono(duenoDTO.getNumTelefono());
-        dueno.setTokenDueno(duenoDTO.getTokenDueno());
+        dueno.setTokenDueno(generarToken());
         dueno.setUser(user);
         return dueno;
     }
@@ -122,6 +123,20 @@ public class DuenoService {
         duenoDTO.setNumTelefono(dueno.getNumTelefono());
         duenoDTO.setTokenDueno(dueno.getTokenDueno());
         return duenoDTO;
+    }
+
+    private String generarToken() {
+        String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        Integer l = 30;
+        Random r = new Random();
+
+        StringBuilder sb = new StringBuilder(l);
+        for (int i = 0; i < l; i++) {
+            int index = r.nextInt(caracteres.length());
+            sb.append(caracteres.charAt(index));
+        }
+
+        return "gst-" + sb.toString();
     }
 
 }

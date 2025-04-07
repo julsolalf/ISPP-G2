@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -97,5 +98,21 @@ public class UserController {
 		userService.deleteUser(id);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
+
+	@GetMapping("/me")
+	public ResponseEntity<User> getCurrentUser(Authentication authentication) {
+		if (authentication == null) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+
+		String username = authentication.getName();
+
+		User user = userService.findUserByUsername(username);
+		if (user == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(user, HttpStatus.OK);
+	}
+
 
 }

@@ -34,7 +34,6 @@ public class EmpleadoDTO {
     @Digits(fraction = 0, integer = 9)
     private String numTelefono;
 
-    @NotBlank
     private String tokenEmpleado;
 
     private String descripcion;

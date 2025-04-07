@@ -32,22 +32,7 @@ function VerVentaEspecifica() {
   const [venta, setVenta] = useState(null);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   
-  const eliminarVenta = async () => {
-    try {
-      const response = await fetch(`http://localhost:8080/api/pedidos/${ventaId}`, {
-        method: "DELETE",
-      });
-      if (!response.ok) {
-        throw new Error("Error al eliminar la venta");
-      }
-      navigate("/ventas"); 
-    } catch (error) {
-      console.error("Error al eliminar la venta:", error);
-    }
-  };
-
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
   };
@@ -122,12 +107,12 @@ function VerVentaEspecifica() {
           </div>
         )}
 
-        <button onClick={() => navigate("/ventas")} className="back-button">⬅ Volver</button>
-        <Link to="/inicioDueno">
+        <button onClick={() => navigate("/ventasEmpleado")} className="back-button">⬅ Volver</button>
+        <Link to="/inicioEmpleado">
           <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
-        </Link>          <h1 className="title">GastroStock</h1>
+        </Link>          
+        <h1 className="title">GastroStock</h1>
         <h2>Ver Pedido</h2>
-        
 
         <div className="producto-card">
           <h1 className="producto-nombre">Pedido #{venta.id}</h1>
@@ -137,19 +122,7 @@ function VerVentaEspecifica() {
           <p className="producto-atributo"><strong>Empleado:</strong> {venta.empleado.firstName} {venta.empleado.lastName}</p>
           <p className="producto-atributo"><strong>Negocio:</strong> {venta.mesa.negocio.name}</p>
           <button style={{ background: "#157E03", color: "white" }} onClick={() => navigate(`/editarVenta/${venta.id}`)}>Editar Pedido</button>
-          <button style={{ background: "#9A031E", color: "white" }} onClick={() => setShowDeleteModal(true)}>Eliminar Pedido</button>
         </div>
-        {showDeleteModal && (
-          <div className="modal-overlay">
-            <div className="modal">
-              <h3>¿Está seguro que desea eliminar este pedido?</h3>
-              <div className="modal-buttons">
-                <button className="confirm-btn" onClick={eliminarVenta}>Sí</button>
-                <button className="cancel-btn" onClick={() => setShowDeleteModal(false)}>No</button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

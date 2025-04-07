@@ -13,8 +13,8 @@ public interface LineaDePedidoRepository extends CrudRepository<LineaDePedido,In
     @Query("SELECT l FROM LineaDePedido l WHERE l.cantidad = ?1")
     List<LineaDePedido>findLineaDePedidosByCantidad(@Positive Integer cantidad);
 
-    @Query("SELECT l FROM LineaDePedido l WHERE l.precioLinea = ?1")
-    List<LineaDePedido>findLineaDePedidosByPrecioLinea(@Positive Double precioLinea);
+    @Query("SELECT l FROM LineaDePedido l WHERE l.precioUnitario = ?1")
+    List<LineaDePedido>findLineaDePedidosByPrecioUnitario(@Positive Double precioUnitario);
 
     @Query("SELECT l FROM LineaDePedido l WHERE l.pedido.id = ?1")
     List<LineaDePedido> findLineaDePedidosByPedidoId(@Positive Integer pedido);
@@ -25,7 +25,7 @@ public interface LineaDePedidoRepository extends CrudRepository<LineaDePedido,In
     @Query("SELECT l FROM LineaDePedido l WHERE l.producto.id = ?1 AND l.cantidad = ?2")
     List<LineaDePedido> findLineaDePedidosByProductoIdAndCantidad(@Positive Integer producto, @Positive Integer cantidad);
 
-    @Query("SELECT l FROM LineaDePedido l WHERE l.producto.id = ?1 AND l.precioLinea = ?2")
-    List<LineaDePedido> findLineaDePedidosByProductoIdAndPrecioLinea(Integer producto, @Positive Double precioLinea);
+    @Query("SELECT l FROM LineaDePedido l WHERE l.producto.id = ?1 AND l.precioUnitario = ?2")
+    List<LineaDePedido> findLineaDePedidosByProductoIdAndPrecioUnitario(Integer producto, @Positive Double precioUnitario);
 
 }

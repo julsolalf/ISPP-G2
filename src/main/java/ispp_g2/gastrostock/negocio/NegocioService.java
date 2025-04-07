@@ -1,6 +1,8 @@
 package ispp_g2.gastrostock.negocio;
 
 import ispp_g2.gastrostock.dueno.DuenoRepository;
+import ispp_g2.gastrostock.exceptions.ResourceNotFoundException;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -8,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Service
@@ -24,7 +27,7 @@ public class NegocioService {
 
     @Transactional(readOnly = true)
     public Negocio getById(Integer id) {
-        return negocioRepository.findById(id).orElse(null);
+        return negocioRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("El negocio no existe"));
     }
 
     @Transactional(readOnly = true)
@@ -72,6 +75,13 @@ public class NegocioService {
     @Transactional
     public Negocio save(Negocio newNegocio){
         return negocioRepository.save(newNegocio);
+    }
+
+    @Transactional
+    public Negocio update(int id, Negocio newNegocio) {
+        Negocio toUpdate = negocioRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("El negocio no existe"));
+        BeanUtils.copyProperties(newNegocio, toUpdate, "id", "dueno", "tokenNegocio");
+        return save(toUpdate);
     }
 
     @Transactional
