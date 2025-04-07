@@ -38,6 +38,7 @@ import ispp_g2.gastrostock.mesa.Mesa;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.pedido.Pedido;
 import ispp_g2.gastrostock.productoVenta.ProductoVenta;
+import ispp_g2.gastrostock.ventas.Venta;
 import ispp_g2.gastrostock.categorias.Categoria;
 
 import org.junit.jupiter.api.Assertions;
@@ -72,6 +73,7 @@ public class LineaDePedidoControllerTest {
     private Empleado empleado;
     private Negocio negocio;
     private Categoria categoria;
+    private Venta venta;
 
     @BeforeEach
     void setUp() {
@@ -127,6 +129,11 @@ public class LineaDePedidoControllerTest {
         producto2.setName("Vino");
         producto2.setPrecioVenta(5.0);
         producto2.setCategoria(categoria);
+
+        //Crear ventas
+        venta = new Venta();
+        venta.setId(1);
+        venta.setNegocio(negocio);
         
         // Crear pedidos
         pedido1 = new Pedido();
@@ -134,7 +141,7 @@ public class LineaDePedidoControllerTest {
         pedido1.setPrecioTotal(50.75);
         pedido1.setMesa(mesa);
         pedido1.setEmpleado(empleado);
-        pedido1.setNegocio(negocio);
+        pedido1.setVenta(venta);
         
         pedido2 = new Pedido();
         pedido2.setId(2);
@@ -142,7 +149,7 @@ public class LineaDePedidoControllerTest {
         pedido2.setPrecioTotal(75.50);
         pedido2.setMesa(mesa);
         pedido2.setEmpleado(empleado);
-        pedido2.setNegocio(negocio);
+        pedido2.setVenta(venta);
         
         // Crear líneas de pedido
         lineaNormal = new LineaDePedido();

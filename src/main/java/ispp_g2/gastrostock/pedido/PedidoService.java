@@ -52,11 +52,11 @@ public class PedidoService {
     }
 
     @Transactional(readOnly = true)
-    public List<Pedido> getPedidoByNegocioId(Integer negocio) {
-        return pedidoRepository.findPedidoByNegocioId(negocio);
+    public List<Pedido> getPedidoByVentaId(Integer venta) {
+        return pedidoRepository.findPedidoByVentaId(venta);
     }
 
-    @PostMapping
+    @Transactional
     public Pedido save(Pedido pedido) {
         return pedidoRepository.save(pedido);
     }

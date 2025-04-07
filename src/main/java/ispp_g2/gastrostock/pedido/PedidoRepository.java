@@ -22,6 +22,6 @@ public interface PedidoRepository extends CrudRepository<Pedido,Integer>{
     @Query("SELECT p FROM Pedido p WHERE p.empleado.id = ?1")
     List<Pedido> findPedidoByEmpleadoId(Integer empleado);
 
-    @Query("SELECT p FROM Pedido p WHERE p.negocio.id = ?1")
-    List<Pedido> findPedidoByNegocioId(Integer negocio);
+    @Query("SELECT p FROM Pedido p WHERE p.venta.id = ?1")
+    List<Pedido> findPedidoByVentaId(Integer venta);
 }

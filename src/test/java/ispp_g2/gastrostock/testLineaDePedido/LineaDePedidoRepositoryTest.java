@@ -35,6 +35,8 @@ import ispp_g2.gastrostock.user.Authorities;
 import ispp_g2.gastrostock.user.AuthoritiesRepository;
 import ispp_g2.gastrostock.user.User;
 import ispp_g2.gastrostock.user.UserRepository;
+import ispp_g2.gastrostock.ventas.Venta;
+import ispp_g2.gastrostock.ventas.VentaRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase
@@ -71,6 +73,9 @@ public class LineaDePedidoRepositoryTest {
     @Autowired
     private AuthoritiesRepository authoritiesRepository;
 
+    @Autowired
+    private VentaRepository ventaRepository;
+
     private LineaDePedido lineaNormal, lineaCantidadGrande, lineaPrecioAlto, lineaMinima;
     private ProductoVenta producto1, producto2;
     private Pedido pedido1, pedido2;
@@ -79,6 +84,7 @@ public class LineaDePedidoRepositoryTest {
     private Empleado empleado;
     private Mesa mesa1, mesa2;
     private Categoria categoria;
+    private Venta venta;
 
     @BeforeEach
     void setUp() {
@@ -168,13 +174,18 @@ public class LineaDePedidoRepositoryTest {
         producto2.setCategoria(categoria);
         producto2 = productoVentaRepository.save(producto2);
 
+        //Crear venta
+        venta = new Venta();
+        venta.setNegocio(negocio);
+        venta = ventaRepository.save(venta);
+        
         // Crear pedidos
         pedido1 = new Pedido();
         pedido1.setFecha(LocalDateTime.now().minusHours(1));
         pedido1.setPrecioTotal(50.75);
         pedido1.setMesa(mesa1);
         pedido1.setEmpleado(empleado);
-        pedido1.setNegocio(negocio);
+        pedido1.setVenta(venta);
         pedido1 = pedidoRepository.save(pedido1);
         
         pedido2 = new Pedido();
@@ -182,7 +193,7 @@ public class LineaDePedidoRepositoryTest {
         pedido2.setPrecioTotal(75.50);
         pedido2.setMesa(mesa2);
         pedido2.setEmpleado(empleado);
-        pedido2.setNegocio(negocio);
+        pedido2.setVenta(venta);
         pedido2 = pedidoRepository.save(pedido2);
 
         // Crear líneas de pedido con diferentes características para las pruebas

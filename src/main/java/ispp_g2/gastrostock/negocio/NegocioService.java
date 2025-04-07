@@ -1,6 +1,8 @@
 package ispp_g2.gastrostock.negocio;
 
 import ispp_g2.gastrostock.dueno.DuenoRepository;
+import ispp_g2.gastrostock.exceptions.ResourceNotFoundException;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +26,7 @@ public class NegocioService {
 
     @Transactional(readOnly = true)
     public Negocio getById(Integer id) {
-        return negocioRepository.findById(id).orElse(null);
+        return negocioRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("El negocio no existe"));
     }
 
     @Transactional(readOnly = true)
