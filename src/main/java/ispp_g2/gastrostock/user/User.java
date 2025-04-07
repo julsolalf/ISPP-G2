@@ -60,8 +60,9 @@ public class User extends BaseEntity implements UserDetails{
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return List.of(new SimpleGrantedAuthority(authority.getAuthority()));
 	}
-	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-	private transient Subscripcion subscripcion;
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "subscripcion_id")
+	private Subscripcion subscripcion;
 
 	public boolean hasPremiumAccess() {
 	return subscripcion != null && subscripcion.isPremium();

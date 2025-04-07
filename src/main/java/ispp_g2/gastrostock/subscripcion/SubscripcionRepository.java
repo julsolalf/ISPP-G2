@@ -15,11 +15,11 @@ public interface SubscripcionRepository extends CrudRepository<Subscripcion, Int
     @Query("SELECT s FROM Subscripcion s WHERE s.stripeSubscriptionId = :stripeSubscriptionId")
     Subscripcion findByStripeSubscriptionId(String stripeSubscriptionId);
     
-    @Query("SELECT s FROM Subscripcion s WHERE s.userId = :userId")
-    Subscripcion findByUserId(Integer userId);
-    
     @Query("SELECT s FROM Subscripcion s WHERE s.status = :status")
     List<Subscripcion> findByStatus(SubscripcionStatus status);
+    
+    @Query("SELECT s FROM Subscripcion s WHERE s.user.id = :userId")
+    Subscripcion findByUserId(Integer userId);
     
     @Query("SELECT s FROM Subscripcion s WHERE s.type = :type AND s.status = :status")
     List<Subscripcion> findByTypeAndStatus(SubscripcionType type, SubscripcionStatus status);

@@ -10,6 +10,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import org.springframework.web.filter.OncePerRequestFilter;
+
 import ispp_g2.gastrostock.config.jwt.JwtAuthFilter;
 import lombok.AllArgsConstructor;
 
@@ -26,6 +33,7 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        .requestMatchers("/api/subscriptions/webhook").permitAll() // Permitir webhooks sin autenticación
                         .anyRequest().permitAll())
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)

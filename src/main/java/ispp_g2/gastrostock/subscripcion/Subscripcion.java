@@ -3,6 +3,8 @@ package ispp_g2.gastrostock.subscripcion;
 import ispp_g2.gastrostock.model.BaseEntity;
 import ispp_g2.gastrostock.user.User;
 import jakarta.persistence.*;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +14,7 @@ import ispp_g2.gastrostock.subscripcion.SubscripcionType;
 @Entity
 @Getter
 @Setter
-public class Subscripcion extends BaseEntity {
+public class Subscripcion extends BaseEntity implements Serializable {
     
     @Enumerated(EnumType.STRING)
     private SubscripcionType type;
@@ -28,8 +30,7 @@ public class Subscripcion extends BaseEntity {
     private LocalDateTime endDate;
     private LocalDateTime nextBillingDate;
     
-    @OneToOne
-    @JoinColumn(name = "user_id")
+    @OneToOne(mappedBy = "subscripcion")
     private User user;
     
     public boolean isActive() {

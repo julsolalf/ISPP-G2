@@ -69,5 +69,5 @@ public class StripeService {
         return Customer.create(params);
     }
     
-    // Más métodos para gestionar suscripciones, cancelaciones, etc.
+
 }
