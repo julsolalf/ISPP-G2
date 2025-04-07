@@ -1,9 +1,15 @@
 package ispp_g2.gastrostock.pedido;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
+
+import ispp_g2.gastrostock.empleado.EmpleadoRepository;
+import ispp_g2.gastrostock.exceptions.ResourceNotFoundException;
+import ispp_g2.gastrostock.mesa.MesaRepository;
+import ispp_g2.gastrostock.ventas.VentaRepository;
+import jakarta.annotation.Resource;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,15 +19,21 @@ import java.util.stream.StreamSupport;
 public class PedidoService {
 
     private final PedidoRepository pedidoRepository;
+    private final MesaRepository mesaRepository;
+    private final EmpleadoRepository empleadoRepository;
+    private final VentaRepository ventaRepository;
 
     @Autowired
-    public PedidoService(PedidoRepository pedidoRepository) {
+    public PedidoService(PedidoRepository pedidoRepository, MesaRepository mesaRepository, EmpleadoRepository empleadoRepository, VentaRepository ventaRepository) {
         this.pedidoRepository = pedidoRepository;
+        this.mesaRepository = mesaRepository;
+        this.empleadoRepository = empleadoRepository;
+        this.ventaRepository = ventaRepository;
     }
 
     @Transactional(readOnly = true)
     public Pedido getById(Integer id) {
-        return pedidoRepository.findById(id).orElse(null);
+        return pedidoRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Pedido no encontrado"));
     }
 
     @Transactional(readOnly = true)
@@ -62,8 +74,36 @@ public class PedidoService {
     }
 
     @Transactional
+    public Pedido update(Integer id, Pedido pedido) {
+        Pedido pedidoActual = pedidoRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Pedido no encontrado"));
+        BeanUtils.copyProperties(pedido, pedidoActual, "id");
+        return pedidoRepository.save(pedidoActual); 
+    }
+
+    @Transactional
     public void delete(Integer id) {
         pedidoRepository.deleteById(id);
+    }
+
+    public Pedido convertirPedido(PedidoDto pedidoDTO) {
+        Pedido pedido = new Pedido();
+        pedido.setFecha(pedidoDTO.getFecha());
+        pedido.setPrecioTotal(pedidoDTO.getPrecioTotal());
+        pedido.setMesa(mesaRepository.findById(pedidoDTO.getMesaId()).orElseThrow(()-> new ResourceNotFoundException("Mesa no encontrada")));
+        pedido.setEmpleado(empleadoRepository.findById(pedidoDTO.getEmpleadoId()).orElseThrow(()-> new ResourceNotFoundException("Empleado no encontrado")));
+        pedido.setVenta(ventaRepository.findById(pedidoDTO.getVentaId()).orElseThrow(()-> new ResourceNotFoundException("Venta no encontrada")));
+        return pedido;
+    }
+
+    public PedidoDto convertirPedidoDto(Pedido pedido) {
+        PedidoDto pedidoDTO = new PedidoDto();
+        pedidoDTO.setId(pedido.getId());
+        pedidoDTO.setFecha(pedido.getFecha());
+        pedidoDTO.setPrecioTotal(pedido.getPrecioTotal());
+        pedidoDTO.setMesaId(pedido.getMesa().getId());
+        pedidoDTO.setEmpleadoId(pedido.getEmpleado().getId());
+        pedidoDTO.setVentaId(pedido.getVenta().getId());
+        return pedidoDTO; 
     }
     
 }

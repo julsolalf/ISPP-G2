@@ -3,7 +3,6 @@ package ispp_g2.gastrostock.ventas;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +17,6 @@ import ispp_g2.gastrostock.dueno.Dueno;
 import ispp_g2.gastrostock.dueno.DuenoService;
 import ispp_g2.gastrostock.empleado.Empleado;
 import ispp_g2.gastrostock.empleado.EmpleadoService;
-import ispp_g2.gastrostock.exceptions.DuenoSaveException;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioService;
 import ispp_g2.gastrostock.user.User;
@@ -36,9 +34,9 @@ public class VentaController {
     private final EmpleadoService empleadoService;
     private final NegocioService negocioService;
 
-    private final String ADMIN = "admin";
-    private final String DUENO = "dueno";
-    private final String EMPLEADO = "empleado";
+    private static final String ADMIN = "admin";
+    private static final String DUENO = "dueno";
+    private static final String EMPLEADO = "empleado";
 
     @GetMapping
     public ResponseEntity<List<Venta>> findAll() {
