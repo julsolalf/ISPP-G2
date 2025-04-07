@@ -1,5 +1,6 @@
 package ispp_g2.gastrostock.proveedores;
 
+import ispp_g2.gastrostock.negocio.NegocioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,10 +12,12 @@ import java.util.stream.StreamSupport;
 public class ProveedorService {
 
     private final ProveedorRepository proveedorRepository;
+    private final NegocioRepository negocioRepository;
 
     @Autowired
-    public ProveedorService(ProveedorRepository proveedorRepository) {
+    public ProveedorService(ProveedorRepository proveedorRepository, NegocioRepository negocioRepository) {
         this.proveedorRepository = proveedorRepository;
+        this.negocioRepository = negocioRepository;
     }
 
     @Transactional(readOnly = true)
@@ -61,5 +64,27 @@ public class ProveedorService {
     @Transactional
     public void deleteById(Integer id) {
         proveedorRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Proveedor convertirDTOProveedor(ProveedorDTO proveedorDTO) {
+        Proveedor proveedor = new Proveedor();
+        proveedor.setName(proveedorDTO.getName());
+        proveedor.setEmail(proveedorDTO.getEmail());
+        proveedor.setTelefono(proveedorDTO.getTelefono());
+        proveedor.setDireccion(proveedorDTO.getDireccion());
+        proveedor.setNegocio(negocioRepository.findById(proveedorDTO.getNegocioId()).orElse(null));
+        return proveedor;
+    }
+
+    @Transactional(readOnly = true)
+    public ProveedorDTO convertirProveedorDTO(Proveedor proveedor) {
+        ProveedorDTO proveedorDTO = new ProveedorDTO();
+        proveedorDTO.setName(proveedor.getName());
+        proveedorDTO.setEmail(proveedor.getEmail());
+        proveedorDTO.setTelefono(proveedor.getTelefono());
+        proveedorDTO.setDireccion(proveedor.getDireccion());
+        proveedorDTO.setNegocioId(proveedor.getNegocio().getId());
+        return proveedorDTO;
     }
 }
