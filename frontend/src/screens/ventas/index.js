@@ -11,7 +11,7 @@ const negocioId = localStorage.getItem("negocioId");
 // Función para obtener los pedidos desde la API
 const obtenerPedidos = async () => {
   try {
-    const response = await fetch(`http://localhost:8080/api/pedidos/negocio/${negocioId}`,{
+    const response = await fetch(`http://localhost:8080/api/pedidos/venta/${negocioId}`,{
       method: "GET",
       headers: {
         "Content-Type": "application/json",

@@ -20,13 +20,13 @@ function Empleados() {
           Authorization: `Bearer ${token}`,
         },
       });
-  
+      
       if (!response.ok) {
         throw new Error("Error al cargar los empleados");
       }
   
       const data = await response.json();
-      setEmpleados(data);  // Supongo que 'setEmpleados' es una función para actualizar el estado
+      setEmpleados(data); 
     } catch (error) {
       console.error("Error al cargar los empleados:", error);
     }
