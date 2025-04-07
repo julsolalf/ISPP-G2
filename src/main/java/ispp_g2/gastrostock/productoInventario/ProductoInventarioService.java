@@ -3,6 +3,7 @@ package ispp_g2.gastrostock.productoInventario;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
+import ispp_g2.gastrostock.categorias.CategoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,10 +14,12 @@ import jakarta.validation.Valid;
 public class ProductoInventarioService {
         
     private final ProductoInventarioRepository productoInventarioRepository;
+    private final CategoriaRepository categoriaRepository;
 
     @Autowired
-    public ProductoInventarioService(ProductoInventarioRepository ProductoInventarioRepository) {
+    public ProductoInventarioService(ProductoInventarioRepository ProductoInventarioRepository, CategoriaRepository categoriaRepository) {
         this.productoInventarioRepository = ProductoInventarioRepository;
+        this.categoriaRepository = categoriaRepository;
     }
 
     @Transactional(readOnly = true)
@@ -64,5 +67,27 @@ public class ProductoInventarioService {
     @Transactional
     public void delete(Integer id){
         productoInventarioRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public ProductoInventarioDTO convertirProductoInventarioDTO(ProductoInventario productoInventario) {
+        ProductoInventarioDTO productoInventarioDTO = new ProductoInventarioDTO();
+        productoInventarioDTO.setName(productoInventario.getName());
+        productoInventarioDTO.setPrecioCompra(productoInventario.getPrecioCompra());
+        productoInventarioDTO.setCantidadDeseada(productoInventario.getCantidadDeseada());
+        productoInventarioDTO.setCantidadAviso(productoInventario.getCantidadAviso());
+        productoInventarioDTO.setCategoriaId(productoInventario.getCategoria().getId());
+        return productoInventarioDTO;
+    }
+
+    @Transactional(readOnly = true)
+    public ProductoInventario convertirDTOProductoInventario(ProductoInventarioDTO productoInventarioDTO) {
+        ProductoInventario productoInventario = new ProductoInventario();
+        productoInventario.setName(productoInventarioDTO.getName());
+        productoInventario.setPrecioCompra(productoInventarioDTO.getPrecioCompra());
+        productoInventario.setCantidadDeseada(productoInventarioDTO.getCantidadDeseada());
+        productoInventario.setCantidadAviso(productoInventarioDTO.getCantidadAviso());
+        productoInventario.setCategoria(categoriaRepository.findById(productoInventarioDTO.getCategoriaId()).orElse(null));
+        return productoInventario;
     }
 }
