@@ -32,39 +32,26 @@ function PantallaPerfil() {
 
 
   return(
-      <div
-        className="home-container"
-        style={{
-          backgroundImage: `url(${process.env.PUBLIC_URL + "/background-spices.jpg"})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          height: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          textAlign: "center",
-      }}>
-        <div className="content">
-          
-          <MenuIconos/>
+      <div className="content">
+        
+        <MenuIconos/>
 
-          <div className="profile_head">
-            <img src="default_profile.png" className="profile_picture"/>
-            <p>{user.first_name + " " + user.last_name}</p>
-          </div>
+        <div className="profile_head">
+          <img src="default_profile.png" className="profile_picture"/>
+          <p>{user.first_name + " " + user.last_name}</p>
+        </div>
 
-          <div className="profile_details">
-            <table>
-              <tr>
-                <th>Teléfono:</th>
-                <tr>{user.num_telefono}</tr>
-              </tr>
-              <tr>
-                <th>Email:</th>
-                <tr>{user.email}</tr>
-              </tr>
-            </table>
-          </div>
+        <div className="profile_details">
+          <table>
+            <tr>
+              <th>Teléfono:</th>
+              <tr>{user.num_telefono}</tr>
+            </tr>
+            <tr>
+              <th>Email:</th>
+              <tr>{user.email}</tr>
+            </tr>
+          </table>
         </div>
       </div>
     )

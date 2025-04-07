@@ -144,16 +144,7 @@ const [searchTerm, setSearchTerm] = useState("");
   };
 
   return (
-    <div
-      className="home-container"
-      style={{
-        backgroundImage: `url(${process.env.PUBLIC_URL + "/background-spices.jpg"})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        height: "100vh",
-        overflowY: "auto",
-      }}
-    >
+  
       <div className="content">
         <div className="icon-container-right">
           <Bell size={30} className="icon" onClick={toggleNotifications} />
@@ -227,7 +218,6 @@ const [searchTerm, setSearchTerm] = useState("");
           </div>
         )}
       </div>
-    </div>
   );
 }
 

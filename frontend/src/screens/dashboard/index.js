@@ -154,7 +154,6 @@ function Dashboard() {
   };
 
   return (
-    <div className="home-container" style={{ backgroundImage: `url(${process.env.PUBLIC_URL + "/background-spices.jpg"})`, backgroundSize: "cover", backgroundPosition: "center", height: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", textAlign: "center", padding: "20px", overflow: "hidden" }}>
       <div className="content">
         <div className="icon-container-right">
           <Bell size={30} className="icon" onClick={() => setShowNotifications(!showNotifications)} />
@@ -283,7 +282,6 @@ function Dashboard() {
           </div>
         )}
       </div>
-    </div>
   );
 }
 

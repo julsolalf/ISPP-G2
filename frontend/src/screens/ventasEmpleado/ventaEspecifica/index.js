@@ -54,19 +54,6 @@ function VerVentaEspecifica() {
   }
 
   return (
-    <div
-      className="home-container"
-      style={{
-        backgroundImage: `url(${process.env.PUBLIC_URL + "/background-spices.jpg"})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        height: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "center",
-      }}
-    >
       <div className="content">
         <div className="icon-container-right">
           <Bell size={30} className="icon" onClick={toggleNotifications} />
@@ -124,7 +111,6 @@ function VerVentaEspecifica() {
           <button style={{ background: "#157E03", color: "white" }} onClick={() => navigate(`/editarVenta/${venta.id}`)}>Editar Pedido</button>
         </div>
       </div>
-    </div>
   );
 }
 

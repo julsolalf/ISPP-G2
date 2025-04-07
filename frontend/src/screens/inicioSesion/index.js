@@ -64,19 +64,6 @@ function PantallaInicioSesion() {
   };
 
   return (
-    <div 
-      className="home-container"
-      style={{ 
-        backgroundImage: `url(${process.env.PUBLIC_URL + "/background-spices.jpg"})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        height: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "center"
-      }}
-    >
       <div className="content">
         <button onClick={() => navigate("/")} className="back-button">⬅ Volver</button>
         <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
@@ -101,7 +88,6 @@ function PantallaInicioSesion() {
           ¿Has olvidado la contrasena?
         </Link>
       </div>
-    </div>
   );
 }
 

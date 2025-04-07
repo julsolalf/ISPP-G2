@@ -53,101 +53,89 @@ function Inventario() {
   };
 
   return (
-    <div className="home-container"
-      style={{
-        backgroundImage: `url(${process.env.PUBLIC_URL + "/background-spices.jpg"})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        height: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "center",
-      }}>
-     <div className="content">
-             <div className="icon-container-right">
-               <Bell size={30} className="icon" onClick={toggleNotifications} />
-               <User size={30} className="icon" onClick={toggleUserOptions} />
-             </div>
-     
-             {showNotifications && (
-               <div className="notification-bubble">
-                 <div className="notification-header">
-                   <strong>Notificaciones</strong>
-                   <button className="close-btn" onClick={toggleNotifications}>X</button>
-                 </div>
-                 <ul>
-                   <li>Notificación 1</li>
-                   <li>Notificación 2</li>
-                   <li>Notificación 3</li>
-                 </ul>
-               </div>
-             )}
-
-        {showUserOptions && (
-          <div className="notification-bubble user-options">
-            <div className="notification-header">
-              <strong>Usuario</strong>
-              <button className="close-btn" onClick={() => setShowUserOptions(false)}>X</button>
+    <div className="content">
+            <div className="icon-container-right">
+              <Bell size={30} className="icon" onClick={toggleNotifications} />
+              <User size={30} className="icon" onClick={toggleUserOptions} />
             </div>
-            <ul>
-              <li>
-                <button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button>
-              </li>
-              <li>
-                <button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button>
-              </li>
-              <li>
-              <button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
-              </li>
-            </ul>
-          </div>
-        )}
-
-        <button onClick={() => navigate("/inicioDueno")} className="back-button">⬅ Volver</button>
-        <Link to="/inicioDueno">
-          <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
-        </Link>        
-        <h1 className="title">GastroStock</h1>
-        <h2>Inventario</h2>
-        <div className="button-container3">
-          <button className="button" onClick={() => navigate("/anadirCategoria")}>➕ Añadir</button>
-          <button className="button">📥 Exportar</button>
-          <button className="button">🔍 Filtrar</button>
-        </div>
-
-        <div className="empleados-grid1">
-          {categorias.map((categoria) => (
-            <div key={categoria.id} className="empleado-card">
-            <h3>{categoria.name}</h3>
-            <button 
-              className="ver-btn" 
-              onClick={() => {
-                localStorage.setItem("categoriaNombre", categoria.name); // Guardar en localStorage
-                navigate(`/verTipoProducto/${categoria.name}`); // Redirigir a la pantalla
-              }}>
-              👁️ Ver
-            </button>
-          </div>
-          ))}
-        </div>
-        <div className="button-container1">
-          <button className="button" onClick={() => navigate("/alertaStock")}>⚠️ Alerta Stock</button>
-          <button className="button" onClick={() => navigate("/perdidas")}>📉 Pérdidas</button>
-        </div>
-        {/* Modal de Confirmación para Logout */}
-        {showLogoutModal && (
-          <div className="modal-overlay">
-            <div className="modal">
-              <h3>¿Está seguro que desea abandonar la sesión?</h3>
-              <div className="modal-buttons">
-                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
-                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
+    
+            {showNotifications && (
+              <div className="notification-bubble">
+                <div className="notification-header">
+                  <strong>Notificaciones</strong>
+                  <button className="close-btn" onClick={toggleNotifications}>X</button>
+                </div>
+                <ul>
+                  <li>Notificación 1</li>
+                  <li>Notificación 2</li>
+                  <li>Notificación 3</li>
+                </ul>
               </div>
+            )}
+
+      {showUserOptions && (
+        <div className="notification-bubble user-options">
+          <div className="notification-header">
+            <strong>Usuario</strong>
+            <button className="close-btn" onClick={() => setShowUserOptions(false)}>X</button>
+          </div>
+          <ul>
+            <li>
+              <button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button>
+            </li>
+            <li>
+              <button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button>
+            </li>
+            <li>
+            <button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
+            </li>
+          </ul>
+        </div>
+      )}
+
+      <button onClick={() => navigate("/inicioDueno")} className="back-button">⬅ Volver</button>
+      <Link to="/inicioDueno">
+        <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+      </Link>        
+      <h1 className="title">GastroStock</h1>
+      <h2>Inventario</h2>
+      <div className="button-container3">
+        <button className="button" onClick={() => navigate("/anadirCategoria")}>➕ Añadir</button>
+        <button className="button">📥 Exportar</button>
+        <button className="button">🔍 Filtrar</button>
+      </div>
+
+      <div className="empleados-grid1">
+        {categorias.map((categoria) => (
+          <div key={categoria.id} className="empleado-card">
+          <h3>{categoria.name}</h3>
+          <button 
+            className="ver-btn" 
+            onClick={() => {
+              localStorage.setItem("categoriaNombre", categoria.name); // Guardar en localStorage
+              navigate(`/verTipoProducto/${categoria.name}`); // Redirigir a la pantalla
+            }}>
+            👁️ Ver
+          </button>
+        </div>
+        ))}
+      </div>
+      <div className="button-container1">
+        <button className="button" onClick={() => navigate("/alertaStock")}>⚠️ Alerta Stock</button>
+        <button className="button" onClick={() => navigate("/perdidas")}>📉 Pérdidas</button>
+      </div>
+      {/* Modal de Confirmación para Logout */}
+      {showLogoutModal && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h3>¿Está seguro que desea abandonar la sesión?</h3>
+            <div className="modal-buttons">
+              <button className="confirm-btn" onClick={handleLogout}>Sí</button>
+              <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

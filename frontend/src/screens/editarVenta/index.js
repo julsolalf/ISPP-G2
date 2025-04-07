@@ -122,72 +122,60 @@ function EditarVenta() {
   };
 
   return (
-    <div className="home-container"
-      style={{
-        backgroundImage: `url(${process.env.PUBLIC_URL + "/background-spices.jpg"})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        height: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "center",
-      }}>
-      <div className="content">
-        <div className="icon-container-right">
-          <Bell size={30} className="icon" />
-          <User size={30} className="icon" />
-        </div>
-        <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
-        <Link to="/inicioDueno">
-          <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
-        </Link>          <h1 className="title">GastroStock</h1>
-        <h2>Editar Pedido</h2>
-        <form className="form-container" onSubmit={handleSubmit}>
-        <input
-            type="datetime-local"
-            name="fecha"
-            value={venta.fecha ? venta.fecha.slice(0, 16) : ""}  
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="number"
-            name="precioTotal"
-            value={venta.precioTotal}
-            onChange={handleChange}
-            placeholder="Precio Total"
-            required
-          />
-          <select
-            name="empleado"
-            value={venta.empleado.id}
-            onChange={(e) => setVenta({ ...venta, empleado: { ...venta.empleado, id: e.target.value } })}
-            required
-          >
-            <option value="">Seleccionar Empleado</option>
-            {empleados.map((empleado) => (
-              <option key={empleado.id} value={empleado.id}>
-                {empleado.firstName} {empleado.lastName}
-              </option>
-            ))}
-          </select>
-          <select
-            name="mesa"
-            value={venta.mesa.id}
-            onChange={(e) => setVenta({ ...venta, mesa: { ...venta.mesa, id: e.target.value } })}
-            required
-          >
-            <option value="">Seleccionar Mesa</option>
-            {mesas.map((mesa) => (
-              <option key={mesa.id} value={mesa.id}>
-                {mesa.name}
-              </option>
-            ))}
-          </select>
-          <button type="submit" className="button">💾 Guardar</button>
-        </form>
+    <div className="content">
+      <div className="icon-container-right">
+        <Bell size={30} className="icon" />
+        <User size={30} className="icon" />
       </div>
+      <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
+      <Link to="/inicioDueno">
+        <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+      </Link>          <h1 className="title">GastroStock</h1>
+      <h2>Editar Pedido</h2>
+      <form className="form-container" onSubmit={handleSubmit}>
+      <input
+          type="datetime-local"
+          name="fecha"
+          value={venta.fecha ? venta.fecha.slice(0, 16) : ""}  
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="number"
+          name="precioTotal"
+          value={venta.precioTotal}
+          onChange={handleChange}
+          placeholder="Precio Total"
+          required
+        />
+        <select
+          name="empleado"
+          value={venta.empleado.id}
+          onChange={(e) => setVenta({ ...venta, empleado: { ...venta.empleado, id: e.target.value } })}
+          required
+        >
+          <option value="">Seleccionar Empleado</option>
+          {empleados.map((empleado) => (
+            <option key={empleado.id} value={empleado.id}>
+              {empleado.firstName} {empleado.lastName}
+            </option>
+          ))}
+        </select>
+        <select
+          name="mesa"
+          value={venta.mesa.id}
+          onChange={(e) => setVenta({ ...venta, mesa: { ...venta.mesa, id: e.target.value } })}
+          required
+        >
+          <option value="">Seleccionar Mesa</option>
+          {mesas.map((mesa) => (
+            <option key={mesa.id} value={mesa.id}>
+              {mesa.name}
+            </option>
+          ))}
+        </select>
+        <button type="submit" className="button">💾 Guardar</button>
+      </form>
     </div>
   );
 }

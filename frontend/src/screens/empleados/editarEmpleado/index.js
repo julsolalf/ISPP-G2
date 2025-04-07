@@ -103,63 +103,51 @@ function EditarEmpleado() {
   };
 
   return (
-    <div className="home-container"
-      style={{
-        backgroundImage: `url(${process.env.PUBLIC_URL + "/background-spices.jpg"})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        height: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "center",
-      }}>
-      <div className="content">
-        <div className="icon-container-right">
-          <Bell size={30} className="icon" />
-          <User size={30} className="icon" />
-        </div>
-        <button onClick={() => navigate(`/verEmpleado/${localStorage.getItem("empleadoId")}`)} className="back-button">⬅ Volver</button>
-        <h1>Editar Empleado</h1>
-        <form className="form-container" onSubmit={handleSubmit}>
-          <input type="text" name="nombre" value={empleado.nombre} onChange={handleChange} placeholder="Nombre" required />
-          <input type="text" name="apellido" value={empleado.apellido} onChange={handleChange} placeholder="Apellido" required />
-          <input type="text" name="telefono" value={empleado.telefono} onChange={handleChange} placeholder="Teléfono" required />
-          <input type="text" name="email" value={empleado.email} onChange={handleChange} placeholder="Email" required />
-          <input type="text" name="username" value={empleado.username} onChange={handleChange} placeholder="User name" required />
-          
-          <div style={{ position: "relative", width: "100%" }}>
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              value={empleado.password}
-              onChange={handleChange}
-              placeholder="Password"
-              required
-              style={{ paddingRight: "40px", width: "100%" }}
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              style={{
-                position: "absolute",
-                right: "10px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-              }}
-            >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
-          </div>
-          
-          <input type="text" name="tokenEmpleado" value={empleado.tokenEmpleado} onChange={handleChange} placeholder="Token Empleado" required />
-          <textarea name="descripcion" value={empleado.descripcion} onChange={handleChange} placeholder="Descripción" required />
-          <button type="submit" className="button">💾 Guardar</button>
-        </form>
+    <div className="content">
+      <div className="icon-container-right">
+        <Bell size={30} className="icon" />
+        <User size={30} className="icon" />
       </div>
+      <button onClick={() => navigate(`/verEmpleado/${localStorage.getItem("empleadoId")}`)} className="back-button">⬅ Volver</button>
+      <h1>Editar Empleado</h1>
+      <form className="form-container" onSubmit={handleSubmit}>
+        <input type="text" name="nombre" value={empleado.nombre} onChange={handleChange} placeholder="Nombre" required />
+        <input type="text" name="apellido" value={empleado.apellido} onChange={handleChange} placeholder="Apellido" required />
+        <input type="text" name="telefono" value={empleado.telefono} onChange={handleChange} placeholder="Teléfono" required />
+        <input type="text" name="email" value={empleado.email} onChange={handleChange} placeholder="Email" required />
+        <input type="text" name="username" value={empleado.username} onChange={handleChange} placeholder="User name" required />
+        
+        <div style={{ position: "relative", width: "100%" }}>
+          <input
+            type={showPassword ? "text" : "password"}
+            name="password"
+            value={empleado.password}
+            onChange={handleChange}
+            placeholder="Password"
+            required
+            style={{ paddingRight: "40px", width: "100%" }}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            style={{
+              position: "absolute",
+              right: "10px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
+        </div>
+        
+        <input type="text" name="tokenEmpleado" value={empleado.tokenEmpleado} onChange={handleChange} placeholder="Token Empleado" required />
+        <textarea name="descripcion" value={empleado.descripcion} onChange={handleChange} placeholder="Descripción" required />
+        <button type="submit" className="button">💾 Guardar</button>
+      </form>
     </div>
   );
   

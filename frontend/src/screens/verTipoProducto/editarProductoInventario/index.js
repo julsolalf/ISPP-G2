@@ -68,36 +68,24 @@ function EditarProducto() {
   };
 
   return (
-    <div className="home-container"
-      style={{
-        backgroundImage: `url(${process.env.PUBLIC_URL + "/background-spices.jpg"})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        height: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "center",
-      }}>
-      <div className="content">
-        <div className="icon-container-right">
-          <Bell size={30} className="icon" />
-          <User size={30} className="icon" />
-        </div>
-        <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
-        <Link to="/inicioDueno">
-          <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
-        </Link>        
-        <h1 className="title">GastroStock</h1>
-        <h2>Editar Producto</h2>
-        <form className="form-container" onSubmit={handleSubmit}>
-          <input type="text" name="name" value={producto.name} onChange={handleChange} placeholder="Nombre" required />
-          <input type="number" name="precioCompra" value={producto.precioCompra} onChange={handleChange} placeholder="Precio de Compra" required />
-          <input type="number" name="cantidadDeseada" value={producto.cantidadDeseada} onChange={handleChange} placeholder="Cantidad Deseada" required />
-          <input type="number" name="cantidadAviso" value={producto.cantidadAviso} onChange={handleChange} placeholder="Cantidad Aviso" required />
-          <button type="submit" className="button">💾 Guardar</button>
-        </form>
+    <div className="content">
+      <div className="icon-container-right">
+        <Bell size={30} className="icon" />
+        <User size={30} className="icon" />
       </div>
+      <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
+      <Link to="/inicioDueno">
+        <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+      </Link>        
+      <h1 className="title">GastroStock</h1>
+      <h2>Editar Producto</h2>
+      <form className="form-container" onSubmit={handleSubmit}>
+        <input type="text" name="name" value={producto.name} onChange={handleChange} placeholder="Nombre" required />
+        <input type="number" name="precioCompra" value={producto.precioCompra} onChange={handleChange} placeholder="Precio de Compra" required />
+        <input type="number" name="cantidadDeseada" value={producto.cantidadDeseada} onChange={handleChange} placeholder="Cantidad Deseada" required />
+        <input type="number" name="cantidadAviso" value={producto.cantidadAviso} onChange={handleChange} placeholder="Cantidad Aviso" required />
+        <button type="submit" className="button">💾 Guardar</button>
+      </form>
     </div>
   );
 }
