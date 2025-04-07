@@ -1,15 +1,19 @@
 package ispp_g2.gastrostock.user;
 
 import ispp_g2.gastrostock.model.BaseEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import ispp_g2.gastrostock.subscripcion.Subscripcion;
+import java.io.Serializable;
 
 import java.util.Collection;
 import java.util.List;
@@ -55,5 +59,11 @@ public class User extends BaseEntity implements UserDetails{
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return List.of(new SimpleGrantedAuthority(authority.getAuthority()));
+	}
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+	private transient Subscripcion subscripcion;
+
+	public boolean hasPremiumAccess() {
+	return subscripcion != null && subscripcion.isPremium();
 	}
 }
