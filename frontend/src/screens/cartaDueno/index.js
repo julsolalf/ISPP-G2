@@ -3,6 +3,9 @@ import { useNavigate, Link } from "react-router-dom";
 import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
+const token = localStorage.getItem("token");
+const negocioId = localStorage.getItem("negocioId");
+
 const obtenerCategorias = async () => {
     try {
       /*
@@ -13,7 +16,13 @@ const obtenerCategorias = async () => {
       }
       const response = await fetch(`http://localhost:8080/api/categorias/negocio/${negocioId}/inventario`);*/
   
-      const response = await fetch("http://localhost:8080/api/categorias/negocio/1");
+      const response = await fetch(`http://localhost:8080/api/categorias/negocio/${negocioId}`,{
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       
       if (!response.ok) {
         throw new Error("Error al obtener las categorías");
