@@ -8,7 +8,7 @@ function Empleados() {
   const [empleados, setEmpleados] = useState([]);  // Cambia el estado para manejar empleados vacíos
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
-  const token = localStorage.getItem("userToken"); // Obtener el token del usuario desde localStorage
+  const token = localStorage.getItem("token"); // Obtener el token del usuario desde localStorage
   const negocioId = localStorage.getItem("negocioId"); // Obtener el ID del negocio desde localStorage
 
   const loadEmpleados = async () => {

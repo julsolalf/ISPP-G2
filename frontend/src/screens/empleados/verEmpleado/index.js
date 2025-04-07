@@ -3,9 +3,16 @@ import { useNavigate, useParams, Link } from "react-router-dom";
 import "../../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
+const token = localStorage.getItem("token"); // Obtener el token del usuario desde localStorage
 const obtenerEmpleado = async () => {
   try {
-    const response = await fetch(`http://localhost:8080/api/empleados/${localStorage.getItem("empleadoId")}`);
+    const response = await fetch(`http://localhost:8080/api/empleados/${localStorage.getItem("empleadoId")}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
     if (!response.ok) {
       throw new Error("Error al obtener el empleado");
     }
@@ -36,6 +43,10 @@ function VerEmpleado() {
     try {
       const response = await fetch(`http://localhost:8080/api/empleados/${localStorage.getItem("empleadoId")}`, {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       });
       if (!response.ok) {
         throw new Error("Error al eliminar el empleado");
