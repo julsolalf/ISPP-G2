@@ -1,6 +1,7 @@
 package ispp_g2.gastrostock.empleado;
 
 import java.util.List;
+import java.util.Random;
 import java.util.stream.StreamSupport;
 
 import ispp_g2.gastrostock.negocio.Negocio;
@@ -82,6 +83,11 @@ public class EmpleadoService {
     }
 
     @Transactional(readOnly = true)
+    public List<Empleado> getEmpleadoByDueno(Integer id) {
+        return empleadoRepository.findByDueno(id);
+    }
+
+    @Transactional(readOnly = true)
     public Empleado getEmpleadoByUser(Integer userId) {
         return empleadoRepository.findByUserId(userId).orElse(null);
     }
@@ -101,7 +107,7 @@ public class EmpleadoService {
         empleado.setFirstName(empleadoDTO.getFirstName());
         empleado.setLastName(empleadoDTO.getLastName());
         empleado.setEmail(empleadoDTO.getEmail());
-        empleado.setTokenEmpleado(empleadoDTO.getTokenEmpleado());
+        empleado.setTokenEmpleado(generarToken(empleadoDTO.getNegocio()));
         empleado.setNumTelefono(empleadoDTO.getNumTelefono());
         empleado.setDescripcion(empleadoDTO.getDescripcion());
         empleado.setUser(user);
@@ -122,6 +128,20 @@ public class EmpleadoService {
         empleadoDTO.setPassword(empleado.getUser().getPassword());
         empleadoDTO.setNegocio(empleado.getNegocio().getId());
         return empleadoDTO;
+    }
+
+    private String generarToken(Integer id) {
+        String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        Integer l = 30;
+        Random r = new Random();
+
+        StringBuilder sb = new StringBuilder(l);
+        for (int i = 0; i < l; i++) {
+            int index = r.nextInt(caracteres.length());
+            sb.append(caracteres.charAt(index));
+        }
+
+        return "gst-" + sb.toString()+"-emp"+id.toString();
     }
     
 }
