@@ -73,9 +73,9 @@ public class PedidoController {
         return new ResponseEntity<>(pedidos, HttpStatus.OK);
     }
 
-    @GetMapping("/negocio/{negocio}")
-    public ResponseEntity<List<Pedido>> findByNegocioId(@PathVariable("negocio") Integer negocio) {
-        List<Pedido> pedidos = pedidoService.getPedidoByNegocioId(negocio);
+    @GetMapping("/venta/{venta}")
+    public ResponseEntity<List<Pedido>> findByNegocioId(@PathVariable("venta") Integer venta) {
+        List<Pedido> pedidos = pedidoService.getPedidoByVentaId(venta);
         if (pedidos == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

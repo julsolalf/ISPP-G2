@@ -27,7 +27,7 @@ public class NegocioService {
 
     @Transactional(readOnly = true)
     public Negocio getById(Integer id) {
-        return negocioRepository.findById(id).orElse(null);
+        return negocioRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("El negocio no existe"));
     }
 
     @Transactional(readOnly = true)
