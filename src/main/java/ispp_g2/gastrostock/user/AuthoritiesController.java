@@ -12,15 +12,23 @@ import java.util.List;
 @RequestMapping("/api/authorities")
 public class AuthoritiesController {
 
-    private AuthoritiesService authoritiesService;
+    private final UserService userService;
+    private final AuthoritiesService authoritiesService;
+
+    private final String admin = "admin";
 
     @Autowired
-    public AuthoritiesController(AuthoritiesService authoritiesService) {
+    public AuthoritiesController(AuthoritiesService authoritiesService, UserService userService) {
         this.authoritiesService = authoritiesService;
+        this.userService = userService;
     }
 
     @GetMapping
-    public ResponseEntity<List<Authorities>> findAll(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<List<Authorities>> findAll() {
+        User user = userService.findCurrentUser();
+        if( !(user.getAuthority().getAuthority().equals(admin)) ) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
         if(authoritiesService.findAll().isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -29,6 +37,10 @@ public class AuthoritiesController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Authorities> findById(@PathVariable("id") Integer id) {
+        User user = userService.findCurrentUser();
+        if( !(user.getAuthority().getAuthority().equals(admin)) ) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
         Authorities authorities = authoritiesService.findById(id);
         if(authorities == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -38,6 +50,10 @@ public class AuthoritiesController {
 
     @GetMapping("/authority/{authority}")
     public ResponseEntity<Authorities> findByAuthority(@PathVariable("authority") String authority) {
+        User user = userService.findCurrentUser();
+        if( !(user.getAuthority().getAuthority().equals(admin)) ) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
         Authorities authorities = authoritiesService.findByAuthority(authority);
         if(authorities == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -47,6 +63,10 @@ public class AuthoritiesController {
 
     @PostMapping
     public ResponseEntity<Authorities> saveAuthorities(@RequestBody @Valid Authorities authorities) {
+        User user = userService.findCurrentUser();
+        if( !(user.getAuthority().getAuthority().equals(admin)) ) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
         if(authorities==null)
             throw new IllegalArgumentException("Authorities cannot be null");
         return new ResponseEntity<>(authoritiesService.saveAuthorities(authorities), HttpStatus.CREATED);
@@ -54,6 +74,10 @@ public class AuthoritiesController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Authorities> update(@PathVariable("id") Integer id, @RequestBody @Valid Authorities authorities) {
+        User user = userService.findCurrentUser();
+        if( !(user.getAuthority().getAuthority().equals(admin)) ) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
         Authorities authorities1 = authoritiesService.findById(id);
         if(authorities1 == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -64,6 +88,10 @@ public class AuthoritiesController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
+        User user = userService.findCurrentUser();
+        if( !(user.getAuthority().getAuthority().equals(admin)) ) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
         Authorities authorities = authoritiesService.findById(id);
         if(authorities == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

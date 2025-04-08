@@ -145,25 +145,25 @@ VALUES (1, 1, true, 12.50, (SELECT id FROM pedido WHERE precio_total = 15.00), (
 INSERT INTO linea_de_pedido (id, cantidad, estado, precio_unitario, pedido_id, producto_id)
 VALUES (2, 1, true, 2.50, (SELECT id FROM pedido WHERE precio_total = 15.00), (SELECT id FROM producto_venta WHERE name = 'Coca Cola'));
 
+-- Insertando proveedores
+INSERT INTO proveedor (id, name, email, telefono, direccion, negocio_id)
+VALUES (1, 'Proveedor A', 'proveedorA@mail.com', '987654321', 'Calle Proveedor A',(SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
+INSERT INTO proveedor (id, name, email, telefono, direccion, negocio_id)
+VALUES (2, 'Proveedor B', 'proveedorB@mail.com', '987654322', 'Calle Proveedor B',(SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
+
 -- Insertando productos en inventario
-INSERT INTO producto_inventario (id, name, categoria_id, precio_compra, cantidad_deseada, cantidad_aviso)
-VALUES (1, 'Harina', 5, 0.50, 100, 10);
-INSERT INTO producto_inventario (id, name, categoria_id, precio_compra, cantidad_deseada, cantidad_aviso)
-VALUES (2, 'Tomate', 6, 0.30, 100, 10);
-INSERT INTO producto_inventario (id, name, categoria_id, precio_compra, cantidad_deseada, cantidad_aviso)
-VALUES (3, 'Carne Buey', 7, 5.50, 50, 5);
+INSERT INTO producto_inventario (id, name, categoria_id, precio_compra, cantidad_deseada, cantidad_aviso, proveedor_id)
+VALUES (1, 'Harina', 5, 0.50, 100, 10, 1);
+INSERT INTO producto_inventario (id, name, categoria_id, precio_compra, cantidad_deseada, cantidad_aviso, proveedor_id)
+VALUES (2, 'Tomate', 6, 0.30, 100, 10,1);
+INSERT INTO producto_inventario (id, name, categoria_id, precio_compra, cantidad_deseada, cantidad_aviso, proveedor_id)
+VALUES (3, 'Carne Buey', 7, 5.50, 50, 5, 1);
 
 -- Insertando ingredientes
 INSERT INTO ingrediente (id, cantidad, producto_inventario_id, producto_venta_id)
 VALUES (1, 5, (SELECT id FROM producto_inventario WHERE name = 'Harina'), (SELECT id FROM producto_venta WHERE name = 'Pizza Margherita'));
 INSERT INTO ingrediente (id, cantidad, producto_inventario_id, producto_venta_id)
 VALUES (2, 5, (SELECT id FROM producto_inventario WHERE name = 'Carne Buey'), (SELECT id FROM producto_venta WHERE name = 'Hamburguesa'));
-
--- Insertando proveedores
-INSERT INTO proveedor (id, name, email, telefono, direccion, negocio_id)
-VALUES (1, 'Proveedor A', 'proveedorA@mail.com', '987654321', 'Calle Proveedor A',(SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
-INSERT INTO proveedor (id, name, email, telefono, direccion, negocio_id)
-VALUES (2, 'Proveedor B', 'proveedorB@mail.com', '987654322', 'Calle Proveedor B',(SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
 
 -- Insertando reabastecimientos
 INSERT INTO reabastecimiento (id, precio_total, referencia, fecha, proveedor_id, negocio_id)
