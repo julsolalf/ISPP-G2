@@ -99,6 +99,15 @@ public class ProductoInventarioController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		return new ResponseEntity<>(productoInventario, HttpStatus.OK);
 	}
+
+	@GetMapping("/proveedor/{proveedorId}")
+	public ResponseEntity<List<ProductoInventario>> findByProveedorId(@PathVariable("proveedorId") Integer proveedorId) {
+		List<ProductoInventario> productoInventario = productoInventarioService.getProductoInventarioByProveedorId(proveedorId);
+		if (productoInventario == null)
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(productoInventario, HttpStatus.OK);
+	}
+
 	@PostMapping
 	public ResponseEntity<ProductoInventario> createProductoInventario(@RequestBody @Valid ProductoInventarioDTO newProductoInventario) {
 		if (newProductoInventario==null)
