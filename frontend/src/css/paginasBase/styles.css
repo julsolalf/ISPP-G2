@@ -38,6 +38,7 @@ body, html {
   border-radius: 15px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   height: 90%;
+  width: 70%;
   margin: 5%;
   justify-content: center;
   align-items: center;
@@ -108,8 +109,7 @@ button {
   background-color: #a92d4e;
   color: white;
   font-weight: bold;
-  margin-top: 5%;
-  max-height: 200px;
+  max-height: 80px;
 }
 
 /* Efecto hover en los botones */
@@ -146,23 +146,23 @@ button:hover {
 }
 
 .pricing {
+  height: 60%;
   display: flex;
   justify-content: space-between;
   gap: 15px;
-  margin: 20px 0;
 }
 
 .plan {
   background:  rgb(238, 183, 183);
   padding: 15px;
   border-radius: 10px;
-  width: 30%;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .plan h3 {
   color: #a92d4e;
   margin-bottom: 5px;
+  margin: 5%;
 }
 
 /* Botón de volver arriba a la izquierda dentro del contenedor */
