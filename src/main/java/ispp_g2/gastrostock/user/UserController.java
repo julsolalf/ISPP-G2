@@ -23,6 +23,7 @@ import jakarta.validation.Valid;
 public class UserController {
 
 	private final UserService userService;
+	private final String admin = "admin";
 
 	@Autowired
 	public UserController(UserService userService) {
@@ -31,6 +32,10 @@ public class UserController {
 
 	@GetMapping
 	public ResponseEntity<List<User>> findAll() {
+		User user = userService.findCurrentUser();
+		if( !(user.getAuthority().getAuthority().equals(admin))){
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
 		if (userService.findAll().isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
@@ -39,6 +44,10 @@ public class UserController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<User> findById(@PathVariable("id") Integer id) {
+		User currUser = userService.findCurrentUser();
+		if( !(currUser.getAuthority().getAuthority().equals(admin))){
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
 		User user = userService.findUserById(id);
 		if (user == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -48,6 +57,10 @@ public class UserController {
 
 	@GetMapping("/username/{username}")
 	public ResponseEntity<User> findByUsername(@PathVariable("username") String username) {
+		User currUser = userService.findCurrentUser();
+		if( !(currUser.getAuthority().getAuthority().equals(admin))){
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
 		User user = userService.findUserByUsername(username);
 		if (user == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -57,6 +70,10 @@ public class UserController {
 
 	@GetMapping("/authority/{authority}")
 	public ResponseEntity<User> findByAuthority(@PathVariable("authority") String authority) {
+		User currUser = userService.findCurrentUser();
+		if( !(currUser.getAuthority().getAuthority().equals(admin))){
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
 		User user = userService.findUserByAuthority(authority);
 		if (user == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -67,6 +84,10 @@ public class UserController {
 	@GetMapping("/usernameAndPassword/{username}/{password}")
 	public ResponseEntity<User> findByUsernameAndPassword(@PathVariable("username") String username,
 			@PathVariable("password") String password) {
+		User currUser = userService.findCurrentUser();
+		if( !(currUser.getAuthority().getAuthority().equals(admin))){
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
 		User user = userService.findUserByUsernameAndPassword(username, password);
 		if (user == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -76,6 +97,10 @@ public class UserController {
 
 	@PostMapping
 	public ResponseEntity<User> save(@RequestBody @Valid User user) {
+		User currUser = userService.findCurrentUser();
+		if( !(currUser.getAuthority().getAuthority().equals(admin))){
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
 		if(user==null)
 			throw new IllegalArgumentException("User cannot be null");
 		return new ResponseEntity<>(userService.saveUser(user), HttpStatus.CREATED);
@@ -83,6 +108,10 @@ public class UserController {
 
 	@PutMapping("/{id}")
 	public ResponseEntity<User> update(@PathVariable("id") Integer id, @RequestBody @Valid User user) {
+		User currUser = userService.findCurrentUser();
+		if( !(currUser.getAuthority().getAuthority().equals(admin))){
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
 		if(user==null)
 			throw new IllegalArgumentException("User cannot be null");
 		if(userService.findUserById(id)==null)
@@ -93,6 +122,10 @@ public class UserController {
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<User> delete(@PathVariable("id") Integer id) {
+		User currUser = userService.findCurrentUser();
+		if( !(currUser.getAuthority().getAuthority().equals(admin))){
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
 		if(userService.findUserById(id)==null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		userService.deleteUser(id);
