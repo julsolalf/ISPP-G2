@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.*;
 
 import ispp_g2.gastrostock.dueno.Dueno;
 import ispp_g2.gastrostock.dueno.DuenoService;
+import ispp_g2.gastrostock.empleado.EmpleadoService;
 import ispp_g2.gastrostock.user.User;
 import ispp_g2.gastrostock.user.UserService;
 import jakarta.validation.Valid;
@@ -22,64 +23,111 @@ public class NegocioController {
 	private final NegocioService negocioService;
 	private final UserService userService;
 	private final DuenoService duenoService;
+	private final EmpleadoService empleadoService;
 
-	private final String admin = "admin";
+	private final String ADMIN = "admin";
+	private final String DUENO = "dueno";
+	private final String EMPLEADO = "empleado";
 
 	@Autowired
-	public NegocioController(NegocioService negocioService, UserService userService, DuenoService duenoService) {
+	public NegocioController(NegocioService negocioService, UserService userService, DuenoService duenoService,
+			EmpleadoService empleadoService) {
 		this.negocioService = negocioService;
 		this.userService = userService;
 		this.duenoService = duenoService;
+		this.empleadoService = empleadoService;
 	}
 
 	@GetMapping
 	public ResponseEntity<List<Negocio>> findAll() {
 		User user = userService.findCurrentUser();
-		List<Negocio> negocios = negocioService.getByDueno(duenoService.getDuenoByUser(user.getId()).getId());
-		if (negocios.isEmpty())
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		return new ResponseEntity<>(negocios, HttpStatus.OK);
+		if (user.hasAnyAuthority(ADMIN).equals(true)) {
+			List<Negocio> negocios = negocioService.getNegocios();
+			if (negocios.isEmpty())
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(negocios, HttpStatus.OK);
+		} else if (user.hasAnyAuthority(DUENO).equals(true)) {
+			List<Negocio> negocios = negocioService.getByDueno(duenoService.getDuenoByUser(user.getId()).getId());
+			if (negocios.isEmpty())
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(negocios, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
 	}
 
 	@GetMapping("/dto")
 	public ResponseEntity<List<NegocioDTO>> findAllDTO() {
 		User user = userService.findCurrentUser();
-		List<Negocio> negocios = negocioService.getByDueno(duenoService.getDuenoByUser(user.getId()).getId());
-		if (negocios.isEmpty())
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		List<NegocioDTO> negociosDto = negocios
-				.stream()
-				.map(negocioService::convertirNegocioDTO)
-				.toList();
-		return new ResponseEntity<>(negociosDto, HttpStatus.OK);
+		if (user.hasAnyAuthority(ADMIN).equals(true)) {
+			List<Negocio> negocios = negocioService.getNegocios();
+			if (negocios.isEmpty())
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(negocios.stream().map(negocioService::convertirNegocioDTO).toList(),
+					HttpStatus.OK);
+		} else if (user.hasAnyAuthority(DUENO).equals(true)) {
+			List<Negocio> negocios = negocioService.getByDueno(duenoService.getDuenoByUser(user.getId()).getId());
+			if (negocios.isEmpty())
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(negocios.stream().map(negocioService::convertirNegocioDTO).toList(),
+					HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Negocio> findNegocio(@PathVariable("id") Integer id) {
 		User user = userService.findCurrentUser();
-		Negocio negocioToGet = negocioService.getById(id);
-		if (negocioToGet == null)
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		if (negocioToGet.getDueno().getUser() != user)
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-		return new ResponseEntity<>(negocioToGet, HttpStatus.OK);
+		if (user.hasAnyAuthority(ADMIN).equals(true)) {
+			Negocio negocioToGet = negocioService.getById(id);
+			if (negocioToGet == null)
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(negocioToGet, HttpStatus.OK);
+		} else if (user.hasAnyAuthority(DUENO).equals(true)) {
+			Negocio negocioToGet = negocioService.getById(id);
+			if (negocioToGet == null)
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			if (negocioToGet.getDueno().getUser().getId().equals(user.getId()))
+				return new ResponseEntity<>(negocioToGet, HttpStatus.OK);
+		} else if (user.hasAnyAuthority(EMPLEADO).equals(true)) {
+			Negocio negocioToGet = negocioService.getById(id);
+			if (negocioToGet == null)
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			if (empleadoService.getEmpleadoByUser(user.getId()).getNegocio().getId().equals(id))
+				return new ResponseEntity<>(negocioToGet, HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 	}
 
 	@GetMapping("/dto/{id}")
 	public ResponseEntity<NegocioDTO> findNegocioDTO(@PathVariable("id") Integer id) {
 		User user = userService.findCurrentUser();
-		Negocio negocioToGet = negocioService.getById(id);
-		if (negocioToGet == null)
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		if (negocioToGet.getDueno().getUser() != user)
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-		return new ResponseEntity<>(negocioService.convertirNegocioDTO(negocioToGet), HttpStatus.OK);
+		if (user.hasAnyAuthority(ADMIN).equals(true)) {
+			Negocio negocioToGet = negocioService.getById(id);
+			if (negocioToGet == null)
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(negocioService.convertirNegocioDTO(negocioToGet), HttpStatus.OK);
+		} else if (user.hasAnyAuthority(DUENO).equals(true)) {
+			Negocio negocioToGet = negocioService.getById(id);
+			if (negocioToGet == null)
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			if (negocioToGet.getDueno().getUser().getId().equals(user.getId()))
+				return new ResponseEntity<>(negocioService.convertirNegocioDTO(negocioToGet), HttpStatus.OK);
+		} else if (user.hasAnyAuthority(EMPLEADO).equals(true)) {
+			Negocio negocioToGet = negocioService.getById(id);
+			if (negocioToGet == null)
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			if (empleadoService.getEmpleadoByUser(user.getId()).getNegocio().getId().equals(id))
+				return new ResponseEntity<>(negocioService.convertirNegocioDTO(negocioToGet), HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 	}
 
 	@GetMapping("/token/{token}")
 	public ResponseEntity<Negocio> findNegocioByToken(@PathVariable("token") Integer token) {
 		User user = userService.findCurrentUser();
-		if (user.hasAnyAuthority(admin).equals(true)) {
+		if (user.hasAnyAuthority(ADMIN).equals(true)) {
 			Negocio negocioToGet = negocioService.getByToken(token);
 			if (negocioToGet == null)
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -92,7 +140,7 @@ public class NegocioController {
 	@GetMapping("/name/{name}")
 	public ResponseEntity<Negocio> findNegocioByName(@PathVariable("name") String name) {
 		User user = userService.findCurrentUser();
-		if (user.hasAnyAuthority(admin).equals(true)) {
+		if (user.hasAnyAuthority(ADMIN).equals(true)) {
 			Negocio negocioToGet = negocioService.getByName(name);
 			if (negocioToGet == null)
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -105,7 +153,7 @@ public class NegocioController {
 	@GetMapping("/ciudad/{ciudad}")
 	public ResponseEntity<List<Negocio>> findNegocioByCiudad(@PathVariable("ciudad") String ciudad) {
 		User user = userService.findCurrentUser();
-		if (user.hasAnyAuthority(admin).equals(true)) {
+		if (user.hasAnyAuthority(ADMIN).equals(true)) {
 			List<Negocio> negocioToGet = negocioService.getByCiudad(ciudad);
 			if (negocioToGet.isEmpty())
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -118,7 +166,7 @@ public class NegocioController {
 	@GetMapping("/codigoPostal/{codigoPostal}")
 	public ResponseEntity<List<Negocio>> findNegocioByCodigoPostal(@PathVariable("codigoPostal") String codigoPostal) {
 		User user = userService.findCurrentUser();
-		if (user.hasAnyAuthority(admin).equals(true)) {
+		if (user.hasAnyAuthority(ADMIN).equals(true)) {
 			List<Negocio> negocioToGet = negocioService.getByCodigoPostal(codigoPostal);
 			if (negocioToGet.isEmpty())
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -131,7 +179,7 @@ public class NegocioController {
 	@GetMapping("/pais/{pais}")
 	public ResponseEntity<List<Negocio>> findNegocioByPais(@PathVariable("pais") String pais) {
 		User user = userService.findCurrentUser();
-		if (user.hasAnyAuthority(admin).equals(true)) {
+		if (user.hasAnyAuthority(ADMIN).equals(true)) {
 			List<Negocio> negocioToGet = negocioService.getByPais(pais);
 			if (negocioToGet.isEmpty())
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -172,11 +220,14 @@ public class NegocioController {
 		User user = userService.findCurrentUser();
 		if (newNegocio == null)
 			throw new IllegalArgumentException("Negocio cannot be null");
-
-		Negocio negocio = negocioService.convertirDTONegocio(newNegocio);
-		negocio.setTokenNegocio(generarToken());
-		negocio.setDueno(duenoService.getDuenoByUser(user.getId()));
-		return new ResponseEntity<>(negocioService.save(negocio), HttpStatus.CREATED);
+		if (user.hasAnyAuthority("dueno").equals(true)) {
+			Negocio negocio = negocioService.convertirDTONegocio(newNegocio);
+			negocio.setTokenNegocio(generarToken());
+			negocio.setDueno(duenoService.getDuenoByUser(user.getId()));
+			return new ResponseEntity<>(negocioService.save(negocio), HttpStatus.CREATED);
+		} else {
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
 	}
 
 	private Integer generarToken() {
@@ -187,19 +238,18 @@ public class NegocioController {
 	@PutMapping("/{id}")
 	public ResponseEntity<Negocio> update(@RequestBody @Valid NegocioDTO newNegocio,
 			@PathVariable("id") Integer id) {
-		if(newNegocio == null)
-			throw new IllegalArgumentException("Negocio cannot be null");
-	
+
 		Negocio toUpdate = negocioService.getById(id);
 		if (toUpdate == null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	
+
 		User user = userService.findCurrentUser();
-		if (user.hasAnyAuthority("dueno").equals(true)) {
+		if (user.hasAnyAuthority(DUENO).equals(true)) {
 			Dueno dueno = duenoService.getDuenoByUser(user.getId());
+			if (newNegocio == null)
+				throw new IllegalArgumentException("Negocio no puede ser nulo");
 			if (!toUpdate.getDueno().getId().equals(dueno.getId()))
 				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-	
 			Negocio nuevo = negocioService.convertirDTONegocio(newNegocio);
 			return new ResponseEntity<>(negocioService.update(id, nuevo), HttpStatus.OK);
 		} else {
@@ -210,7 +260,7 @@ public class NegocioController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
 		User user = userService.findCurrentUser();
-		if (user.hasAnyAuthority("dueno").equals(true)) {
+		if (user.hasAnyAuthority(DUENO).equals(true)) {
 			Dueno dueno = duenoService.getDuenoByUser(user.getId());
 			Negocio toDelete = negocioService.getById(id);
 			if (toDelete == null)
