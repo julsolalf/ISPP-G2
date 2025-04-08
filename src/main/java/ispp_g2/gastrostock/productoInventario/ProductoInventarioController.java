@@ -27,6 +27,17 @@ public class ProductoInventarioController {
 		return new ResponseEntity<>(productoInventarioService.getProductosInventario(), HttpStatus.OK);
 	}
 
+	@GetMapping("/dto")
+	public ResponseEntity<List<ProductoInventarioDTO>> findAllDTO() {
+		if(productoInventarioService.getProductosInventario().isEmpty())
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		List<ProductoInventarioDTO> productosInventarioDto = productoInventarioService.getProductosInventario()
+				.stream()
+				.map(productoInventarioService::convertirProductoInventarioDTO)
+				.toList();
+		return new ResponseEntity<>(productosInventarioDto, HttpStatus.OK);
+	}
+
 	@GetMapping("/{id}")
 	public ResponseEntity<ProductoInventario> findProductoInventario(@PathVariable String id) {
 		try {
@@ -39,6 +50,14 @@ public class ProductoInventarioController {
 		} catch (NumberFormatException e) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
+	}
+
+	@GetMapping("/dto/{id}")
+	public ResponseEntity<ProductoInventarioDTO> findProductoInventarioDTO(@PathVariable Integer id) {
+		ProductoInventarioDTO productoInventarioDTO = productoInventarioService.convertirProductoInventarioDTO(productoInventarioService.getById(id));
+		if (productoInventarioDTO == null)
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(productoInventarioDTO, HttpStatus.OK);
 	}
 
     @GetMapping("/categoria/{categoria}")
@@ -81,21 +100,23 @@ public class ProductoInventarioController {
 		return new ResponseEntity<>(productoInventario, HttpStatus.OK);
 	}
 	@PostMapping
-	public ResponseEntity<ProductoInventario> createProductoInventario(@RequestBody @Valid ProductoInventario newProductoInventario) {
+	public ResponseEntity<ProductoInventario> createProductoInventario(@RequestBody @Valid ProductoInventarioDTO newProductoInventario) {
 		if (newProductoInventario==null)
 			throw new IllegalArgumentException("ProductoInventario cannot be null");
-		return new ResponseEntity<>(productoInventarioService.save(newProductoInventario), HttpStatus.CREATED);
+		ProductoInventario productoInventario = productoInventarioService.convertirDTOProductoInventario(newProductoInventario);
+		return new ResponseEntity<>(productoInventarioService.save(productoInventario), HttpStatus.CREATED);
 	}
 
     @PutMapping("/{id}")
-	public ResponseEntity<ProductoInventario> update(@RequestBody @Valid ProductoInventario newProductoInventario, @PathVariable("id") Integer id) {
+	public ResponseEntity<ProductoInventario> update(@RequestBody @Valid ProductoInventarioDTO newProductoInventario, @PathVariable("id") Integer id) {
 		if (newProductoInventario == null)
 			throw new IllegalArgumentException("ProductoInventario cannot be null");
 		ProductoInventario productoInventario = productoInventarioService.getById(id);
 		if (productoInventario == null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		newProductoInventario.setId(id);
-		return new ResponseEntity<>(productoInventarioService.save(newProductoInventario), HttpStatus.OK);
+		ProductoInventario productoInventarioToUpdate = productoInventarioService.convertirDTOProductoInventario(newProductoInventario);
+		productoInventarioToUpdate.setId(id);
+		return new ResponseEntity<>(productoInventarioService.save(productoInventarioToUpdate), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
