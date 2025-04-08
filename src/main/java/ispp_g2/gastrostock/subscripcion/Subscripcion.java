@@ -6,6 +6,10 @@ import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import lombok.Getter;
 import lombok.Setter;
 import ispp_g2.gastrostock.subscripcion.SubscripcionStatus;
@@ -30,8 +34,10 @@ public class Subscripcion extends BaseEntity implements Serializable {
     private LocalDateTime endDate;
     private LocalDateTime nextBillingDate;
     
-    @OneToOne(mappedBy = "subscripcion")
-    private User user;
+	@OneToOne(cascade = { CascadeType.DETACH, CascadeType.REFRESH, CascadeType.PERSIST })
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@JoinColumn(name = "user_id", unique = true)
+	private User user;
     
     public boolean isActive() {
         return status == SubscripcionStatus.ACTIVE && 

@@ -39,18 +39,22 @@ public class StripeService {
     }
     
     public Session createCheckoutSession(String customerId, String planType) throws StripeException {
-        String priceId = planType.equals("PREMIUM") ? premiumPriceId : "FREE";
+        if (!"PREMIUM".equalsIgnoreCase(planType)) {
+            // Para planes gratuitos no se necesita checkout
+            throw new IllegalArgumentException("Checkout session is only available for PREMIUM plan");
+        }
         
-        SessionCreateParams params = 
-            SessionCreateParams.builder()
+        String priceId = premiumPriceId; // Solo para premium
+        
+        SessionCreateParams params = SessionCreateParams.builder()
                 .setCustomer(customerId)
                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
                 .addLineItem(
-                    SessionCreateParams.LineItem.builder()
-                        .setPrice(priceId)
-                        .setQuantity(1L)
-                        .build()
-                )   
+                        SessionCreateParams.LineItem.builder()
+                                .setPrice(priceId)
+                                .setQuantity(1L)
+                                .build()
+                )
                 .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
                 .setSuccessUrl(frontendUrl + "/success?session_id={CHECKOUT_SESSION_ID}")
                 .setCancelUrl(frontendUrl + "/planes")

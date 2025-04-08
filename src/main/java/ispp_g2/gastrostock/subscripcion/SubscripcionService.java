@@ -48,23 +48,24 @@ public class SubscripcionService {
      */
     @Transactional
     public Subscripcion createFreeSubscription(User user) {
+        if (user.getSubscripcion() != null) {
+            log.info("El usuario ID: {} ya tiene una suscripción asignada", user.getId());
+            return user.getSubscripcion();
+        }
         Subscripcion subscription = new Subscripcion();
         subscription.setType(SubscripcionType.FREE);
         subscription.setStatus(SubscripcionStatus.ACTIVE);
         subscription.setStartDate(LocalDateTime.now());
-        // Para el plan gratuito no establecemos fecha de fin
         
         // Establecer la relación bidireccional
         subscription.setUser(user);
         user.setSubscripcion(subscription);
         
-        // Guardar el usuario para persistir la relación bidireccional
-        userService.saveUser(user);
+        subscription = subscripcionRepository.save(subscription);
         
         log.info("Creada suscripción FREE para usuario ID: {}", user.getId());
         return subscription;
     }
-    
     /**
      * Crea una sesión de checkout para que el usuario pueda pagar una suscripción premium
      */
@@ -565,37 +566,61 @@ private void handleCheckoutSessionCompletedRaw(JsonObject jsonObject) {
     }
 }
 
-// Método para procesar invoice.payment_succeeded con JSON raw
 private void handleInvoicePaymentSucceededRaw(JsonObject jsonObject) {
     try {
-        // Extraer los datos necesarios del JSON
-        JsonObject object = jsonObject.getAsJsonObject("object");
-        
-        String customerId = null;
-        
-        if (object.has("customer")) {
-            customerId = object.get("customer").getAsString();
+        JsonObject invoiceObject;
+        if (jsonObject.has("data")) {
+            JsonObject data = jsonObject.getAsJsonObject("data");
+            if (!data.has("object") || !data.get("object").isJsonObject()) {
+                log.error("El payload 'data' no contiene un objeto válido en 'object'");
+                return;
+            }
+            invoiceObject = data.getAsJsonObject("object");
+        } else {
+            // Si no viene la clave "data", asumimos que el JSON recibido es el invoice directamente
+            invoiceObject = jsonObject;
         }
         
-        if (customerId != null) {
-            Subscripcion subscription = subscripcionRepository.findByStripeCustomerId(customerId);
-            if (subscription != null) {
-                // Actualizar fecha de fin para el siguiente período
-                LocalDateTime endDate = LocalDateTime.now().plusMonths(1);
-                
-                subscription.setEndDate(endDate);
-                subscription.setStatus(SubscripcionStatus.ACTIVE);
-                subscription.setNextBillingDate(endDate);
-                
-                subscripcionRepository.save(subscription);
-                log.info("Renovada suscripción usando JSON Raw para Customer ID: {}", customerId);
+        // Extraer el customer ID del invoice
+        String customerId = invoiceObject.has("customer") ? invoiceObject.get("customer").getAsString() : null;
+        if (customerId == null) {
+            log.error("No se encontró 'customer' en el objeto invoice");
+            return;
+        }
+        
+        // Buscar la suscripción en la BD usando el stripeCustomerId
+        Subscripcion subscription = subscripcionRepository.findByStripeCustomerId(customerId);
+        if (subscription != null) {
+            // Extraer current_period_end desde el primer ítem en lines.data
+            if (invoiceObject.has("lines") && invoiceObject.get("lines").isJsonObject()) {
+                JsonObject lines = invoiceObject.getAsJsonObject("lines");
+                if (lines.has("data") && lines.get("data").isJsonArray() &&
+                    lines.getAsJsonArray("data").size() > 0) {
+                    JsonObject firstLine = lines.getAsJsonArray("data").get(0).getAsJsonObject();
+                    if (firstLine.has("period") && firstLine.get("period").isJsonObject()) {
+                        JsonObject period = firstLine.getAsJsonObject("period");
+                        if (period.has("end")) {
+                            long endTimestamp = period.get("end").getAsLong();
+                            LocalDateTime endDate = LocalDateTime.ofInstant(
+                                Instant.ofEpochSecond(endTimestamp), ZoneId.systemDefault());
+                            subscription.setEndDate(endDate);
+                            subscription.setNextBillingDate(endDate);
+                        }
+                    }
+                }
             }
+            subscription.setStatus(SubscripcionStatus.ACTIVE);
+            subscription.setType(SubscripcionType.PREMIUM);
+            subscripcionRepository.save(subscription);
+            log.info("Renovada suscripción usando JSON Raw para Customer ID: {}", customerId);
+            log.info("Usuario es premium?: {}", userService.findUserById(subscription.getUser().getId()).hasPremiumAccess());
+        } else {
+            log.error("No se encontró suscripción para Stripe Customer ID: {}", customerId);
         }
     } catch (Exception e) {
         log.error("Error procesando invoice.payment_succeeded raw: {}", e.getMessage(), e);
     }
 }
-
 // Método para procesar invoice.payment_failed con JSON raw
 private void handleInvoicePaymentFailedRaw(JsonObject jsonObject) {
     try {

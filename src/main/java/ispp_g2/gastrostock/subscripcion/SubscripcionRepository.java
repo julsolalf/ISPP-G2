@@ -18,7 +18,7 @@ public interface SubscripcionRepository extends CrudRepository<Subscripcion, Int
     @Query("SELECT s FROM Subscripcion s WHERE s.status = :status")
     List<Subscripcion> findByStatus(SubscripcionStatus status);
     
-    @Query("SELECT s FROM Subscripcion s WHERE s.user.id = :userId")
+    @Query("SELECT u.subscripcion FROM User u WHERE u.id = :userId")
     Subscripcion findByUserId(Integer userId);
     
     @Query("SELECT s FROM Subscripcion s WHERE s.type = :type AND s.status = :status")
