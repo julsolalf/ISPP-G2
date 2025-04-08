@@ -3,9 +3,17 @@ import { useNavigate, useParams, Link } from "react-router-dom";
 import "../../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
+const token = localStorage.getItem("token");
+const productoId = localStorage.getItem("productoId");
+
 const obtenerProducto = async (id) => {
   try {
-    const response = await fetch(`http://localhost:8080/api/productosInventario/${id}`);
+    const response = await fetch(`http://localhost:8080/api/productosInventario/${productoId}`, {
+      method: "GET",
+        headers: { "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+         },
+    });
     if (!response.ok) {
       throw new Error("Error al obtener el producto");
     }
@@ -16,11 +24,14 @@ const obtenerProducto = async (id) => {
   }
 };
 
-const actualizarProducto = async (id, producto) => {
+const actualizarProducto = async (producto) => {
   try {
-    const response = await fetch(`http://localhost:8080/api/productosInventario/${id}`, {
+    const response = await fetch(`http://localhost:8080/api/productosInventario/${productoId}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
       body: JSON.stringify(producto),
     });
     if (!response.ok) {
@@ -40,7 +51,7 @@ function EditarProducto() {
 
   useEffect(() => {
     const cargarProducto = async () => {
-      const data = await obtenerProducto(id);
+      const data = await obtenerProducto();
       if (data) setProducto(data);
     };
     cargarProducto();
@@ -52,7 +63,7 @@ function EditarProducto() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const actualizado = await actualizarProducto(id, producto);
+    const actualizado = await actualizarProducto(producto);
     if (actualizado) navigate(`/categoria/${producto.categoria?.name}/producto/${id}`);
   };
 

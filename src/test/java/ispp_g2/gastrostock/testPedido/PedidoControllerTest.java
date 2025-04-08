@@ -80,6 +80,7 @@ class PedidoControllerTest {
         negocio = new Negocio();
         negocio.setId(1);
         negocio.setName("Restaurante Test");
+
         
         // Configurar Pedido
         pedido = new Pedido();
@@ -285,7 +286,7 @@ class PedidoControllerTest {
     void testFindByNegocioId_NotFound() throws Exception {
         when(pedidoService.getPedidoByNegocioId(999)).thenReturn(null);
         
-        mockMvc.perform(get("/api/pedidos/negocio/999"))
+        mockMvc.perform(get("/api/pedidos/venta/999"))
                 .andExpect(status().isNotFound());
         
         verify(pedidoService).getPedidoByNegocioId(999);
@@ -312,6 +313,7 @@ class PedidoControllerTest {
         negocioUpdate.setPais("Espana");
         negocioUpdate.setCodigoPostal("28001");
         negocioUpdate.setTokenNegocio(54321);
+
         
         // Crear pedido actualizado
         Pedido updatedPedido = new Pedido();
@@ -372,7 +374,7 @@ void testUpdate_Success() throws Exception {
     updatedPedido.setPrecioTotal(60.75); // Precio actualizado
     updatedPedido.setMesa(mesaUpdate);
     updatedPedido.setEmpleado(empleadoUpdate);
-    updatedPedido.setNegocio(negocioUpdate);
+    updatedPedido.setNegocio(negocioUpdate);;
 
     when(pedidoService.getById(1)).thenReturn(pedido);
     when(pedidoService.save(any(Pedido.class))).thenReturn(updatedPedido);

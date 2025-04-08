@@ -45,7 +45,7 @@ VALUES (3, 'Owner', 'Temporal', 'owner@gmail.com', '623654789', 'gst-hoGkisz7eta
 
 -- Insertando negocios
 INSERT INTO negocio (id, name, token_negocio, direccion, codigo_postal, ciudad, pais, dueno_id)
-VALUES (1, 'Restaurante La Trattoria', 12345, 'Calle Falsa 123', '28001', 'Madrid', 'Espana', (SELECT id FROM dueno WHERE first_name = 'Owner')); --Cambiar de dueño cuando se borre el temporal
+VALUES (1, 'Restaurante La Trattoria', 12345, 'Calle Falsa 123', '28001', 'Madrid', 'Espana', (SELECT id FROM dueno WHERE first_name = 'Carlos')); --Cambiar de dueño cuando se borre el temporal
 INSERT INTO negocio (id, name, token_negocio, direccion, codigo_postal, ciudad, pais, dueno_id)
 VALUES (2, 'Restaurante Burguer', 09876, 'Calle Falsa 123', '28001', 'Madrid', 'Espana', (SELECT id FROM dueno WHERE first_name = 'Carlos'));
 
@@ -112,13 +112,13 @@ VALUES (8, 'Pez espada', 3, 10.50);
 
 -- Insertando pedidos
 INSERT INTO pedido (id, fecha, precio_total, mesa_id, empleado_id, negocio_id)
-VALUES (1, '2025-03-17 13:00:00', 15.00, (SELECT id FROM mesa WHERE name = 'Mesa 1'), (SELECT id FROM empleado WHERE first_name = 'Juan' AND last_name = 'Garcia'), (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
+VALUES (1, '2025-03-17 13:00:00', 15.00, (SELECT id FROM mesa WHERE name = 'Mesa 1'), (SELECT id FROM empleado WHERE first_name = 'Juan' AND last_name = 'Garcia'), 1);
 
 -- Insertando líneas de pedido
-INSERT INTO linea_de_pedido (id, cantidad, precio_unitario, pedido_id, producto_id)
-VALUES (1, 1, 12.50, (SELECT id FROM pedido WHERE precio_total = 15.00), (SELECT id FROM producto_venta WHERE name = 'Pizza Margherita'));
-INSERT INTO linea_de_pedido (id, cantidad, precio_unitario, pedido_id, producto_id)
-VALUES (2, 1, 2.50, (SELECT id FROM pedido WHERE precio_total = 15.00), (SELECT id FROM producto_venta WHERE name = 'Coca Cola'));
+INSERT INTO linea_de_pedido (id, cantidad, estado, precio_unitario, pedido_id, producto_id)
+VALUES (1, 1, true, 12.50, (SELECT id FROM pedido WHERE precio_total = 15.00), (SELECT id FROM producto_venta WHERE name = 'Pizza Margherita'));
+INSERT INTO linea_de_pedido (id, cantidad, estado, precio_unitario, pedido_id, producto_id)
+VALUES (2, 1, true, 2.50, (SELECT id FROM pedido WHERE precio_total = 15.00), (SELECT id FROM producto_venta WHERE name = 'Coca Cola'));
 
 -- Insertando productos en inventario
 INSERT INTO producto_inventario (id, name, categoria_id, precio_compra, cantidad_deseada, cantidad_aviso)

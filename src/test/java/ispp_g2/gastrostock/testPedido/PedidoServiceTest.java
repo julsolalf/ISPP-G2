@@ -68,6 +68,7 @@ class PedidoServiceTest {
         negocio = new Negocio();
         negocio.setId(1);
         negocio.setName("Restaurante Test");
+
         
         // Set up Pedido
         pedido = new Pedido();

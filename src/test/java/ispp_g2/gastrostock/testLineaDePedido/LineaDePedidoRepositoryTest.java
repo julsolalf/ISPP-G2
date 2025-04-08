@@ -71,6 +71,8 @@ public class LineaDePedidoRepositoryTest {
     @Autowired
     private AuthoritiesRepository authoritiesRepository;
 
+
+
     private LineaDePedido lineaNormal, lineaCantidadGrande, lineaPrecioAlto, lineaMinima;
     private ProductoVenta producto1, producto2;
     private Pedido pedido1, pedido2;
@@ -168,6 +170,7 @@ public class LineaDePedidoRepositoryTest {
         producto2.setCategoria(categoria);
         producto2 = productoVentaRepository.save(producto2);
 
+        
         // Crear pedidos
         pedido1 = new Pedido();
         pedido1.setFecha(LocalDateTime.now().minusHours(1));
@@ -370,11 +373,11 @@ public class LineaDePedidoRepositoryTest {
     
     @Test
     void testFindLineaDePedidosByPrecioLinea_Success() {
-        // Buscar líneas con precioLinea 9.0
-        List<LineaDePedido> lineas = lineaDePedidoRepository.findLineaDePedidosByPrecioUnitario(9.0);
+
+        List<LineaDePedido> lineas = lineaDePedidoRepository.findLineaDePedidosByPrecioUnitario(3.0);
         
-        // Verificar que se encontró 1 línea con precioLinea = 9.0
-        assertEquals(1, lineas.size());
+
+        assertEquals(2, lineas.size());
         assertEquals(lineaNormal.getId(), lineas.get(0).getId());
     }
     
@@ -478,10 +481,10 @@ public class LineaDePedidoRepositoryTest {
     void testFindLineaDePedidosByProductoIdAndPrecioLinea_Success() {
         // Buscar líneas por ID de producto y precio existente
         List<LineaDePedido> lineas = lineaDePedidoRepository.findLineaDePedidosByProductoIdAndPrecioUnitario(
-            producto1.getId(), 9.0);
+            producto1.getId(), 3.0);
         
-        // Verificar que se encontró 1 línea con el producto y precio correctos
-        assertEquals(1, lineas.size());
+
+        assertEquals(2, lineas.size());
         assertEquals(producto1.getId(), lineas.get(0).getProducto().getId());
         assertEquals(9.0, lineas.get(0).getPrecioLinea());
     }

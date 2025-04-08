@@ -27,7 +27,7 @@ public class NegocioService {
 
     @Transactional(readOnly = true)
     public Negocio getById(Integer id) {
-        return negocioRepository.findById(id).orElse(null);
+        return negocioRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("El negocio no existe"));
     }
 
     @Transactional(readOnly = true)
@@ -89,7 +89,6 @@ public class NegocioService {
         negocioRepository.deleteById(id);
     }
 
-    @Transactional(readOnly = true)
     public Negocio convertirDTONegocio(NegocioDTO negocioDTO) {
         Negocio negocio = new Negocio();
         negocio.setName(negocioDTO.getName());
@@ -102,7 +101,6 @@ public class NegocioService {
         return negocio;
     }
 
-    @Transactional(readOnly = true)
     public NegocioDTO convertirNegocioDTO(Negocio negocio) {
         NegocioDTO negocioDTO = new NegocioDTO();
         negocioDTO.setName(negocio.getName());

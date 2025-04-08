@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../../css/listados/styles.css";  
 import { Bell, User } from "lucide-react";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
 
 const token = localStorage.getItem("token");
 const negocioId = localStorage.getItem("negocioId");
@@ -68,26 +66,6 @@ function VerPedidos() {
     return filteredPedidos;
   };
 
-  const exportarPDF = (pedidos) => {
-    const doc = new jsPDF();
-    const headers = [["ID", "Fecha", "Total", "Mesa", "Empleado", "Negocio"]];  
-    const pedidosData = pedidos.map((pedido) => [
-      pedido.id,
-      new Date(pedido.fecha).toLocaleString(),
-      pedido.precioTotal.toFixed(2),
-      pedido.mesa.name,
-      `${pedido.empleado.firstName} ${pedido.empleado.lastName}`,
-      pedido.mesa.negocio.name
-    ]);
-      autoTable(doc, {
-      head: headers,
-      body: pedidosData,
-      startY: 30, 
-      theme: 'grid', 
-    });  
-    doc.save("pedidos.pdf");
-  };
-
   return (
     <div
       className="home-container"
@@ -142,15 +120,14 @@ function VerPedidos() {
           </div>
         )}
 
-        <button onClick={() => navigate("/inicioDueno")} className="back-button">⬅ Volver</button>
-        <Link to="/inicioDueno">
+        <button onClick={() => navigate("/inicioEmpleado")} className="back-button">⬅ Volver</button>
+        <Link to="/inicioEmpleado">
           <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
         </Link>          
         <h1 className="title">GastroStock</h1>
         <h2>📜 Historial de Pedidos</h2>
     
         <div className="button-container">
-          <button className="button" onClick={() => exportarPDF(handleFilter())}>📥 Exportar PDF </button>
           <input
             type="text"
             className="search-input"
@@ -181,7 +158,7 @@ function VerPedidos() {
               <p>Mesa: {pedido.mesa.name}</p>
               <p>Empleado: {pedido.empleado.firstName} {pedido.empleado.lastName}</p>
               <p>Negocio: {pedido.mesa.negocio.name}</p>
-              <button className="ver-btn" onClick={() => navigate(`/ventas/${pedido.id}`)}>
+              <button className="ver-btn" onClick={() => navigate(`/ventasEmpleado/${pedido.id}`)}>
                 Ver
               </button>
             </div>

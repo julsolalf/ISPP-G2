@@ -53,6 +53,7 @@ class PedidoRepositoryTest {
 
     @Autowired
     private AuthoritiesRepository authoritiesRepository;
+
     
     private Pedido pedido1, pedido2;
     private Mesa mesa1, mesa2;
@@ -130,6 +131,7 @@ class PedidoRepositoryTest {
         // Set up dates
         fecha1 = LocalDateTime.now().minusHours(1);
         fecha2 = LocalDateTime.now();
+
         
         // Create Pedidos
         pedido1 = new Pedido();

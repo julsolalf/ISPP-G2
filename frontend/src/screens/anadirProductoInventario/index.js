@@ -13,18 +13,26 @@ function PantallaAñadirProducto() {
   const [categoriaId, setCategoriaId] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
-  const negocioId = 1; // Debería ser dinámico según el usuario logueado
+
+  const token = localStorage.getItem("token");
+  const storedNegocioId = localStorage.getItem("negocioId");
 
   useEffect(() => {
     const storedCategoriaNombre = localStorage.getItem("categoriaNombre");
-    setCategoriaNombre(storedCategoriaNombre);
-
-    if (storedCategoriaNombre) {
-      fetch(`http://localhost:8080/api/categorias/nombre/${localStorage.getItem("categoriaNombre")}`)
+    setCategoriaNombre(storedCategoriaNombre)
+  
+    if (storedCategoriaNombre && storedNegocioId) {
+      fetch(`http://localhost:8080/api/categorias/nombre/${storedCategoriaNombre}`,{
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
         .then(response => response.json())
         .then(data => {
           if (Array.isArray(data)) {
-            const categoriaDelNegocio = data.find(categoria => categoria.negocio.id === negocioId);
+            const categoriaDelNegocio = data.find(categoria => categoria.negocio.id === parseInt(storedNegocioId));
             if (categoriaDelNegocio) {
               setCategoriaId(categoriaDelNegocio.id);
             } else {
@@ -38,8 +46,11 @@ function PantallaAñadirProducto() {
           console.error("Error obteniendo el ID de la categoría", error);
           alert("Hubo un problema al obtener el ID de la categoría");
         });
+    } else {
+      alert("No se encontró la categoría o negocioId en el almacenamiento local.");
     }
   }, []);
+  
 
   const toggleNotifications = () => setShowNotifications(!showNotifications);
   const toggleUserOptions = () => setShowUserOptions(!showUserOptions);
@@ -56,6 +67,7 @@ function PantallaAñadirProducto() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({
           name: nombre,
