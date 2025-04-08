@@ -89,7 +89,6 @@ public class NegocioService {
         negocioRepository.deleteById(id);
     }
 
-    @Transactional(readOnly = true)
     public Negocio convertirDTONegocio(NegocioDTO negocioDTO) {
         Negocio negocio = new Negocio();
         negocio.setName(negocioDTO.getName());
@@ -102,7 +101,6 @@ public class NegocioService {
         return negocio;
     }
 
-    @Transactional(readOnly = true)
     public NegocioDTO convertirNegocioDTO(Negocio negocio) {
         NegocioDTO negocioDTO = new NegocioDTO();
         negocioDTO.setName(negocio.getName());

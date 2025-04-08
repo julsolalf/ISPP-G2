@@ -32,7 +32,6 @@ import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.pedido.Pedido;
 import ispp_g2.gastrostock.pedido.PedidoController;
 import ispp_g2.gastrostock.pedido.PedidoService;
-import ispp_g2.gastrostock.ventas.Venta;
 import jakarta.servlet.ServletException;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,7 +51,6 @@ class PedidoControllerTest {
     private Mesa mesa;
     private Empleado empleado;
     private Negocio negocio;
-    private Venta venta;
 
     @BeforeEach
     void setUp() {
@@ -83,10 +81,6 @@ class PedidoControllerTest {
         negocio.setId(1);
         negocio.setName("Restaurante Test");
 
-        //Configurar Venta
-        venta = new Venta();
-        venta.setId(1);
-        venta.setNegocio(negocio);
         
         // Configurar Pedido
         pedido = new Pedido();
@@ -95,7 +89,7 @@ class PedidoControllerTest {
         pedido.setPrecioTotal(45.50);
         pedido.setMesa(mesa);
         pedido.setEmpleado(empleado);
-        pedido.setVenta(venta);
+        pedido.setNegocio(negocio);
     }
 
     // Test para findAll() - Caso éxito
@@ -111,7 +105,7 @@ class PedidoControllerTest {
         pedido2.setPrecioTotal(55.75);
         pedido2.setMesa(mesa);
         pedido2.setEmpleado(empleado);
-        pedido2.setVenta(venta);
+        pedido2.setNegocio(negocio);
         pedidos.add(pedido2);
         
         when(pedidoService.getAll()).thenReturn(pedidos);
@@ -273,29 +267,29 @@ class PedidoControllerTest {
         verify(pedidoService).getPedidoByEmpleadoId(999);
     }
     
-    // Test para findByVentaId() - Caso éxito
+    // Test para findByNegocioId() - Caso éxito
     @Test
-    void testFindByVentaId_Success() throws Exception {
+    void testFindByNegocioId_Success() throws Exception {
         List<Pedido> pedidos = Collections.singletonList(pedido);
-        when(pedidoService.getPedidoByVentaId(1)).thenReturn(pedidos);
+        when(pedidoService.getPedidoByNegocioId(1)).thenReturn(pedidos);
         
-        mockMvc.perform(get("/api/pedidos/venta/1"))
+        mockMvc.perform(get("/api/pedidos/negocio/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].venta.id").value(1));
+                .andExpect(jsonPath("$[0].negocio.id").value(1));
         
-        verify(pedidoService).getPedidoByVentaId(1);
+        verify(pedidoService).getPedidoByNegocioId(1);
     }
     
-    // Test para findByVentaId() - No resultados
+    // Test para findByNegocioId() - No resultados
     @Test
-    void testFindByVentaId_NotFound() throws Exception {
-        when(pedidoService.getPedidoByVentaId(999)).thenReturn(null);
+    void testFindByNegocioId_NotFound() throws Exception {
+        when(pedidoService.getPedidoByNegocioId(999)).thenReturn(null);
         
         mockMvc.perform(get("/api/pedidos/venta/999"))
                 .andExpect(status().isNotFound());
         
-        verify(pedidoService).getPedidoByVentaId(999);
+        verify(pedidoService).getPedidoByNegocioId(999);
     }
     
     // Test para save() - Caso éxito
@@ -320,8 +314,6 @@ class PedidoControllerTest {
         negocioUpdate.setCodigoPostal("28001");
         negocioUpdate.setTokenNegocio(54321);
 
-        Venta ventaUpdate = new Venta();
-        ventaUpdate.setNegocio(negocioUpdate);
         
         // Crear pedido actualizado
         Pedido updatedPedido = new Pedido();
@@ -330,7 +322,7 @@ class PedidoControllerTest {
         updatedPedido.setPrecioTotal(60.75); // Precio actualizado
         updatedPedido.setMesa(mesaUpdate);
         updatedPedido.setEmpleado(empleadoUpdate);
-        updatedPedido.setVenta(ventaUpdate);
+        updatedPedido.setNegocio(negocioUpdate);
         when(pedidoService.save(any(Pedido.class))).thenReturn(updatedPedido);
         
         mockMvc.perform(post("/api/pedidos")
@@ -374,9 +366,6 @@ void testUpdate_Success() throws Exception {
     negocioUpdate.setPais("Espana");
     negocioUpdate.setCodigoPostal("28001");
     negocioUpdate.setTokenNegocio(54321);
-
-    Venta ventaUpdate = new Venta();
-    ventaUpdate.setNegocio(negocioUpdate);
     
     // Crear pedido actualizado
     Pedido updatedPedido = new Pedido();
@@ -385,7 +374,7 @@ void testUpdate_Success() throws Exception {
     updatedPedido.setPrecioTotal(60.75); // Precio actualizado
     updatedPedido.setMesa(mesaUpdate);
     updatedPedido.setEmpleado(empleadoUpdate);
-    updatedPedido.setVenta(ventaUpdate);
+    updatedPedido.setNegocio(negocioUpdate);;
 
     when(pedidoService.getById(1)).thenReturn(pedido);
     when(pedidoService.save(any(Pedido.class))).thenReturn(updatedPedido);
@@ -407,7 +396,7 @@ void testUpdate_Success() throws Exception {
         invalidPedido.setPrecioTotal(60.75);
         invalidPedido.setMesa(mesa);
         invalidPedido.setEmpleado(empleado);
-        invalidPedido.setVenta(venta);
+        invalidPedido.setNegocio(negocio);
         
         mockMvc.perform(put("/api/pedidos/1")
                 .contentType(MediaType.APPLICATION_JSON)
