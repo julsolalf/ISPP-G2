@@ -1,5 +1,6 @@
 package ispp_g2.gastrostock.productoVenta;
 
+import ispp_g2.gastrostock.categorias.CategoriaRepository;
 import ispp_g2.gastrostock.categorias.CategoriaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,12 +13,12 @@ import java.util.stream.StreamSupport;
 public class ProductoVentaService {
 
     private final ProductoVentaRepository productoVentaRepository;
-    private final CategoriaService categoriaService;
+    private final CategoriaRepository categoriaRepository;
 
     @Autowired
-    public ProductoVentaService(ProductoVentaRepository productoVentaRepository, CategoriaService categoriaService) {
+    public ProductoVentaService(ProductoVentaRepository productoVentaRepository, CategoriaRepository categoriaRepository) {
         this.productoVentaRepository = productoVentaRepository;
-        this.categoriaService = categoriaService;
+        this.categoriaRepository = categoriaRepository;
     }
 
     @Transactional(readOnly = true)
@@ -67,7 +68,7 @@ public class ProductoVentaService {
         ProductoVenta productoVenta = new ProductoVenta();
         productoVenta.setName(productoVentaDTO.getName());
         productoVenta.setPrecioVenta(productoVentaDTO.getPrecioVenta());
-        productoVenta.setCategoria(categoriaService.getById(productoVentaDTO.getCategoriaId()));
+        productoVenta.setCategoria(categoriaRepository.findById(productoVentaDTO.getCategoriaId()).orElse(null));
         return productoVenta;
     }
 
