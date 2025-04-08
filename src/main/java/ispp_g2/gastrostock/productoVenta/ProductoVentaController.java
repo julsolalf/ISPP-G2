@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -29,6 +30,20 @@ public class ProductoVentaController {
 
     }
 
+    @GetMapping("/dto")
+    public ResponseEntity<List<ProductoVentaDTO>> findAllDTO() {
+        List<ProductoVenta> productosVenta = productoVentaService.getProductosVenta();
+        if (productosVenta.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        List<ProductoVentaDTO> productosDTO = new ArrayList<>();
+        for (ProductoVenta producto : productosVenta) {
+            productosDTO.add(productoVentaService.convertirProductoVentaDTO(producto));
+        }
+        return new ResponseEntity<>(productosDTO, HttpStatus.OK);
+
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ProductoVenta> findById(@PathVariable("id") Integer id) {
         ProductoVenta productoVenta = productoVentaService.getById(id);
@@ -36,6 +51,15 @@ public class ProductoVentaController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(productoVenta, HttpStatus.OK);
+    }
+
+    @GetMapping("/dto/{id}")
+    public ResponseEntity<ProductoVentaDTO> findByIdDTO(@PathVariable("id") Integer id) {
+        ProductoVenta productoVenta = productoVentaService.getById(id);
+        if (productoVenta == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(productoVentaService.convertirProductoVentaDTO(productoVenta), HttpStatus.OK);
     }
 
     @GetMapping("/nombre/{nombre}")
@@ -75,23 +99,25 @@ public class ProductoVentaController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductoVenta> save(@RequestBody @Valid ProductoVenta productoVenta) {
+    public ResponseEntity<ProductoVenta> save(@RequestBody @Valid ProductoVentaDTO productoVenta) {
         if (productoVenta == null) {
             throw new IllegalArgumentException("Producto de venta no puede ser nulo");
         }
-        return new ResponseEntity<>(productoVentaService.save(productoVenta), HttpStatus.CREATED);
+        ProductoVenta productoVentaEntity = productoVentaService.convertirDTOProductoVenta(productoVenta);
+        return new ResponseEntity<>(productoVentaService.save(productoVentaEntity), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductoVenta> update(@PathVariable("id") Integer id, @RequestBody @Valid ProductoVenta productoVenta) {
+    public ResponseEntity<ProductoVenta> update(@PathVariable("id") Integer id, @RequestBody @Valid ProductoVentaDTO productoVenta) {
         if (productoVenta == null) {
             throw new IllegalArgumentException("Producto de venta no puede ser nulo");
         }
         if(productoVentaService.getById(id) == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        productoVenta.setId(id);
-        return new ResponseEntity<>(productoVentaService.save(productoVenta), HttpStatus.OK);
+        ProductoVenta productoVentaEntity = productoVentaService.convertirDTOProductoVenta(productoVenta);
+        productoVentaEntity.setId(id);
+        return new ResponseEntity<>(productoVentaService.save(productoVentaEntity), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
