@@ -1,6 +1,5 @@
 
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import "./App.css";
 import PantallaInicioSesion from "./screens/inicioSesion/index.js";
 import PantallaRegistroDueno from "./screens/registroDueno/index.js";
 import PantallaRecuperarContrasena from "./screens/recuperarContrasena/index.js";
@@ -8,8 +7,6 @@ import PantallaMasInfo from "./screens/masInformacion/index.js";
 import PantallaInicioDueno from "./screens/inicioDueno/index.js";
 import PantallaInicioEmpleado from "./screens/inicioEmpleado/index.js";
 import PantallaPlanes from "./screens/planes/index.js";
-import TPV from "./screens/r/index.js";
-import AppNavbar from "./AppNavbar";
 import Dashboard from "./screens/dashboard/index.js";
 import PantallaInventario from "./screens/inventario/index.js";
 import PantallaProveedores from "./screens/proveedores/index.js";
@@ -36,6 +33,7 @@ import PantallaEditarVenta from "./screens/editarVenta/index.js";
 import PantallaVentaEmpleado from "./screens/ventasEmpleado/index.js";
 import PantallaVerVentaEmpleado from "./screens/ventasEmpleado/ventaEspecifica/index.js";
 import Home from "./screens/home/index.js";
+import "./App.css";
 
 function App() {
 
@@ -85,7 +83,7 @@ function App() {
             backgroundImage: `url(${process.env.PUBLIC_URL + "/background-spices.jpg"})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
-            height: "100vh",
+            height: "98vh",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",

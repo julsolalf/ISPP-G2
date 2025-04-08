@@ -1,10 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
 
+*{
+  margin: 0px;
+  padding: 0px;
+  overflow: hidden
+}
+
 body, html {
   margin: 0;
   padding: 0;
-  height: 100%;
   font-family: Arial, sans-serif;
+}
+
+.clearfix {
+  clear: both;
 }
 
 .content {
@@ -44,22 +53,25 @@ button {
   border: none;
   transition: 0.3s;
   width: 100%; /* Hace que todos los botones ocupen el mismo ancho */
-  max-width: 300px; /* Define un ancho máximo para los botones */
+  max-width: 350px; /* Define un ancho máximo para los botones */
 }
 
 .login-btn {
   background-color: #a92d4e;
   color: white;
+  height: 33%;
 }
 
 .register-btn {
   background-color: #333;
   color: white;
+  height: 28%;
 }
 
 .info-btn {
   background-color: rgb(237, 121, 20);
   color: white;
+  height: 28%;
 }
 
 button:hover {

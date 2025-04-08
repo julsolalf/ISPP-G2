@@ -64,30 +64,30 @@ function PantallaInicioSesion() {
   };
 
   return (
-      <div className="content">
-        <button onClick={() => navigate("/")} className="back-button">⬅ Volver</button>
-        <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
-        <h1 className="title">GastroStock</h1>
-        <h2>Iniciar Sesión</h2>
+    <div className="content">
+      <button onClick={() => navigate("/")} className="back-button">⬅ Volver</button>
+      <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+      <h1 className="title">GastroStock</h1>
+      <h2>Iniciar Sesión</h2>
 
-        <input
-          type="Usuario"
-          placeholder="Usuario"
-          value={usuario}
-          onChange={(e) => setUsuario(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Contrasena"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button onClick={handleLogin} className="login-btn">Iniciar Sesión</button>
+      <input
+        type="Usuario"
+        placeholder="Usuario"
+        value={usuario}
+        onChange={(e) => setUsuario(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Contrasena"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <button onClick={handleLogin} className="login-btn">Iniciar Sesión</button>
 
-        <Link to="/recuperarcontrasena" className="forgot-password-link">
-          ¿Has olvidado la contrasena?
-        </Link>
-      </div>
+      <Link to="/recuperarcontrasena" className="forgot-password-link">
+        ¿Has olvidado la contrasena?
+      </Link>
+    </div>
   );
 }
 
