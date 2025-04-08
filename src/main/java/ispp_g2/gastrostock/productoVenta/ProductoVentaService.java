@@ -1,5 +1,6 @@
 package ispp_g2.gastrostock.productoVenta;
 
+import ispp_g2.gastrostock.categorias.CategoriaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,10 +12,12 @@ import java.util.stream.StreamSupport;
 public class ProductoVentaService {
 
     private final ProductoVentaRepository productoVentaRepository;
+    private final CategoriaService categoriaService;
 
     @Autowired
-    public ProductoVentaService(ProductoVentaRepository productoVentaRepository) {
+    public ProductoVentaService(ProductoVentaRepository productoVentaRepository, CategoriaService categoriaService) {
         this.productoVentaRepository = productoVentaRepository;
+        this.categoriaService = categoriaService;
     }
 
     @Transactional(readOnly = true)
@@ -57,6 +60,24 @@ public class ProductoVentaService {
     @Transactional
     public void delete(Integer id) {
         productoVentaRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public ProductoVenta convertirDTOProductoVenta(ProductoVentaDTO productoVentaDTO) {
+        ProductoVenta productoVenta = new ProductoVenta();
+        productoVenta.setName(productoVentaDTO.getName());
+        productoVenta.setPrecioVenta(productoVentaDTO.getPrecioVenta());
+        productoVenta.setCategoria(categoriaService.getById(productoVentaDTO.getCategoriaId()));
+        return productoVenta;
+    }
+
+    @Transactional(readOnly = true)
+    public ProductoVentaDTO convertirProductoVentaDTO(ProductoVenta productoVenta) {
+        ProductoVentaDTO productoVentaDTO = new ProductoVentaDTO();
+        productoVentaDTO.setName(productoVenta.getName());
+        productoVentaDTO.setPrecioVenta(productoVenta.getPrecioVenta());
+        productoVentaDTO.setCategoriaId(productoVenta.getCategoria().getId());
+        return productoVentaDTO;
     }
     
 }
