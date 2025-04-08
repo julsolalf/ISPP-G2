@@ -115,7 +115,7 @@ public class SubscripcionService {
     public void handleWebhook(Event event) {
         String eventType = event.getType();
         log.info("Procesando evento Stripe: {}, ID: {}", eventType, event.getId());
-        
+        log.info("Payload: {}", event.toJson());
         try {
             // Mejorar la deserialización con manejo de errores
             EventDataObjectDeserializer dataObjectDeserializer = event.getDataObjectDeserializer();
@@ -123,7 +123,9 @@ public class SubscripcionService {
             // Verificar si la deserialización tuvo éxito
             if (dataObjectDeserializer.getObject().isPresent()) {
                 StripeObject stripeObject = dataObjectDeserializer.getObject().get();
-                
+                log.info("Deseriallizacion exitosa: {}", stripeObject);
+                log.info("Tipo de objeto deserializado: {}", stripeObject.getClass().getName());
+                log.info("Contenido del objeto: {}", stripeObject.toJson());
                 switch (eventType) {
                     case "checkout.session.completed":
                         if (stripeObject instanceof Session session) {
@@ -140,7 +142,9 @@ public class SubscripcionService {
                         handleInvoicePaymentFailed(stripeObject);
                         break;
                     case "customer.subscription.updated":
+                    log.info("Es instancia de Subscription: {}", stripeObject instanceof Subscription);
                         if (stripeObject instanceof Subscription subscription) {
+                            log.info("Objeto es de tipo Subscription: {}", subscription.getId());
                             handleSubscriptionUpdated(subscription);
                         } else {
                             log.warn("Objeto no es de tipo Subscription: {}", stripeObject.getClass().getName());
@@ -156,7 +160,7 @@ public class SubscripcionService {
                     default:
                         log.info("Evento no manejado: {}", eventType);
                 }
-           // En el bloque de JSON Raw en handleWebhook()
+    /*        // En el bloque de JSON Raw en handleWebhook()
                 String jsonRaw = event.getDataObjectDeserializer().getRawJson();
                 log.warn("Deserialización estándar falló. Procesando como JSON Raw");
                 
@@ -174,18 +178,148 @@ public class SubscripcionService {
                     }
             } else {
                 log.error("El payload raw no es un JsonObject para el evento: {}", eventType);
-            } 
-        } 
+            } */
+        }else{  // Agregamos manejo de JSON raw si la deserialización falla
+        log.warn("Deserialización fallida para evento {}, usando JSON Raw", eventType);
+        String jsonRaw = event.getDataObjectDeserializer().getRawJson();
+        
+        if (jsonRaw != null) {
+            com.google.gson.JsonParser jsonParser = new com.google.gson.JsonParser();
+            JsonObject jsonObject = jsonParser.parse(jsonRaw).getAsJsonObject();
+            
+            switch (eventType) {
+                case "checkout.session.completed":
+                    handleCheckoutSessionCompletedRaw(jsonObject);
+                    break;
+                case "invoice.payment_succeeded":
+                    handleInvoicePaymentSucceededRaw(jsonObject);
+                    break;
+                case "invoice.payment_failed":
+                    handleInvoicePaymentFailedRaw(jsonObject);
+                    break;
+                case "customer.subscription.updated":
+                    handleSubscriptionUpdatedRaw(jsonObject);
+                    break;
+                case "customer.subscription.deleted":
+                    handleSubscriptionDeletedRaw(jsonObject);
+                    break;
+                default:
+                    log.info("Evento no manejado: {}", eventType);
+            }
+        } else {
+            log.error("JSON Raw no disponible para el evento: {}", eventType);
+        }
+
+        }
     }
         catch (Exception e) {
             log.error("Error al procesar webhook: {}", e.getMessage(), e);
     }
 }
+
     
+private void handleSubscriptionDeletedRaw(JsonObject jsonObject) {
+    try {
+        // Extraer los datos necesarios del JSON
+        JsonObject object = jsonObject.getAsJsonObject("object");
+        
+        String subscriptionId = null;
+        
+        if (object.has("id")) {
+            subscriptionId = object.get("id").getAsString();
+        }
+        
+        log.info("Procesando customer.subscription.deleted (Raw) para Subscription ID: {}", subscriptionId);
+        
+        if (subscriptionId != null) {
+            Subscripcion subscription = subscripcionRepository.findByStripeSubscriptionId(subscriptionId);
+            
+            if (subscription != null) {
+                subscription.setStatus(SubscripcionStatus.CANCELED);
+                subscription.setType(SubscripcionType.FREE);
+                subscription.setStripeSubscriptionId(null);
+                
+                subscripcionRepository.save(subscription);
+                log.info("Suscripción eliminada ID: {}, usuario devuelto a plan FREE (Raw)", subscriptionId);
+            } else {
+                log.error("No se encontró suscripción para Stripe Subscription ID: {} (Raw)", subscriptionId);
+            }
+        } else {
+            log.error("No se pudo extraer Subscription ID del objeto JSON");
+        }
+    } catch (Exception e) {
+        log.error("Error procesando customer.subscription.deleted raw: {}", e.getMessage(), e);
+    }
+}
+
+private void handleSubscriptionUpdatedRaw(JsonObject jsonObject) {
+    try {
+        // Extraer los datos necesarios del JSON
+        JsonObject object = jsonObject.getAsJsonObject("object");
+        
+        String subscriptionId = null;
+        String status = null;
+        
+        if (object.has("id")) {
+            subscriptionId = object.get("id").getAsString();
+        }
+        
+        if (object.has("status")) {
+            status = object.get("status").getAsString();
+        }
+        
+        log.info("Procesando customer.subscription.updated (Raw) para Subscription ID: {}, estado: {}", 
+                subscriptionId, status);
+        
+        if (subscriptionId != null) {
+            Subscripcion subscription = subscripcionRepository.findByStripeSubscriptionId(subscriptionId);
+            
+            if (subscription != null && status != null) {
+                // Actualizar el estado según el valor de Stripe
+                switch (status) {
+                    case "active":
+                        subscription.setStatus(SubscripcionStatus.ACTIVE);
+                        break;
+                    case "past_due":
+                        subscription.setStatus(SubscripcionStatus.PAST_DUE);
+                        break;
+                    case "unpaid":
+                        subscription.setStatus(SubscripcionStatus.UNPAID);
+                        break;
+                    case "canceled":
+                        subscription.setStatus(SubscripcionStatus.CANCELED);
+                        // Al cancelarse, volvemos al plan gratuito
+                        subscription.setType(SubscripcionType.FREE);
+                        break;
+                }
+                
+                // Si hay fecha de fin de período, actualizarla
+                if (object.has("current_period_end")) {
+                    long endTimestamp = object.get("current_period_end").getAsLong();
+                    LocalDateTime endDate = LocalDateTime.ofInstant(
+                        Instant.ofEpochSecond(endTimestamp), 
+                        ZoneId.systemDefault()
+                    );
+                    subscription.setEndDate(endDate);
+                }
+                
+                subscripcionRepository.save(subscription);
+                log.info("Actualizado estado de suscripción ID: {} a: {} (Raw)", subscriptionId, status);
+            } else {
+                log.error("No se encontró suscripción para Stripe Subscription ID: {} (Raw)", subscriptionId);
+            }
+        } else {
+            log.error("No se pudo extraer Subscription ID del objeto JSON");
+        }
+    } catch (Exception e) {
+        log.error("Error procesando customer.subscription.updated raw: {}", e.getMessage(), e);
+    }
+}
+
 private void handleCheckoutSessionCompleted(Session session) {
     String subscriptionId = session.getSubscription();
     String customerId = session.getCustomer();
-
+    log.info("Procesando checkout.session.completed para Customer ID: {}, Subscription ID: {}", customerId, subscriptionId);
     // Buscar la suscripción mediante StripeCustomerId
     Subscripcion subscription = subscripcionRepository.findByStripeCustomerId(customerId);
     if (subscription != null) {
@@ -198,7 +332,6 @@ private void handleCheckoutSessionCompleted(Session session) {
             subscription.setType(SubscripcionType.PREMIUM);
             subscription.setStatus(SubscripcionStatus.ACTIVE);
             subscription.setStartDate(LocalDateTime.now());
-
             // Convertir el Unix timestamp a LocalDateTime para la fecha de fin
             long endTimestamp = stripeSubscription.getCurrentPeriodEnd();
             LocalDateTime endDate = LocalDateTime.ofInstant(
@@ -275,7 +408,7 @@ private void handleCheckoutSessionCompleted(Session session) {
         try {
             String subscriptionId = stripeSubscription.getId();
             String status = stripeSubscription.getStatus();
-            
+            log.info("Procesando customer.subscription.updated para Subscription ID: {}", subscriptionId);
             Subscripcion subscription = subscripcionRepository.findByStripeSubscriptionId(subscriptionId);
             if (subscription != null) {
                 // Mapear el estado de Stripe a nuestro enum
@@ -298,6 +431,8 @@ private void handleCheckoutSessionCompleted(Session session) {
                 
                 subscripcionRepository.save(subscription);
                 log.info("Actualizado estado de suscripción ID: {} a: {}", subscriptionId, status);
+            }else {
+                log.error("No se encontró suscripción para Stripe Subscription ID: {}", subscriptionId);
             }
         } catch (Exception e) {
             log.error("Error al procesar actualización de suscripción: {}", e.getMessage(), e);

@@ -89,7 +89,7 @@ function PantallaPlanes() {
             {isFreePlanActive ? (
                 <button className="menu-btn active" onClick={() => navigate("/plan-actual")}>Actual</button>
             ) : (
-                <button className="menu-btn inactive" onClick={() => navigate("/plan-activar-free")}>Cambiar</button>
+                <button className="menu-btn inactive" onClick={() => navigate("/stripe-pricin")}>Cambiar</button>
             )}
             </div>
 
@@ -109,7 +109,7 @@ function PantallaPlanes() {
             {isPremiumPlanActive ? (
                 <button className="menu-btn active" onClick={() => navigate("/plan-mejorar")}>Actual</button>
             ) : (
-                <button className="menu-btn inactive" onClick={() => navigate("/plan-activar-premium")}>Mejorar</button>
+                <button className="menu-btn inactive" onClick={() => navigate("/stripe-pricin")}>Mejorar</button>
             )}
             </div>
         </div>
