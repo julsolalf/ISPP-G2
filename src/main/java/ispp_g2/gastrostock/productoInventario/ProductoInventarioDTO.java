@@ -24,5 +24,8 @@ public class ProductoInventarioDTO {
     @NotNull
     private Integer categoriaId;
 
+    @NotNull
+    private Integer proveedorId;
+
 
 }
