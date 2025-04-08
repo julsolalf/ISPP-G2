@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
@@ -9,12 +9,13 @@ const id = localStorage.getItem("proveedorId");
 
 const obtenerProveedor = async (id) => {
   try {
-    const response = await fetch(`http://localhost:8080/api/proveedores/${id}`,
-       {
-        method: "GET",
-          headers: { "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-           }});
+    const response = await fetch(`http://localhost:8080/api/proveedores/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
     if (!response.ok) {
       throw new Error("Error al obtener el proveedor");
     }
@@ -29,14 +30,15 @@ const actualizarProveedor = async (id, proveedor) => {
   try {
     const response = await fetch(`http://localhost:8080/api/proveedores/${id}`, {
       method: "PUT",
-        headers: { "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-         },
-        body: JSON.stringify(proveedor),
-      });
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(proveedor),
+    });
 
     if (!response.ok) {
-      const errorData = await response.json();  // Obtener detalles de la respuesta de error
+      const errorData = await response.json();
       throw new Error(errorData.message || "Error al actualizar el proveedor");
     }
 
@@ -54,13 +56,21 @@ function EditarProveedor() {
     direccion: "",
     email: "",
     telefono: "",
-    negocio: {id:negocioId},
+    negocioId: parseInt(negocioId),
   });
 
   useEffect(() => {
     const cargarProveedor = async () => {
       const data = await obtenerProveedor(id);
-      if (data) setProveedor(data);
+      if (data) {
+        setProveedor({
+          name: data.name,
+          direccion: data.direccion,
+          email: data.email,
+          telefono: data.telefono,
+          negocioId: parseInt(negocioId), // Asegurar que se mantenga
+        });
+      }
     };
     cargarProveedor();
   }, []);
