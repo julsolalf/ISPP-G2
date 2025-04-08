@@ -32,6 +32,17 @@ body, html {
   gap: 5px; /* Espaciado más uniforme */
 }
 
+.fondo {
+  background: rgba(234, 197, 197, 0.85); /* Más opacidad para mejor visibilidad */
+  padding: 40px 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  height: 90%;
+  margin: 5%;
+  justify-content: center;
+  align-items: center;
+}
+
 /* Estilo para el logo */
 .app-logo {
   width: 120px; /* Aumentado el tamano */
@@ -97,6 +108,8 @@ button {
   background-color: #a92d4e;
   color: white;
   font-weight: bold;
+  margin-top: 5%;
+  max-height: 200px;
 }
 
 /* Efecto hover en los botones */
@@ -154,15 +167,11 @@ button:hover {
 
 /* Botón de volver arriba a la izquierda dentro del contenedor */
 .back-button {
-  position: absolute;
-  top: 15px;
-  left: -70px; 
-  background: none;
-  border: none;
-  font-size: 16px;
   color: #333;
   cursor: pointer;
   font-weight: bold;
+  margin-left: 15%;
+  margin-top: 3%;
 }
 
 .back-button:hover {
@@ -204,3 +213,6 @@ button:hover {
   background-color: #388E3C;
 }
 
+.clearfix {
+  clear: both;  
+}
