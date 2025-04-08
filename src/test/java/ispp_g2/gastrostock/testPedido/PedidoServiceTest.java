@@ -27,7 +27,6 @@ import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.pedido.Pedido;
 import ispp_g2.gastrostock.pedido.PedidoRepository;
 import ispp_g2.gastrostock.pedido.PedidoService;
-import ispp_g2.gastrostock.ventas.Venta;
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
@@ -44,7 +43,6 @@ class PedidoServiceTest {
     private Empleado empleado;
     private Negocio negocio;
     private LocalDateTime fecha;
-    private Venta venta;
     
     @BeforeEach
     void setUp() {
@@ -71,10 +69,6 @@ class PedidoServiceTest {
         negocio.setId(1);
         negocio.setName("Restaurante Test");
 
-        //Set up Venta
-        venta = new Venta();
-        venta.setId(1);
-        venta.setNegocio(negocio);
         
         // Set up Pedido
         pedido = new Pedido();
@@ -83,7 +77,7 @@ class PedidoServiceTest {
         pedido.setPrecioTotal(45.50);
         pedido.setMesa(mesa);
         pedido.setEmpleado(empleado);
-        pedido.setVenta(venta);
+        pedido.setNegocio(negocio);
     }
     
     @Test
@@ -126,7 +120,7 @@ class PedidoServiceTest {
         pedido2.setPrecioTotal(55.75);
         pedido2.setMesa(mesa);
         pedido2.setEmpleado(empleado);
-        pedido2.setVenta(venta);
+        pedido2.setNegocio(negocio);
         pedidos.add(pedido2);
         
         when(pedidoRepository.findAll()).thenReturn(pedidos);
@@ -279,33 +273,33 @@ class PedidoServiceTest {
     }
     
     @Test
-    void testGetPedidoByVentaId_Success() {
+    void testGetPedidoByNegocioId_Success() {
         // Given
         List<Pedido> pedidos = Collections.singletonList(pedido);
-        when(pedidoRepository.findPedidoByVentaId(1)).thenReturn(pedidos);
+        when(pedidoRepository.findPedidoByNegocioId(1)).thenReturn(pedidos);
         
         // When
-        List<Pedido> results = pedidoService.getPedidoByVentaId(1);
+        List<Pedido> results = pedidoService.getPedidoByNegocioId(1);
         
         // Then
         assertNotNull(results);
         assertEquals(1, results.size());
-        assertEquals(1, results.get(0).getVenta().getId());
-        verify(pedidoRepository, times(1)).findPedidoByVentaId(1);
+        assertEquals(1, results.get(0).getNegocio().getId());
+        verify(pedidoRepository, times(1)).findPedidoByNegocioId(1);
     }
     
     @Test
-    void testGetPedidoByVentaId_NoResults() {
+    void testGetPedidoByNegocioId_NoResults() {
         // Given
-        when(pedidoRepository.findPedidoByVentaId(999)).thenReturn(Collections.emptyList());
+        when(pedidoRepository.findPedidoByNegocioId(999)).thenReturn(Collections.emptyList());
         
         // When
-        List<Pedido> results = pedidoService.getPedidoByVentaId(999);
+        List<Pedido> results = pedidoService.getPedidoByNegocioId(999);
         
         // Then
         assertNotNull(results);
         assertTrue(results.isEmpty());
-        verify(pedidoRepository, times(1)).findPedidoByVentaId(999);
+        verify(pedidoRepository, times(1)).findPedidoByNegocioId(999);
     }
     
     @Test
@@ -331,7 +325,7 @@ class PedidoServiceTest {
         newPedido.setPrecioTotal(75.25);
         newPedido.setMesa(mesa);
         newPedido.setEmpleado(empleado);
-        newPedido.setVenta(venta);
+        newPedido.setNegocio(negocio);
         
         Pedido savedPedido = new Pedido();
         savedPedido.setId(2);
@@ -339,7 +333,7 @@ class PedidoServiceTest {
         savedPedido.setPrecioTotal(newPedido.getPrecioTotal());
         savedPedido.setMesa(newPedido.getMesa());
         savedPedido.setEmpleado(newPedido.getEmpleado());
-        savedPedido.setVenta(newPedido.getVenta());
+        savedPedido.setNegocio(newPedido.getNegocio());
         
         when(pedidoRepository.save(newPedido)).thenReturn(savedPedido);
         

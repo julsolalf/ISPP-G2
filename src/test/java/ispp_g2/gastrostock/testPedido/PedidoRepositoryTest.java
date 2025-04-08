@@ -27,8 +27,6 @@ import ispp_g2.gastrostock.user.Authorities;
 import ispp_g2.gastrostock.user.AuthoritiesRepository;
 import ispp_g2.gastrostock.user.User;
 import ispp_g2.gastrostock.user.UserRepository;
-import ispp_g2.gastrostock.ventas.Venta;
-import ispp_g2.gastrostock.ventas.VentaRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase
@@ -56,8 +54,6 @@ class PedidoRepositoryTest {
     @Autowired
     private AuthoritiesRepository authoritiesRepository;
 
-    @Autowired
-    private VentaRepository ventaRepository;
     
     private Pedido pedido1, pedido2;
     private Mesa mesa1, mesa2;
@@ -65,7 +61,6 @@ class PedidoRepositoryTest {
     private Negocio negocio;
     private Dueno dueno;
     private LocalDateTime fecha1, fecha2;
-    private Venta venta;
     
     @BeforeEach
     void setUp() {
@@ -137,10 +132,6 @@ class PedidoRepositoryTest {
         fecha1 = LocalDateTime.now().minusHours(1);
         fecha2 = LocalDateTime.now();
 
-        //Create Venta
-        venta = new Venta();
-        venta.setNegocio(negocio);
-        venta = ventaRepository.save(venta);
         
         // Create Pedidos
         pedido1 = new Pedido();
@@ -148,7 +139,7 @@ class PedidoRepositoryTest {
         pedido1.setPrecioTotal(50.75);
         pedido1.setMesa(mesa1);
         pedido1.setEmpleado(empleado);
-        pedido1.setVenta(venta);
+        pedido1.setNegocio(negocio);
         pedido1 = pedidoRepository.save(pedido1);
         
         pedido2 = new Pedido();
@@ -156,7 +147,7 @@ class PedidoRepositoryTest {
         pedido2.setPrecioTotal(75.50);
         pedido2.setMesa(mesa2);
         pedido2.setEmpleado(empleado);
-        pedido2.setVenta(venta);
+        pedido2.setNegocio(negocio);
         pedido2 = pedidoRepository.save(pedido2);
     }
     
@@ -170,7 +161,7 @@ class PedidoRepositoryTest {
         newPedido.setPrecioTotal(100.00);
         newPedido.setMesa(mesa1);
         newPedido.setEmpleado(empleado);
-        newPedido.setVenta(venta);
+        newPedido.setNegocio(negocio);
         
         // Save it to repository
         newPedido = pedidoRepository.save(newPedido);
@@ -306,16 +297,16 @@ class PedidoRepositoryTest {
     }
     
     @Test
-    void testFindPedidoByVentaId() {
-        List<Pedido> pedidos = pedidoRepository.findPedidoByVentaId(venta.getId());
+    void testFindPedidoByNegocioId() {
+        List<Pedido> pedidos = pedidoRepository.findPedidoByNegocioId(negocio.getId());
         
         // Verify - both pedidos are for the same negocio
         assertEquals(2, pedidos.size());
     }
     
     @Test
-    void testFindPedidoByVentaId_NotFound() {
-        List<Pedido> pedidos = pedidoRepository.findPedidoByVentaId(999);
+    void testFindPedidoByNegocioId_NotFound() {
+        List<Pedido> pedidos = pedidoRepository.findPedidoByNegocioId(999);
         
         // Verify
         assertTrue(pedidos.isEmpty());
@@ -331,7 +322,7 @@ class PedidoRepositoryTest {
         zeroPricePedido.setPrecioTotal(0.1);
         zeroPricePedido.setMesa(mesa1);
         zeroPricePedido.setEmpleado(empleado);
-        zeroPricePedido.setVenta(venta);
+        zeroPricePedido.setNegocio(negocio);
         pedidoRepository.save(zeroPricePedido);
         
         // Find with zero price
@@ -352,7 +343,7 @@ class PedidoRepositoryTest {
         highPrecisionPedido.setPrecioTotal(highPrecisionPrice);
         highPrecisionPedido.setMesa(mesa1);
         highPrecisionPedido.setEmpleado(empleado);
-        highPrecisionPedido.setVenta(venta);
+        highPrecisionPedido.setNegocio(negocio);
         pedidoRepository.save(highPrecisionPedido);
         
         // Find with exact same price

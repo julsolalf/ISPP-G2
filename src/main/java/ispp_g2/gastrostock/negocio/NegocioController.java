@@ -240,6 +240,9 @@ public class NegocioController {
 			@PathVariable("id") Integer id) {
 
 		Negocio toUpdate = negocioService.getById(id);
+		if (toUpdate == null)
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
 		User user = userService.findCurrentUser();
 		if (user.hasAnyAuthority(DUENO).equals(true)) {
 			Dueno dueno = duenoService.getDuenoByUser(user.getId());

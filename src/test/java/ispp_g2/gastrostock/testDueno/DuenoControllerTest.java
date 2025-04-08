@@ -65,7 +65,6 @@ class DuenoControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    
     private Dueno duenoNormal;
     private Dueno duenoConNegocio;
     private Dueno duenoInvalidoSinEmail;
@@ -76,18 +75,22 @@ class DuenoControllerTest {
     private User user;
     private Negocio negocio;
     private Authorities authority;
+    
+    // Usuario admin para simular la seguridad requerida
+    private User adminUser;
+    private Authorities adminAuthority;
 
     @BeforeEach
     void setUp() {
         // Inicializar ObjectMapper para manejar JSON
         objectMapper = new ObjectMapper();
 
-        // Crear autoridad
+        // Crear autoridad de dueño
         authority = new Authorities();
         authority.setId(1);
         authority.setAuthority("DUENO");
         
-        // Crear usuario para asociar al dueño
+        // Crear usuario dueño
         user = new User();
         user.setId(1);
         user.setUsername("juangarcia");
@@ -151,7 +154,7 @@ class DuenoControllerTest {
         duenosList.add(duenoNormal);
         duenosList.add(duenoConNegocio);
         
-        // Crear DTOs
+        // Crear DTOs válidos e inválidos
         duenoDTO = new DuenoDTO();
         duenoDTO.setFirstName("Juan");
         duenoDTO.setLastName("García");
@@ -167,11 +170,24 @@ class DuenoControllerTest {
         duenosDTOList = new ArrayList<>();
         duenosDTOList.add(duenoDTO);
         
-        // Configurar comportamiento básico del servicio
+        // Configurar comportamiento básico del servicio de dueño
         when(duenoService.convertirDuenoDTO(any(Dueno.class))).thenReturn(duenoDTO);
         when(duenoService.convertirDTODueno(any(DuenoDTO.class))).thenReturn(duenoNormal);
         when(jwtService.getUserNameFromJwtToken(anyString())).thenReturn("admin");
-        when(jwtService.validateJwtToken(anyString(), any())).thenReturn(true);
+
+        // Configurar un usuario administrador para sortear la seguridad
+        adminAuthority = new Authorities();
+        adminAuthority.setId(100);
+        adminAuthority.setAuthority("admin");
+        
+        adminUser = new User();
+        adminUser.setId(999);
+        adminUser.setUsername("admin");
+        adminUser.setPassword("adminpass");
+        adminUser.setAuthority(adminAuthority);
+
+        // Configurar que el usuario actual (findCurrentUser) sea admin
+        when(userService.findCurrentUser()).thenReturn(adminUser);
     }
 
     /* TESTS PARA findAll() */
@@ -617,7 +633,7 @@ class DuenoControllerTest {
                 .andExpect(status().isConflict());
         
         verify(duenoService, times(2)).getDuenoById(1);
-        verify(userService).findUserByUsername(anyString()); // Corregido: verificar 2 llamadas
+        verify(userService).findUserByUsername(anyString());
         verify(duenoService, never()).saveDueno(any(Dueno.class));
     }
     
@@ -663,5 +679,4 @@ class DuenoControllerTest {
         verify(duenoService).getDuenoById(999);
         verify(duenoService, never()).deleteDueno(anyInt());
     }
-    
 }
