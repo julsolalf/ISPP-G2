@@ -3,40 +3,37 @@ import { useNavigate, Link } from "react-router-dom";
 import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
-const token = localStorage.getItem("token");
-const negocioId = localStorage.getItem("negocioId");
-
-const obtenerCategorias = async () => {
-  try {
-    const response = await fetch(`http://localhost:8080/api/categorias/negocio/${negocioId}/inventario`,
-    {
-      method: "GET",
-        headers: { "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-         }});
-    
-    if (!response.ok) {
-      throw new Error("Error al obtener las categorías");
-    }
-    
-    return await response.json();
-  } catch (error) {
-    console.error("Error al obtener las categorías:", error);
-    return [];
-  }
-};
-
 function Inventario() {
   const navigate = useNavigate();
   const [categorias, setCategorias] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
-
-
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
-
   const toggleNotifications = () => setShowNotifications(!showNotifications);
   const toggleUserOptions = () => setShowUserOptions(!showUserOptions);
+
+  const token = localStorage.getItem("token");
+  const negocioId = localStorage.getItem("negocioId");
+
+  const obtenerCategorias = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/categorias/negocio/${negocioId}/inventario`,
+      {
+        method: "GET",
+          headers: { "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          }});
+      
+      if (!response.ok) {
+        throw new Error("Error al obtener las categorías");
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error("Error al obtener las categorías:", error);
+      return [];
+    }
+  };
 
   useEffect(() => {
     const cargarDatos = async () => {

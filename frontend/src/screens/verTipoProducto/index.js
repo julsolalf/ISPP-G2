@@ -5,7 +5,15 @@ import { Bell, User } from "lucide-react";
 
 const obtenerProductosPorCategoria = async () => {
   try {
-    const response = await fetch(`http://localhost:8080/api/productosInventario/categoria/${localStorage.getItem("categoriaNombre")}`);
+    const token = localStorage.getItem("token"); 
+    const categoria = localStorage.getItem("categoriaNombre");
+    const response = await fetch(`http://localhost:8080/api/productosInventario/categoria/${categoria}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    });
+
     if (!response.ok) {
       throw new Error("Error al obtener los productos de la categoría");
     }
@@ -17,13 +25,34 @@ const obtenerProductosPorCategoria = async () => {
   }
 };
 
+
 function VerTipoProducto() {
   const { categoriaId } = useParams();
   const navigate = useNavigate();
-  const [categoria, setCategoria] = useState(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
-
-
+  const token = localStorage.getItem("token"); 
+  const categoria = localStorage.getItem("categoriaNombre");
+  
+  const obtenerProductosPorCategoria = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/productosInventario/categoria/${categoria}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+  
+      if (!response.ok) {
+        throw new Error("Error al obtener los productos de la categoría");
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error al obtener los productos:", error);
+      return [];
+    }
+  };
+  
     const toggleNotifications = () => {
       setShowNotifications(!showNotifications);
     };

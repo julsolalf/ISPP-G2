@@ -1,18 +1,33 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import "../../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
-const token = localStorage.getItem("token");
+function EditarProducto() {
+  const navigate = useNavigate();
+  const [producto, setProducto] = useState({
+    name: "",
+    precioCompra: "",
+    cantidadDeseada: "",
+    cantidadAviso: "",
+    categoriaId: "",
+    proveedorId: "",
+  });
+  const [proveedores, setProveedores] = useState([]);
+  const [categoriaNombre, setCategoriaNombre] = useState("");
+
+  const storedNegocioId = localStorage.getItem("negocioId");
+  const token = localStorage.getItem("token");
 const productoId = localStorage.getItem("productoId");
 
 const obtenerProducto = async (id) => {
   try {
-    const response = await fetch(`http://localhost:8080/api/productosInventario/${productoId}`, {
+    const response = await fetch(`http://localhost:8080/api/productosInventario/${id}`, {
       method: "GET",
-        headers: { "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-         },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
     if (!response.ok) {
       throw new Error("Error al obtener el producto");
@@ -30,7 +45,7 @@ const actualizarProducto = async (producto) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(producto),
     });
@@ -44,18 +59,35 @@ const actualizarProducto = async (producto) => {
   }
 };
 
-function EditarProducto() {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const [producto, setProducto] = useState({ name: "", precioCompra: "", cantidadDeseada: "", cantidadAviso: "" });
-
+  // Cargar proveedores y categoría al montar el componente
   useEffect(() => {
-    const cargarProducto = async () => {
-      const data = await obtenerProducto();
-      if (data) setProducto(data);
-    };
-    cargarProducto();
-  }, [id]);
+    // Obtener los proveedores
+    if (storedNegocioId) {
+      fetch(`http://localhost:8080/api/proveedores/negocio/${storedNegocioId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => setProveedores(data))
+        .catch((error) => {
+          console.error("Error al obtener los proveedores:", error);
+          alert("No se pudieron cargar los proveedores.");
+        });
+    }
+
+    // Obtener los detalles del producto
+    if (productoId) {
+      obtenerProducto(productoId).then((data) => {
+        if (data) {
+          setProducto(data);
+          setCategoriaNombre(data.categoria?.name || "");
+        }
+      });
+    }
+  }, [productoId]);
 
   const handleChange = (e) => {
     setProducto({ ...producto, [e.target.name]: e.target.value });
@@ -63,12 +95,20 @@ function EditarProducto() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!producto.name || !producto.precioCompra || !producto.cantidadDeseada || !producto.cantidadAviso || !producto.proveedorId) {
+      alert("Todos los campos son obligatorios");
+      return;
+    }
+
     const actualizado = await actualizarProducto(producto);
-    if (actualizado) navigate(`/categoria/${producto.categoria?.name}/producto/${id}`);
+    if (actualizado) {
+      navigate(`/categoria/${producto.categoria?.name}/producto/${productoId}`);
+    }
   };
 
   return (
-    <div className="home-container"
+    <div
+      className="home-container"
       style={{
         backgroundImage: `url(${process.env.PUBLIC_URL + "/background-spices.jpg"})`,
         backgroundSize: "cover",
@@ -78,24 +118,76 @@ function EditarProducto() {
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center",
-      }}>
+      }}
+    >
       <div className="content">
         <div className="icon-container-right">
           <Bell size={30} className="icon" />
           <User size={30} className="icon" />
         </div>
-        <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
+        <button onClick={() => navigate(`/categoria/${producto.categoria?.name}/producto/${productoId}`)} className="back-button">⬅ Volver</button>
         <Link to="/inicioDueno">
           <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
-        </Link>        
+        </Link>
         <h1 className="title">GastroStock</h1>
         <h2>Editar Producto</h2>
-        <form className="form-container" onSubmit={handleSubmit}>
-          <input type="text" name="name" value={producto.name} onChange={handleChange} placeholder="Nombre" required />
-          <input type="number" name="precioCompra" value={producto.precioCompra} onChange={handleChange} placeholder="Precio de Compra" required />
-          <input type="number" name="cantidadDeseada" value={producto.cantidadDeseada} onChange={handleChange} placeholder="Cantidad Deseada" required />
-          <input type="number" name="cantidadAviso" value={producto.cantidadAviso} onChange={handleChange} placeholder="Cantidad Aviso" required />
-          <button type="submit" className="button">💾 Guardar</button>
+
+        <form onSubmit={handleSubmit} className="form-container">
+          <input
+            type="text"
+            name="name"
+            value={producto.name}
+            onChange={handleChange}
+            placeholder="Nombre del producto"
+            required
+          />
+          <input
+            type="number"
+            name="precioCompra"
+            value={producto.precioCompra}
+            onChange={handleChange}
+            placeholder="Precio de compra"
+            required
+          />
+          <input
+            type="number"
+            name="cantidadDeseada"
+            value={producto.cantidadDeseada}
+            onChange={handleChange}
+            placeholder="Cantidad deseada"
+            required
+          />
+          <input
+            type="number"
+            name="cantidadAviso"
+            value={producto.cantidadAviso}
+            onChange={handleChange}
+            placeholder="Cantidad de aviso"
+            required
+          />
+          {categoriaNombre && (
+            <div>
+              <strong>Categoría: </strong>
+              <span>{categoriaNombre}</span>
+            </div>
+          )}
+
+          <label>Selecciona un proveedor:</label>
+          <select
+            name="proveedorId"
+            value={producto.proveedorId}
+            onChange={handleChange}
+            required
+          >
+            <option value="">-- Selecciona un proveedor --</option>
+            {proveedores.map((proveedor) => (
+              <option key={proveedor.id} value={proveedor.id}>
+                {proveedor.name}
+              </option>
+            ))}
+          </select>
+
+          <input type="submit" value="Guardar Cambios" className="button" />
         </form>
       </div>
     </div>
