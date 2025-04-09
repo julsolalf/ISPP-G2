@@ -27,20 +27,54 @@ const obtenerProducto = async () => {
 
 const actualizarProducto = async (producto) => {
   try {
-    const response = await fetch(`http://localhost:8080/api/productosVenta/${productoId}`, {
+    // Validación de campos requeridos
+    if (!producto.name || producto.name.trim() === "") {
+      throw new Error("El nombre del producto no puede estar vacío.");
+    }
+
+    if (!producto.precioVenta || isNaN(producto.precioVenta)) {
+      throw new Error("El precio de venta debe ser un número válido.");
+    }
+
+    if (!producto.categoria || !producto.categoria.id) {
+      throw new Error("La categoría del producto no es válida.");
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("Token de autenticación no encontrado.");
+    }
+
+    if (!producto.id) {
+      throw new Error("El ID del producto no está definido.");
+    }
+
+    // El DTO espera este formato, no objetos anidados
+    const payload = {
+      name: producto.name.trim(),
+      precioVenta: parseFloat(producto.precioVenta),
+      categoriaId: parseInt(producto.categoria.id),
+    };
+
+    const response = await fetch(`http://localhost:8080/api/productosVenta/${producto.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(producto),
+      body: JSON.stringify(payload),
     });
+
     if (!response.ok) {
-      throw new Error("Error al actualizar el producto");
+      const errorText = await response.text();
+      console.error("Error al actualizar el producto:", errorText);
+      throw new Error(`Error HTTP: ${response.status} - ${response.statusText}\nDetalles: ${errorText}`);
     }
+
     return await response.json();
   } catch (error) {
     console.error("Error al actualizar el producto:", error);
+    alert(error.message || "Ocurrió un error al actualizar el producto.");
     return null;
   }
 };
@@ -78,7 +112,6 @@ const obtenerIngredientes = async (productoVentaId) => {
   }
 };
 
-
 const agregarIngrediente = async (productoVentaId, productoInventarioId, cantidad) => {
   try {
     const token = localStorage.getItem("token");
@@ -91,7 +124,7 @@ const agregarIngrediente = async (productoVentaId, productoInventarioId, cantida
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, // Asegúrate de que el token esté incluido en los encabezados
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         productoVenta: { id: productoVentaId },
@@ -112,7 +145,6 @@ const agregarIngrediente = async (productoVentaId, productoInventarioId, cantida
   }
 };
 
-
 const eliminarIngrediente = async (ingredienteId) => {
   try {
     const token = localStorage.getItem("token"); // Obtener el token de localStorage
@@ -125,7 +157,7 @@ const eliminarIngrediente = async (ingredienteId) => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, // Asegúrate de que el token esté incluido en los encabezados
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -150,13 +182,15 @@ const eliminarIngrediente = async (ingredienteId) => {
   }
 };
 
-
-
-
 function EditarProductoCarta() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [producto, setProducto] = useState({ name: "", precioVenta: "", categoria: { id: "" }, ingredientes: [], });
+  const [producto, setProducto] = useState({
+    id: "", // necesario para el PUT
+    name: "",
+    precioVenta: "",
+    categoria: { id: "" },
+  });
   const [showModal, setShowModal] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
@@ -184,6 +218,7 @@ function EditarProductoCarta() {
       const data = await obtenerProducto(id);
       if (data) setProducto(data);
     };
+
     const cargarIngredientes = async () => {
       try {
         const data = await obtenerIngredientes(id);
@@ -208,17 +243,17 @@ function EditarProductoCarta() {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-    
+
         console.log("Estado de la respuesta:", res.status);
-    
+
         if (res.status === 403) {
           throw new Error("No tienes permisos para acceder a este recurso.");
         }
-    
+
         if (!res.ok) {
           throw new Error(`Error HTTP: ${res.status}`);
         }
-    
+
         const data = await res.json();
         setProductosInventario(data);
       } catch (error) {
@@ -227,9 +262,6 @@ function EditarProductoCarta() {
         setProductosInventario([]);
       }
     };
-    
-    
-    
 
     cargarProducto();
     cargarIngredientes();
@@ -252,11 +284,16 @@ function EditarProductoCarta() {
   };
 
   const handleChange = (e) => {
-    setProducto({ ...producto, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+  
+    setProducto((prevProducto) => ({
+      ...prevProducto,
+      [name]: name === "precioVenta" ? parseFloat(value) : value,
+    }));
   };
 
   const handleConfirmSave = async () => {
-    const actualizado = await actualizarProducto(id, producto);
+    const actualizado = await actualizarProducto(producto);
     if (actualizado) navigate(`/categoriaVenta/${producto.categoria?.name}/producto/${id}`);
     setShowModal(false);
   };
@@ -278,7 +315,6 @@ function EditarProductoCarta() {
         justifyContent: "center",
         textAlign: "center",
       }}>
-      
       <div className="content">
         <div className="icon-container-right">
           <Bell size={30} className="icon" onClick={toggleNotifications} />
@@ -404,14 +440,14 @@ function EditarProductoCarta() {
           justify-content: space-around;
           margin-top: 1rem;
         }
-        .button.confirm {
-          background-color: #28a745;
-          color: white;
+        .confirm-btn, .cancel-btn {
+          padding: 0.5rem 1rem;
+          border: none;
+          cursor: pointer;
+          border-radius: 5px;
         }
-        .button.cancel {
-          background-color: #dc3545;
-          color: white;
-        }
+        .confirm-btn { background-color: #4caf50; color: white; }
+        .cancel-btn { background-color: #f44336; color: white; }
       `}</style>
     </div>
   );
