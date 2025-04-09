@@ -9,7 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
@@ -22,7 +22,7 @@ import org.hibernate.annotations.OnDeleteAction;
 public class Lote extends BaseEntity {
 
     @NotNull
-    @Positive
+    @PositiveOrZero
     private Integer cantidad;
 
     @NotNull
