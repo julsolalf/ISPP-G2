@@ -296,7 +296,7 @@ public class EmpleadoController {
     @GetMapping("/user/{id}")
     public ResponseEntity<Empleado> findByUser(@PathVariable("id") Integer id) {
         User user = userService.findCurrentUser();
-        if( !(user.getAuthority().getAuthority().equals(adminAuth))){
+        if( !(user.getAuthority().getAuthority().equals(adminAuth)|| user.getId().equals(id))){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         Empleado empleado = empleadoService.getEmpleadoByUser(id);

@@ -20,6 +20,10 @@ function PantallaInicioSesion() {
         }),
       });
 
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(`Error en login: ${response.status} - ${text}`);
+      }
       const data = await response.json();
       const token = data.token;
       localStorage.setItem("token", token);
@@ -30,6 +34,11 @@ function PantallaInicioSesion() {
           Authorization: `Bearer ${token}`,
         },
       });
+
+      if (!userResponse.ok) {
+        const errText = await userResponse.text();
+        throw new Error(`Error al obtener usuario: ${userResponse.status} - ${errText}`);
+      }
       const user = await userResponse.json();
       localStorage.setItem("user", JSON.stringify(user));
 
@@ -62,7 +71,7 @@ function PantallaInicioSesion() {
       alert("Usuario no encontrado o credenciales incorrectas.");
     }
   };
-
+  
   return (
     <div 
       className="home-container"

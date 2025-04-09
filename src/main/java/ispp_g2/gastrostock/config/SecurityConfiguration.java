@@ -3,12 +3,20 @@ package ispp_g2.gastrostock.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import ispp_g2.gastrostock.config.jwt.JwtAuthFilter;
 import lombok.AllArgsConstructor;
@@ -23,9 +31,11 @@ public class SecurityConfiguration {
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
-        http
+        http    
+                .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        .requestMatchers("/api/subscriptions/webhook").permitAll() // Permitir webhooks sin autenticación // Permitir acceso a la API de suscripciones sin autenticació
                         .requestMatchers("/api/auth/**").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(AbstractHttpConfigurer::disable)
