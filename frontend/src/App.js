@@ -36,6 +36,7 @@ import PantallaEditarVenta from "./screens/editarVenta/index.js";
 import PantallaVentaEmpleado from "./screens/ventasEmpleado/index.js";
 import PantallaVerVentaEmpleado from "./screens/ventasEmpleado/ventaEspecifica/index.js";
 import StripePricing from "./screens/stripe/stripePricing.js";
+import PantallaSubscriptionSuccess from "./screens/stripe/pantallaSuccess.js";
 
 
 function AppScreen() {
@@ -91,6 +92,7 @@ function App() {
         <Route path="/inicioEmpleado" element={<PantallaInicioEmpleado />} />
         <Route path="/stripe-pricin" element={<StripePricing />} />
         <Route path="/planes" element={<PantallaPlanes />} />
+        <Route path="/success" element={<PantallaSubscriptionSuccess />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/inventario" element={<PantallaInventario />} />
         <Route path="/ventas" element={<VerVentas/>} />

@@ -1,4 +1,3 @@
-//// filepath: [SubscripcionController.java](http://_vscodecontentref_/0)
 package ispp_g2.gastrostock.subscripcion;
 
 import com.stripe.exception.SignatureVerificationException;
@@ -90,6 +89,18 @@ public class SubscripcionController {
                 subscripcion.getEndDate()
         );
         return ResponseEntity.ok(response);
+    }
+    
+    @PostMapping("/cancel")
+    public ResponseEntity<String> cancelSubscription() {
+        try {
+            User currentUser = userService.findCurrentUser();
+            subscripcionService.cancelPremiumSubscription(currentUser.getId());
+            return ResponseEntity.ok("Suscripción cancelada correctamente");
+        } catch (StripeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error cancelando la suscripción: " + e.getMessage());
+        }
     }
     
     // DTOs para request/response

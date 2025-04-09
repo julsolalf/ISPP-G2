@@ -333,6 +333,8 @@ private void handleCheckoutSessionCompleted(Session session) {
             subscription.setType(SubscripcionType.PREMIUM);
             subscription.setStatus(SubscripcionStatus.ACTIVE);
             subscription.setStartDate(LocalDateTime.now());
+            subscription.setStripePaymentMethodId(stripeSubscription.getDefaultPaymentMethod());
+            subscription.setStripeSubscriptionId(stripeSubscription.getId());
             // Convertir el Unix timestamp a LocalDateTime para la fecha de fin
             long endTimestamp = stripeSubscription.getCurrentPeriodEnd();
             LocalDateTime endDate = LocalDateTime.ofInstant(
@@ -482,23 +484,20 @@ private void handleCheckoutSessionCompleted(Session session) {
     @Transactional
     public void cancelPremiumSubscription(Integer userId) throws StripeException {
         Subscripcion subscription = subscripcionRepository.findByUserId(userId);
-        
-        if (subscription != null && subscription.getStripeSubscriptionId() != null) {
-            // Cancelar en Stripe
-            SubscriptionCancelParams cancelParams = SubscriptionCancelParams.builder()
-                .build(); // Puedes configurar opciones como prorate=true
-            
-            Subscription canceledSubscription = Subscription.retrieve(subscription.getStripeSubscriptionId())
-                .cancel(cancelParams);
-            
-            // Actualizar en nuestra base de datos
-            subscription.setStatus(SubscripcionStatus.CANCELED);
-            subscription.setType(SubscripcionType.FREE);
-            subscription.setEndDate(LocalDateTime.now());
-            
-            subscripcionRepository.save(subscription);
-            log.info("Cancelada suscripción premium para usuario ID: {}", userId);
+        if (subscription == null) {
+            throw new IllegalStateException("No se encontró la suscripción para el usuario ID: " + userId);
         }
+        if (subscription.getStripeCustomerId() == null || subscription.getType() != SubscripcionType.PREMIUM) {
+            throw new IllegalStateException("El usuario no tiene asignado un stripeSubscriptionId válido");
+        }
+    
+        
+        // Actualizar la suscripción en la BD
+        subscription.setStatus(SubscripcionStatus.CANCELED);
+        subscription.setType(SubscripcionType.FREE);
+        subscription.setNextBillingDate(null);
+        subscripcionRepository.save(subscription);
+        log.info("Cancelada suscripción premium para usuario ID: {}", userId);
     }
     
     /**
