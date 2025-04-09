@@ -180,7 +180,7 @@ public class ProductoVentaController {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
         }
-        if (productosVenta == null) {
+        if (productosVenta.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(productosVenta, HttpStatus.OK);

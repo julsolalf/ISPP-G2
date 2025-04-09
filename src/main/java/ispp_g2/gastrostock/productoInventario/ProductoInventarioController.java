@@ -46,25 +46,25 @@ public class ProductoInventarioController {
     @GetMapping
 	public ResponseEntity<List<ProductoInventario>> findAll() {
 		User user = userService.findCurrentUser();
-		List<ProductoInventario> productosInvetario;
+		List<ProductoInventario> productosInventario;
 		switch (user.getAuthority().getAuthority()) {
-			case admin -> productosInvetario = productoInventarioService.getProductosInventario();
+			case admin -> productosInventario = productoInventarioService.getProductosInventario();
 			case empleado -> {
 				Empleado currEmpleado = empleadoService.getEmpleadoByUser(user.getId());
-				productosInvetario = productoInventarioService.getProductoInventarioByNegocioId(currEmpleado.getNegocio().getId());
+				productosInventario = productoInventarioService.getProductoInventarioByNegocioId(currEmpleado.getNegocio().getId());
 			}
 			case dueno -> {
 				Dueno currDueno = duenoService.getDuenoByUser(user.getId());
-				productosInvetario = productoInventarioService.getProductoInventarioByDuenoId(currDueno.getId());
+				productosInventario = productoInventarioService.getProductoInventarioByDuenoId(currDueno.getId());
 			}
 			default -> {
 				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 			}
 		}
-		if(productosInvetario.isEmpty())
+		if(productosInventario.isEmpty())
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
-		return new ResponseEntity<>(productosInvetario, HttpStatus.OK);
+		return new ResponseEntity<>(productosInventario, HttpStatus.OK);
 	}
 
 	@GetMapping("/dto")
@@ -267,7 +267,7 @@ public class ProductoInventarioController {
 			}
 		}
 
-		if (productoInventario == null)
+		if (productoInventario.isEmpty())
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		return new ResponseEntity<>(productoInventario, HttpStatus.OK);
 	}
