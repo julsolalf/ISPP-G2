@@ -125,7 +125,7 @@ function CartaDueno() {
         <h1 className="title">GastroStock</h1>
         <h2>Carta</h2>
         <div className="button-container3">
-          <button className="button" onClick={() => navigate("/añadirCategoria")}>➕ Añadir</button>
+          <button className="button" onClick={() => navigate("/anadirCategoria")}>➕ Añadir</button>
           <button className="button">📥 Exportar</button>
           <button className="button">🔍 Filtrar</button>
         </div>
