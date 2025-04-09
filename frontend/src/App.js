@@ -90,7 +90,7 @@ function App() {
         <Route path="/masInformacion" element={<PantallaMasInfo />} />
         <Route path="/inicioDueno" element={<PantallaInicioDueno />} />
         <Route path="/inicioEmpleado" element={<PantallaInicioEmpleado />} />
-        <Route path="/stripe-pricin" element={<StripePricing />} />
+        <Route path="/stripe-pricing" element={<StripePricing />} />
         <Route path="/planes" element={<PantallaPlanes />} />
         <Route path="/success" element={<PantallaSubscriptionSuccess />} />
         <Route path="/dashboard" element={<Dashboard />} />
