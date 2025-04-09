@@ -1,7 +1,6 @@
 package ispp_g2.gastrostock.productoVenta;
 
 import ispp_g2.gastrostock.categorias.CategoriaRepository;
-import ispp_g2.gastrostock.categorias.CategoriaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +35,16 @@ public class ProductoVentaService {
     @Transactional(readOnly = true)
     public List<ProductoVenta> getProductosVentaByNombre(String nombre) {
         return productoVentaRepository.findProductoVentaByNombre(nombre);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductoVenta> getProductosVentaByNegocioID(Integer negocioId) {
+        return productoVentaRepository.findProductoVentaByNegocioID(negocioId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductoVenta> getProductosVentaByDuenoID(Integer duenoId) {
+        return productoVentaRepository.findProductoVentaByDuenoID(duenoId);
     }
 
     @Transactional(readOnly = true)
