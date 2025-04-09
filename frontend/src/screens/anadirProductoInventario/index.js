@@ -13,9 +13,16 @@ function PantallaAñadirProducto() {
   const [categoriaId, setCategoriaId] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  
 
   const token = localStorage.getItem("token");
   const storedNegocioId = localStorage.getItem("negocioId");
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/"); // Redirigir a la pantalla de inicio de sesión
+  };
 
   useEffect(() => {
     const storedCategoriaNombre = localStorage.getItem("categoriaNombre");
@@ -131,8 +138,20 @@ function PantallaAñadirProducto() {
             <ul>
               <li><button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button></li>
               <li><button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button></li>
-              <li><button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button></li>
+              <li><button className="user-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button></li>
             </ul>
+          </div>
+        )}
+
+        {showLogoutModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>¿Está seguro que desea abandonar la sesión?</h3>
+              <div className="modal-buttons">
+                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
+                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
+              </div>
+            </div>
           </div>
         )}
 

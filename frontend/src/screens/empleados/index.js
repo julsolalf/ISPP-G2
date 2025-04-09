@@ -8,7 +8,7 @@ function Empleados() {
   const [empleados, setEmpleados] = useState([]);  // Cambia el estado para manejar empleados vacíos
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
-  const token = localStorage.getItem("userToken"); // Obtener el token del usuario desde localStorage
+  const token = localStorage.getItem("token"); // Obtener el token del usuario desde localStorage
   const negocioId = localStorage.getItem("negocioId"); // Obtener el ID del negocio desde localStorage
 
   const loadEmpleados = async () => {
@@ -20,13 +20,13 @@ function Empleados() {
           Authorization: `Bearer ${token}`,
         },
       });
-  
+      
       if (!response.ok) {
         throw new Error("Error al cargar los empleados");
       }
   
       const data = await response.json();
-      setEmpleados(data);  // Supongo que 'setEmpleados' es una función para actualizar el estado
+      setEmpleados(data); 
     } catch (error) {
       console.error("Error al cargar los empleados:", error);
     }
@@ -43,7 +43,7 @@ function Empleados() {
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
 
   const handleLogout = () => {
-    localStorage.removeItem("userToken"); // Eliminamos el token del usuario
+    localStorage.clear();
     navigate("/inicioSesion"); // Redirigir a la pantalla de inicio de sesión
   };
 

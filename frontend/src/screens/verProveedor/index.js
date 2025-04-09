@@ -27,9 +27,16 @@ function VerProveedor() {
   const { id } = useParams(); 
   const navigate = useNavigate();
   const [proveedor, setProveedor] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false); 
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/"); // Redirigir a la pantalla de inicio de sesión
+  };
+
 
   useEffect(() => {
     const cargarProveedor = async () => {
@@ -102,7 +109,7 @@ function VerProveedor() {
             <ul>
               <li><button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button></li>
               <li><button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button></li>
-              <li><button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button></li>
+              <li><button className="user-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button></li>
             </ul>
           </div>
         )}
@@ -132,6 +139,18 @@ function VerProveedor() {
               <div className="modal-buttons">
                 <button className="confirm-btn" onClick={eliminarProveedor}>Sí</button>
                 <button className="cancel-btn" onClick={() => setShowDeleteModal(false)}>No</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+{showLogoutModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>¿Está seguro que desea abandonar la sesión?</h3>
+              <div className="modal-buttons">
+                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
+                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
               </div>
             </div>
           </div>

@@ -60,6 +60,10 @@ public class UserService {
 					.orElseThrow(() -> new ResourceNotFoundException("User", "Username", auth.getName()));
 	}
 
+	public List<User> findUsersWithoutSubscription() {
+        return userRepository.findUsersWithoutSubscription();
+    }
+
 	@Transactional
 	public User saveUser(User user) {
 		return userRepository.save(user);

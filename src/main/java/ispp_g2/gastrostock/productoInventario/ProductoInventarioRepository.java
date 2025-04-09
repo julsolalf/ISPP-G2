@@ -24,4 +24,7 @@ public interface ProductoInventarioRepository extends CrudRepository<ProductoInv
     @Query("SELECT p FROM ProductoInventario p WHERE p.cantidadAviso = ?1")
     List<ProductoInventario> findByCantidadAviso(Integer cantidadAviso);
 
+    @Query("SELECT p FROM ProductoInventario p WHERE p.proveedor.id = ?1")
+    List<ProductoInventario> findByProveedorId(Integer proveedorId);
+
 }
