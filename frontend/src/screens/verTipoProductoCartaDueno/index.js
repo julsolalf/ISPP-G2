@@ -3,9 +3,17 @@ import { useNavigate, useParams, Link } from "react-router-dom";
 import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
+const token = localStorage.getItem("token");
+
 const obtenerProductosPorCategoria = async () => {
   try {
-    const response = await fetch(`http://localhost:8080/api/productosVenta/categoriaVenta/${localStorage.getItem("categoriaNombre")}`);
+    const response = await fetch(`http://localhost:8080/api/productosVenta/categoriaVenta/${localStorage.getItem("categoriaNombre")}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
     if (!response.ok) {
       throw new Error("Error al obtener los productos de la categoría");
     }

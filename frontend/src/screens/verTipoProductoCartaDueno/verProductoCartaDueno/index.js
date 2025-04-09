@@ -3,29 +3,48 @@ import { useNavigate, Link } from "react-router-dom";
 import "../../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
+const token = localStorage.getItem("token");
+const productoId = localStorage.getItem("productoId");
+
 // Obtener detalles del producto
 const obtenerProducto = async () => {
   try {
-    const response = await fetch(`http://localhost:8080/api/productosVenta/${localStorage.getItem("productoId")}`);
-    if (!response.ok) throw new Error("Error al obtener el producto");
+    const response = await fetch(`http://localhost:8080/api/productosVenta/${productoId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Error al obtener el producto");
+    }
     return await response.json();
   } catch (error) {
     console.error("Error al obtener el producto:", error);
     return null;
   }
-};
+}
 
 // Obtener ingredientes del producto
-const obtenerIngredientes = async (productoId) => {
+const obtenerIngredientes = async () => {
   try {
-    const res = await fetch(`http://localhost:8080/api/ingredientes/productoVenta/${productoId}`);
-    if (!res.ok) throw new Error("Error al obtener ingredientes");
-    return await res.json();
-  } catch (err) {
-    console.error("Error cargando ingredientes:", err);
-    return [];
+    const response = await fetch(`http://localhost:8080/api/ingredientes/productoVenta/${productoId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Error al obtener el producto");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error al obtener el producto:", error);
+    return null;
   }
-};
+}
 
 function VerProductoCartaDueno() {
   const navigate = useNavigate();

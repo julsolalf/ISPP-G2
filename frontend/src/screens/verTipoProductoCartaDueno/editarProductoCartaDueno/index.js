@@ -47,11 +47,21 @@ const actualizarProducto = async (producto) => {
 
 const obtenerIngredientes = async (productoVentaId) => {
   try {
-    const res = await fetch(`http://localhost:8080/api/ingredientes/productoVenta/${productoVentaId}`);
-    return await res.json();
+    const response = await fetch(`http://localhost:8080/api/ingredientes/productoVenta/${productoVentaId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify(productoVentaId),
+    });
+    if (!response.ok) {
+      throw new Error("Error al obtener los ingredientes");
+    }
+    return await response.json();
   } catch (error) {
-    console.error("Error obteniendo ingredientes:", error);
-    return [];
+    console.error("Error al obtener los ingredientes", error);
+    return null;
   }
 };
 
