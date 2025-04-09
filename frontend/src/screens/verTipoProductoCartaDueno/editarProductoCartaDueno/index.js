@@ -47,46 +47,116 @@ const actualizarProducto = async (producto) => {
 
 const obtenerIngredientes = async (productoVentaId) => {
   try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("No se encontró el token de autenticación.");
+      return;
+    }
+
     const response = await fetch(`http://localhost:8080/api/ingredientes/productoVenta/${productoVentaId}`, {
-      method: "PUT",
+      method: "GET", 
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(productoVentaId),
     });
-    if (!response.ok) {
-      throw new Error("Error al obtener los ingredientes");
+
+    console.log("Estado de la respuesta:", response.status);
+
+    if (response.status === 403) {
+      throw new Error("No tienes permisos para acceder a este recurso.");
     }
+
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status}`);
+    }
+
     return await response.json();
   } catch (error) {
-    console.error("Error al obtener los ingredientes", error);
+    console.error("Error al obtener los ingredientes", error.message);
     return null;
   }
 };
 
+
 const agregarIngrediente = async (productoVentaId, productoInventarioId, cantidad) => {
-  return await fetch("http://localhost:8080/api/ingredientes", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      productoVenta: { id: productoVentaId },
-      productoInventario: { id: productoInventarioId },
-      cantidad: cantidad,
-    }),
-  });
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      throw new Error("No se encontró el token de autorización.");
+    }
+
+    const response = await fetch("http://localhost:8080/api/ingredientes", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // Asegúrate de que el token esté incluido en los encabezados
+      },
+      body: JSON.stringify({
+        productoVenta: { id: productoVentaId },
+        productoInventario: { id: productoInventarioId },
+        cantidad: cantidad,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error al agregar ingrediente:", error);
+    alert("Hubo un problema al agregar el ingrediente. Verifica tus permisos o el token.");
+    return null;
+  }
 };
 
+
 const eliminarIngrediente = async (ingredienteId) => {
-  return await fetch(`http://localhost:8080/api/ingredientes/${ingredienteId}`, {
-    method: "DELETE",
-  });
+  try {
+    const token = localStorage.getItem("token"); // Obtener el token de localStorage
+
+    if (!token) {
+      throw new Error("No se encontró el token de autorización.");
+    }
+
+    const response = await fetch(`http://localhost:8080/api/ingredientes/${ingredienteId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // Asegúrate de que el token esté incluido en los encabezados
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
+    }
+
+    // Verificamos si la respuesta tiene contenido antes de intentar parsearla
+    if (response.status === 204) {
+      // Si el estado es 204 (No Content), la eliminación fue exitosa, pero no hay respuesta de datos.
+      console.log("Ingrediente eliminado correctamente, pero sin respuesta de contenido.");
+      return { success: true }; // Devolvemos un objeto de éxito
+    }
+
+    // Si la respuesta tiene contenido, lo procesamos como JSON
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error al eliminar ingrediente:", error);
+    alert("Hubo un problema al eliminar el ingrediente. Verifica tus permisos o el token.");
+    return null;
+  }
 };
+
+
+
 
 function EditarProductoCarta() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [producto, setProducto] = useState({ name: "", precioVenta: "" });
+  const [producto, setProducto] = useState({ name: "", precioVenta: "", categoria: { id: "" }, ingredientes: [], });
   const [showModal, setShowModal] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
@@ -115,15 +185,51 @@ function EditarProductoCarta() {
       if (data) setProducto(data);
     };
     const cargarIngredientes = async () => {
-      const data = await obtenerIngredientes(id);
-      setIngredientes(data);
+      try {
+        const data = await obtenerIngredientes(id);
+        if (data) {
+          setIngredientes(data);
+        } else {
+          console.warn("No se pudieron cargar los ingredientes.");
+          setIngredientes([]);
+        }
+      } catch (error) {
+        console.error("Error al cargar los ingredientes:", error.message);
+        setIngredientes([]); // Reseteamos la lista de ingredientes si hay error
+      }
     };
 
     const cargarInventario = async () => {
-      const res = await fetch("http://localhost:8080/api/productosInventario");
-      const data = await res.json();
-      setProductosInventario(data);
+      try {
+        const res = await fetch("http://localhost:8080/api/productosInventario", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+    
+        console.log("Estado de la respuesta:", res.status);
+    
+        if (res.status === 403) {
+          throw new Error("No tienes permisos para acceder a este recurso.");
+        }
+    
+        if (!res.ok) {
+          throw new Error(`Error HTTP: ${res.status}`);
+        }
+    
+        const data = await res.json();
+        setProductosInventario(data);
+      } catch (error) {
+        console.error("Error cargando inventario:", error.message);
+        alert("Hubo un problema al cargar los productos del inventario.");
+        setProductosInventario([]);
+      }
     };
+    
+    
+    
 
     cargarProducto();
     cargarIngredientes();
