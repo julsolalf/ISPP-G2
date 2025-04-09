@@ -34,6 +34,12 @@ function VerPedidos() {
   const [showUserOptions, setShowUserOptions] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("");  
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/"); // Redirigir a la pantalla de inicio de sesión
+  };
 
   useEffect(() => {
     const cargarDatos = async () => {
@@ -100,6 +106,18 @@ function VerPedidos() {
           </div>
         )}
 
+{showLogoutModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>¿Está seguro que desea abandonar la sesión?</h3>
+              <div className="modal-buttons">
+                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
+                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {showUserOptions && (
           <div className="notification-bubble user-options">
             <div className="notification-header">
@@ -114,7 +132,7 @@ function VerPedidos() {
                 <button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button>
               </li>
               <li>
-                <button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button>
+                <button className="user-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
               </li>
             </ul>
           </div>

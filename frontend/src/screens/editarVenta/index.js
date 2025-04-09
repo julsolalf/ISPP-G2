@@ -7,11 +7,14 @@ const token = localStorage.getItem("token");
 
 const obtenerVenta = async (id) => {
   try {
-    const response = await fetch(`http://localhost:8080/api/pedidos/${id}`,
-      {headers: { "Content-Type": "application/json" ,
+    const response = await fetch(`http://localhost:8080/api/pedidos/${id}`, {
+      method: "GET", 
+      headers: {
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
-      },}
-    );
+      },
+    });
+
     if (!response.ok) {
       throw new Error("Error al obtener la venta");
     }
@@ -24,11 +27,14 @@ const obtenerVenta = async (id) => {
 
 const obtenerEmpleados = async (negocioId) => {
   try {
-    const response = await fetch(`http://localhost:8080/api/empleados/negocio/${negocioId}`,
-      {headers: { "Content-Type": "application/json" ,
+    const response = await fetch(`http://localhost:8080/api/empleados/negocio/${negocioId}`,{
+      method: "GET", 
+      headers: {
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
-      },}
-    );
+      },
+    });
+
     if (!response.ok) {
       throw new Error("Error al obtener los empleados");
     }
@@ -41,11 +47,14 @@ const obtenerEmpleados = async (negocioId) => {
 
 const obtenerMesas = async (negocioId) => {
   try {
-    const response = await fetch(`http://localhost:8080/api/mesas/negocio/${negocioId}`,
-      {headers: { "Content-Type": "application/json" ,
+    const response = await fetch(`http://localhost:8080/api/mesas/negocio/${negocioId}`,{
+      method: "GET", 
+      headers: {
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
-      },}
-    );
+      },
+    });
+
     if (!response.ok) {
       throw new Error("Error al obtener las mesas");
     }
