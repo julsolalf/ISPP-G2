@@ -3,10 +3,21 @@ import { useNavigate, useParams, Link } from "react-router-dom";
 import "../../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
-const obtenerProducto = async (id) => {
+const token = localStorage.getItem("token");
+const productoId = localStorage.getItem("productoId");
+
+const obtenerProducto = async () => {
   try {
-    const response = await fetch(`http://localhost:8080/api/productosVenta/${localStorage.getItem("productoId")}`);
-    if (!response.ok) throw new Error("Error al obtener el producto");
+    const response = await fetch(`http://localhost:8080/api/productosVenta/${productoId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Error al obtener el producto");
+    }
     return await response.json();
   } catch (error) {
     console.error("Error al obtener el producto:", error);
@@ -14,14 +25,19 @@ const obtenerProducto = async (id) => {
   }
 };
 
-const actualizarProducto = async (id, producto) => {
+const actualizarProducto = async (producto) => {
   try {
-    const response = await fetch(`http://localhost:8080/api/productosVenta/${producto.id}`, {
+    const response = await fetch(`http://localhost:8080/api/productosVenta/${productoId}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
       body: JSON.stringify(producto),
     });
-    if (!response.ok) throw new Error("Error al actualizar el producto");
+    if (!response.ok) {
+      throw new Error("Error al actualizar el producto");
+    }
     return await response.json();
   } catch (error) {
     console.error("Error al actualizar el producto:", error);
