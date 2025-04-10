@@ -8,7 +8,7 @@ env_variables:
   DB_USER: "gastrostock_admin"
   DB_PASSWORD: "ISPP_gastro.stockdb"
   STRIPE_API_KEY: pk_live_51RBHeOP27aogytxQX5QBMQw0lYoAfaRzMo2Nxp5r0HgbgCYXBbGnpL00VoqWHftOIbj0HqN1twWeqcbw2DFjxNAw00SGSTDpwO
-  STRIPE_WEBHOOK_SECRET: whsec_0b8ba4b2e6530b1b9035876455f1c6c736e0d858e50d74ff2f088dbdfc7ae2e2
+  STRIPE_WEBHOOK_SECRET: whsec_anyjhF2njBbQwULwThYUuWOj8kzlolQH
   STRIPE_PREMIUM_PRICE_ID: price_1RBJTuP27aogytxQURPebERY
 
 handlers:
