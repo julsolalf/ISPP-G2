@@ -32,6 +32,7 @@ import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.pedido.Pedido;
 import ispp_g2.gastrostock.pedido.PedidoController;
 import ispp_g2.gastrostock.pedido.PedidoService;
+import ispp_g2.gastrostock.user.UserService;
 import jakarta.servlet.ServletException;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,6 +42,9 @@ class PedidoControllerTest {
 
     @Mock
     private PedidoService pedidoService;
+
+    @Mock
+    private UserService userService;
 
     @InjectMocks
     private PedidoController pedidoController;

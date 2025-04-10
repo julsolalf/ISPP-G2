@@ -23,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -40,6 +41,7 @@ import ispp_g2.gastrostock.productoVenta.ProductoVenta;
 @WebMvcTest({IngredienteController.class})
 @Import({SecurityConfiguration.class, JwtAuthFilter.class})
 @ActiveProfiles("test")
+@WithMockUser(username = "owner", roles = {"owner"})
 public class IngredienteControllerTest {
 
 @Autowired
