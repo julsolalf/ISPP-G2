@@ -1,5 +1,112 @@
 # Changelog
 
+## [3.0.0](https://github.com/julsolalf/ISPP-G2/compare/v2.0.0...v3.0.0) (2025-04-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* Plan testing
+
+### Features
+
+* **#170:** Cambios para Implementacion Stripe ([c41bc2e](https://github.com/julsolalf/ISPP-G2/commit/c41bc2e5b6b2dda4be70b6e1aba244aee02bfde6))
+* **#170:** Con Postman funciona ([a191121](https://github.com/julsolalf/ISPP-G2/commit/a191121e7ade675081c60e6246de6aadb2fb5638))
+* **#170:** Creado Suscripcion backend ([dd19300](https://github.com/julsolalf/ISPP-G2/commit/dd193005b374a44cda75fcbc0445f6c8247adff1))
+* **#170:** Creado Suscripcion frontend. ([8ef9394](https://github.com/julsolalf/ISPP-G2/commit/8ef9394243a40907fee4f3aacf526e088fb100e8))
+* **#170:** Login funciona, falta deserealizar bien checkout.session.completed ([b91ac53](https://github.com/julsolalf/ISPP-G2/commit/b91ac539f6ebaa361b090a9252ce6e57d8c4688a))
+* **#170:** Pasarela de pago creada y Login funcionando ([12661de](https://github.com/julsolalf/ISPP-G2/commit/12661de8577e548c5c1d936f99010056b5137081))
+* **#258:** Conectar backend de Añadir Categoria de inventario ([7d0fdc4](https://github.com/julsolalf/ISPP-G2/commit/7d0fdc4c3a877dcf876f290d49a8d0a83c85aec6))
+* **#261:** Añadir botones a la pantalla de VerProductos de una categoria, también se ha añadido la función de añadir un producto al inventario ([a591a81](https://github.com/julsolalf/ISPP-G2/commit/a591a81c7ca464c602ea7da81b635dc1e91b1a01))
+* **#266:** Añadir botón de editar y eliminar con las funcionalidades a la pantalla de Ver un producto ([0346a1a](https://github.com/julsolalf/ISPP-G2/commit/0346a1a246aea43b7791469ebcaea3171b52fdcd))
+* **#270:** Creacion de workflow de analisis de sonarqube ([4408355](https://github.com/julsolalf/ISPP-G2/commit/44083554b8811113821b4e9ee5d9cb1399dbcd02))
+* **#270:** Creacion y test workflow SonarQube ([d078004](https://github.com/julsolalf/ISPP-G2/commit/d078004a6fcde5ee51c9014def9642527c7f00b6))
+* **#270:** Test workflow 1 ([a774269](https://github.com/julsolalf/ISPP-G2/commit/a774269b47c0356dbd7661a94cb0aaf940732d02))
+* **#270:** Workflow deberia funcionar ([5ab97d2](https://github.com/julsolalf/ISPP-G2/commit/5ab97d23bcd9cf64a37457e88add4a0ccc7d9052))
+* **#270:** Workflow SonarQube cambiado token ([d3085fa](https://github.com/julsolalf/ISPP-G2/commit/d3085fad9a702294eb1284ff722ee3d3b3736184))
+* **#270:** Workflow SonarQube funcionando ([30f36ff](https://github.com/julsolalf/ISPP-G2/commit/30f36ff542d982db34a42b4fefc7110a28afce31))
+* **#271:** Creación y conexión con backend de las páginas de Ver, editar y eliminar proveedor ([56c2764](https://github.com/julsolalf/ISPP-G2/commit/56c2764937e58ebb38b9999f9953564a21c9a807))
+* **#274:** Creacion y conexion con backend de pantalla para editar una venta y añadido el logo a pantalla EditarProveedor ([fc1e26e](https://github.com/julsolalf/ISPP-G2/commit/fc1e26eb97d42152550a15427cd3c1ce182f6f00))
+* **#280:** Ver, editar y eliminar empleado ([8db2633](https://github.com/julsolalf/ISPP-G2/commit/8db26339253486193de9542d4579575bf5f3d4b3))
+* **#306:** Add logout to new screens ([0fd29cd](https://github.com/julsolalf/ISPP-G2/commit/0fd29cd41f6f933c0e5849d4b93046eb376de8e8))
+* Añadida relacion ([01e6232](https://github.com/julsolalf/ISPP-G2/commit/01e62324327232af87b598f67e2d8e076c5844c1))
+* Añadida relacion ([45ccba0](https://github.com/julsolalf/ISPP-G2/commit/45ccba008c7a767252f746a612e08462887382ee))
+* Añadida restricciones CRUD ([b72740b](https://github.com/julsolalf/ISPP-G2/commit/b72740be31063883a81519e7cdf471e27b5558f3))
+* Añadida restricciones CRUD ([e2796c2](https://github.com/julsolalf/ISPP-G2/commit/e2796c2e78dfbd4eb7ed773e8d93b2a5a7d484fa))
+* Carrito Controller ([9a9b63d](https://github.com/julsolalf/ISPP-G2/commit/9a9b63d7a361492ecbee348748d18ee8462a0660))
+* Create Carrito Entity ([e0e2957](https://github.com/julsolalf/ISPP-G2/commit/e0e295777f43725d87809cce771cdb8c379da847))
+* **docs:** added Sprint 3 ([72a4135](https://github.com/julsolalf/ISPP-G2/commit/72a41359018667d6dab337f754b307c9b043b45e))
+* **docs:** new docs redacted to Sprint 3 ([e9d0556](https://github.com/julsolalf/ISPP-G2/commit/e9d055630e08d376adc1ee69f5e040aac0facddc))
+* DTO ProductoInventario ([66ddb78](https://github.com/julsolalf/ISPP-G2/commit/66ddb78c072d1615c59c764a728dbfcf90987e92))
+* DTO ProductoVenta ([50383f8](https://github.com/julsolalf/ISPP-G2/commit/50383f884acbe211b560a259e1364b60ea9d923b))
+* DTO ProductoVenta ([920d022](https://github.com/julsolalf/ISPP-G2/commit/920d022bcaa7eb3bf758638bce49d4c024a02489))
+* DTO proveedor ([327d6e8](https://github.com/julsolalf/ISPP-G2/commit/327d6e862e4be43c1b165b3bdf986a7c24dfd052))
+* Linea Controller ([53121d4](https://github.com/julsolalf/ISPP-G2/commit/53121d42f847db47aa72714f0f4be18db6b5d6f5))
+* Negocio DTO ([ca34286](https://github.com/julsolalf/ISPP-G2/commit/ca34286773f3271c02d293c7ecbfb2d36a7368c1))
+* POST Y PUT DTO ([4933e2d](https://github.com/julsolalf/ISPP-G2/commit/4933e2d1f2cf9e9ca986102d8ee1eb08cf06cab0))
+* POST Y PUT DTO ([47edf84](https://github.com/julsolalf/ISPP-G2/commit/47edf84cb111a8cd7307b3a8102aab90b7a8155a))
+* Registro e inicio de sesion con validacion del token creados ([1191994](https://github.com/julsolalf/ISPP-G2/commit/119199461e766d0a6909aa39ea8687209944c09c))
+* Restricciones CRUD ([679262e](https://github.com/julsolalf/ISPP-G2/commit/679262eb0c0c149d14026a1998b12b366cc80d70))
+* Restricciones CRUD ([d6202bb](https://github.com/julsolalf/ISPP-G2/commit/d6202bb91f67dfcb7f0679ac365184c0bae3a924))
+* validaciones empleado ([e5d342b](https://github.com/julsolalf/ISPP-G2/commit/e5d342b653716577b8d0410a2fe9ce0cbb9d0a36))
+* Validaciones Endpoint ([882e90b](https://github.com/julsolalf/ISPP-G2/commit/882e90b39ad3ce7fa293460b25f8227e999fe299))
+
+
+### Bug Fixes
+
+* **#214:** conectar perfil al backend y arreglar estilos ([fe4383f](https://github.com/julsolalf/ISPP-G2/commit/fe4383f793f58f183dea9c58d41a421096114202))
+* **#227:** Añadir empleados conectado con backend ([b994e64](https://github.com/julsolalf/ISPP-G2/commit/b994e64826d8de79c470cad794081438f2786d84))
+* **#227:** Añadir proveedores conectado de nuevo, a falta del auth ([693ed34](https://github.com/julsolalf/ISPP-G2/commit/693ed340df32472681ea787df14c4b7fee922168))
+* **#272:** Añadir funcionalidad a los botones de exportar y filtrar de la pantalla de proveedores ([79b150c](https://github.com/julsolalf/ISPP-G2/commit/79b150cd05f110b935420fe0039cf18fe4813613))
+* **#273:** Añadir botones de filtrar, exportar y buscar, con sus funcionalidades, en pantalla de Ventas ([498266a](https://github.com/julsolalf/ISPP-G2/commit/498266aa3c889cb26577d1c41d1f2dd57669ff9d))
+* **#274:** Añadir botones en ver venta y sus funcionalidades ([b51a999](https://github.com/julsolalf/ISPP-G2/commit/b51a99987ca0a2016e5f318b418b42677cb255a1))
+* **#274:** Añadir logo y titulo a la pantalla ([ecffaf1](https://github.com/julsolalf/ISPP-G2/commit/ecffaf19868d49fab2a6a655ee127a9099e8c4af))
+* **#274:** Cambio de nombres para que concuerden las paginas ([6f8ea14](https://github.com/julsolalf/ISPP-G2/commit/6f8ea14236a3b6612b1780253d201c7b369b7d02))
+* **#283:** Arreglo de conexion con backend ([518525a](https://github.com/julsolalf/ISPP-G2/commit/518525a9d1561cf80809cada2556f055492779e2))
+* **#289:** Cambiar los navigate de volver y añadir al logo un navigate ([02b1afc](https://github.com/julsolalf/ISPP-G2/commit/02b1afccdd51b31de42fe25c77a0268727ae9872))
+* **#298:** Cambio para guardar duenoId ([6aef573](https://github.com/julsolalf/ISPP-G2/commit/6aef573e371dd41aa1ee037665101f681c804cc0))
+* **#298:** Implementacion de Inicio de sesion nuevo y conexion a backend correctamente de las pantallas ([96661ce](https://github.com/julsolalf/ISPP-G2/commit/96661ce63e3ff85bf94b1605429ff065d1da2ede))
+* **#304:** Registro negocio conectado al backend correctamente ([26ed055](https://github.com/julsolalf/ISPP-G2/commit/26ed05563c482d4848a6e184e63ccbbe174ef42c))
+* **#313:** Pantalla de Venta para Empleados correctamente y pequeño cambio para el inicio de sesion ([bb17d4e](https://github.com/julsolalf/ISPP-G2/commit/bb17d4ec4bd814ff49c97507c719af1d2e725e03))
+* **#316:** areglo pantallas para conectar a backend ([f46a91c](https://github.com/julsolalf/ISPP-G2/commit/f46a91cff4d7deee3d662d613895038192afd220))
+* **#316:** Arreglo elegir negocio y ventas ([7eb2145](https://github.com/julsolalf/ISPP-G2/commit/7eb214576776da232414708f3f316ac1a3068ff1))
+* **#316:** Poner bien el cierre de sesion y añadirlo donde faltaba. Ahora elimina todo del localStorage ([0acab35](https://github.com/julsolalf/ISPP-G2/commit/0acab35b5e853186ea56b0bf6a97e863f0e3d601))
+* **#332:** Arreglar distintas pantallas que no van ([a0a5248](https://github.com/julsolalf/ISPP-G2/commit/a0a52481d3d88a636e6882b47c3a9cb81742b0bb))
+* **#332:** Cambios en varias pantallas que estaban mal conectadas a backend ([a02a697](https://github.com/julsolalf/ISPP-G2/commit/a02a69779cccbad0c18bc457525a9b06300ea3e1))
+* **#337:** Funciones de exportar y filtrar en pantalla de empleados ([a3542a0](https://github.com/julsolalf/ISPP-G2/commit/a3542a012ceeb49034fcad853f7a426fea789999))
+* **#337:** Funciones de exportar y filtrar en pantallas de inventario y verTipoProducto ([20beee0](https://github.com/julsolalf/ISPP-G2/commit/20beee01bde4f87b5e666736eb008fe11d64136b))
+* Arreglo de tests ([433ab87](https://github.com/julsolalf/ISPP-G2/commit/433ab877e6961f7dfae06f11c29ee77dd923ac75))
+* Arreglos en el test ([f7e951c](https://github.com/julsolalf/ISPP-G2/commit/f7e951c9de0d7ea53f9c3885deccd89d9e6b52c4))
+* Arreglos en el testing ([2b65cb3](https://github.com/julsolalf/ISPP-G2/commit/2b65cb3fbb9a3390fed1316d70ceed417f827d5d))
+* Atributo innecesario ([5a9d8f6](https://github.com/julsolalf/ISPP-G2/commit/5a9d8f6882ddea6d3e29dd34639596d9800c6351))
+* Cambios de String A Integer ([e0147db](https://github.com/julsolalf/ISPP-G2/commit/e0147dbd3024ebbd6def955de0b7019cf3aee586))
+* Cambios en la conexion de negocio ([e87160b](https://github.com/julsolalf/ISPP-G2/commit/e87160b3c274691b1d98a5df3af719dce8dd02c5))
+* Cambios en la encriptacion y el contenido del jwt ([41a8ab2](https://github.com/julsolalf/ISPP-G2/commit/41a8ab240c9bebbd56f67665f6b523839c277782))
+* **docs:** all docs now renamed to Sprint 3 (last commit had a mistake) ([7bceca0](https://github.com/julsolalf/ISPP-G2/commit/7bceca04ee5ccb72eab72c3dfbe8ca6d1120512b))
+* **docs:** changed all docs to Sprint 3 ([b714012](https://github.com/julsolalf/ISPP-G2/commit/b71401277e5222c1564aeb894ee90e02d2a638eb))
+* **docs:** small typo ([8434190](https://github.com/julsolalf/ISPP-G2/commit/84341900928742e4f5d8b690904686ccdf7f9016))
+* Fixed annotations ([106d5e8](https://github.com/julsolalf/ISPP-G2/commit/106d5e8f348c38d1ef7ce92003ed0819cedce28e))
+* General fixes ([b87bb6d](https://github.com/julsolalf/ISPP-G2/commit/b87bb6d938e720bbd4defbb193cbd9d4a9933838))
+* invalid characters removed (package names, file names and content) ([38733bb](https://github.com/julsolalf/ISPP-G2/commit/38733bb618aa5ffb1a1cd460208ad13554455935))
+* invalid characters removed (package names, file names and content) ([6fdc1bf](https://github.com/julsolalf/ISPP-G2/commit/6fdc1bf5c9c20fcf299347e3fdec20dfe829ffce))
+* **lineaDePedido:** typo ([e5ac1fd](https://github.com/julsolalf/ISPP-G2/commit/e5ac1fd86b89080febf1e560c1ae92a5cc5329bd))
+* Maintainability issue ([fc83133](https://github.com/julsolalf/ISPP-G2/commit/fc83133d63a31114666568aed2e9b74749181e4b))
+* Modificion token ([319770f](https://github.com/julsolalf/ISPP-G2/commit/319770f826c57b57ef90ba78a28dc66a6d3d35dc))
+* other changes ([c0ff489](https://github.com/julsolalf/ISPP-G2/commit/c0ff4891fe9901e9de7578ed34f586dbf9a49c9a))
+* Resolved conflicts ([6de864a](https://github.com/julsolalf/ISPP-G2/commit/6de864ae03ae59326ec8b2561bf092285bb22452))
+* Simplificando implementacion ([9c04737](https://github.com/julsolalf/ISPP-G2/commit/9c0473779d6c40f949f9b3a4338c29aad125f671))
+* Some changes with urls ([af3aefd](https://github.com/julsolalf/ISPP-G2/commit/af3aefd7979ecf0a3a276d64fac224805fb62434))
+* **typo:** small typo ([1c99c57](https://github.com/julsolalf/ISPP-G2/commit/1c99c57ca2195432677502dbfddc63440fdf4885))
+* Uso de Repository ([3ee7242](https://github.com/julsolalf/ISPP-G2/commit/3ee72427b52f3fc2d64be0a77318753f84a7c1fb))
+* Varios tests arreglados ([35408e4](https://github.com/julsolalf/ISPP-G2/commit/35408e4a5225f5d2b5d9397a978a9acd0690e94c))
+* Varios tests arreglados ([6d95f99](https://github.com/julsolalf/ISPP-G2/commit/6d95f99566dd9bc7676eacb53332753893cc32ba))
+* Varios tests solucionados ([6d38c85](https://github.com/julsolalf/ISPP-G2/commit/6d38c852d0dcbc4fd3193f083bbc3db096943870))
+
+
+### Documentation
+
+* Plan testing ([c71bdce](https://github.com/julsolalf/ISPP-G2/commit/c71bdce4c34e1bab4ac72a84bc7965ebe2722f97))
+* Plan testing ([9f9be2a](https://github.com/julsolalf/ISPP-G2/commit/9f9be2afee517bd7e21c10a256529c2cff6cb0b9))
+
 ## 1.0.0 (2025-03-27)
 
 
