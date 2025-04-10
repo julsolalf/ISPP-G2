@@ -6,7 +6,7 @@
    Este plan de pruebas tiene como objetivo definir el alcance, la estrategia y el procedimiento para la realización de las pruebas en la aplicación GastroStock, garantizando que se cumplan los requisitos funcionales y no funcionales establecidos.
 
 * **Alcance:**  
-   Se cubrirán las pruebas de todos los módulos principales del sistema, incluyendo la gestión de usuarios, la lógica de negocio, la comunicación con la base de datos y cualquier interfaz de usuario o API. Se dejarán fuera aquellos componentes o integraciones externas que, por su naturaleza, requieran pruebas especializadas (por ejemplo, sistemas de terceros).
+   Se cubrirán las pruebas de todos los módulos principales del sistema, incluyendo la gestión de usuarios, la lógica de negocio, la comunicación con la base de datos y cualquier interfaz de usuario o API. Se dejarán fuera aquellos componentes o integraciones externas que, por su naturaleza, requieran pruebas especializadas (por ejemplo, sistemas de terceros)..
 
 # **2\. Objetivos de las Pruebas**
 
