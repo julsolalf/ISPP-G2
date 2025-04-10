@@ -22,20 +22,22 @@ function VerTipoProducto() {
   const navigate = useNavigate();
   const [categoria, setCategoria] = useState(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
-
-
-    const toggleNotifications = () => {
-      setShowNotifications(!showNotifications);
-    };
-  
-    const toggleUserOptions = () => {
-      setShowUserOptions(!showUserOptions);
-    };
-    const handleLogout = () => {
-      localStorage.clear();
-      navigate("/"); // Redirigir a la pantalla de inicio de sesión
-    };
+  const [showNotifications, setShowNotifications] = useState(false); // Estado para notificaciones
+  const [showUserOptions, setShowUserOptions] = useState(false); // Estado para opciones de usuario
   const [productos, setProductos] = useState([]);
+
+
+  const toggleNotifications = () => {
+    setShowNotifications(!showNotifications);
+  };
+
+  const toggleUserOptions = () => {
+    setShowUserOptions(!showUserOptions);
+  };
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/"); // Redirigir a la pantalla de inicio de sesión
+  };
 
 
   useEffect(() => {
@@ -92,7 +94,7 @@ function VerTipoProducto() {
                 <button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button>
               </li>
               <li>
-              <button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
+                <button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
               </li>
             </ul>
           </div>
@@ -101,7 +103,7 @@ function VerTipoProducto() {
         <button onClick={() => navigate("/inventario")} className="back-button">⬅ Volver</button>
         <Link to="/inicioDueno">
           <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
-        </Link>        
+        </Link>
         <h1 className="title">GastroStock</h1>
         <h2>Productos</h2>
         <div className="button-container3">
@@ -113,20 +115,21 @@ function VerTipoProducto() {
         {productos.length === 0 ? (
           <h3>No hay productos en esta categoría</h3>
         ) : (
-        <div className="empleados-grid">
-          {productos.map((producto) => (
-            <div key={producto.id} className="empleado-card" 
-            onClick={() => {
-              localStorage.setItem("productoId", producto.id);
-              navigate(`/categoria/${localStorage.getItem("categoriaNombre")}/producto/${producto.id}`)}}
-             style={{ cursor: "pointer" }}>
-              <h3>{producto.name}</h3>
-              <p>Cantidad: {producto.cantidadDeseada}</p>
-              {producto.cantidadDeseada <= producto.cantidadAviso && (
-                <p style={{ color: "red" }}>⚠ Stock bajo</p>
-              )}
-            </div>
-          ))}
+          <div className="empleados-grid">
+            {productos.map((producto) => (
+              <div key={producto.id} className="empleado-card"
+                onClick={() => {
+                  localStorage.setItem("productoId", producto.id);
+                  navigate(`/categoria/${localStorage.getItem("categoriaNombre")}/producto/${producto.id}`)
+                }}
+                style={{ cursor: "pointer" }}>
+                <h3>{producto.name}</h3>
+                <p>Cantidad: {producto.cantidadDeseada}</p>
+                {producto.cantidadDeseada <= producto.cantidadAviso && (
+                  <p style={{ color: "red" }}>⚠ Stock bajo</p>
+                )}
+              </div>
+            ))}
           </div>
         )}
         {/* Modal de Confirmación para Logout */}
