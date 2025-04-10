@@ -245,12 +245,12 @@ function PantallaPlanes() {
 
   // Handle logout
   const handleLogout = () => {
-    localStorage.removeItem()
+    localStorage.clear();
     navigate("/")
   }
 
   // Handle accordion change
-  const handleAccordionChange = (panel) => (event, isExpanded) => {
+  const handleAccordionChange = (panel) => (isExpanded) => {
     setExpandedSection(isExpanded ? panel : null)
   }
 
@@ -433,7 +433,7 @@ function PantallaPlanes() {
             features={premiumPlanFeatures}
             buttonText={isPremiumPlanActive ? "PLAN ACTUAL" : "MEJORAR"}
             isActive={isPremiumPlanActive}
-            onClick={() => navigate("/plan-activar-premium")}
+            onClick={handleUpgrade}
           />
         </div>
 

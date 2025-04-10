@@ -325,8 +325,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width:Plan P 2.5rem;
-  height: 2.5rem;
+  width: 2.2rem;
+  height: 2.2rem;
   border-radius: 9999px;
   background-color: rgba(0, 0, 0, 0.05);
   color: var(--text-primary);
