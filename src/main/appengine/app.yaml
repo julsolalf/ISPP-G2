@@ -18,10 +18,11 @@ handlers:
   - url: /api/.*
     script: auto
 
+  - url: /(.*\..+)$
+    static_files: frontend/build/\1
+    upload: frontend/build/(.*\..+)$
+
   - url: /.*
     static_files: frontend/build/index.html
     upload: frontend/build/index.html
 
-  - url: /(.*\.(gif|png|jpg|jpeg|svg|webp))
-    static_files: frontend/build/\1
-    upload: frontend/build/(.*\.(gif|png|jpg|jpeg|svg|webp))
