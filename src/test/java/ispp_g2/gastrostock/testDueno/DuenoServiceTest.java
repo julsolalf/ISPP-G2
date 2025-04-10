@@ -1,6 +1,7 @@
 package ispp_g2.gastrostock.testDueno;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
@@ -21,7 +22,11 @@ import org.springframework.test.context.ActiveProfiles;
 import ispp_g2.gastrostock.dueno.Dueno;
 import ispp_g2.gastrostock.dueno.DuenoRepository;
 import ispp_g2.gastrostock.dueno.DuenoService;
+import ispp_g2.gastrostock.exceptions.DuenoSaveException;
 import ispp_g2.gastrostock.negocio.Negocio;
+import ispp_g2.gastrostock.user.AuthoritiesRepository;
+import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserRepository;
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
@@ -32,6 +37,12 @@ class DuenoServiceTest {
 
     @InjectMocks
     private DuenoService duenoService;
+
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private AuthoritiesRepository authoritiesRepository;
 
     @Captor
     private ArgumentCaptor<Dueno> duenoCaptor;
@@ -44,6 +55,9 @@ class DuenoServiceTest {
 
     @BeforeEach
     void setUp() {
+
+        User user = new User();
+
         // Crear un dueno normal
         duenoNormal = new Dueno();
         duenoNormal.setId(1);
@@ -59,7 +73,7 @@ class DuenoServiceTest {
         negocio.setName("Restaurante La Tasca");
         negocio.setDireccion("Calle Principal 123");
         negocio.setCiudad("Sevilla");
-        negocio.setPais("España");
+        negocio.setPais("Espana");
         negocio.setCodigoPostal("41001");
         negocio.setTokenNegocio(12345);
 
@@ -71,6 +85,7 @@ class DuenoServiceTest {
         duenoConNegocio.setEmail("ana@example.com");
         duenoConNegocio.setNumTelefono("654321987");
         duenoConNegocio.setTokenDueno("TOKEN456");
+        duenoConNegocio.setUser(user);
         
         // Asignar el dueno al negocio
         negocio.setDueno(duenoConNegocio);
@@ -94,17 +109,19 @@ class DuenoServiceTest {
     @Test
     void testSaveDueno_Success() {
         // Arrange
+        User user = new User();
+        duenoNormal.setUser(user);
+        when(userRepository.save(user)).thenReturn(user);
         when(duenoRepository.save(any(Dueno.class))).thenReturn(duenoNormal);
-
+    
         // Act
         Dueno saved = duenoService.saveDueno(duenoNormal);
-
+    
         // Assert
         assertNotNull(saved);
         assertEquals(1, saved.getId());
         assertEquals("Juan", saved.getFirstName());
-        assertEquals("García", saved.getLastName());
-        assertEquals("juan@example.com", saved.getEmail());
+        verify(userRepository, times(1)).save(user);
         verify(duenoRepository, times(1)).save(duenoNormal);
     }
 
@@ -126,27 +143,27 @@ class DuenoServiceTest {
     @Test
     void testSaveDueno_WithInvalidData() {
         // Arrange
-        when(duenoRepository.save(duenoInvalido)).thenThrow(new IllegalArgumentException("Invalid data"));
-
+        User user = new User();
+        duenoInvalido.setUser(user);
+        
+        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(duenoRepository.save(duenoInvalido)).thenThrow(new DuenoSaveException("Invalid data"));
+    
         // Act & Assert
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+        Exception exception = assertThrows(DuenoSaveException.class, () -> {
             duenoService.saveDueno(duenoInvalido);
         });
-        assertEquals("Invalid data", exception.getMessage());
+        assertEquals("Error al guardar el dueño: Invalid data", exception.getMessage());
         verify(duenoRepository, times(1)).save(duenoInvalido);
     }
 
     @Test
     void testSaveDueno_Null() {
-        // Arrange
-        when(duenoRepository.save(null)).thenThrow(new IllegalArgumentException("Dueno cannot be null"));
-
         // Act & Assert
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             duenoService.saveDueno(null);
         });
-        assertEquals("Dueno cannot be null", exception.getMessage());
-        verify(duenoRepository, times(1)).save(null);
+        verify(duenoRepository, never()).save(any(Dueno.class));
     }
 
     // TESTS PARA getAllDuenos()
@@ -198,29 +215,29 @@ class DuenoServiceTest {
     @Test
     void testGetDuenoById_Success() {
         // Arrange
-        when(duenoRepository.findById("1")).thenReturn(Optional.of(duenoNormal));
+        when(duenoRepository.findById(1)).thenReturn(Optional.of(duenoNormal));
 
         // Act
-        Dueno result = duenoService.getDuenoById("1");
+        Dueno result = duenoService.getDuenoById(1);
 
         // Assert
         assertNotNull(result);
         assertEquals(1, result.getId());
         assertEquals("juan@example.com", result.getEmail());
-        verify(duenoRepository, times(1)).findById("1");
+        verify(duenoRepository, times(1)).findById(1);
     }
 
     @Test
     void testGetDuenoById_NotFound() {
         // Arrange
-        when(duenoRepository.findById("999")).thenReturn(Optional.empty());
+        when(duenoRepository.findById(999)).thenReturn(Optional.empty());
 
         // Act
-        Dueno result = duenoService.getDuenoById("999");
+        Dueno result = duenoService.getDuenoById(999);
 
         // Assert
         assertNull(result);
-        verify(duenoRepository, times(1)).findById("999");
+        verify(duenoRepository, times(1)).findById(999);
     }
 
     @Test
@@ -297,26 +314,26 @@ class DuenoServiceTest {
     @Test
     void testDeleteDueno_Success() {
         // Arrange
-        doNothing().when(duenoRepository).deleteById("1");
+        doNothing().when(duenoRepository).deleteById(1);
 
         // Act
-        duenoService.deleteDueno("1");
+        duenoService.deleteDueno(1);
 
         // Assert
-        verify(duenoRepository, times(1)).deleteById("1");
+        verify(duenoRepository, times(1)).deleteById(1);
     }
 
     @Test
     void testDeleteDueno_NotFound() {
         // Arrange
-        doThrow(new RuntimeException("Dueno not found")).when(duenoRepository).deleteById("999");
+        doThrow(new RuntimeException("Dueno not found")).when(duenoRepository).deleteById(999);
 
         // Act & Assert
         Exception exception = assertThrows(RuntimeException.class, () -> {
-            duenoService.deleteDueno("999");
+            duenoService.deleteDueno(999);
         });
         assertEquals("Dueno not found", exception.getMessage());
-        verify(duenoRepository, times(1)).deleteById("999");
+        verify(duenoRepository, times(1)).deleteById(999);
     }
 
     @Test

@@ -61,7 +61,7 @@ class NegocioServiceTest {
         negocio1.setName("Restaurante La Tasca");
         negocio1.setDireccion("Calle Principal 123");
         negocio1.setCiudad("Sevilla");
-        negocio1.setPais("España");
+        negocio1.setPais("Espana");
         negocio1.setCodigoPostal("41001");
         negocio1.setTokenNegocio(12345);
         negocio1.setDueno(dueno1);
@@ -71,7 +71,7 @@ class NegocioServiceTest {
         negocio2.setName("Bar El Rincón");
         negocio2.setDireccion("Avenida de la Constitución 45");
         negocio2.setCiudad("Sevilla");
-        negocio2.setPais("España");
+        negocio2.setPais("Espana");
         negocio2.setCodigoPostal("41001");
         negocio2.setTokenNegocio(67890);
         negocio2.setDueno(dueno1);
@@ -81,7 +81,7 @@ class NegocioServiceTest {
         negocio3.setName("Café Central");
         negocio3.setDireccion("Plaza Mayor 10");
         negocio3.setCiudad("Madrid");
-        negocio3.setPais("España");
+        negocio3.setPais("Espana");
         negocio3.setCodigoPostal("28001");
         negocio3.setTokenNegocio(54321);
         negocio3.setDueno(dueno2);
@@ -91,7 +91,7 @@ class NegocioServiceTest {
         nuevoNegocio.setName("Heladería Polar");
         nuevoNegocio.setDireccion("Calle Fresa 15");
         nuevoNegocio.setCiudad("Valencia");
-        nuevoNegocio.setPais("España");
+        nuevoNegocio.setPais("Espana");
         nuevoNegocio.setCodigoPostal("46001");
         nuevoNegocio.setTokenNegocio(11223);
         nuevoNegocio.setDueno(dueno2);
@@ -105,29 +105,29 @@ class NegocioServiceTest {
     @Test
     void testGetById_Success() {
         // Arrange
-        when(negocioRepository.findById("1")).thenReturn(Optional.of(negocio1));
+        when(negocioRepository.findById(1)).thenReturn(Optional.of(negocio1));
 
         // Act
-        Negocio result = negocioService.getById("1");
+        Negocio result = negocioService.getById(1);
 
         // Assert
         assertNotNull(result);
         assertEquals(1, result.getId());
         assertEquals("Restaurante La Tasca", result.getName());
-        verify(negocioRepository).findById("1");
+        verify(negocioRepository).findById(1);
     }
 
     @Test
     void testGetById_NotFound() {
         // Arrange
-        when(negocioRepository.findById("999")).thenReturn(Optional.empty());
+        when(negocioRepository.findById(999)).thenReturn(Optional.empty());
 
         // Act
-        Negocio result = negocioService.getById("999");
+        Negocio result = negocioService.getById(999);
 
         // Assert
         assertNull(result);
-        verify(negocioRepository).findById("999");
+        verify(negocioRepository).findById(999);
     }
 
     @Test
@@ -357,15 +357,15 @@ class NegocioServiceTest {
     @Test
     void testGetByPais_Success() {
         // Arrange
-        when(negocioRepository.findByPais("España")).thenReturn(negociosList);
+        when(negocioRepository.findByPais("Espana")).thenReturn(negociosList);
 
         // Act
-        List<Negocio> result = negocioService.getByPais("España");
+        List<Negocio> result = negocioService.getByPais("Espana");
 
         // Assert
         assertNotNull(result);
         assertEquals(3, result.size());
-        verify(negocioRepository).findByPais("España");
+        verify(negocioRepository).findByPais("Espana");
     }
 
     @Test
@@ -449,29 +449,29 @@ class NegocioServiceTest {
     void testGetByDueno_Success() {
         // Arrange
         List<Negocio> negociosDueno = Arrays.asList(negocio1, negocio2);
-        when(negocioRepository.findByDueno("1")).thenReturn(negociosDueno);
+        when(negocioRepository.findByDueno(1)).thenReturn(negociosDueno);
 
         // Act
-        List<Negocio> result = negocioService.getByDueno("1");
+        List<Negocio> result = negocioService.getByDueno(1);
 
         // Assert
         assertNotNull(result);
         assertEquals(2, result.size());
-        verify(negocioRepository).findByDueno("1");
+        verify(negocioRepository).findByDueno(1);
     }
 
     @Test
     void testGetByDueno_NotFound() {
         // Arrange
-        when(negocioRepository.findByDueno("999")).thenReturn(Collections.emptyList());
+        when(negocioRepository.findByDueno(999)).thenReturn(Collections.emptyList());
 
         // Act
-        List<Negocio> result = negocioService.getByDueno("999");
+        List<Negocio> result = negocioService.getByDueno(999);
 
         // Assert
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(negocioRepository).findByDueno("999");
+        verify(negocioRepository).findByDueno(999);
     }
 
     @Test
@@ -498,7 +498,7 @@ class NegocioServiceTest {
         negocioGuardado.setName("Heladería Polar");
         negocioGuardado.setDireccion("Calle Fresa 15");
         negocioGuardado.setCiudad("Valencia");
-        negocioGuardado.setPais("España");
+        negocioGuardado.setPais("Espana");
         negocioGuardado.setCodigoPostal("46001");
         negocioGuardado.setTokenNegocio(11223);
         negocioGuardado.setDueno(dueno2);
@@ -549,23 +549,23 @@ class NegocioServiceTest {
     @Test
     void testDelete_Success() {
         // Arrange
-        doNothing().when(negocioRepository).deleteById("1");
+        doNothing().when(negocioRepository).deleteById(1);
 
         // Act
-        negocioService.delete("1");
+        negocioService.delete(1);
 
         // Assert
-        verify(negocioRepository).deleteById("1");
+        verify(negocioRepository).deleteById(1);
     }
 
     @Test
     void testDelete_NonExistentId() {
         // Arrange
-        doThrow(new RuntimeException("Negocio no encontrado")).when(negocioRepository).deleteById("999");
+        doThrow(new RuntimeException("Negocio no encontrado")).when(negocioRepository).deleteById(999);
 
         // Act & Assert
-        assertThrows(RuntimeException.class, () -> negocioService.delete("999"));
-        verify(negocioRepository).deleteById("999");
+        assertThrows(RuntimeException.class, () -> negocioService.delete(999));
+        verify(negocioRepository).deleteById(999);
     }
 
     @Test

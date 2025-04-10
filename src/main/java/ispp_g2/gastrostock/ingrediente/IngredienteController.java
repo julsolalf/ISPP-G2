@@ -29,13 +29,18 @@ public class IngredienteController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Ingrediente> findById(@PathVariable("id") String id) {
-        Ingrediente ingrediente = ingredienteService.getById(id);
-        if (ingrediente == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<Ingrediente> findById(@PathVariable("id") Integer id) {
+        try {
+            Ingrediente ingrediente = ingredienteService.getById(id);
+            if (ingrediente == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(ingrediente, HttpStatus.OK);
+        } catch (NumberFormatException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(ingrediente, HttpStatus.OK);
     }
+
 
     @GetMapping("/cantidad/{cantidad}")
     public ResponseEntity<List<Ingrediente>> findByCantidad(@PathVariable("cantidad") Integer cantidad) {
@@ -73,25 +78,34 @@ public class IngredienteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Ingrediente> update(@PathVariable("id") String id, @RequestBody @Valid Ingrediente ingrediente) {
-        if(ingrediente == null){
-            throw new IllegalArgumentException("Ingrediente should not be null");
+    public ResponseEntity<Ingrediente> update(@PathVariable("id") Integer id, @RequestBody @Valid Ingrediente ingrediente) {
+        try {
+            Ingrediente existingIngrediente = ingredienteService.getById(id);
+            
+            if (existingIngrediente == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            
+            ingrediente.setId(id);
+            return new ResponseEntity<>(ingredienteService.save(ingrediente), HttpStatus.OK);
+        } catch (NumberFormatException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        if(ingredienteService.getById(id) == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        ingrediente.setId(Integer.valueOf(id));
-        return new ResponseEntity<>(ingredienteService.save(ingrediente), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") String id) {
-        Ingrediente ingrediente = ingredienteService.getById(id);
-        if(ingrediente == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
+        try {
+            Ingrediente ingrediente = ingredienteService.getById(id);
+            if (ingrediente == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            ingredienteService.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (NumberFormatException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        ingredienteService.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
 
 }

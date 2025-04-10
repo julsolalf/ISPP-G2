@@ -7,6 +7,7 @@ import ispp_g2.gastrostock.productoVenta.ProductoVenta;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
@@ -25,7 +26,15 @@ public class LineaDePedido extends BaseEntity{
 
     @NotNull
     @Positive
-    private Double precioLinea;
+    private Double precioUnitario;
+
+    @NotNull
+    private Boolean estado;
+
+    @Transient
+    public Double getPrecioLinea() {
+        return cantidad * precioUnitario;
+    }
 
     @ManyToOne(optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)

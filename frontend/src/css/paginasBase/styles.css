@@ -34,7 +34,7 @@ body, html {
 
 /* Estilo para el logo */
 .app-logo {
-  width: 120px; /* Aumentado el tamaño */
+  width: 120px; /* Aumentado el tamano */
   margin-bottom: 10px; /* Más espacio debajo del logo */
 }
 
@@ -63,7 +63,7 @@ input {
   font-size: 16px;
 }
 
-/* Ajustes para pantallas pequeñas */
+/* Ajustes para pantallas pequenas */
 @media (max-width: 480px) {
   .content {
     width: 95%;
@@ -124,7 +124,7 @@ button:hover {
   text-align: center;
   max-width: 900px; /* Define un ancho fijo */
   width: 90%;
-  margin: 50px auto; /* Añade espacio arriba y abajo */
+  margin: 50px auto; /* Anade espacio arriba y abajo */
   overflow-y: auto; /* Permite hacer scroll si el contenido es muy largo */
   max-height: 85vh; /* Evita que el contenedor sea demasiado alto */
   display: flex;

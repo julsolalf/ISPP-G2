@@ -19,6 +19,10 @@ import org.springframework.test.context.ActiveProfiles;
 
 import ispp_g2.gastrostock.proveedores.Proveedor;
 import ispp_g2.gastrostock.proveedores.ProveedorRepository;
+import ispp_g2.gastrostock.user.Authorities;
+import ispp_g2.gastrostock.user.AuthoritiesRepository;
+import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserRepository;
 import ispp_g2.gastrostock.diaReparto.DiaReparto;
 import ispp_g2.gastrostock.diaReparto.DiaRepartoRepository;
 import ispp_g2.gastrostock.negocio.Negocio;
@@ -43,6 +47,12 @@ public class ProveedorRepositoryTest {
     @Autowired
     private DuenoRepository duenoRepository;
     
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AuthoritiesRepository authoritiesRepository;
+    
     private Proveedor proveedor1, proveedor2, proveedor3;
     private DiaReparto diaLunes, diaMartes, diaMiercoles, diaViernes;
     private Negocio negocio;
@@ -56,6 +66,17 @@ public class ProveedorRepositoryTest {
         negocioRepository.deleteAll();
         duenoRepository.deleteAll();
         
+        Authorities authority = new Authorities();
+        authority.setAuthority("DUENO");
+        authority = authoritiesRepository.save(authority);
+
+        // Crear usuario
+        User user = new User();
+        user.setUsername("juangarcia");
+        user.setPassword("password123");
+        user.setAuthority(authority);
+        user = userRepository.save(user);   
+        
         // Crear un dueno
         dueno = new Dueno();
         dueno.setFirstName("Juan");
@@ -63,6 +84,7 @@ public class ProveedorRepositoryTest {
         dueno.setEmail("juan@example.com");
         dueno.setNumTelefono("652345678");
         dueno.setTokenDueno("TOKEN123");
+        dueno.setUser(user);
         dueno = duenoRepository.save(dueno);
         
         // Crear un negocio
@@ -70,7 +92,7 @@ public class ProveedorRepositoryTest {
         negocio.setName("Restaurante La Tasca");
         negocio.setDireccion("Calle Principal 123");
         negocio.setCiudad("Sevilla");
-        negocio.setPais("España");
+        negocio.setPais("Espana");
         negocio.setCodigoPostal("41001");
         negocio.setTokenNegocio(12345);
         negocio.setDueno(dueno);
@@ -79,25 +101,22 @@ public class ProveedorRepositoryTest {
         // Crear días de reparto
         diaLunes = new DiaReparto();
         diaLunes.setDiaSemana(DayOfWeek.MONDAY);
-        diaLunes.setNegocio(negocio);
         
         diaMartes = new DiaReparto();
         diaMartes.setDiaSemana(DayOfWeek.TUESDAY);
-        diaMartes.setNegocio(negocio);
         
         diaMiercoles = new DiaReparto();
         diaMiercoles.setDiaSemana(DayOfWeek.WEDNESDAY);
-        diaMiercoles.setNegocio(negocio);
         
         diaViernes = new DiaReparto();
         diaViernes.setDiaSemana(DayOfWeek.FRIDAY);
-        diaViernes.setNegocio(negocio);
 
         // Crear proveedores
         proveedor1 = new Proveedor();
         proveedor1.setName("Distribuciones Alimentarias S.L.");
         proveedor1.setEmail("distribuciones@example.com");
         proveedor1.setTelefono("954111222");
+        proveedor1.setNegocio(negocio);
         proveedor1.setDireccion("Polígono Industrial, Nave 7");
         proveedor1 = proveedorRepository.save(proveedor1);
         
@@ -111,6 +130,7 @@ public class ProveedorRepositoryTest {
         proveedor2.setName("Productos Frescos del Sur");
         proveedor2.setEmail("frescos@example.com");
         proveedor2.setTelefono("954333444");
+        proveedor2.setNegocio(negocio);
         proveedor2.setDireccion("Avenida de la Industria, 42");
         proveedor2 = proveedorRepository.save(proveedor2);
         
@@ -126,6 +146,7 @@ public class ProveedorRepositoryTest {
         proveedor3.setEmail("rapidas@example.com");
         proveedor3.setTelefono("954555666");
         proveedor3.setDireccion("Calle Comercio, 15");
+        proveedor3.setNegocio(negocio);
         proveedor3 = proveedorRepository.save(proveedor3);
     }
     
@@ -147,7 +168,7 @@ public class ProveedorRepositoryTest {
         assertNotNull(saved.getId());
         
         // Verificar que se guardó correctamente
-        Optional<Proveedor> found = proveedorRepository.findById(saved.getId().toString());
+        Optional<Proveedor> found = proveedorRepository.findById(saved.getId());
         assertTrue(found.isPresent());
         assertEquals("Nuevo Proveedor S.A.", found.get().getName());
     }
@@ -172,7 +193,7 @@ public class ProveedorRepositoryTest {
     @Test
     void testFindById() {
         // Buscar un proveedor existente
-        Optional<Proveedor> found = proveedorRepository.findById(proveedor1.getId().toString());
+        Optional<Proveedor> found = proveedorRepository.findById(proveedor1.getId());
         
         // Verificar que se encontró y los datos son correctos
         assertTrue(found.isPresent());
@@ -183,7 +204,7 @@ public class ProveedorRepositoryTest {
     @Test
     void testFindById_NotFound() {
         // Buscar un proveedor con ID inexistente
-        Optional<Proveedor> notFound = proveedorRepository.findById("999");
+        Optional<Proveedor> notFound = proveedorRepository.findById(999);
         
         // Verificar que no se encuentra
         assertFalse(notFound.isPresent());
@@ -221,7 +242,7 @@ public class ProveedorRepositoryTest {
         proveedorRepository.delete(proveedor3);
         
         // Verificar que ya no existe
-        Optional<Proveedor> shouldBeDeleted = proveedorRepository.findById(proveedor3.getId().toString());
+        Optional<Proveedor> shouldBeDeleted = proveedorRepository.findById(proveedor3.getId());
         assertFalse(shouldBeDeleted.isPresent());
         
         // Verificar que solo quedan 2 proveedores
@@ -236,10 +257,10 @@ public class ProveedorRepositoryTest {
     @Test
     void testDeleteById() {
         // Eliminar un proveedor por ID
-        proveedorRepository.deleteById(proveedor2.getId().toString());
+        proveedorRepository.deleteById(proveedor2.getId());
         
         // Verificar que ya no existe
-        Optional<Proveedor> shouldBeDeleted = proveedorRepository.findById(proveedor2.getId().toString());
+        Optional<Proveedor> shouldBeDeleted = proveedorRepository.findById(proveedor2.getId());
         assertFalse(shouldBeDeleted.isPresent());
         
         // Verificar que solo quedan 2 proveedores
@@ -257,7 +278,7 @@ public class ProveedorRepositoryTest {
         long countBefore = proveedorRepository.count();
         
         // Intentar eliminar un proveedor que no existe
-        proveedorRepository.deleteById("999");
+        proveedorRepository.deleteById(999);
         
         // Verificar que el número de proveedores no cambió
         assertEquals(countBefore, proveedorRepository.count());
@@ -417,7 +438,7 @@ public class ProveedorRepositoryTest {
         proveedorRepository.save(proveedor1);
         
         // Recuperar y verificar que se actualizó
-        Optional<Proveedor> updated = proveedorRepository.findById(proveedor1.getId().toString());
+        Optional<Proveedor> updated = proveedorRepository.findById(proveedor1.getId());
         assertTrue(updated.isPresent());
         assertEquals("Nombre Actualizado", updated.get().getName());
         assertEquals("actualizado@example.com", updated.get().getEmail());

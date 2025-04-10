@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import ispp_g2.gastrostock.categorias.Categoria;
 import ispp_g2.gastrostock.lote.Lote;
 import ispp_g2.gastrostock.model.NamedEntity;
+import ispp_g2.gastrostock.proveedores.Proveedor;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -30,8 +31,13 @@ public class ProductoInventario extends NamedEntity {
 
     @ManyToOne(optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "categoria_id")
+    @JoinColumn(name = "categoria_id", nullable = false)
     private Categoria categoria;
+
+    @ManyToOne(optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "proveedor_id", nullable = false)
+    private Proveedor proveedor;
 
     @Transient
     public Integer calcularCantidad(List<Lote> lotes) {

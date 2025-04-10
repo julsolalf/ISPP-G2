@@ -38,6 +38,7 @@ class DuenoRepositoryTest {
     @Autowired
     private AuthoritiesRepository authorities;
     
+    
     @Autowired
     private NegocioRepository negocioRepository;
     
@@ -55,7 +56,7 @@ class DuenoRepositoryTest {
 
         // Crear roles de usuario
         Authorities dueno = new Authorities();
-        dueno.setAuthority("DUEÑO");
+        dueno.setAuthority("DUENO");
         dueno = authorities.save(dueno);
         
         // Crear usuarios para asociar a los duenos
@@ -160,7 +161,7 @@ class DuenoRepositoryTest {
     @Test
     void testFindById() {
         // Buscar por ID existente
-        Optional<Dueno> found = duenoRepository.findById(Integer.toString(dueno1.getId()));
+        Optional<Dueno> found = duenoRepository.findById(dueno1.getId());
         
         // Verificar que existe y tiene los datos correctos
         assertTrue(found.isPresent());
@@ -171,7 +172,7 @@ class DuenoRepositoryTest {
     @Test
     void testFindById_NotFound() {
         // Buscar por ID que no existe
-        Optional<Dueno> notFound = duenoRepository.findById("999");
+        Optional<Dueno> notFound = duenoRepository.findById(999);
         
         // Verificar que no existe
         assertFalse(notFound.isPresent());
@@ -183,7 +184,7 @@ class DuenoRepositoryTest {
         duenoRepository.delete(dueno2);
         
         // Verificar que se eliminó
-        Optional<Dueno> shouldBeDeleted = duenoRepository.findById(Integer.toString(dueno2.getId()));
+        Optional<Dueno> shouldBeDeleted = duenoRepository.findById(dueno2.getId());
         assertFalse(shouldBeDeleted.isPresent());
         
         // Verificar que el resto sigue existiendo
@@ -249,12 +250,24 @@ class DuenoRepositoryTest {
     @Test
     void testFindDuenoByNombre_MultipleResults() {
         // Crear otro dueno con el mismo nombre
+        Authorities authority = new Authorities();
+        authority.setAuthority("DUENO");
+        authority = authorities.save(authority);
+
+        // Crear usuario
+        User user = new User();
+        user.setUsername("juanperez");
+        user.setPassword("password123");
+        user.setAuthority(authority);
+        user = userRepository.save(user);
+
         Dueno otroDueno = new Dueno();
         otroDueno.setFirstName("Juan");
         otroDueno.setLastName("Pérez");
         otroDueno.setEmail("juan.perez@example.com");
         otroDueno.setNumTelefono("678123456");
         otroDueno.setTokenDueno("TOKEN_JUAN2");
+        otroDueno.setUser(user);
         duenoRepository.save(otroDueno);
         
         // Buscar por nombre que tiene múltiples resultados
@@ -343,7 +356,7 @@ class DuenoRepositoryTest {
     @Test
     void testFindDuenoByUser_Success() {
         // Buscar por User ID existente
-        Optional<Dueno> found = duenoRepository.findDuenoByUser(Integer.toString(user1.getId()));
+        Optional<Dueno> found = duenoRepository.findDuenoByUser(user1.getId());
         
         // Verificar que existe y tiene los datos correctos
         assertTrue(found.isPresent());
@@ -354,9 +367,7 @@ class DuenoRepositoryTest {
     @Test
     void testFindDuenoByUser_NotFound() {
         // Buscar por User ID que no existe
-        Optional<Dueno> notFound = duenoRepository.findDuenoByUser("999");
-        
-        // Verificar que no existe
+        Optional<Dueno> notFound = duenoRepository.findDuenoByUser(999);
         assertFalse(notFound.isPresent());
     }
     
@@ -463,7 +474,7 @@ class DuenoRepositoryTest {
         negocio.setName("Restaurante La Tasca");
         negocio.setDireccion("Calle Principal 123");
         negocio.setCiudad("Sevilla");
-        negocio.setPais("España");
+        negocio.setPais("Espana");
         negocio.setCodigoPostal("41001");
         negocio.setTokenNegocio(12345);
         negocio.setDueno(dueno1);

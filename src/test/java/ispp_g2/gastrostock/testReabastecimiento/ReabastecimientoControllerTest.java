@@ -80,7 +80,7 @@ public class ReabastecimientoControllerTest {
         negocio.setName("Restaurante La Tasca");
         negocio.setDireccion("Calle Principal 123");
         negocio.setCiudad("Sevilla");
-        negocio.setPais("España");
+        negocio.setPais("Espana");
         negocio.setCodigoPostal("41001");
         negocio.setTokenNegocio(12345);
         negocio.setDueno(dueno);
@@ -152,7 +152,7 @@ public class ReabastecimientoControllerTest {
     @Test
     void testFindById_Success() throws Exception {
         // Given
-        when(reabastecimientoService.getById("1")).thenReturn(reabastecimiento1);
+        when(reabastecimientoService.getById(1)).thenReturn(reabastecimiento1);
         
         // When & Then
         mockMvc.perform(get("/api/reabastecimientos/1"))
@@ -161,19 +161,19 @@ public class ReabastecimientoControllerTest {
                 .andExpect(jsonPath("$.referencia").value("REF-001"))
                 .andExpect(jsonPath("$.precioTotal").value(1250.75));
         
-        verify(reabastecimientoService).getById("1");
+        verify(reabastecimientoService).getById(1);
     }
     
     @Test
     void testFindById_NotFound() throws Exception {
         // Given
-        when(reabastecimientoService.getById("999")).thenReturn(null);
+        when(reabastecimientoService.getById(999)).thenReturn(null);
         
         // When & Then
         mockMvc.perform(get("/api/reabastecimientos/999"))
                 .andExpect(status().isNotFound());
         
-        verify(reabastecimientoService).getById("999");
+        verify(reabastecimientoService).getById(999);
     }
     
     // TEST PARA findByFecha()
@@ -303,7 +303,7 @@ public class ReabastecimientoControllerTest {
     @Test
     void testFindByProveedor_Success() throws Exception {
         // Given
-        when(reabastecimientoService.getByProveedor("1")).thenReturn(reabastecimientos);
+        when(reabastecimientoService.getByProveedor(1)).thenReturn(reabastecimientos);
         
         // When & Then
         mockMvc.perform(get("/api/reabastecimientos/proveedor/1"))
@@ -311,19 +311,19 @@ public class ReabastecimientoControllerTest {
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[1].id").value(2));
         
-        verify(reabastecimientoService).getByProveedor("1");
+        verify(reabastecimientoService).getByProveedor(1);
     }
     
     @Test
     void testFindByProveedor_NotFound() throws Exception {
         // Given
-        when(reabastecimientoService.getByProveedor("999")).thenReturn(null);
+        when(reabastecimientoService.getByProveedor(999)).thenReturn(null);
         
         // When & Then
         mockMvc.perform(get("/api/reabastecimientos/proveedor/999"))
                 .andExpect(status().isNotFound());
         
-        verify(reabastecimientoService).getByProveedor("999");
+        verify(reabastecimientoService).getByProveedor(999);
     }
     
     // TEST PARA findByNegocio()
@@ -331,7 +331,7 @@ public class ReabastecimientoControllerTest {
     @Test
     void testFindByNegocio_Success() throws Exception {
         // Given
-        when(reabastecimientoService.getByNegocio("1")).thenReturn(reabastecimientos);
+        when(reabastecimientoService.getByNegocio(1)).thenReturn(reabastecimientos);
         
         // When & Then
         mockMvc.perform(get("/api/reabastecimientos/negocio/1"))
@@ -339,19 +339,19 @@ public class ReabastecimientoControllerTest {
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[1].id").value(2));
         
-        verify(reabastecimientoService).getByNegocio("1");
+        verify(reabastecimientoService).getByNegocio(1);
     }
     
     @Test
     void testFindByNegocio_NotFound() throws Exception {
         // Given
-        when(reabastecimientoService.getByNegocio("999")).thenReturn(null);
+        when(reabastecimientoService.getByNegocio(999)).thenReturn(null);
         
         // When & Then
         mockMvc.perform(get("/api/reabastecimientos/negocio/999"))
                 .andExpect(status().isNotFound());
         
-        verify(reabastecimientoService).getByNegocio("999");
+        verify(reabastecimientoService).getByNegocio(999);
     }
     
     // TEST PARA save()
@@ -371,7 +371,7 @@ public class ReabastecimientoControllerTest {
         nuevoNegocio.setName("Restaurante La Tasca");
         nuevoNegocio.setDireccion("Calle Principal 123");
         nuevoNegocio.setCiudad("Sevilla");
-        nuevoNegocio.setPais("España");
+        nuevoNegocio.setPais("Espana");
         nuevoNegocio.setCodigoPostal("41001");
         nuevoNegocio.setTokenNegocio(12345);
         nuevoNegocio.setDueno(nuevoDueno);
@@ -447,7 +447,7 @@ public class ReabastecimientoControllerTest {
                 nuevoNegocio.setName("Restaurante La Tasca");
                 nuevoNegocio.setDireccion("Calle Principal 123");
                 nuevoNegocio.setCiudad("Sevilla");
-                nuevoNegocio.setPais("España");
+                nuevoNegocio.setPais("Espana");
                 nuevoNegocio.setCodigoPostal("41001");
                 nuevoNegocio.setTokenNegocio(12345);
                 nuevoNegocio.setDueno(nuevoDueno);
@@ -515,28 +515,28 @@ public class ReabastecimientoControllerTest {
     @Test
     void testDelete_Success() throws Exception {
         // Given
-        when(reabastecimientoService.getById("1")).thenReturn(reabastecimiento1);
-        doNothing().when(reabastecimientoService).deleteById("1");
+        when(reabastecimientoService.getById(1)).thenReturn(reabastecimiento1);
+        doNothing().when(reabastecimientoService).deleteById(1);
         
         // When & Then
         mockMvc.perform(delete("/api/reabastecimientos/1"))
                 .andExpect(status().isNoContent());
         
-        verify(reabastecimientoService).getById("1");
-        verify(reabastecimientoService).deleteById("1");
+        verify(reabastecimientoService).getById(1);
+        verify(reabastecimientoService).deleteById(1);
     }
     
     @Test
     void testDelete_NotFound() throws Exception {
         // Given
-        when(reabastecimientoService.getById("999")).thenReturn(null);
+        when(reabastecimientoService.getById(999)).thenReturn(null);
         
         // When & Then
         mockMvc.perform(delete("/api/reabastecimientos/999"))
                 .andExpect(status().isNotFound());
         
-        verify(reabastecimientoService).getById("999");
-        verify(reabastecimientoService, never()).deleteById(anyString());
+        verify(reabastecimientoService).getById(999);
+        verify(reabastecimientoService, never()).deleteById(anyInt());
     }
     
     

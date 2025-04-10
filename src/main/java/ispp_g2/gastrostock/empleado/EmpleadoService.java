@@ -1,10 +1,13 @@
 package ispp_g2.gastrostock.empleado;
 
 import java.util.List;
+import java.util.Random;
 import java.util.stream.StreamSupport;
 
 import ispp_g2.gastrostock.negocio.Negocio;
+import ispp_g2.gastrostock.user.AuthoritiesRepository;
 import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,15 +18,23 @@ import org.springframework.transaction.annotation.Transactional;
 public class EmpleadoService {
 
     private final EmpleadoRepository empleadoRepository;
+    private final AuthoritiesRepository authoritiesRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public EmpleadoService(EmpleadoRepository empleadoRepository) {
+    public EmpleadoService(EmpleadoRepository empleadoRepository, AuthoritiesRepository authoritiesRepository, UserRepository userRepository) {
         this.empleadoRepository = empleadoRepository;
+        this.authoritiesRepository = authoritiesRepository;
+        this.userRepository = userRepository;
     }
 
     // Crear o actualizar un empleado
     @Transactional
     public Empleado saveEmpleado(Empleado empleado) {
+        if (empleado == null) {
+            throw new IllegalArgumentException("No se puede guardar un empleado null");
+        }
+        userRepository.save(empleado.getUser());
         return empleadoRepository.save(empleado);
     }
 
@@ -36,13 +47,13 @@ public class EmpleadoService {
 
     // Buscar empleado por ID
     @Transactional(readOnly = true)
-    public Empleado getEmpleadoById(String id) {
+    public Empleado getEmpleadoById(Integer id) {
         return empleadoRepository.findById(id).orElse(null);
     }
 
     // Eliminar empleado
     @Transactional
-    public void deleteEmpleado(String id) {
+    public void deleteEmpleado(Integer id) {
         empleadoRepository.deleteById(id);
     }
 
@@ -67,12 +78,17 @@ public class EmpleadoService {
     }
 
     @Transactional(readOnly = true)
-    public List<Empleado> getEmpleadoByNegocio(String id) {
+    public List<Empleado> getEmpleadoByNegocio(Integer id) {
         return empleadoRepository.findByNegocio(id);
     }
 
     @Transactional(readOnly = true)
-    public Empleado getEmpleadoByUser(String userId) {
+    public List<Empleado> getEmpleadoByDueno(Integer id) {
+        return empleadoRepository.findByDueno(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Empleado getEmpleadoByUser(Integer userId) {
         return empleadoRepository.findByUserId(userId).orElse(null);
     }
 
@@ -82,12 +98,16 @@ public class EmpleadoService {
     }
 
     @Transactional(readOnly = true)
-    public Empleado convertirDTOEmpleado(EmpleadoDTO empleadoDTO, Negocio negocio, User user) {
+    public Empleado convertirDTOEmpleado(EmpleadoDTO empleadoDTO, Negocio negocio) {
         Empleado empleado = new Empleado();
+        User user = new User();
+        user.setUsername(empleadoDTO.getUsername());
+        user.setPassword(empleadoDTO.getPassword());
+        user.setAuthority(authoritiesRepository.findByAuthority("empleado"));
         empleado.setFirstName(empleadoDTO.getFirstName());
         empleado.setLastName(empleadoDTO.getLastName());
         empleado.setEmail(empleadoDTO.getEmail());
-        empleado.setTokenEmpleado(empleadoDTO.getTokenEmpleado());
+        empleado.setTokenEmpleado(generarToken(empleadoDTO.getNegocio()));
         empleado.setNumTelefono(empleadoDTO.getNumTelefono());
         empleado.setDescripcion(empleadoDTO.getDescripcion());
         empleado.setUser(user);
@@ -104,9 +124,24 @@ public class EmpleadoService {
         empleadoDTO.setTokenEmpleado(empleado.getTokenEmpleado());
         empleadoDTO.setNumTelefono(empleado.getNumTelefono());
         empleadoDTO.setDescripcion(empleado.getDescripcion());
-        empleadoDTO.setUser(String.valueOf(empleado.getUser().getId()));
-        empleadoDTO.setNegocio(String.valueOf(empleado.getNegocio().getId()));
+        empleadoDTO.setUsername(empleado.getUser().getUsername());
+        empleadoDTO.setPassword(empleado.getUser().getPassword());
+        empleadoDTO.setNegocio(empleado.getNegocio().getId());
         return empleadoDTO;
+    }
+
+    private String generarToken(Integer id) {
+        String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        Integer l = 30;
+        Random r = new Random();
+
+        StringBuilder sb = new StringBuilder(l);
+        for (int i = 0; i < l; i++) {
+            int index = r.nextInt(caracteres.length());
+            sb.append(caracteres.charAt(index));
+        }
+
+        return "gst-" + sb.toString()+"-emp"+id.toString();
     }
     
 }

@@ -1,6 +1,7 @@
 package ispp_g2.gastrostock.testProductoVenta;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -12,13 +13,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import ispp_g2.gastrostock.categorias.Categoria;
+import ispp_g2.gastrostock.config.SecurityConfiguration;
+import ispp_g2.gastrostock.config.jwt.JwtAuthFilter;
+import ispp_g2.gastrostock.config.jwt.JwtService;
 import ispp_g2.gastrostock.productoVenta.ProductoVenta;
 import ispp_g2.gastrostock.productoVenta.ProductoVentaController;
 import ispp_g2.gastrostock.productoVenta.ProductoVentaService;
@@ -27,8 +34,7 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @WebMvcTest(ProductoVentaController.class)
-@ExtendWith(MockitoExtension.class)
-@AutoConfigureMockMvc(addFilters = false)
+@Import({SecurityConfiguration.class, JwtAuthFilter.class})
 @ActiveProfiles("test")
 class ProductoVentaControllerTest {
 
@@ -41,6 +47,16 @@ class ProductoVentaControllerTest {
     @InjectMocks
     private ProductoVentaController productoVentaController;
 
+    @MockBean
+    private JwtService jwtService;
+    
+    @MockBean
+    private AuthenticationProvider authenticationProvider;
+    
+    @MockBean
+    private UserDetailsService userDetailsService;
+    
+
     private ProductoVenta sampleProductoVenta;
 
     @BeforeEach
@@ -52,6 +68,9 @@ class ProductoVentaControllerTest {
         sampleProductoVenta.setName("Cerveza");
         sampleProductoVenta.setCategoria(bebidas);
         sampleProductoVenta.setPrecioVenta(10.5);
+        
+        when(jwtService.getUserNameFromJwtToken(anyString())).thenReturn("admin");
+        when(jwtService.validateJwtToken(anyString(), any())).thenReturn(true);
     }
 
     @Test
@@ -73,7 +92,7 @@ class ProductoVentaControllerTest {
 
     @Test
     void testFindProductoVenta_Found() throws Exception {
-        when(productoVentaService.getById("1")).thenReturn(sampleProductoVenta);
+        when(productoVentaService.getById(1)).thenReturn(sampleProductoVenta);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/productosVenta/1"))
             .andExpect(status().isOk())
@@ -82,7 +101,7 @@ class ProductoVentaControllerTest {
 
     @Test
     void testFindProductoVenta_NotFound() throws Exception {
-        when(productoVentaService.getById("99")).thenReturn(null);
+        when(productoVentaService.getById(99)).thenReturn(null);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/productosVenta/99"))
             .andExpect(status().isNotFound());
@@ -108,7 +127,7 @@ class ProductoVentaControllerTest {
 
     @Test
     void testUpdateProductoVenta_Success() throws Exception {
-        when(productoVentaService.getById("1")).thenReturn(sampleProductoVenta);
+        when(productoVentaService.getById(1)).thenReturn(sampleProductoVenta);
         when(productoVentaService.save(any())).thenReturn(sampleProductoVenta);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/productosVenta/1")
@@ -119,7 +138,7 @@ class ProductoVentaControllerTest {
 
     @Test
     void testUpdateProductoVenta_NotFound() throws Exception {
-        when(productoVentaService.getById("99")).thenReturn(null);
+        when(productoVentaService.getById(99)).thenReturn(null);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/productosVenta/99")
             .contentType(MediaType.APPLICATION_JSON)
@@ -129,8 +148,8 @@ class ProductoVentaControllerTest {
 
     @Test
     void testDeleteProductoVenta_Success() throws Exception {
-        when(productoVentaService.getById("1")).thenReturn(sampleProductoVenta);
-        doNothing().when(productoVentaService).delete("1");
+        when(productoVentaService.getById(1)).thenReturn(sampleProductoVenta);
+        doNothing().when(productoVentaService).delete(1);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/productosVenta/1"))
             .andExpect(status().isNoContent());
@@ -138,7 +157,7 @@ class ProductoVentaControllerTest {
 
     @Test
     void testDeleteProductoVenta_NotFound() throws Exception {
-        when(productoVentaService.getById("99")).thenReturn(null);
+        when(productoVentaService.getById(99)).thenReturn(null);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/productosVenta/99"))
             .andExpect(status().isNotFound());
@@ -162,7 +181,7 @@ class ProductoVentaControllerTest {
 
     @Test
     void testInternalServerError() throws Exception {
-        when(productoVentaService.getById("1")).thenThrow(new RuntimeException("Error interno"));
+        when(productoVentaService.getById(1)).thenThrow(new RuntimeException("Error interno"));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/productosVenta/1"))
             .andExpect(status().isInternalServerError());

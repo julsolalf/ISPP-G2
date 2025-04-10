@@ -1,15 +1,24 @@
 package ispp_g2.gastrostock.empleado;
 
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class EmpleadoDTO {
+
+    @Column(unique=true)
+    @NotBlank
+    private String username;
+
+    @NotBlank
+    private String password;
 
     @NotBlank
     private String firstName;
@@ -25,15 +34,11 @@ public class EmpleadoDTO {
     @Digits(fraction = 0, integer = 9)
     private String numTelefono;
 
-    @NotBlank
     private String tokenEmpleado;
 
     private String descripcion;
 
-    @NotBlank
-    private String user;
-
-    @NotBlank
-    private String negocio;
+    @NotNull
+    private Integer negocio;
 
 }

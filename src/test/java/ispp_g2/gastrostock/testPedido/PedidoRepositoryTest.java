@@ -23,6 +23,10 @@ import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioRepository;
 import ispp_g2.gastrostock.pedido.Pedido;
 import ispp_g2.gastrostock.pedido.PedidoRepository;
+import ispp_g2.gastrostock.user.Authorities;
+import ispp_g2.gastrostock.user.AuthoritiesRepository;
+import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase
@@ -43,6 +47,13 @@ class PedidoRepositoryTest {
     
     @Autowired
     private DuenoRepository duenoRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AuthoritiesRepository authoritiesRepository;
+
     
     private Pedido pedido1, pedido2;
     private Mesa mesa1, mesa2;
@@ -59,6 +70,18 @@ class PedidoRepositoryTest {
         empleadoRepository.deleteAll();
         negocioRepository.deleteAll();
         duenoRepository.deleteAll();
+
+
+        Authorities authority = new Authorities();
+        authority.setAuthority("DUENO");
+        authority = authoritiesRepository.save(authority);
+
+        // Crear usuario
+        User user = new User();
+        user.setUsername("juangarcia");
+        user.setPassword("password123");
+        user.setAuthority(authority);
+        user = userRepository.save(user);
         
         // Create Dueno
         dueno = new Dueno();
@@ -67,6 +90,7 @@ class PedidoRepositoryTest {
         dueno.setEmail("juan@example.com");
         dueno.setNumTelefono("652345678");
         dueno.setTokenDueno("TOKEN123");
+        dueno.setUser(user);
         dueno = duenoRepository.save(dueno);
         
         // Create Negocio
@@ -74,7 +98,7 @@ class PedidoRepositoryTest {
         negocio.setName("Restaurante La Tasca");
         negocio.setDireccion("Calle Principal 123");
         negocio.setCiudad("Sevilla");
-        negocio.setPais("España");
+        negocio.setPais("Espana");
         negocio.setCodigoPostal("41001");
         negocio.setTokenNegocio(12345);
         negocio.setDueno(dueno);
@@ -101,11 +125,13 @@ class PedidoRepositoryTest {
         empleado.setLastName("García");
         empleado.setEmail("antoninio@test.com");
         empleado.setNumTelefono("666111222");
+        empleado.setUser(user);
         empleadoRepository.save(empleado);
         
         // Set up dates
         fecha1 = LocalDateTime.now().minusHours(1);
         fecha2 = LocalDateTime.now();
+
         
         // Create Pedidos
         pedido1 = new Pedido();
@@ -144,14 +170,14 @@ class PedidoRepositoryTest {
         assertNotNull(newPedido.getId());
         
         // Verify it can be retrieved
-        Optional<Pedido> found = pedidoRepository.findById(newPedido.getId().toString());
+        Optional<Pedido> found = pedidoRepository.findById(newPedido.getId());
         assertTrue(found.isPresent());
         assertEquals(100.00, found.get().getPrecioTotal());
     }
     
     @Test
     void testFindById() {
-        Optional<Pedido> found = pedidoRepository.findById(pedido1.getId().toString());
+        Optional<Pedido> found = pedidoRepository.findById(pedido1.getId());
         
         // Verify
         assertTrue(found.isPresent());
@@ -160,7 +186,7 @@ class PedidoRepositoryTest {
     
     @Test
     void testFindById_NotFound() {
-        Optional<Pedido> found = pedidoRepository.findById("999999");
+        Optional<Pedido> found = pedidoRepository.findById(999999);
         
         // Verify
         assertFalse(found.isPresent());
@@ -177,25 +203,25 @@ class PedidoRepositoryTest {
     
     @Test
     void testDelete() {
-        assertTrue(pedidoRepository.findById(pedido1.getId().toString()).isPresent());
+        assertTrue(pedidoRepository.findById(pedido1.getId()).isPresent());
         
         // Delete pedido
         pedidoRepository.delete(pedido1);
         
         // Verify it was deleted
-        assertFalse(pedidoRepository.findById(pedido1.getId().toString()).isPresent());
+        assertFalse(pedidoRepository.findById(pedido1.getId()).isPresent());
     }
     
     @Test
     void testDeleteById() {
         // Verify pedido exists
-        assertTrue(pedidoRepository.findById(pedido1.getId().toString()).isPresent());
+        assertTrue(pedidoRepository.findById(pedido1.getId()).isPresent());
         
         // Delete pedido by ID
-        pedidoRepository.deleteById(pedido1.getId().toString());
+        pedidoRepository.deleteById(pedido1.getId());
         
         // Verify it was deleted
-        assertFalse(pedidoRepository.findById(pedido1.getId().toString()).isPresent());
+        assertFalse(pedidoRepository.findById(pedido1.getId()).isPresent());
     }
     
     // Test custom queries

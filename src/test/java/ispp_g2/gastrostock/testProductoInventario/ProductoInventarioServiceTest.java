@@ -50,18 +50,18 @@ class ProductoInventarioServiceTest {
 
     @Test
     void testGetById_Found() {
-        when(productoInventarioRepository.findById("1")).thenReturn(Optional.of(sampleProduct));
+        when(productoInventarioRepository.findById(1)).thenReturn(Optional.of(sampleProduct));
 
-        ProductoInventario result = productoInventarioService.getById("1");
+        ProductoInventario result = productoInventarioService.getById(1);
         assertNotNull(result);
         assertEquals("Cerveza", result.getName());
     }
 
     @Test
     void testGetById_NotFound() {
-        when(productoInventarioRepository.findById("99")).thenReturn(Optional.empty());
+        when(productoInventarioRepository.findById(99)).thenReturn(Optional.empty());
 
-        ProductoInventario result = productoInventarioService.getById("99");
+        ProductoInventario result = productoInventarioService.getById(99);
         assertNull(result);
     }
 
@@ -143,25 +143,25 @@ class ProductoInventarioServiceTest {
 
     @Test
     void testDelete() {
-        doNothing().when(productoInventarioRepository).deleteById("1");
+        doNothing().when(productoInventarioRepository).deleteById(1);
 
-        productoInventarioService.delete("1");
+        productoInventarioService.delete(1);
 
-        verify(productoInventarioRepository, times(1)).deleteById("1");
+        verify(productoInventarioRepository, times(1)).deleteById(1);
     }
 
     @Test
     void testGetProductoInventario_InvalidId() {
-        when(productoInventarioRepository.findById("invalidId")).thenReturn(Optional.empty());
+        when(productoInventarioRepository.findById(99999)).thenReturn(Optional.empty());
 
-        ProductoInventario result = productoInventarioService.getById("invalidId");
+        ProductoInventario result = productoInventarioService.getById(99999);
         assertNull(result);  
     }
 
     @Test
     void testDeleteProductoInventario_InvalidId() {
-        productoInventarioService.delete("invalidId");
-        verify(productoInventarioRepository, times(1)).deleteById("invalidId");
+        productoInventarioService.delete(999999);
+        verify(productoInventarioRepository, times(1)).deleteById(999999);
     }
     
 

@@ -1,18 +1,15 @@
 package ispp_g2.gastrostock.testProveedores;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,7 +27,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ispp_g2.gastrostock.proveedores.Proveedor;
 import ispp_g2.gastrostock.proveedores.ProveedorController;
 import ispp_g2.gastrostock.proveedores.ProveedorService;
-import ispp_g2.gastrostock.exceptions.ExceptionHandlerController;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -138,7 +134,7 @@ public class ProveedorControllerTest {
     @Test
     void testFindById_Success() throws Exception {
         // Arrange
-        when(proveedorService.findById("1")).thenReturn(proveedor1);
+        when(proveedorService.findById(1)).thenReturn(proveedor1);
         
         // Act & Assert
         mockMvc.perform(get("/api/proveedores/1"))
@@ -148,32 +144,29 @@ public class ProveedorControllerTest {
             .andExpect(jsonPath("$.name", is("Distribuciones Alimentarias S.L.")))
             .andExpect(jsonPath("$.email", is("distribuciones@example.com")));
         
-        verify(proveedorService).findById("1");
+        verify(proveedorService).findById(1);
     }
 
     @Test
     void testFindById_NotFound() throws Exception {
         // Arrange
-        when(proveedorService.findById("999")).thenReturn(null);
+        when(proveedorService.findById(999)).thenReturn(null);
         
         // Act & Assert
         mockMvc.perform(get("/api/proveedores/999"))
             .andExpect(status().isNotFound());
         
-        verify(proveedorService).findById("999");
+        verify(proveedorService).findById(999);
     }
 
-    @Test
-    void testFindById_InvalidId() throws Exception {
-        // Arrange - Simular que el servicio lanza una excepción al recibir un ID no válido
-        when(proveedorService.findById("invalid")).thenThrow(new NumberFormatException("Invalid ID"));
-        
-        // Act & Assert
-        mockMvc.perform(get("/api/proveedores/invalid"))
-            .andExpect(status().isInternalServerError());
-        
-        verify(proveedorService).findById("invalid");
-    }
+@Test
+void testFindById_InvalidId() throws Exception {
+    // Act & Assert
+    mockMvc.perform(get("/api/proveedores/invalid"))
+        .andExpect(status().isBadRequest());
+    
+    verify(proveedorService, never()).findById(anyInt());
+}
 
     // TESTS PARA findByEmail()
 
@@ -368,7 +361,7 @@ public class ProveedorControllerTest {
         proveedorGuardado.setTelefono("954111333");
         proveedorGuardado.setDireccion("Polígono Industrial, Nave 8");
         
-        when(proveedorService.findById("1")).thenReturn(proveedor1);
+        when(proveedorService.findById(1)).thenReturn(proveedor1);
         when(proveedorService.save(any(Proveedor.class))).thenReturn(proveedorGuardado);
         
         // Act & Assert
@@ -381,7 +374,7 @@ public class ProveedorControllerTest {
                 .andExpect(jsonPath("$.name", is("Distribuciones Alimentarias Actualizado")))
                 .andExpect(jsonPath("$.email", is("actualizado@example.com")));
         
-        verify(proveedorService).findById("1");
+        verify(proveedorService).findById(1);
         verify(proveedorService).save(any(Proveedor.class));
     }
 
@@ -391,11 +384,11 @@ public class ProveedorControllerTest {
         Proveedor proveedorActualizado = new Proveedor();
         proveedorActualizado.setName("Distribuciones Alimentarias Actualizado");
         proveedorActualizado.setEmail("actualizado@example.com");
-        proveedorActualizado.setTelefono("954111333"); // Añadir teléfono
-        proveedorActualizado.setDireccion("Polígono Industrial, Nave 8"); // Añadir dirección
-        // Añadir otros campos obligatorios si los hay
+        proveedorActualizado.setTelefono("954111333"); // Anadir teléfono
+        proveedorActualizado.setDireccion("Polígono Industrial, Nave 8"); // Anadir dirección
+        // Anadir otros campos obligatorios si los hay
         
-        when(proveedorService.findById("999")).thenReturn(null);
+        when(proveedorService.findById(999)).thenReturn(null);
         
         // Act & Assert
         mockMvc.perform(put("/api/proveedores/999")
@@ -403,7 +396,7 @@ public class ProveedorControllerTest {
                 .content(objectMapper.writeValueAsString(proveedorActualizado)))
                 .andExpect(status().isNotFound());
         
-        verify(proveedorService).findById("999");
+        verify(proveedorService).findById(999);
         verify(proveedorService, never()).save(any(Proveedor.class));
     }
 
@@ -415,7 +408,7 @@ public class ProveedorControllerTest {
                 .content("{}")) // Enviar un objeto JSON vacío
                 .andExpect(status().isBadRequest());
         
-        verify(proveedorService, never()).findById(anyString());
+        verify(proveedorService, never()).findById(anyInt());
         verify(proveedorService, never()).save(any(Proveedor.class));
     }
 
@@ -424,41 +417,41 @@ public class ProveedorControllerTest {
     @Test
     void testDeleteById_Success() throws Exception {
         // Arrange
-        when(proveedorService.findById("1")).thenReturn(proveedor1);
-        doNothing().when(proveedorService).deleteById("1");
+        when(proveedorService.findById(1)).thenReturn(proveedor1);
+        doNothing().when(proveedorService).deleteById(1);
         
         // Act & Assert
         mockMvc.perform(delete("/api/proveedores/1"))
                 .andExpect(status().isNoContent());
         
-        verify(proveedorService).findById("1");
-        verify(proveedorService).deleteById("1");
+        verify(proveedorService).findById(1);
+        verify(proveedorService).deleteById(1);
     }
 
     @Test
     void testDeleteById_NotFound() throws Exception {
         // Arrange
-        when(proveedorService.findById("999")).thenReturn(null);
+        when(proveedorService.findById(999)).thenReturn(null);
         
         // Act & Assert
         mockMvc.perform(delete("/api/proveedores/999"))
                 .andExpect(status().isNotFound());
         
-        verify(proveedorService).findById("999");
-        verify(proveedorService, never()).deleteById("999");
+        verify(proveedorService).findById(999);
+        verify(proveedorService, never()).deleteById(999);
     }
 
     @Test
     void testDeleteById_ServiceThrowsException() throws Exception {
         // Arrange
-        when(proveedorService.findById("1")).thenReturn(proveedor1);
-        doThrow(new RuntimeException("Database error")).when(proveedorService).deleteById("1");
+        when(proveedorService.findById(1)).thenReturn(proveedor1);
+        doThrow(new RuntimeException("Database error")).when(proveedorService).deleteById(1);
         
         // Act & Assert
         mockMvc.perform(delete("/api/proveedores/1"))
                 .andExpect(status().isInternalServerError());
         
-        verify(proveedorService).findById("1");
-        verify(proveedorService).deleteById("1");
+        verify(proveedorService).findById(1);
+        verify(proveedorService).deleteById(1);
     }
 }

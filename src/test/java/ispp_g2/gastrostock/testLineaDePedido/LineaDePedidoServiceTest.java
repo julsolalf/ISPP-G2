@@ -33,15 +33,15 @@ class LineaDePedidoServiceTest {
         MockitoAnnotations.openMocks(this);
         linea = new LineaDePedido();
         linea.setCantidad(2);
-        linea.setPrecioLinea(100.0);
+        linea.setPrecioUnitario(100.0);
         linea.setPedido(new Pedido());
         linea.setProducto(new ProductoVenta());
     }
 
     @Test
     void testGetById() {
-        when(repository.findById("1")).thenReturn(Optional.of(linea));
-        LineaDePedido result = service.getById("1");
+        when(repository.findById(1)).thenReturn(Optional.of(linea));
+        LineaDePedido result = service.getById(1);
         assertNotNull(result);
         assertEquals(2, result.getCantidad());
     }
@@ -62,7 +62,7 @@ class LineaDePedidoServiceTest {
 
     @Test
     void testGetLineasDePedidoByPrecioLinea() {
-        when(repository.findLineaDePedidosByPrecioLinea(100.0)).thenReturn(List.of(linea));
+        when(repository.findLineaDePedidosByPrecioUnitario(100.0)).thenReturn(List.of(linea));
         List<LineaDePedido> result = service.getLineasDePedidoByPrecioLinea(100.0);
         assertFalse(result.isEmpty());
     }
@@ -90,7 +90,7 @@ class LineaDePedidoServiceTest {
 
     @Test
     void testGetLineasDePedidoByProductoIdAndPrecioLinea() {
-        when(repository.findLineaDePedidosByProductoIdAndPrecioLinea(1, 100.0)).thenReturn(List.of(linea));
+        when(repository.findLineaDePedidosByProductoIdAndPrecioUnitario(1, 100.0)).thenReturn(List.of(linea));
         List<LineaDePedido> result = service.getLineasDePedidoByProductoIdAndPrecioLinea(1, 100.0);
         assertFalse(result.isEmpty());
     }
@@ -105,8 +105,8 @@ class LineaDePedidoServiceTest {
 
     @Test
     void testDelete() {
-        doNothing().when(repository).deleteById("1");
-        service.delete("1");
-        verify(repository, times(1)).deleteById("1");
+        doNothing().when(repository).deleteById(1);
+        service.delete(1);
+        verify(repository, times(1)).deleteById(1);
     }
 }

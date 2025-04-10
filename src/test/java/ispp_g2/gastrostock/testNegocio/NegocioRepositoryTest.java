@@ -18,6 +18,10 @@ import ispp_g2.gastrostock.dueno.Dueno;
 import ispp_g2.gastrostock.dueno.DuenoRepository;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioRepository;
+import ispp_g2.gastrostock.user.Authorities;
+import ispp_g2.gastrostock.user.AuthoritiesRepository;
+import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase
@@ -29,6 +33,12 @@ class NegocioRepositoryTest {
     
     @Autowired
     private DuenoRepository duenoRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AuthoritiesRepository authoritiesRepository;
     
     private Dueno dueno1, dueno2;
     private Negocio negocio1, negocio2, negocio3;
@@ -38,6 +48,23 @@ class NegocioRepositoryTest {
         // Limpiar repositorios
         negocioRepository.deleteAll();
         duenoRepository.deleteAll();
+
+        Authorities authority = new Authorities();
+        authority.setAuthority("DUENO");
+        authority = authoritiesRepository.save(authority);
+
+        // Crear usuario
+        User user = new User();
+        user.setUsername("juangarcia");
+        user.setPassword("password123");
+        user.setAuthority(authority);
+        user = userRepository.save(user);
+
+        User user2 = new User();
+        user2.setUsername("marialopez");
+        user2.setPassword("password123");
+        user2.setAuthority(authority);
+        user2 = userRepository.save(user2);
         
         // Crear duenos
         dueno1 = new Dueno();
@@ -46,6 +73,7 @@ class NegocioRepositoryTest {
         dueno1.setEmail("juan@example.com");
         dueno1.setNumTelefono("666111222");
         dueno1.setTokenDueno("TOKEN999");
+        dueno1.setUser(user);
         dueno1 = duenoRepository.save(dueno1);
         
         dueno2 = new Dueno();
@@ -54,6 +82,7 @@ class NegocioRepositoryTest {
         dueno2.setEmail("maria@example.com");
         dueno2.setNumTelefono("666333444");
         dueno2.setTokenDueno("TOKEN456");
+        dueno2.setUser(user2);
         dueno2 = duenoRepository.save(dueno2);
         
         // Crear negocios
@@ -61,7 +90,7 @@ class NegocioRepositoryTest {
         negocio1.setName("Restaurante La Tasca");
         negocio1.setDireccion("Calle Principal 123");
         negocio1.setCiudad("Sevilla");
-        negocio1.setPais("España");
+        negocio1.setPais("Espana");
         negocio1.setCodigoPostal("41001");
         negocio1.setTokenNegocio(12345);
         negocio1.setDueno(dueno1);
@@ -71,7 +100,7 @@ class NegocioRepositoryTest {
         negocio2.setName("Bar El Rincón");
         negocio2.setDireccion("Avenida de la Constitución 45");
         negocio2.setCiudad("Sevilla");
-        negocio2.setPais("España");
+        negocio2.setPais("Espana");
         negocio2.setCodigoPostal("41001");
         negocio2.setTokenNegocio(67890);
         negocio2.setDueno(dueno1);
@@ -81,7 +110,7 @@ class NegocioRepositoryTest {
         negocio3.setName("Café Central");
         negocio3.setDireccion("Plaza Mayor 10");
         negocio3.setCiudad("Madrid");
-        negocio3.setPais("España");
+        negocio3.setPais("Espana");
         negocio3.setCodigoPostal("28001");
         negocio3.setTokenNegocio(54321);
         negocio3.setDueno(dueno2);
@@ -115,7 +144,7 @@ class NegocioRepositoryTest {
     
     @Test
     void testFindById() {
-        Optional<Negocio> found = negocioRepository.findById(negocio1.getId().toString());
+        Optional<Negocio> found = negocioRepository.findById(negocio1.getId());
         
         assertTrue(found.isPresent());
         assertEquals("Restaurante La Tasca", found.get().getName());
@@ -124,7 +153,7 @@ class NegocioRepositoryTest {
     
     @Test
     void testFindById_NotFound() {
-        Optional<Negocio> notFound = negocioRepository.findById("9999");
+        Optional<Negocio> notFound = negocioRepository.findById(9999);
         
         assertFalse(notFound.isPresent());
     }
@@ -135,7 +164,7 @@ class NegocioRepositoryTest {
         newNegocio.setName("Heladería Polar");
         newNegocio.setDireccion("Calle Fresa 15");
         newNegocio.setCiudad("Valencia");
-        newNegocio.setPais("España");
+        newNegocio.setPais("Espana");
         newNegocio.setCodigoPostal("46001");
         newNegocio.setTokenNegocio(11223);
         newNegocio.setDueno(dueno2);
@@ -157,7 +186,7 @@ class NegocioRepositoryTest {
         negocioSinDueno.setName("Restaurante Sin Dueno");
         negocioSinDueno.setDireccion("Calle Cualquiera 10");
         negocioSinDueno.setCiudad("Barcelona");
-        negocioSinDueno.setPais("España");
+        negocioSinDueno.setPais("Espana");
         negocioSinDueno.setCodigoPostal("08001");
         negocioSinDueno.setTokenNegocio(99999);
         
@@ -181,7 +210,7 @@ class NegocioRepositoryTest {
         assertEquals("Córdoba", updated.getCiudad());
         
         // Verificar que se actualizó en la BD
-        Optional<Negocio> retrieved = negocioRepository.findById(negocio1.getId().toString());
+        Optional<Negocio> retrieved = negocioRepository.findById(negocio1.getId());
         assertTrue(retrieved.isPresent());
         assertEquals("Restaurante La Tasca Renovado", retrieved.get().getName());
         assertEquals("Córdoba", retrieved.get().getCiudad());
@@ -207,10 +236,10 @@ class NegocioRepositoryTest {
     @Test
     void testDeleteById() {
         // Eliminar por ID
-        negocioRepository.deleteById(negocio2.getId().toString());
+        negocioRepository.deleteById(negocio2.getId());
         
         // Verificar que se eliminó
-        Optional<Negocio> shouldBeDeleted = negocioRepository.findById(negocio2.getId().toString());
+        Optional<Negocio> shouldBeDeleted = negocioRepository.findById(negocio2.getId());
         assertFalse(shouldBeDeleted.isPresent());
         
         // Verificar que los demás siguen existiendo
@@ -296,11 +325,11 @@ class NegocioRepositoryTest {
     
     @Test
     void testFindByPais_Success() {
-        List<Negocio> negocios = negocioRepository.findByPais("España");
+        List<Negocio> negocios = negocioRepository.findByPais("Espana");
         
         assertNotNull(negocios);
         assertEquals(3, negocios.size());
-        assertTrue(negocios.stream().allMatch(n -> "España".equals(n.getPais())));
+        assertTrue(negocios.stream().allMatch(n -> "Espana".equals(n.getPais())));
     }
     
     @Test
@@ -328,7 +357,7 @@ class NegocioRepositoryTest {
     
     @Test
     void testFindByDueno_Success() {
-        List<Negocio> negocios = negocioRepository.findByDueno(dueno1.getId().toString());
+        List<Negocio> negocios = negocioRepository.findByDueno(dueno1.getId());
         
         assertNotNull(negocios);
         assertEquals(2, negocios.size());
@@ -337,7 +366,7 @@ class NegocioRepositoryTest {
     
     @Test
     void testFindByDueno_NotFound() {
-        List<Negocio> notFound = negocioRepository.findByDueno("9999");
+        List<Negocio> notFound = negocioRepository.findByDueno(9999);
         
         assertTrue(notFound.isEmpty());
     }
@@ -351,7 +380,7 @@ class NegocioRepositoryTest {
         negocioDuplicado.setName("Negocio con Token Duplicado");
         negocioDuplicado.setDireccion("Alguna Calle 123");
         negocioDuplicado.setCiudad("Sevilla");
-        negocioDuplicado.setPais("España");
+        negocioDuplicado.setPais("Espana");
         negocioDuplicado.setCodigoPostal("41001");
         negocioDuplicado.setTokenNegocio(12345); // Mismo token que negocio1
         negocioDuplicado.setDueno(dueno2);

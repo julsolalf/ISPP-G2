@@ -19,6 +19,10 @@ import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioRepository;
 import ispp_g2.gastrostock.productoInventario.ProductoInventario;
 import ispp_g2.gastrostock.productoInventario.ProductoInventarioRepository;
+import ispp_g2.gastrostock.user.Authorities;
+import ispp_g2.gastrostock.user.AuthoritiesRepository;
+import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserRepository;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -36,6 +40,12 @@ class ProductoInventarioRepositoryTest {
     @Autowired
     private NegocioRepository negocioRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AuthoritiesRepository authoritiesRepository;
+
     private Categoria categoriaBebidas;
     private Categoria categoriaAlimentos;
     
@@ -46,12 +56,24 @@ class ProductoInventarioRepositoryTest {
     @BeforeEach
     void setUp() {
 
+        Authorities authority = new Authorities();
+        authority.setAuthority("DUENO");
+        authority = authoritiesRepository.save(authority);
+
+        // Crear usuario
+        User user = new User();
+        user.setUsername("juangarcia");
+        user.setPassword("password123");
+        user.setAuthority(authority);
+        user = userRepository.save(user);
+
         Dueno dueno1 = new Dueno();
         dueno1.setFirstName("Juan");
         dueno1.setLastName("García");
         dueno1.setEmail("juan@example.com");
         dueno1.setNumTelefono("666111222");
         dueno1.setTokenDueno("TOKEN999");
+        dueno1.setUser(user);
         duenoRepository.save(dueno1);
 
         Negocio negocio1 = new Negocio();
@@ -59,7 +81,7 @@ class ProductoInventarioRepositoryTest {
         negocio1.setName("Restaurante La Tasca");
         negocio1.setDireccion("Calle Principal 123");
         negocio1.setCiudad("Sevilla");
-        negocio1.setPais("España");
+        negocio1.setPais("Espana");
         negocio1.setCodigoPostal("41001");
         negocio1.setTokenNegocio(12345);
         negocio1.setDueno(dueno1);

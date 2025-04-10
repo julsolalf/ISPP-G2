@@ -80,6 +80,7 @@ class PedidoControllerTest {
         negocio = new Negocio();
         negocio.setId(1);
         negocio.setName("Restaurante Test");
+
         
         // Configurar Pedido
         pedido = new Pedido();
@@ -132,25 +133,25 @@ class PedidoControllerTest {
     // Test para findById() - Caso éxito
     @Test
     void testFindById_Success() throws Exception {
-        when(pedidoService.getById("1")).thenReturn(pedido);
+        when(pedidoService.getById(1)).thenReturn(pedido);
         
         mockMvc.perform(get("/api/pedidos/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.precioTotal").value(45.50));
         
-        verify(pedidoService).getById("1");
+        verify(pedidoService).getById(1);
     }
     
     // Test para findById() - Pedido no encontrado
     @Test
     void testFindById_NotFound() throws Exception {
-        when(pedidoService.getById("999")).thenReturn(null);
+        when(pedidoService.getById(999)).thenReturn(null);
         
         mockMvc.perform(get("/api/pedidos/999"))
                 .andExpect(status().isNotFound());
         
-        verify(pedidoService).getById("999");
+        verify(pedidoService).getById(999);
     }
     
     // Test para findByFecha() - Caso éxito
@@ -285,7 +286,7 @@ class PedidoControllerTest {
     void testFindByNegocioId_NotFound() throws Exception {
         when(pedidoService.getPedidoByNegocioId(999)).thenReturn(null);
         
-        mockMvc.perform(get("/api/pedidos/negocio/999"))
+        mockMvc.perform(get("/api/pedidos/venta/999"))
                 .andExpect(status().isNotFound());
         
         verify(pedidoService).getPedidoByNegocioId(999);
@@ -309,9 +310,10 @@ class PedidoControllerTest {
         negocioUpdate.setName("Restaurante Actualizado");
         negocioUpdate.setDireccion("Calle Nueva 456");
         negocioUpdate.setCiudad("Madrid");
-        negocioUpdate.setPais("España");
+        negocioUpdate.setPais("Espana");
         negocioUpdate.setCodigoPostal("28001");
         negocioUpdate.setTokenNegocio(54321);
+
         
         // Crear pedido actualizado
         Pedido updatedPedido = new Pedido();
@@ -361,7 +363,7 @@ void testUpdate_Success() throws Exception {
     negocioUpdate.setName("Restaurante Actualizado");
     negocioUpdate.setDireccion("Calle Nueva 456");
     negocioUpdate.setCiudad("Madrid");
-    negocioUpdate.setPais("España");
+    negocioUpdate.setPais("Espana");
     negocioUpdate.setCodigoPostal("28001");
     negocioUpdate.setTokenNegocio(54321);
     
@@ -372,9 +374,9 @@ void testUpdate_Success() throws Exception {
     updatedPedido.setPrecioTotal(60.75); // Precio actualizado
     updatedPedido.setMesa(mesaUpdate);
     updatedPedido.setEmpleado(empleadoUpdate);
-    updatedPedido.setNegocio(negocioUpdate);
+    updatedPedido.setNegocio(negocioUpdate);;
 
-    when(pedidoService.getById("1")).thenReturn(pedido);
+    when(pedidoService.getById(1)).thenReturn(pedido);
     when(pedidoService.save(any(Pedido.class))).thenReturn(updatedPedido);
     
     mockMvc.perform(put("/api/pedidos/1")
@@ -414,22 +416,22 @@ void testUpdate_Success() throws Exception {
     // Test para delete() - Caso éxito
     @Test
     void testDelete_Success() throws Exception {
-        doNothing().when(pedidoService).delete("1");
+        doNothing().when(pedidoService).delete(1);
         
         mockMvc.perform(delete("/api/pedidos/1"))
                 .andExpect(status().isNoContent());
         
-        verify(pedidoService).delete("1");
+        verify(pedidoService).delete(1);
     }
     
     // Test para delete() - ID inválido (caso límite con ID no numérico)
 
 @Test
 void testDelete_InvalidId() throws Exception {
-    doThrow(new NumberFormatException()).when(pedidoService).delete("acd");
+    doThrow(new NumberFormatException()).when(pedidoService).delete(9999);
     
     try {
-        mockMvc.perform(delete("/api/pedidos/acd"));
+        mockMvc.perform(delete("/api/pedidos/9999"));
         fail("Se esperaba que se lanzara una excepción");
     } catch (ServletException e) {
         // Verificar que la causa raíz es NumberFormatException

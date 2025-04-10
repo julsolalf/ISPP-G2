@@ -27,13 +27,39 @@ public class ProveedorController {
         return new ResponseEntity<>(proveedorService.findAll(), HttpStatus.OK);
     }
 
+    @GetMapping("/dto")
+    public ResponseEntity<List<ProveedorDTO>> findAllDTO() {
+        if(proveedorService.findAll().isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        List<ProveedorDTO> proveedoresDto = proveedorService.findAll()
+                .stream()
+                .map(proveedorService::convertirProveedorDTO)
+                .toList();
+        return new ResponseEntity<>(proveedoresDto, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<Proveedor> findById(@PathVariable("id") String id) {
-        Proveedor proveedor = proveedorService.findById(id);
-        if(proveedor == null) {
+    public ResponseEntity<Proveedor> findById(@PathVariable String id) {
+        try {
+            Integer idNum = Integer.parseInt(id);
+            Proveedor proveedor = proveedorService.findById(idNum);
+            if (proveedor == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(proveedor, HttpStatus.OK);
+        } catch (NumberFormatException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/dto/{id}")
+    public ResponseEntity<ProveedorDTO> findByIdDTO(@PathVariable String id) {
+        ProveedorDTO proveedorDTO = proveedorService.convertirProveedorDTO(proveedorService.findById(Integer.parseInt(id)));
+        if (proveedorDTO == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(proveedor, HttpStatus.OK);
+        return new ResponseEntity<>(proveedorDTO, HttpStatus.OK);
     }
 
     @GetMapping("/email/{email}")
@@ -72,28 +98,38 @@ public class ProveedorController {
         return new ResponseEntity<>(proveedor, HttpStatus.OK);
     }
 
+    @GetMapping("/negocio/{negocio}")
+    public ResponseEntity<List<Proveedor>> findProveedorByNegocioId(@PathVariable("negocio") Integer negocio) {
+        if(proveedorService.findProveedorByNegocioId(negocio).isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(proveedorService.findProveedorByNegocioId(negocio), HttpStatus.OK);
+    }
+
     @PostMapping
-    public ResponseEntity<Proveedor> save(@RequestBody @Valid Proveedor proveedor) {
+    public ResponseEntity<Proveedor> save(@RequestBody @Valid ProveedorDTO proveedor) {
         if(proveedor == null){
             throw new IllegalArgumentException("Proveedor no puede ser nulo");
         }
-        return new ResponseEntity<>(proveedorService.save(proveedor), HttpStatus.CREATED);
+        Proveedor newProveedor = proveedorService.convertirDTOProveedor(proveedor);
+        return new ResponseEntity<>(proveedorService.save(newProveedor), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Proveedor> update(@PathVariable("id") String id, @RequestBody @Valid Proveedor proveedor) {
-        if(proveedor == null){
+    public ResponseEntity<Proveedor> update(@PathVariable("id") Integer id, @RequestBody @Valid ProveedorDTO newProveedor) {
+        if(newProveedor == null){
             throw new IllegalArgumentException("Proveedor no puede ser nulo");
         }
         if(proveedorService.findById(id) == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        proveedor.setId(Integer.valueOf(id));
+        Proveedor proveedor = proveedorService.convertirDTOProveedor(newProveedor);
+        proveedor.setId(id);
         return new ResponseEntity<>(proveedorService.save(proveedor), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable("id") String id) {
+    public ResponseEntity<Void> deleteById(@PathVariable("id") Integer id) {
         Proveedor proveedor = proveedorService.findById(id);
         if(proveedor == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -3,13 +3,12 @@ package ispp_g2.gastrostock.dueno;
 import java.util.List;
 import java.util.Optional;
 
-import ispp_g2.gastrostock.user.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface DuenoRepository extends CrudRepository<Dueno,String>{
+public interface DuenoRepository extends CrudRepository<Dueno,Integer>{
 
     @Query("SELECT d FROM Dueno d WHERE d.email = ?1")
     Optional<Dueno> findDuenoByEmail(String email);
@@ -24,7 +23,7 @@ public interface DuenoRepository extends CrudRepository<Dueno,String>{
     Optional<Dueno> findDuenoByTelefono(String telefono);
 
     @Query("SELECT d FROM Dueno d WHERE d.user.id = ?1")
-    Optional<Dueno> findDuenoByUser(String userId);
+    Optional<Dueno> findDuenoByUser(Integer userId);
 
     @Query("SELECT d FROM Dueno d WHERE d.tokenDueno = ?1")
     Optional<Dueno> findDuenoByToken(String token);

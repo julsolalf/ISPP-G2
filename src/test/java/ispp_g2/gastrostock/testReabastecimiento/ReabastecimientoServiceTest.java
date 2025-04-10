@@ -58,7 +58,7 @@ class ReabastecimientoServiceTest {
         negocio.setName("Restaurante La Tasca");
         negocio.setDireccion("Calle Principal 123");
         negocio.setCiudad("Sevilla");
-        negocio.setPais("España");
+        negocio.setPais("Espana");
         negocio.setCodigoPostal("41001");
         negocio.setTokenNegocio(12345);
         negocio.setDueno(dueno);
@@ -126,29 +126,29 @@ class ReabastecimientoServiceTest {
     @Test
     void testGetById_Exists() {
         // Arrange
-        when(reabastecimientoRepository.findById("1")).thenReturn(Optional.of(reabastecimiento1));
+        when(reabastecimientoRepository.findById(1)).thenReturn(Optional.of(reabastecimiento1));
 
         // Act
-        Optional<Reabastecimiento> result = Optional.of(reabastecimientoService.getById("1"));
+        Optional<Reabastecimiento> result = Optional.of(reabastecimientoService.getById(1));
 
         // Assert
         assertTrue(result.isPresent());
         assertEquals("REF-001", result.get().getReferencia());
         assertEquals(1250.75, result.get().getPrecioTotal());
-        verify(reabastecimientoRepository, times(1)).findById("1");
+        verify(reabastecimientoRepository, times(1)).findById(1);
     }
 
     @Test
     void testGetById_NotExists() {
         // Arrange
-        when(reabastecimientoRepository.findById("999")).thenReturn(Optional.empty());
+        when(reabastecimientoRepository.findById(999)).thenReturn(Optional.empty());
     
         // Act
-        Reabastecimiento result = reabastecimientoService.getById("999");
+        Reabastecimiento result = reabastecimientoService.getById(999);
     
         // Assert
         assertNull(result);
-        verify(reabastecimientoRepository, times(1)).findById("999");
+        verify(reabastecimientoRepository, times(1)).findById(999);
     }
 
     @Test
@@ -277,15 +277,15 @@ void testGetByReferencia_NullReferencia() {
     @Test
     void testGetByProveedor_Success() {
         // Arrange
-        when(reabastecimientoRepository.findByProveedor(Integer.toString(proveedor.getId()))).thenReturn(reabastecimientos);
+        when(reabastecimientoRepository.findByProveedor(proveedor.getId())).thenReturn(reabastecimientos);
 
         // Act
-        List<Reabastecimiento> result = reabastecimientoService.getByProveedor(Integer.toString(proveedor.getId()));
+        List<Reabastecimiento> result = reabastecimientoService.getByProveedor(proveedor.getId());
 
         // Assert
         assertNotNull(result);
         assertEquals(2, result.size());
-        verify(reabastecimientoRepository, times(1)).findByProveedor(Integer.toString(proveedor.getId()));
+        verify(reabastecimientoRepository, times(1)).findByProveedor(proveedor.getId());
     }
 
     @Test
@@ -294,15 +294,15 @@ void testGetByReferencia_NullReferencia() {
         Proveedor otroProveedor = new Proveedor();
         otroProveedor.setId(2);
         otroProveedor.setName("Otro Proveedor");
-        when(reabastecimientoRepository.findByProveedor(Integer.toString(otroProveedor.getId()))).thenReturn(Collections.emptyList());
+        when(reabastecimientoRepository.findByProveedor(otroProveedor.getId())).thenReturn(Collections.emptyList());
 
         // Act
-        List<Reabastecimiento> result = reabastecimientoService.getByProveedor(Integer.toString(otroProveedor.getId()));
+        List<Reabastecimiento> result = reabastecimientoService.getByProveedor(otroProveedor.getId());
 
         // Assert
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(reabastecimientoRepository, times(1)).findByProveedor(Integer.toString(otroProveedor.getId()));
+        verify(reabastecimientoRepository, times(1)).findByProveedor(otroProveedor.getId());
     }
 
     @Test
@@ -384,25 +384,25 @@ void testGetByReferencia_NullReferencia() {
     @Test
     void testDeleteById_Success() {
         // Arrange
-        doNothing().when(reabastecimientoRepository).deleteById("1");
+        doNothing().when(reabastecimientoRepository).deleteById(1);
 
         // Act
-        reabastecimientoService.deleteById("1");
+        reabastecimientoService.deleteById(1);
 
         // Assert
-        verify(reabastecimientoRepository, times(1)).deleteById("1");
+        verify(reabastecimientoRepository, times(1)).deleteById(1);
     }
 
     @Test
     void testDeleteById_NotFound() {
         // Arrange
-        doThrow(new RuntimeException("Reabastecimiento not found")).when(reabastecimientoRepository).deleteById("999");
+        doThrow(new RuntimeException("Reabastecimiento not found")).when(reabastecimientoRepository).deleteById(999);
 
         // Act & Assert
         assertThrows(RuntimeException.class, () -> {
-            reabastecimientoService.deleteById("999");
+            reabastecimientoService.deleteById(999);
         });
-        verify(reabastecimientoRepository, times(1)).deleteById("999");
+        verify(reabastecimientoRepository, times(1)).deleteById(999);
     }
 
     @Test

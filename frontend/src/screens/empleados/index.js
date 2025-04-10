@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Bell, User } from "lucide-react";
-import axios from "axios"; // Importa axios
 import "../../css/listados/styles.css";
 
 function Empleados() {
@@ -9,15 +8,30 @@ function Empleados() {
   const [empleados, setEmpleados] = useState([]);  // Cambia el estado para manejar empleados vacíos
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
+  const token = localStorage.getItem("token"); // Obtener el token del usuario desde localStorage
+  const negocioId = localStorage.getItem("negocioId"); // Obtener el ID del negocio desde localStorage
 
   const loadEmpleados = async () => {
     try {
-      const response = await axios.get("https://ispp-2425-g2.ew.r.appspot.com/api/empleados/negocio/1");  // Arrglar para que coja el negocio del usuario
-      setEmpleados(response.data); 
+      const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/empleados/negocio/${negocioId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error("Error al cargar los empleados");
+      }
+  
+      const data = await response.json();
+      setEmpleados(data); 
     } catch (error) {
       console.error("Error al cargar los empleados:", error);
     }
   };
+  
 
   useEffect(() => {
     loadEmpleados();  
@@ -29,7 +43,7 @@ function Empleados() {
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
 
   const handleLogout = () => {
-    localStorage.removeItem("userToken"); // Eliminamos el token del usuario
+    localStorage.clear();
     navigate("/inicioSesion"); // Redirigir a la pantalla de inicio de sesión
   };
 
@@ -78,13 +92,15 @@ function Empleados() {
           </div>
         )}
 
-        <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
-        <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+        <button onClick={() => navigate("/inicioDueno")} className="back-button">⬅ Volver</button>
+        <Link to="/inicioDueno">
+          <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+        </Link>        
         <h1 className="title">GastroStock</h1>
         <h2>Empleados</h2>
 
         <div className="button-container3">
-          <button className="button" onClick={() => navigate("/añadirEmpleado")}>➕ Añadir</button>
+          <button className="button" onClick={() => navigate("/anadirEmpleado")}>➕ Anadir</button>
           <button className="button">📥 Exportar</button>
           <button className="button">🔍 Filtrar</button>
         </div>
@@ -96,7 +112,9 @@ function Empleados() {
                 <h3>{empleado.firstName}</h3>
                 <p>{empleado.user.authority.authority}</p>
                 <p>{empleado.numTelefono}</p>
-                <button className="ver-btn" onClick={() => navigate("/verEmpleado")}>Ver</button>
+                <button className="ver-btn" onClick={() => {
+                  localStorage.setItem("empleadoId", empleado.id); // Guardar el ID del empleado en localStorage
+                  navigate(`/verEmpleado/${empleado.id}`)}}>Ver</button>
               </div>
             ))
           ) : (

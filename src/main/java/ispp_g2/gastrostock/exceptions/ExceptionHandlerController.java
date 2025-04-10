@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
 public class ExceptionHandlerController {
@@ -75,6 +76,17 @@ public class ExceptionHandlerController {
          return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     
+	@ExceptionHandler(value = NumberFormatException.class)
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	public ResponseEntity<ErrorMessage> handleNumberFormatException(NumberFormatException ex, WebRequest request) {
+		ErrorMessage message = new ErrorMessage(
+			HttpStatus.BAD_REQUEST.value(), 
+			new Date(), 
+			"ID inválido: debe ser un valor numérico", 
+			request.getDescription(false));
+		
+		return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+	}
 
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(value = GameAlreadyStartedException.class)
@@ -144,4 +156,9 @@ public class ExceptionHandlerController {
 		return new ResponseEntity<>(message, HttpStatus.FORBIDDEN);
 	}
 
+
+	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+	public ResponseEntity<String> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
+		return new ResponseEntity<>("Invalid parameter format: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
+	}
 }
