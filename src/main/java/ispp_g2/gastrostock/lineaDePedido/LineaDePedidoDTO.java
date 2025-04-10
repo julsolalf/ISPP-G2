@@ -35,7 +35,7 @@ public class LineaDePedidoDTO {
         res.setCantidad(lineaDePedido.getCantidad());
         res.setPrecioUnitario(lineaDePedido.getPrecioUnitario());
         res.setPrecioLinea(lineaDePedido.getPrecioLinea());
-        res.setEstado(lineaDePedido.getEstado());
+        res.setEstado(lineaDePedido.getSalioDeCocina());
         res.setPedidoId(lineaDePedido.getPedido().getId());
         res.setNombreProducto(lineaDePedido.getProducto().getName());
         res.setCategoriaProducto(lineaDePedido.getProducto().getCategoria().getName());

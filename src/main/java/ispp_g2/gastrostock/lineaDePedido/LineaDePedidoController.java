@@ -329,7 +329,7 @@ public class LineaDePedidoController {
         if (user.hasAnyAuthority(DUENO).equals(true)) {
             Dueno dueno = duenoService.getDuenoByUser(user.getId());
             LineaDePedido lineaDePedido = lineaDePedidoService.convertDtoLineaDePedido(lineaDePedidoDTO);
-            lineaDePedido.setEstado(false);
+            lineaDePedido.setSalioDeCocina(false);
             if (lineaDePedido.getPedido().getMesa().getNegocio().getDueno().getId().equals(dueno.getId())) {
                 isLineaDePedidoValid(lineaDePedido);
                 return new ResponseEntity<>(LineaDePedidoDTO.of(lineaDePedidoService.save(lineaDePedido)),
@@ -338,7 +338,7 @@ public class LineaDePedidoController {
         } else if (user.hasAnyAuthority(EMPLEADO).equals(true)) {
             Empleado empleado = empleadoService.getEmpleadoByUser(user.getId());
             LineaDePedido lineaDePedido = lineaDePedidoService.convertDtoLineaDePedido(lineaDePedidoDTO);
-            lineaDePedido.setEstado(false);
+            lineaDePedido.setSalioDeCocina(false);
             if (lineaDePedido.getPedido().getMesa().getNegocio().getId().equals(empleado.getNegocio().getId())) {
                 isLineaDePedidoValid(lineaDePedido);
                 return new ResponseEntity<>(LineaDePedidoDTO.of(lineaDePedidoService.save(lineaDePedido)),
@@ -378,7 +378,7 @@ public class LineaDePedidoController {
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
-    @PutMapping("/{id}/estado")
+    @PutMapping("/{id}/saleDeCocina")
     public ResponseEntity<LineaDePedidoDTO> updateEstado(@PathVariable("id") Integer id) {
         User user = userService.findCurrentUser();
         if (user.hasAnyAuthority(DUENO).equals(true)) {
