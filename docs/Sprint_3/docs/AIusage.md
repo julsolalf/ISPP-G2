@@ -2,12 +2,12 @@
 title: AIusage
 groupNumber: 2
 groupName: GastroStock
-deliverable: Sprint 2
+deliverable: Sprint 3
 description: Report of the usage of AI
 author: Writing by Raul Toro Romero
 ---
 
-# [Sprint 2] Report of AI Usage - GastroStock (Group 2)
+# [Sprint 3] Report of AI Usage - GastroStock (Group 2)
 
 Surprisingly, there have been very few cases of AI usage.
 

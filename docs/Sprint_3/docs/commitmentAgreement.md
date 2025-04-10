@@ -2,12 +2,12 @@
 title: commitmentAgreement
 groupNumber: 2
 groupName: GastroStock
-deliverable: Sprint 2
+deliverable: Sprint 3
 description: Commitment Agreement of all team members
 author: Writing by Raul Toro Romero and reviewed by Mario Zambrano Zapata
 ---
 
-# [Sprint 2] Commitment Agreement of Team Members - GastroStock (Group 2)
+# [Sprint 3] Commitment Agreement of Team Members - GastroStock (Group 2)
 
 This Commitment Agreement was signed by all team members and all signed files are availeable at https://drive.google.com/drive/u/1/folders/114zIzzUty4pv4TRf6aFfu3Yu0MCEaPI4 .
 

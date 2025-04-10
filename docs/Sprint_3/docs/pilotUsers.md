@@ -2,12 +2,12 @@
 title: pilotUsers
 groupNumber: 2
 groupName: GastroStock
-deliverable: Sprint 2
+deliverable: Sprint 3
 description: Report of Pilot Users
 author: Writing by Raul Toro Romero
 ---
 
-# [Sprint 2] Report of Pilot Users - GastroStock (Group 2)
+# [Sprint 3] Report of Pilot Users - GastroStock (Group 2)
 
 The Pilot Users for our project are the following people:
 
