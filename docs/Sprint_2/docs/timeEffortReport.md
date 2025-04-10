@@ -3,15 +3,12 @@ title: Revision
 groupNumber: 2
 groupName: GastroStock
 deliverable: Sprint 2
-description: 
-author: Writing by 
+description: Report of time and tasks performed by each member of Group 2
+author: Writing by Raúl Toro Romero
 ---
 
 # [Sprint 2] Revision - GastroStock (Group 2)
 
-ISPP-G2       
-
-# ISPP-G2 Created with Clockify
 
 ## Detailed report
 **Period:** 21/03/2025 - 28/03/2025  

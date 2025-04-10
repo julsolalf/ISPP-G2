@@ -2,12 +2,12 @@
 title: pilotUsersCommitmentAgreement
 groupNumber: 2
 groupName: GastroStock
-deliverable: Sprint 2
+deliverable: Sprint 3
 description: Commitment Agreement of Pilot Users
 author: Writing by Raul Toro Romero
 ---
 
-# [Sprint 2] Commitment Agreement of Pilot Users - GastroStock (Group 2)
+# [Sprint 3] Commitment Agreement of Pilot Users - GastroStock (Group 2)
 
 | Name         | Surname        | Signed    |
 |--------------|----------------|-----------|
