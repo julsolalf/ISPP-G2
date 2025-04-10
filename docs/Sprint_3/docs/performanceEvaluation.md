@@ -31,7 +31,7 @@ author: Writing by Raul Toro Romero
 | ALEJANDRO VARGAS MUÑIZ          | 10       | 3       | 10      | 10      |          |          |           |            |
 | DAVID VICENTE VALDERRAMA        | 10       | 3       | 10      | 10      |          |          |           |            |
 | MARIO ZAMBRANO ZAPATA           | 10       | 7       | 10      | 10      |          |          |           |            |
-| ALEXIS MOLINS                   | 10       | 3       | 10      | XX      |          |          |           |            |
+| ALEXIS MOLINS                   | 10       | 3       | 10      | 10      |          |          |           |            |
 | PABLO RUFIAN JIMENEZ            | 10       | 7       | 10      | XX      |          |          |           |            |
 | TOTAL                           | 167      | 114     | 10      | XX      |          |          |           |            |
 
