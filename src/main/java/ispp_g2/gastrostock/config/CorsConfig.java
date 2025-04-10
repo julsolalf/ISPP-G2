@@ -13,7 +13,7 @@ public class CorsConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
          CorsConfiguration configuration = new CorsConfiguration();
-         configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+         configuration.setAllowedOrigins(Arrays.asList("https://ispp-2425-g2.ew.r.appspot.com:3000"));
          configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
          configuration.setAllowedHeaders(Arrays.asList("*"));
          configuration.setAllowCredentials(true);
