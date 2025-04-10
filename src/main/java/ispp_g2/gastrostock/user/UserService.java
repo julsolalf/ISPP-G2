@@ -2,10 +2,12 @@ package ispp_g2.gastrostock.user;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import ispp_g2.gastrostock.exceptions.ResourceNotFoundException;
 
 import java.util.List;
 import java.util.stream.StreamSupport;
@@ -29,7 +31,7 @@ public class UserService {
 	}
 
 	@Transactional(readOnly = true)
-	public User findUserById(String id) {
+	public User findUserById(Integer id) {
 		return userRepository.findById(id).orElse(null);
 	}
 
@@ -48,13 +50,27 @@ public class UserService {
 		return userRepository.findByAuthority(authority);
 	}
 
+	@Transactional(readOnly = true)
+	public User findCurrentUser() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth == null)
+			throw new ResourceNotFoundException("Nobody authenticated!");
+		else
+			return userRepository.findUserByUsername(auth.getName())
+					.orElseThrow(() -> new ResourceNotFoundException("User", "Username", auth.getName()));
+	}
+
+	public List<User> findUsersWithoutSubscription() {
+        return userRepository.findUsersWithoutSubscription();
+    }
+
 	@Transactional
 	public User saveUser(User user) {
 		return userRepository.save(user);
 	}
 
 	@Transactional
-	public void deleteUser(String id) {
+	public void deleteUser(Integer id) {
 		userRepository.deleteById(id);
 	}
 }

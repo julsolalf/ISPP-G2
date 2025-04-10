@@ -20,7 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioRepository;
 import ispp_g2.gastrostock.negocio.NegocioService;
-import ispp_g2.gastrostock.dueño.Dueño;
+import ispp_g2.gastrostock.dueno.Dueno;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -33,27 +33,27 @@ class NegocioServiceTest {
     private NegocioService negocioService;
 
     private Negocio negocio1, negocio2, negocio3, nuevoNegocio;
-    private Dueño dueño1, dueño2;
+    private Dueno dueno1, dueno2;
     private List<Negocio> negociosList;
 
     @BeforeEach
     void setUp() {
-        // Crear dueños
-        dueño1 = new Dueño();
-        dueño1.setId(1);
-        dueño1.setFirstName("Juan");
-        dueño1.setLastName("García");
-        dueño1.setEmail("juan@example.com");
-        dueño1.setNumTelefono("666111222");
-        dueño1.setTokenDueño("TOKEN999");
+        // Crear duenos
+        dueno1 = new Dueno();
+        dueno1.setId(1);
+        dueno1.setFirstName("Juan");
+        dueno1.setLastName("García");
+        dueno1.setEmail("juan@example.com");
+        dueno1.setNumTelefono("666111222");
+        dueno1.setTokenDueno("TOKEN999");
 
-        dueño2 = new Dueño();
-        dueño2.setId(2);
-        dueño2.setFirstName("María");
-        dueño2.setLastName("López");
-        dueño2.setEmail("maria@example.com");
-        dueño2.setNumTelefono("666333444");
-        dueño2.setTokenDueño("TOKEN456");
+        dueno2 = new Dueno();
+        dueno2.setId(2);
+        dueno2.setFirstName("María");
+        dueno2.setLastName("López");
+        dueno2.setEmail("maria@example.com");
+        dueno2.setNumTelefono("666333444");
+        dueno2.setTokenDueno("TOKEN456");
 
         // Crear negocios
         negocio1 = new Negocio();
@@ -61,40 +61,40 @@ class NegocioServiceTest {
         negocio1.setName("Restaurante La Tasca");
         negocio1.setDireccion("Calle Principal 123");
         negocio1.setCiudad("Sevilla");
-        negocio1.setPais("España");
+        negocio1.setPais("Espana");
         negocio1.setCodigoPostal("41001");
         negocio1.setTokenNegocio(12345);
-        negocio1.setDueño(dueño1);
+        negocio1.setDueno(dueno1);
 
         negocio2 = new Negocio();
         negocio2.setId(2);
         negocio2.setName("Bar El Rincón");
         negocio2.setDireccion("Avenida de la Constitución 45");
         negocio2.setCiudad("Sevilla");
-        negocio2.setPais("España");
+        negocio2.setPais("Espana");
         negocio2.setCodigoPostal("41001");
         negocio2.setTokenNegocio(67890);
-        negocio2.setDueño(dueño1);
+        negocio2.setDueno(dueno1);
 
         negocio3 = new Negocio();
         negocio3.setId(3);
         negocio3.setName("Café Central");
         negocio3.setDireccion("Plaza Mayor 10");
         negocio3.setCiudad("Madrid");
-        negocio3.setPais("España");
+        negocio3.setPais("Espana");
         negocio3.setCodigoPostal("28001");
         negocio3.setTokenNegocio(54321);
-        negocio3.setDueño(dueño2);
+        negocio3.setDueno(dueno2);
 
         // Negocio nuevo para tests de creación
         nuevoNegocio = new Negocio();
         nuevoNegocio.setName("Heladería Polar");
         nuevoNegocio.setDireccion("Calle Fresa 15");
         nuevoNegocio.setCiudad("Valencia");
-        nuevoNegocio.setPais("España");
+        nuevoNegocio.setPais("Espana");
         nuevoNegocio.setCodigoPostal("46001");
         nuevoNegocio.setTokenNegocio(11223);
-        nuevoNegocio.setDueño(dueño2);
+        nuevoNegocio.setDueno(dueno2);
 
         // Lista de negocios
         negociosList = Arrays.asList(negocio1, negocio2, negocio3);
@@ -105,29 +105,29 @@ class NegocioServiceTest {
     @Test
     void testGetById_Success() {
         // Arrange
-        when(negocioRepository.findById("1")).thenReturn(Optional.of(negocio1));
+        when(negocioRepository.findById(1)).thenReturn(Optional.of(negocio1));
 
         // Act
-        Negocio result = negocioService.getById("1");
+        Negocio result = negocioService.getById(1);
 
         // Assert
         assertNotNull(result);
         assertEquals(1, result.getId());
         assertEquals("Restaurante La Tasca", result.getName());
-        verify(negocioRepository).findById("1");
+        verify(negocioRepository).findById(1);
     }
 
     @Test
     void testGetById_NotFound() {
         // Arrange
-        when(negocioRepository.findById("999")).thenReturn(Optional.empty());
+        when(negocioRepository.findById(999)).thenReturn(Optional.empty());
 
         // Act
-        Negocio result = negocioService.getById("999");
+        Negocio result = negocioService.getById(999);
 
         // Assert
         assertNull(result);
-        verify(negocioRepository).findById("999");
+        verify(negocioRepository).findById(999);
     }
 
     @Test
@@ -357,15 +357,15 @@ class NegocioServiceTest {
     @Test
     void testGetByPais_Success() {
         // Arrange
-        when(negocioRepository.findByPais("España")).thenReturn(negociosList);
+        when(negocioRepository.findByPais("Espana")).thenReturn(negociosList);
 
         // Act
-        List<Negocio> result = negocioService.getByPais("España");
+        List<Negocio> result = negocioService.getByPais("Espana");
 
         // Assert
         assertNotNull(result);
         assertEquals(3, result.size());
-        verify(negocioRepository).findByPais("España");
+        verify(negocioRepository).findByPais("Espana");
     }
 
     @Test
@@ -443,49 +443,49 @@ class NegocioServiceTest {
         verify(negocioRepository).findByCodigoPostal(null);
     }
 
-    // TESTS PARA getByDueño()
+    // TESTS PARA getByDueno()
 
     @Test
-    void testGetByDueño_Success() {
+    void testGetByDueno_Success() {
         // Arrange
-        List<Negocio> negociosDueño = Arrays.asList(negocio1, negocio2);
-        when(negocioRepository.findByDueño("1")).thenReturn(negociosDueño);
+        List<Negocio> negociosDueno = Arrays.asList(negocio1, negocio2);
+        when(negocioRepository.findByDueno(1)).thenReturn(negociosDueno);
 
         // Act
-        List<Negocio> result = negocioService.getByDueño("1");
+        List<Negocio> result = negocioService.getByDueno(1);
 
         // Assert
         assertNotNull(result);
         assertEquals(2, result.size());
-        verify(negocioRepository).findByDueño("1");
+        verify(negocioRepository).findByDueno(1);
     }
 
     @Test
-    void testGetByDueño_NotFound() {
+    void testGetByDueno_NotFound() {
         // Arrange
-        when(negocioRepository.findByDueño("999")).thenReturn(Collections.emptyList());
+        when(negocioRepository.findByDueno(999)).thenReturn(Collections.emptyList());
 
         // Act
-        List<Negocio> result = negocioService.getByDueño("999");
+        List<Negocio> result = negocioService.getByDueno(999);
 
         // Assert
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(negocioRepository).findByDueño("999");
+        verify(negocioRepository).findByDueno(999);
     }
 
     @Test
-    void testGetByDueño_NullDueño() {
+    void testGetByDueno_NullDueno() {
         // Arrange
-        when(negocioRepository.findByDueño(null)).thenReturn(Collections.emptyList());
+        when(negocioRepository.findByDueno(null)).thenReturn(Collections.emptyList());
 
         // Act
-        List<Negocio> result = negocioService.getByDueño(null);
+        List<Negocio> result = negocioService.getByDueno(null);
 
         // Assert
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(negocioRepository).findByDueño(null);
+        verify(negocioRepository).findByDueno(null);
     }
 
     // TESTS PARA save()
@@ -498,10 +498,10 @@ class NegocioServiceTest {
         negocioGuardado.setName("Heladería Polar");
         negocioGuardado.setDireccion("Calle Fresa 15");
         negocioGuardado.setCiudad("Valencia");
-        negocioGuardado.setPais("España");
+        negocioGuardado.setPais("Espana");
         negocioGuardado.setCodigoPostal("46001");
         negocioGuardado.setTokenNegocio(11223);
-        negocioGuardado.setDueño(dueño2);
+        negocioGuardado.setDueno(dueno2);
 
         when(negocioRepository.save(any(Negocio.class))).thenReturn(negocioGuardado);
 
@@ -549,23 +549,23 @@ class NegocioServiceTest {
     @Test
     void testDelete_Success() {
         // Arrange
-        doNothing().when(negocioRepository).deleteById("1");
+        doNothing().when(negocioRepository).deleteById(1);
 
         // Act
-        negocioService.delete("1");
+        negocioService.delete(1);
 
         // Assert
-        verify(negocioRepository).deleteById("1");
+        verify(negocioRepository).deleteById(1);
     }
 
     @Test
     void testDelete_NonExistentId() {
         // Arrange
-        doThrow(new RuntimeException("Negocio no encontrado")).when(negocioRepository).deleteById("999");
+        doThrow(new RuntimeException("Negocio no encontrado")).when(negocioRepository).deleteById(999);
 
         // Act & Assert
-        assertThrows(RuntimeException.class, () -> negocioService.delete("999"));
-        verify(negocioRepository).deleteById("999");
+        assertThrows(RuntimeException.class, () -> negocioService.delete(999));
+        verify(negocioRepository).deleteById(999);
     }
 
     @Test

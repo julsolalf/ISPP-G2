@@ -16,7 +16,7 @@ public class CategoriaService {
         this.categoriaRepository = categoriaRepository;
     }
 
-    public Categoria getById(String id) {
+    public Categoria getById(Integer id) {
         return categoriaRepository.findById(id).orElse(null);
     }
 
@@ -26,7 +26,7 @@ public class CategoriaService {
                 .toList();
     }
 
-    public List<Categoria> getCategoriasByNegocioId(String negocioId) {
+    public List<Categoria> getCategoriasByNegocioId(Integer negocioId) {
         return categoriaRepository.findByNegocioId(negocioId);
     }
 
@@ -39,7 +39,7 @@ public class CategoriaService {
         return categoriaRepository.save(categoria);
     }
 
-    public void delete(String id) {
+    public void delete(Integer id) {
         categoriaRepository.deleteById(id);
     }
 }

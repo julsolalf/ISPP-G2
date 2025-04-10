@@ -1,48 +1,43 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
-
-
-
-const obtenerCategorias = async () => {
-  try {
-    /*
-    Falta una lógica de que en cada pantalla esté guardada la información del usuario logueado y por tanto el respectivo negocioId
-    const negocioId = localStorage.getItem("negocioId"); // Obtiene el ID del negocio guardado
-    if (!negocioId) {
-      throw new Error("No se encontró el ID del negocio");
-    }
-    const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/categorias/negocio/${negocioId}/inventario`);*/
-
-    const response = await fetch("https://ispp-2425-g2.ew.r.appspot.com/api/categorias/negocio/1");
-    
-    if (!response.ok) {
-      throw new Error("Error al obtener las categorías");
-    }
-    
-    return await response.json();
-  } catch (error) {
-    console.error("Error al obtener las categorías:", error);
-    return [];
-  }
-};
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 
 function Inventario() {
   const navigate = useNavigate();
   const [categorias, setCategorias] = useState([]);
+  const [filtro, setFiltro] = useState(""); // Estado para el filtro
+  const [ordenAscendente, setOrdenAscendente] = useState(true); // Estado para la ordenación
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
-
-
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
+  const toggleNotifications = () => setShowNotifications(!showNotifications);
+  const toggleUserOptions = () => setShowUserOptions(!showUserOptions);
 
-  const toggleNotifications = () => {
-    setShowNotifications(!showNotifications);
-  };
+  const token = localStorage.getItem("token");
+  const negocioId = localStorage.getItem("negocioId");
 
-  const toggleUserOptions = () => {
-    setShowUserOptions(!showUserOptions);
+  const obtenerCategorias = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/categorias/negocio/${negocioId}/inventario`, {
+        method: "GET",
+        headers: { 
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al obtener las categorías");
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("Error al obtener las categorías:", error);
+      return [];
+    }
   };
 
   useEffect(() => {
@@ -53,12 +48,41 @@ function Inventario() {
     cargarDatos();
   }, []);
 
-
   const handleLogout = () => {
-    localStorage.removeItem("userToken"); // Eliminamos el token del usuario
+    localStorage.clear();
     navigate("/"); // Redirigir a la pantalla de inicio de sesión
   };
 
+  // Filtrar categorías según el filtro de texto
+  const categoriasFiltradas = categorias.filter((categoria) =>
+    categoria.name.toLowerCase().includes(filtro.toLowerCase())
+  );
+
+  // Ordenar categorías
+  const categoriasOrdenadas = categoriasFiltradas.sort((a, b) => {
+    if (ordenAscendente) {
+      return a.name.localeCompare(b.name);
+    } else {
+      return b.name.localeCompare(a.name);
+    }
+  });
+
+  const exportarPDF = () => {
+    const doc = new jsPDF();
+    doc.text("Lista de Categorías de Inventario", 14, 10);
+    
+    autoTable(doc, {
+      startY: 20,
+      head: [["Nombre de Categoría", "ID de Categoría"]],
+      body: categorias.map((categoria) => [
+        categoria.name,
+        categoria.id,
+      ]),
+    });
+    
+    doc.save("categorias_inventario.pdf");
+  };
+  
   return (
     <div className="home-container"
       style={{
@@ -73,15 +97,15 @@ function Inventario() {
       }}>
       <div className="content">
         <div className="icon-container-right">
-          <Bell size={30} className="icon" onClick={() => setShowNotifications(!showNotifications)} />
-          <User size={30} className="icon" onClick={() => setShowUserOptions(!showUserOptions)} />
+          <Bell size={30} className="icon" onClick={toggleNotifications} />
+          <User size={30} className="icon" onClick={toggleUserOptions} />
         </div>
 
         {showNotifications && (
           <div className="notification-bubble">
             <div className="notification-header">
               <strong>Notificaciones</strong>
-              <button className="close-btn" onClick={() => setShowNotifications(false)}>X</button>
+              <button className="close-btn" onClick={toggleNotifications}>X</button>
             </div>
             <ul>
               <li>Notificación 1</li>
@@ -105,34 +129,60 @@ function Inventario() {
                 <button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button>
               </li>
               <li>
-              <button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
+                <button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
               </li>
             </ul>
           </div>
         )}
 
-        <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
-        <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+        <button onClick={() => navigate("/inicioDueno")} className="back-button">⬅ Volver</button>
+        <Link to="/inicioDueno">
+          <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+        </Link>        
         <h1 className="title">GastroStock</h1>
         <h2>Inventario</h2>
         <div className="button-container3">
-          <button className="button" onClick={() => navigate("/añadirCategoria")}>➕ Añadir</button>
-          <button className="button">📥 Exportar</button>
-          <button className="button">🔍 Filtrar</button>
+          <button className="button" onClick={() => navigate("/anadirCategoria")}>➕ Añadir</button>
+          <button className="button" onClick={exportarPDF}>📥 Exportar</button>
+          <div className="filter-container">
+          <button className="filter-btn">🔍 Filtrar</button>
+          <div className="filter-options">
+            <input
+              type="text"
+              placeholder="Filtrar por nombre"
+              value={filtro}
+              onChange={(e) => setFiltro(e.target.value)}
+              className="filter-input"
+            />
+            <div className="sort-options">
+              <button onClick={() => setOrdenAscendente(true)} className="sort-btn">🔼 Ascendente</button>
+              <button onClick={() => setOrdenAscendente(false)} className="sort-btn">🔽 Descendente</button>
+            </div>
+          </div>
+        </div>
         </div>
 
         <div className="empleados-grid1">
-          {categorias.map((categoria) => (
+          {categoriasOrdenadas.map((categoria) => (
             <div key={categoria.id} className="empleado-card">
               <h3>{categoria.name}</h3>
-              <button className="ver-btn" onClick={() => navigate(`/verTipoProducto/${categoria.id}`)}>👁️ Ver</button>
+              <button 
+                className="ver-btn" 
+                onClick={() => {
+                  localStorage.setItem("categoriaNombre", categoria.name); // Guardar en localStorage
+                  navigate(`/verTipoProducto/${categoria.name}`); // Redirigir a la pantalla
+                }}>
+                👁️ Ver
+              </button>
             </div>
           ))}
         </div>
+
         <div className="button-container1">
           <button className="button" onClick={() => navigate("/alertaStock")}>⚠️ Alerta Stock</button>
           <button className="button" onClick={() => navigate("/perdidas")}>📉 Pérdidas</button>
         </div>
+
         {/* Modal de Confirmación para Logout */}
         {showLogoutModal && (
           <div className="modal-overlay">

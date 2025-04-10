@@ -30,7 +30,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ispp_g2.gastrostock.dueño.Dueño;
+import ispp_g2.gastrostock.dueno.Dueno;
 import ispp_g2.gastrostock.exceptions.ExceptionHandlerController;
 import ispp_g2.gastrostock.mesa.Mesa;
 import ispp_g2.gastrostock.mesa.MesaController;
@@ -53,7 +53,7 @@ public class MesaControllerTest {
 
     private Mesa mesa1, mesa2, mesa3, mesaInvalida, mesaNueva;
     private Negocio negocio;
-    private Dueño dueño;
+    private Dueno dueno;
     private List<Mesa> mesasList;
 
     @BeforeEach
@@ -66,14 +66,14 @@ public class MesaControllerTest {
         // Configurar ObjectMapper
         objectMapper = new ObjectMapper();
         
-        // Crear dueño
-        dueño = new Dueño();
-        dueño.setId(1);
-        dueño.setFirstName("Juan");
-        dueño.setLastName("García");
-        dueño.setEmail("juan@example.com");
-        dueño.setNumTelefono("652345678");
-        dueño.setTokenDueño("TOKEN123");
+        // Crear dueno
+        dueno = new Dueno();
+        dueno.setId(1);
+        dueno.setFirstName("Juan");
+        dueno.setLastName("García");
+        dueno.setEmail("juan@example.com");
+        dueno.setNumTelefono("652345678");
+        dueno.setTokenDueno("TOKEN123");
 
         // Crear negocio
         negocio = new Negocio();
@@ -81,10 +81,10 @@ public class MesaControllerTest {
         negocio.setName("Restaurante La Tasca");
         negocio.setDireccion("Calle Principal 123");
         negocio.setCiudad("Sevilla");
-        negocio.setPais("España");
+        negocio.setPais("Espana");
         negocio.setCodigoPostal("41001");
         negocio.setTokenNegocio(12345);
-        negocio.setDueño(dueño);
+        negocio.setDueno(dueno);
 
         // Crear mesas
         mesa1 = new Mesa();
@@ -158,7 +158,7 @@ public class MesaControllerTest {
     @Test
     void testFindById_Success() throws Exception {
         // Arrange
-        when(mesaService.getById("1")).thenReturn(mesa1);
+        when(mesaService.getById(1)).thenReturn(mesa1);
         
         // Act & Assert
         mockMvc.perform(get("/api/mesas/1"))
@@ -168,19 +168,19 @@ public class MesaControllerTest {
                 .andExpect(jsonPath("$.name", is("Mesa Exterior")))
                 .andExpect(jsonPath("$.numeroAsientos", is(4)));
         
-        verify(mesaService).getById("1");
+        verify(mesaService).getById(1);
     }
     
     @Test
     void testFindById_NotFound() throws Exception {
         // Arrange
-        when(mesaService.getById("999")).thenReturn(null);
+        when(mesaService.getById(999)).thenReturn(null);
         
         // Act & Assert
         mockMvc.perform(get("/api/mesas/999"))
                 .andExpect(status().isNotFound());
         
-        verify(mesaService).getById("999");
+        verify(mesaService).getById(999);
     }
 
     // TESTS PARA findByNumeroAsientos()
@@ -258,7 +258,7 @@ public class MesaControllerTest {
     @Test
     void testFindByNegocio_Success() throws Exception {
         // Arrange
-        when(mesaService.getMesasByNegocio("1")).thenReturn(mesasList);
+        when(mesaService.getMesasByNegocio(1)).thenReturn(mesasList);
         
         // Act & Assert
         mockMvc.perform(get("/api/mesas/negocio/1"))
@@ -269,32 +269,32 @@ public class MesaControllerTest {
                 .andExpect(jsonPath("$[1].id", is(2)))
                 .andExpect(jsonPath("$[2].id", is(3)));
         
-        verify(mesaService).getMesasByNegocio("1");
+        verify(mesaService).getMesasByNegocio(1);
     }
     
     @Test
     void testFindByNegocio_NotFound() throws Exception {
         // Arrange
-        when(mesaService.getMesasByNegocio("999")).thenReturn(null);
+        when(mesaService.getMesasByNegocio(999)).thenReturn(null);
         
         // Act & Assert
         mockMvc.perform(get("/api/mesas/negocio/999"))
                 .andExpect(status().isNotFound());
         
-        verify(mesaService).getMesasByNegocio("999");
+        verify(mesaService).getMesasByNegocio(999);
     }
     
     @Test
     void testFindByNegocio_EmptyList() throws Exception {
         // Arrange
-        when(mesaService.getMesasByNegocio("999")).thenReturn(Collections.emptyList());
+        when(mesaService.getMesasByNegocio(999)).thenReturn(Collections.emptyList());
         
         // Act & Assert
         mockMvc.perform(get("/api/mesas/negocio/999"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
         
-        verify(mesaService).getMesasByNegocio("999");
+        verify(mesaService).getMesasByNegocio(999);
     }
 
     // TESTS PARA create()
@@ -302,22 +302,22 @@ public class MesaControllerTest {
     @Test
     void testCreate_Success() throws Exception {
        
-        Dueño dueñoact = new Dueño();
-        dueñoact.setFirstName("Anton");
-        dueñoact.setLastName("García");
-        dueñoact.setEmail("anton@example.com");
-        dueñoact.setNumTelefono("652349978");
-        dueñoact.setTokenDueño("TOKEN333");
+        Dueno duenoact = new Dueno();
+        duenoact.setFirstName("Anton");
+        duenoact.setLastName("García");
+        duenoact.setEmail("anton@example.com");
+        duenoact.setNumTelefono("652349978");
+        duenoact.setTokenDueno("TOKEN333");
 
         // Crear negocio
         Negocio negocioActualizado = new Negocio();
         negocioActualizado.setName("Restaurante 2 Tasca");
         negocioActualizado.setDireccion("Calle Principal 123");
         negocioActualizado.setCiudad("Sevilla");
-        negocioActualizado.setPais("España");
+        negocioActualizado.setPais("Espana");
         negocioActualizado.setCodigoPostal("41001");
         negocioActualizado.setTokenNegocio(12995);
-        negocioActualizado.setDueño(dueñoact);
+        negocioActualizado.setDueno(duenoact);
         
         Mesa mesaCreada = new Mesa();
         mesaCreada.setName("Mesa Nueva");
@@ -369,29 +369,29 @@ public class MesaControllerTest {
     @Test
     void testUpdate_Success() throws Exception {
        
-        Dueño dueñoact = new Dueño();
-        dueñoact.setFirstName("Anton");
-        dueñoact.setLastName("García");
-        dueñoact.setEmail("anton@example.com");
-        dueñoact.setNumTelefono("652349978");
-        dueñoact.setTokenDueño("TOKEN333");
+        Dueno duenoact = new Dueno();
+        duenoact.setFirstName("Anton");
+        duenoact.setLastName("García");
+        duenoact.setEmail("anton@example.com");
+        duenoact.setNumTelefono("652349978");
+        duenoact.setTokenDueno("TOKEN333");
 
         // Crear negocio
         Negocio negocioActualizado = new Negocio();
         negocioActualizado.setName("Restaurante 2 Tasca");
         negocioActualizado.setDireccion("Calle Principal 123");
         negocioActualizado.setCiudad("Sevilla");
-        negocioActualizado.setPais("España");
+        negocioActualizado.setPais("Espana");
         negocioActualizado.setCodigoPostal("41001");
         negocioActualizado.setTokenNegocio(12995);
-        negocioActualizado.setDueño(dueñoact);
+        negocioActualizado.setDueno(duenoact);
 
         Mesa mesaActualizada = new Mesa();
         mesaActualizada.setName("Mesa Exterior Actualizada");
         mesaActualizada.setNumeroAsientos(5);
         mesaActualizada.setNegocio(negocioActualizado);
         
-        when(mesaService.getById("1")).thenReturn(mesa1);
+        when(mesaService.getById(1)).thenReturn(mesa1);
         when(mesaService.save(any(Mesa.class))).thenReturn(mesaActualizada);
         
         // Act & Assert
@@ -403,7 +403,7 @@ public class MesaControllerTest {
                 .andExpect(jsonPath("$.name", is("Mesa Exterior Actualizada")))
                 .andExpect(jsonPath("$.numeroAsientos", is(5)));
         
-        verify(mesaService).getById("1");
+        verify(mesaService).getById(1);
         verify(mesaService).save(any(Mesa.class));
     }
     /*
@@ -456,29 +456,29 @@ public class MesaControllerTest {
     @Test
     void testDelete_Success() throws Exception {
         // Arrange
-        when(mesaService.getById("1")).thenReturn(mesa1);
-        doNothing().when(mesaService).deleteById("1");
+        when(mesaService.getById(1)).thenReturn(mesa1);
+        doNothing().when(mesaService).deleteById(1);
         
         // Act & Assert
         mockMvc.perform(delete("/api/mesas/1")
                 .with(csrf()))
                 .andExpect(status().isNoContent());
         
-        verify(mesaService).getById("1");
-        verify(mesaService).deleteById("1");
+        verify(mesaService).getById(1);
+        verify(mesaService).deleteById(1);
     }
     
     @Test
     void testDelete_NotFound() throws Exception {
         // Arrange
-        when(mesaService.getById("999")).thenReturn(null);
+        when(mesaService.getById(999)).thenReturn(null);
         
         // Act & Assert
         mockMvc.perform(delete("/api/mesas/999")
                 .with(csrf()))
                 .andExpect(status().isNotFound());
         
-        verify(mesaService).getById("999");
-        verify(mesaService, never()).deleteById(anyString());
+        verify(mesaService).getById(999);
+        verify(mesaService, never()).deleteById(anyInt());
     }
 }

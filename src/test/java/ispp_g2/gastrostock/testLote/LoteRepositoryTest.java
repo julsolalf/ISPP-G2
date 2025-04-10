@@ -21,6 +21,10 @@ import ispp_g2.gastrostock.productoInventario.ProductoInventario;
 import ispp_g2.gastrostock.productoInventario.ProductoInventarioRepository;
 import ispp_g2.gastrostock.reabastecimiento.Reabastecimiento;
 import ispp_g2.gastrostock.reabastecimiento.ReabastecimientoRepository;
+import ispp_g2.gastrostock.user.Authorities;
+import ispp_g2.gastrostock.user.AuthoritiesRepository;
+import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.ValidatorFactory;
@@ -29,8 +33,8 @@ import ispp_g2.gastrostock.negocio.NegocioRepository;
 import ispp_g2.gastrostock.categorias.Categoria;
 import ispp_g2.gastrostock.categorias.CategoriaRepository;
 import ispp_g2.gastrostock.categorias.Pertenece;
-import ispp_g2.gastrostock.dueño.Dueño;
-import ispp_g2.gastrostock.dueño.DueñoRepository;
+import ispp_g2.gastrostock.dueno.Dueno;
+import ispp_g2.gastrostock.dueno.DuenoRepository;
 import ispp_g2.gastrostock.proveedores.Proveedor;
 import ispp_g2.gastrostock.proveedores.ProveedorRepository;
 
@@ -55,10 +59,16 @@ public class LoteRepositoryTest {
     private NegocioRepository negocioRepository;
     
     @Autowired
-    private DueñoRepository dueñoRepository;
+    private DuenoRepository duenoRepository;
     
     @Autowired
     private ProveedorRepository proveedorRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AuthoritiesRepository authoritiesRepository;
 
     private jakarta.validation.Validator validator;
 
@@ -67,7 +77,7 @@ public class LoteRepositoryTest {
     private ProductoInventario producto1, producto2;
     private Reabastecimiento reabastecimiento1, reabastecimiento2;
     private Negocio negocio;
-    private Dueño dueño;
+    private Dueno dueno;
     private Proveedor proveedor1, proveedor2;
     private Categoria categoria;
     
@@ -79,27 +89,39 @@ public class LoteRepositoryTest {
         productoInventarioRepository.deleteAll();
         proveedorRepository.deleteAll();
         negocioRepository.deleteAll();
-        dueñoRepository.deleteAll();
+        duenoRepository.deleteAll();
         categoriaRepository.deleteAll();
         
-        // Crear dueño
-        dueño = new Dueño();
-        dueño.setFirstName("Juan");
-        dueño.setLastName("García");
-        dueño.setEmail("juan@example.com");
-        dueño.setNumTelefono("652345678");
-        dueño.setTokenDueño("TOKEN123");
-        dueño = dueñoRepository.save(dueño);
+        Authorities authority = new Authorities();
+        authority.setAuthority("DUENO");
+        authority = authoritiesRepository.save(authority);
+
+        // Crear usuario
+        User user = new User();
+        user.setUsername("juangarcia");
+        user.setPassword("password123");
+        user.setAuthority(authority);
+        user = userRepository.save(user);
+
+        // Crear dueno
+        dueno = new Dueno();
+        dueno.setFirstName("Juan");
+        dueno.setLastName("García");
+        dueno.setEmail("juan@example.com");
+        dueno.setNumTelefono("652345678");
+        dueno.setTokenDueno("TOKEN123");
+        dueno.setUser(user);
+        dueno = duenoRepository.save(dueno);
         
         // Crear negocio
         negocio = new Negocio();
         negocio.setName("Restaurante La Tasca");
         negocio.setDireccion("Calle Principal 123");
         negocio.setCiudad("Sevilla");
-        negocio.setPais("España");
+        negocio.setPais("Espana");
         negocio.setCodigoPostal("41001");
         negocio.setTokenNegocio(12345);
-        negocio.setDueño(dueño);
+        negocio.setDueno(dueno);
         negocio = negocioRepository.save(negocio);
         
         // Crear proveedores
@@ -108,6 +130,7 @@ public class LoteRepositoryTest {
         proveedor1.setEmail("distri@example.com");
         proveedor1.setTelefono("954111222");
         proveedor1.setDireccion("Polígono Industrial, Nave 7");
+        proveedor1.setNegocio(negocio);
         proveedor1 = proveedorRepository.save(proveedor1);
         
         proveedor2 = new Proveedor();
@@ -115,6 +138,7 @@ public class LoteRepositoryTest {
         proveedor2.setEmail("frescos@example.com");
         proveedor2.setTelefono("954333444");
         proveedor2.setDireccion("Avenida de la Industria, 42");
+        proveedor2.setNegocio(negocio);
         proveedor2 = proveedorRepository.save(proveedor2);
     
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
@@ -227,7 +251,7 @@ public class LoteRepositoryTest {
         assertEquals(75, saved.getCantidad());
         
         // Verificar que se puede recuperar de la base de datos
-        Lote retrieved = loteRepository.findById(saved.getId().toString()).orElse(null);
+        Lote retrieved = loteRepository.findById(saved.getId()).orElse(null);
         assertNotNull(retrieved);
         assertEquals(75, retrieved.getCantidad());
         assertEquals(LocalDate.now().plusMonths(5), retrieved.getFechaCaducidad());
@@ -236,7 +260,7 @@ public class LoteRepositoryTest {
     @Test
     void testFindById() {
         // Buscar un lote existente por ID
-        Optional<Lote> found = loteRepository.findById(lote1.getId().toString());
+        Optional<Lote> found = loteRepository.findById(lote1.getId());
         
         // Verificar que existe y tiene los datos correctos
         assertTrue(found.isPresent());
@@ -247,7 +271,7 @@ public class LoteRepositoryTest {
     @Test
     void testFindById_NotFound() {
         // Buscar un lote que no existe
-        Optional<Lote> notFound = loteRepository.findById("999");
+        Optional<Lote> notFound = loteRepository.findById(999);
         
         // Verificar que no existe
         assertFalse(notFound.isPresent());
@@ -271,7 +295,7 @@ public class LoteRepositoryTest {
         loteRepository.delete(lote1);
         
         // Verificar que se eliminó
-        Optional<Lote> shouldBeDeleted = loteRepository.findById(lote1.getId().toString());
+        Optional<Lote> shouldBeDeleted = loteRepository.findById(lote1.getId());
         assertFalse(shouldBeDeleted.isPresent());
         
         // Verificar que sólo quedan 2 lotes
@@ -281,10 +305,10 @@ public class LoteRepositoryTest {
     @Test
     void testDeleteById() {
         // Eliminar un lote por ID
-        loteRepository.deleteById(lote2.getId().toString());
+        loteRepository.deleteById(lote2.getId());
         
         // Verificar que se eliminó
-        Optional<Lote> shouldBeDeleted = loteRepository.findById(lote2.getId().toString());
+        Optional<Lote> shouldBeDeleted = loteRepository.findById(lote2.getId());
         assertFalse(shouldBeDeleted.isPresent());
         
         // Verificar que sólo quedan 2 lotes

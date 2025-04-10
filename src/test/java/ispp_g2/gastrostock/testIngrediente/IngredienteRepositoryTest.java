@@ -19,14 +19,18 @@ import ispp_g2.gastrostock.productoInventario.ProductoInventario;
 import ispp_g2.gastrostock.productoInventario.ProductoInventarioRepository;
 import ispp_g2.gastrostock.productoVenta.ProductoVenta;
 import ispp_g2.gastrostock.productoVenta.ProductoVentaRepository;
+import ispp_g2.gastrostock.user.Authorities;
+import ispp_g2.gastrostock.user.AuthoritiesRepository;
+import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserRepository;
 import jakarta.validation.ConstraintViolationException;
 import ispp_g2.gastrostock.categorias.Categoria;
 import ispp_g2.gastrostock.categorias.CategoriaRepository;
 import ispp_g2.gastrostock.categorias.Pertenece;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioRepository;
-import ispp_g2.gastrostock.dueño.Dueño;
-import ispp_g2.gastrostock.dueño.DueñoRepository;
+import ispp_g2.gastrostock.dueno.Dueno;
+import ispp_g2.gastrostock.dueno.DuenoRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase
@@ -49,14 +53,20 @@ public class IngredienteRepositoryTest {
     private NegocioRepository negocioRepository;
     
     @Autowired
-    private DueñoRepository dueñoRepository;
+    private DuenoRepository duenoRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AuthoritiesRepository authoritiesRepository;
 
     private Ingrediente ingrediente1, ingrediente2, ingrediente3;
     private ProductoInventario productoInventario1, productoInventario2;
     private ProductoVenta productoVenta1, productoVenta2;
     private Categoria categoriaInventario, categoriaVenta;
     private Negocio negocio;
-    private Dueño dueño;
+    private Dueno dueno;
 
     @BeforeEach
     void setUp() {
@@ -66,26 +76,37 @@ public class IngredienteRepositoryTest {
         productoVentaRepository.deleteAll();
         categoriaRepository.deleteAll();
         negocioRepository.deleteAll();
-        dueñoRepository.deleteAll();
+        duenoRepository.deleteAll();
 
-        // Crear dueño
-        dueño = new Dueño();
-        dueño.setFirstName("Juan");
-        dueño.setLastName("García");
-        dueño.setEmail("juan@example.com");
-        dueño.setNumTelefono("652345678");
-        dueño.setTokenDueño("TOKEN123");
-        dueño = dueñoRepository.save(dueño);
+        Authorities authority = new Authorities();
+        authority.setAuthority("DUENO");
+        authority = authoritiesRepository.save(authority);
+
+        // Crear usuario
+        User user = new User();
+        user.setUsername("juangarcia");
+        user.setPassword("password123");
+        user.setAuthority(authority);
+        user = userRepository.save(user);
+        // Crear dueno
+        dueno = new Dueno();
+        dueno.setFirstName("Juan");
+        dueno.setLastName("García");
+        dueno.setEmail("juan@example.com");
+        dueno.setNumTelefono("652345678");
+        dueno.setTokenDueno("TOKEN123");
+        dueno.setUser(user);
+        dueno = duenoRepository.save(dueno);
 
         // Crear negocio
         negocio = new Negocio();
         negocio.setName("Restaurante La Tasca");
         negocio.setDireccion("Calle Principal 123");
         negocio.setCiudad("Sevilla");
-        negocio.setPais("España");
+        negocio.setPais("Espana");
         negocio.setCodigoPostal("41001");
         negocio.setTokenNegocio(12345);
-        negocio.setDueño(dueño);
+        negocio.setDueno(dueno);
         negocio = negocioRepository.save(negocio);
 
         // Crear categorías
@@ -175,7 +196,7 @@ public class IngredienteRepositoryTest {
         assertEquals(productoVenta2.getId(), saved.getProductoVenta().getId());
 
         // Verificar que se haya guardado en la BD
-        Optional<Ingrediente> fromDb = ingredienteRepository.findById(saved.getId().toString());
+        Optional<Ingrediente> fromDb = ingredienteRepository.findById(saved.getId());
         assertTrue(fromDb.isPresent());
         assertEquals(5, fromDb.get().getCantidad());
     }
@@ -220,7 +241,7 @@ public class IngredienteRepositoryTest {
     @Test
     void testFindById() {
         // Buscar un ingrediente existente
-        Optional<Ingrediente> found = ingredienteRepository.findById(ingrediente1.getId().toString());
+        Optional<Ingrediente> found = ingredienteRepository.findById(ingrediente1.getId());
         
         // Verificar que existe y tiene los datos correctos
         assertTrue(found.isPresent());
@@ -232,7 +253,7 @@ public class IngredienteRepositoryTest {
     @Test
     void testFindById_NotFound() {
         // Buscar un ID que no existe
-        Optional<Ingrediente> notFound = ingredienteRepository.findById("999");
+        Optional<Ingrediente> notFound = ingredienteRepository.findById(999);
         
         // Verificar que no existe
         assertFalse(notFound.isPresent());
@@ -259,7 +280,7 @@ public class IngredienteRepositoryTest {
         ingredienteRepository.delete(ingrediente3);
         
         // Verificar que ya no existe
-        Optional<Ingrediente> shouldBeDeleted = ingredienteRepository.findById(ingrediente3.getId().toString());
+        Optional<Ingrediente> shouldBeDeleted = ingredienteRepository.findById(ingrediente3.getId());
         assertFalse(shouldBeDeleted.isPresent());
         
         // Verificar que solo quedan 2 ingredientes
@@ -274,10 +295,10 @@ public class IngredienteRepositoryTest {
     @Test
     void testDeleteById() {
         // Eliminar un ingrediente por ID
-        ingredienteRepository.deleteById(ingrediente2.getId().toString());
+        ingredienteRepository.deleteById(ingrediente2.getId());
         
         // Verificar que ya no existe
-        Optional<Ingrediente> shouldBeDeleted = ingredienteRepository.findById(ingrediente2.getId().toString());
+        Optional<Ingrediente> shouldBeDeleted = ingredienteRepository.findById(ingrediente2.getId());
         assertFalse(shouldBeDeleted.isPresent());
         
         // Verificar que solo quedan 2 ingredientes
@@ -292,7 +313,7 @@ public class IngredienteRepositoryTest {
     @Test
     void testDeleteById_NotFound() {
         // El comportamiento esperado es que no haga nada sin lanzar excepción
-        ingredienteRepository.deleteById("999");
+        ingredienteRepository.deleteById(999);
         
         // Verificar que siguen existiendo los 3 ingredientes originales
         Iterable<Ingrediente> remaining = ingredienteRepository.findAll();
@@ -459,7 +480,7 @@ public class IngredienteRepositoryTest {
         assertEquals(10, updated.getCantidad());
         
         // Verificar que se actualizó en la BD
-        Optional<Ingrediente> fromDb = ingredienteRepository.findById(ingrediente1.getId().toString());
+        Optional<Ingrediente> fromDb = ingredienteRepository.findById(ingrediente1.getId());
         assertTrue(fromDb.isPresent());
         assertEquals(10, fromDb.get().getCantidad());
     }

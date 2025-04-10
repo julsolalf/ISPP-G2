@@ -23,7 +23,7 @@ function PantallaMasInfo() {
       <div className="info-content">
         <h1 className="title">Sobre Nosotros</h1>
         <p>
-          <strong>GastroStock</strong> es una plataforma innovadora de Punto de Venta (TPV) diseñada específicamente para el sector hostelero. Nuestro objetivo es optimizar la gestión de negocios, permitiendo un control eficiente del inventario, reducción de pérdidas y una mejor previsión de la demanda. A través de un modelo de negocio FREEMIUM, ofrecemos una versión gratuita con funciones esenciales y una versión premium con herramientas avanzadas potenciadas por inteligencia artificial (IA), brindando así soluciones inteligentes y adaptadas a las necesidades de cada negocio.
+          <strong>GastroStock</strong> es una plataforma innovadora de Punto de Venta (TPV) disenada específicamente para el sector hostelero. Nuestro objetivo es optimizar la gestión de negocios, permitiendo un control eficiente del inventario, reducción de pérdidas y una mejor previsión de la demanda. A través de un modelo de negocio FREEMIUM, ofrecemos una versión gratuita con funciones esenciales y una versión premium con herramientas avanzadas potenciadas por inteligencia artificial (IA), brindando así soluciones inteligentes y adaptadas a las necesidades de cada negocio.
         </p>
         <h2>Planes y Precios</h2>
         <div className="pricing">
@@ -48,7 +48,7 @@ function PantallaMasInfo() {
           </div>
           <div className="plan">
             <h3>Pilotos</h3>
-            <p>5€/mes durante el primer año</p>
+            <p>5€/mes durante el primer ano</p>
             <p>Tras esto, 25€/mes</p>
             <p>Acceso a todas las funciones del plan Premium</p>
             <p>Acceso gratuito durante los primeros 2 meses</p>

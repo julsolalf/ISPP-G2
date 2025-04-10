@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ProductoInventarioRepository extends CrudRepository<ProductoInventario,String>{
+public interface ProductoInventarioRepository extends CrudRepository<ProductoInventario,Integer>{
 
     @Query("SELECT p FROM ProductoInventario p WHERE p.name = ?1")
     ProductoInventario findByName(String name);
@@ -21,7 +21,16 @@ public interface ProductoInventarioRepository extends CrudRepository<ProductoInv
     @Query("SELECT p FROM ProductoInventario p WHERE p.cantidadDeseada = ?1")
     List<ProductoInventario> findByCantidadDeseada(Integer cantidadDeseada);
 
+    @Query("SELECT p FROM ProductoInventario p WHERE p.categoria.negocio.id = ?1")
+    List<ProductoInventario> findByNegocioId(Integer negocioId);
+
+    @Query("SELECT p FROM ProductoInventario p WHERE p.categoria.negocio.dueno.id = ?1")
+    List<ProductoInventario> findByDuenoId(Integer duenoId);
+
     @Query("SELECT p FROM ProductoInventario p WHERE p.cantidadAviso = ?1")
     List<ProductoInventario> findByCantidadAviso(Integer cantidadAviso);
+
+    @Query("SELECT p FROM ProductoInventario p WHERE p.proveedor.id = ?1")
+    List<ProductoInventario> findByProveedorId(Integer proveedorId);
 
 }

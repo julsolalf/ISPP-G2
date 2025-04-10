@@ -14,10 +14,14 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 
-import ispp_g2.gastrostock.dueño.Dueño;
-import ispp_g2.gastrostock.dueño.DueñoRepository;
+import ispp_g2.gastrostock.dueno.Dueno;
+import ispp_g2.gastrostock.dueno.DuenoRepository;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioRepository;
+import ispp_g2.gastrostock.user.Authorities;
+import ispp_g2.gastrostock.user.AuthoritiesRepository;
+import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase
@@ -28,63 +32,88 @@ class NegocioRepositoryTest {
     private NegocioRepository negocioRepository;
     
     @Autowired
-    private DueñoRepository dueñoRepository;
+    private DuenoRepository duenoRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AuthoritiesRepository authoritiesRepository;
     
-    private Dueño dueño1, dueño2;
+    private Dueno dueno1, dueno2;
     private Negocio negocio1, negocio2, negocio3;
     
     @BeforeEach
     void setUp() {
         // Limpiar repositorios
         negocioRepository.deleteAll();
-        dueñoRepository.deleteAll();
+        duenoRepository.deleteAll();
+
+        Authorities authority = new Authorities();
+        authority.setAuthority("DUENO");
+        authority = authoritiesRepository.save(authority);
+
+        // Crear usuario
+        User user = new User();
+        user.setUsername("juangarcia");
+        user.setPassword("password123");
+        user.setAuthority(authority);
+        user = userRepository.save(user);
+
+        User user2 = new User();
+        user2.setUsername("marialopez");
+        user2.setPassword("password123");
+        user2.setAuthority(authority);
+        user2 = userRepository.save(user2);
         
-        // Crear dueños
-        dueño1 = new Dueño();
-        dueño1.setFirstName("Juan");
-        dueño1.setLastName("García");
-        dueño1.setEmail("juan@example.com");
-        dueño1.setNumTelefono("666111222");
-        dueño1.setTokenDueño("TOKEN999");
-        dueño1 = dueñoRepository.save(dueño1);
+        // Crear duenos
+        dueno1 = new Dueno();
+        dueno1.setFirstName("Juan");
+        dueno1.setLastName("García");
+        dueno1.setEmail("juan@example.com");
+        dueno1.setNumTelefono("666111222");
+        dueno1.setTokenDueno("TOKEN999");
+        dueno1.setUser(user);
+        dueno1 = duenoRepository.save(dueno1);
         
-        dueño2 = new Dueño();
-        dueño2.setFirstName("María");
-        dueño2.setLastName("López");
-        dueño2.setEmail("maria@example.com");
-        dueño2.setNumTelefono("666333444");
-        dueño2.setTokenDueño("TOKEN456");
-        dueño2 = dueñoRepository.save(dueño2);
+        dueno2 = new Dueno();
+        dueno2.setFirstName("María");
+        dueno2.setLastName("López");
+        dueno2.setEmail("maria@example.com");
+        dueno2.setNumTelefono("666333444");
+        dueno2.setTokenDueno("TOKEN456");
+        dueno2.setUser(user2);
+        dueno2 = duenoRepository.save(dueno2);
         
         // Crear negocios
         negocio1 = new Negocio();
         negocio1.setName("Restaurante La Tasca");
         negocio1.setDireccion("Calle Principal 123");
         negocio1.setCiudad("Sevilla");
-        negocio1.setPais("España");
+        negocio1.setPais("Espana");
         negocio1.setCodigoPostal("41001");
         negocio1.setTokenNegocio(12345);
-        negocio1.setDueño(dueño1);
+        negocio1.setDueno(dueno1);
         negocio1 = negocioRepository.save(negocio1);
         
         negocio2 = new Negocio();
         negocio2.setName("Bar El Rincón");
         negocio2.setDireccion("Avenida de la Constitución 45");
         negocio2.setCiudad("Sevilla");
-        negocio2.setPais("España");
+        negocio2.setPais("Espana");
         negocio2.setCodigoPostal("41001");
         negocio2.setTokenNegocio(67890);
-        negocio2.setDueño(dueño1);
+        negocio2.setDueno(dueno1);
         negocio2 = negocioRepository.save(negocio2);
         
         negocio3 = new Negocio();
         negocio3.setName("Café Central");
         negocio3.setDireccion("Plaza Mayor 10");
         negocio3.setCiudad("Madrid");
-        negocio3.setPais("España");
+        negocio3.setPais("Espana");
         negocio3.setCodigoPostal("28001");
         negocio3.setTokenNegocio(54321);
-        negocio3.setDueño(dueño2);
+        negocio3.setDueno(dueno2);
         negocio3 = negocioRepository.save(negocio3);
     }
 
@@ -115,7 +144,7 @@ class NegocioRepositoryTest {
     
     @Test
     void testFindById() {
-        Optional<Negocio> found = negocioRepository.findById(negocio1.getId().toString());
+        Optional<Negocio> found = negocioRepository.findById(negocio1.getId());
         
         assertTrue(found.isPresent());
         assertEquals("Restaurante La Tasca", found.get().getName());
@@ -124,7 +153,7 @@ class NegocioRepositoryTest {
     
     @Test
     void testFindById_NotFound() {
-        Optional<Negocio> notFound = negocioRepository.findById("9999");
+        Optional<Negocio> notFound = negocioRepository.findById(9999);
         
         assertFalse(notFound.isPresent());
     }
@@ -135,10 +164,10 @@ class NegocioRepositoryTest {
         newNegocio.setName("Heladería Polar");
         newNegocio.setDireccion("Calle Fresa 15");
         newNegocio.setCiudad("Valencia");
-        newNegocio.setPais("España");
+        newNegocio.setPais("Espana");
         newNegocio.setCodigoPostal("46001");
         newNegocio.setTokenNegocio(11223);
-        newNegocio.setDueño(dueño2);
+        newNegocio.setDueno(dueno2);
         
         Negocio saved = negocioRepository.save(newNegocio);
         
@@ -152,18 +181,18 @@ class NegocioRepositoryTest {
     }
     
     @Test
-    void testSaveWithoutDueño() {
-        Negocio negocioSinDueño = new Negocio();
-        negocioSinDueño.setName("Restaurante Sin Dueño");
-        negocioSinDueño.setDireccion("Calle Cualquiera 10");
-        negocioSinDueño.setCiudad("Barcelona");
-        negocioSinDueño.setPais("España");
-        negocioSinDueño.setCodigoPostal("08001");
-        negocioSinDueño.setTokenNegocio(99999);
+    void testSaveWithoutDueno() {
+        Negocio negocioSinDueno = new Negocio();
+        negocioSinDueno.setName("Restaurante Sin Dueno");
+        negocioSinDueno.setDireccion("Calle Cualquiera 10");
+        negocioSinDueno.setCiudad("Barcelona");
+        negocioSinDueno.setPais("Espana");
+        negocioSinDueno.setCodigoPostal("08001");
+        negocioSinDueno.setTokenNegocio(99999);
         
-        // Debería fallar al guardar sin dueño
+        // Debería fallar al guardar sin dueno
         assertThrows(DataIntegrityViolationException.class, () -> {
-            negocioRepository.save(negocioSinDueño);
+            negocioRepository.save(negocioSinDueno);
             negocioRepository.findAll(); // Forzar flush
         });
     }
@@ -181,7 +210,7 @@ class NegocioRepositoryTest {
         assertEquals("Córdoba", updated.getCiudad());
         
         // Verificar que se actualizó en la BD
-        Optional<Negocio> retrieved = negocioRepository.findById(negocio1.getId().toString());
+        Optional<Negocio> retrieved = negocioRepository.findById(negocio1.getId());
         assertTrue(retrieved.isPresent());
         assertEquals("Restaurante La Tasca Renovado", retrieved.get().getName());
         assertEquals("Córdoba", retrieved.get().getCiudad());
@@ -207,10 +236,10 @@ class NegocioRepositoryTest {
     @Test
     void testDeleteById() {
         // Eliminar por ID
-        negocioRepository.deleteById(negocio2.getId().toString());
+        negocioRepository.deleteById(negocio2.getId());
         
         // Verificar que se eliminó
-        Optional<Negocio> shouldBeDeleted = negocioRepository.findById(negocio2.getId().toString());
+        Optional<Negocio> shouldBeDeleted = negocioRepository.findById(negocio2.getId());
         assertFalse(shouldBeDeleted.isPresent());
         
         // Verificar que los demás siguen existiendo
@@ -296,11 +325,11 @@ class NegocioRepositoryTest {
     
     @Test
     void testFindByPais_Success() {
-        List<Negocio> negocios = negocioRepository.findByPais("España");
+        List<Negocio> negocios = negocioRepository.findByPais("Espana");
         
         assertNotNull(negocios);
         assertEquals(3, negocios.size());
-        assertTrue(negocios.stream().allMatch(n -> "España".equals(n.getPais())));
+        assertTrue(negocios.stream().allMatch(n -> "Espana".equals(n.getPais())));
     }
     
     @Test
@@ -327,17 +356,17 @@ class NegocioRepositoryTest {
     }
     
     @Test
-    void testFindByDueño_Success() {
-        List<Negocio> negocios = negocioRepository.findByDueño(dueño1.getId().toString());
+    void testFindByDueno_Success() {
+        List<Negocio> negocios = negocioRepository.findByDueno(dueno1.getId());
         
         assertNotNull(negocios);
         assertEquals(2, negocios.size());
-        assertTrue(negocios.stream().allMatch(n -> n.getDueño().getId().equals(dueño1.getId())));
+        assertTrue(negocios.stream().allMatch(n -> n.getDueno().getId().equals(dueno1.getId())));
     }
     
     @Test
-    void testFindByDueño_NotFound() {
-        List<Negocio> notFound = negocioRepository.findByDueño("9999");
+    void testFindByDueno_NotFound() {
+        List<Negocio> notFound = negocioRepository.findByDueno(9999);
         
         assertTrue(notFound.isEmpty());
     }
@@ -351,10 +380,10 @@ class NegocioRepositoryTest {
         negocioDuplicado.setName("Negocio con Token Duplicado");
         negocioDuplicado.setDireccion("Alguna Calle 123");
         negocioDuplicado.setCiudad("Sevilla");
-        negocioDuplicado.setPais("España");
+        negocioDuplicado.setPais("Espana");
         negocioDuplicado.setCodigoPostal("41001");
         negocioDuplicado.setTokenNegocio(12345); // Mismo token que negocio1
-        negocioDuplicado.setDueño(dueño2);
+        negocioDuplicado.setDueno(dueno2);
         
         // Debería fallar por la restricción de unicidad
         assertThrows(Exception.class, () -> {
@@ -364,10 +393,10 @@ class NegocioRepositoryTest {
     }
     
     @Test
-    void testRelacionDueñoNegocio() {
+    void testRelacionDuenoNegocio() {
         // Verificar la relación desde el lado del negocio
-        assertEquals(dueño1.getId(), negocio1.getDueño().getId());
-        assertEquals(dueño1.getId(), negocio2.getDueño().getId());
-        assertEquals(dueño2.getId(), negocio3.getDueño().getId());
+        assertEquals(dueno1.getId(), negocio1.getDueno().getId());
+        assertEquals(dueno1.getId(), negocio2.getDueno().getId());
+        assertEquals(dueno2.getId(), negocio3.getDueno().getId());
     }
 }

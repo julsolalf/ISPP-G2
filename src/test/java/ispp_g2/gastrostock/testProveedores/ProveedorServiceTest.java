@@ -121,28 +121,28 @@ public class ProveedorServiceTest {
     @Test
     void testGetById_Exists() {
         // Arrange
-        when(proveedorRepository.findById("1")).thenReturn(Optional.of(proveedor1));
+        when(proveedorRepository.findById(1)).thenReturn(Optional.of(proveedor1));
 
         // Act
-        Optional<Proveedor> result = Optional.of(proveedorService.findById("1"));
+        Optional<Proveedor> result = Optional.of(proveedorService.findById(1));
 
         // Assert
         assertTrue(result.isPresent());
         assertEquals("Distribuciones Alimentarias S.L.", result.get().getName());
-        verify(proveedorRepository, times(1)).findById("1");
+        verify(proveedorRepository, times(1)).findById(1);
     }
 
         @Test
         void testGetById_NotExists() {
             // Arrange
-            when(proveedorRepository.findById("999")).thenReturn(Optional.empty());
+            when(proveedorRepository.findById(999)).thenReturn(Optional.empty());
 
             // Act
-            Proveedor result = proveedorService.findById("999");
+            Proveedor result = proveedorService.findById(999);
 
             // Assert
             assertNull(result);
-            verify(proveedorRepository, times(1)).findById("999");
+            verify(proveedorRepository, times(1)).findById(999);
         }
 
     @Test
@@ -431,25 +431,25 @@ public class ProveedorServiceTest {
     @Test
     void testDeleteById_Success() {
         // Arrange
-        doNothing().when(proveedorRepository).deleteById("1");
+        doNothing().when(proveedorRepository).deleteById(1);
 
         // Act
-        proveedorService.deleteById("1");
+        proveedorService.deleteById(1);
 
         // Assert
-        verify(proveedorRepository, times(1)).deleteById("1");
+        verify(proveedorRepository, times(1)).deleteById(1);
     }
 
     @Test
     void testDeleteById_NotFound() {
         // Arrange
-        doThrow(new RuntimeException("Proveedor not found")).when(proveedorRepository).deleteById("999");
+        doThrow(new RuntimeException("Proveedor not found")).when(proveedorRepository).deleteById(999);
 
         // Act & Assert
         assertThrows(RuntimeException.class, () -> {
-            proveedorService.deleteById("999");
+            proveedorService.deleteById(999);
         });
-        verify(proveedorRepository, times(1)).deleteById("999");
+        verify(proveedorRepository, times(1)).deleteById(999);
     }
 
     @Test

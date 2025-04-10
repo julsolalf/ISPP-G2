@@ -1,6 +1,7 @@
 package ispp_g2.gastrostock.testProductoInventario;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -12,13 +13,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import ispp_g2.gastrostock.categorias.Categoria;
+import ispp_g2.gastrostock.config.SecurityConfiguration;
+import ispp_g2.gastrostock.config.jwt.JwtAuthFilter;
+import ispp_g2.gastrostock.config.jwt.JwtService;
 import ispp_g2.gastrostock.productoInventario.ProductoInventario;
 import ispp_g2.gastrostock.productoInventario.ProductoInventarioController;
 import ispp_g2.gastrostock.productoInventario.ProductoInventarioService;
@@ -27,8 +34,7 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @WebMvcTest(ProductoInventarioController.class)
-@ExtendWith(MockitoExtension.class)
-@AutoConfigureMockMvc(addFilters = false) 
+@Import({SecurityConfiguration.class, JwtAuthFilter.class})
 @ActiveProfiles("test")
 class ProductoInventarioControllerTest {
 
@@ -40,6 +46,16 @@ class ProductoInventarioControllerTest {
 
     @InjectMocks
     private ProductoInventarioController productoInventarioController;
+        
+    @MockBean
+    private JwtService jwtService;
+    
+    @MockBean
+    private AuthenticationProvider authenticationProvider;
+    
+    @MockBean
+    private UserDetailsService userDetailsService;
+    
 
     private ProductoInventario sampleProduct;
     private Categoria categoriaBebidas;
@@ -59,6 +75,10 @@ class ProductoInventarioControllerTest {
         sampleProduct.setPrecioCompra(10.5);
         sampleProduct.setCantidadDeseada(100);
         sampleProduct.setCantidadAviso(10);
+
+        // Configurar JWT service con los métodos reales
+        when(jwtService.getUserNameFromJwtToken(anyString())).thenReturn("admin");
+        when(jwtService.validateJwtToken(anyString(), any())).thenReturn(true);
     }
 
     @Test
@@ -80,7 +100,7 @@ class ProductoInventarioControllerTest {
 
     @Test
     void testFindProductoInventario_Found() throws Exception {
-        when(productoInventarioService.getById("1")).thenReturn(sampleProduct);
+        when(productoInventarioService.getById(1)).thenReturn(sampleProduct);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/productosInventario/1"))
             .andExpect(status().isOk())
@@ -89,7 +109,7 @@ class ProductoInventarioControllerTest {
 
     @Test
     void testFindProductoInventario_NotFound() throws Exception {
-        when(productoInventarioService.getById("99")).thenReturn(null);
+        when(productoInventarioService.getById(99)).thenReturn(null);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/productosInventario/99"))
             .andExpect(status().isNotFound());
@@ -116,7 +136,7 @@ class ProductoInventarioControllerTest {
 
     @Test
     void testUpdateProductoInventario_Success() throws Exception {
-        when(productoInventarioService.getById("1")).thenReturn(sampleProduct);
+        when(productoInventarioService.getById(1)).thenReturn(sampleProduct);
         when(productoInventarioService.save(any())).thenReturn(sampleProduct);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/productosInventario/1")
@@ -127,7 +147,7 @@ class ProductoInventarioControllerTest {
 
     @Test
     void testUpdateProductoInventario_NotFound() throws Exception {
-        when(productoInventarioService.getById("99")).thenReturn(null);
+        when(productoInventarioService.getById(99)).thenReturn(null);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/productosInventario/99")
             .contentType(MediaType.APPLICATION_JSON)
@@ -137,8 +157,8 @@ class ProductoInventarioControllerTest {
 
     @Test
     void testDeleteProductoInventario_Success() throws Exception {
-        when(productoInventarioService.getById("1")).thenReturn(sampleProduct);
-        doNothing().when(productoInventarioService).delete("1");
+        when(productoInventarioService.getById(1)).thenReturn(sampleProduct);
+        doNothing().when(productoInventarioService).delete(1);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/productosInventario/1"))
             .andExpect(status().isNoContent());
@@ -146,7 +166,7 @@ class ProductoInventarioControllerTest {
 
     @Test
     void testDeleteProductoInventario_NotFound() throws Exception {
-        when(productoInventarioService.getById("99")).thenReturn(null);
+        when(productoInventarioService.getById(99)).thenReturn(null);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/productosInventario/99"))
             .andExpect(status().isNotFound());
@@ -171,7 +191,7 @@ class ProductoInventarioControllerTest {
 
     @Test
     void testInternalServerError() throws Exception {
-        when(productoInventarioService.getById("1")).thenThrow(new RuntimeException("Error interno"));
+        when(productoInventarioService.getById(1)).thenThrow(new RuntimeException("Error interno"));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/productosInventario/1"))
             .andExpect(status().isInternalServerError());
@@ -191,12 +211,12 @@ class ProductoInventarioControllerTest {
     @Test
     void testGetProductoInventario_InvalidId() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/productosInventario/invalidId"))
-            .andExpect(status().isNotFound());
+            .andExpect(status().isBadRequest());
     }
-
+    
     @Test
     void testDeleteProductoInventario_InvalidId() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/productosInventario/invalidId"))
-            .andExpect(status().isNotFound());
+            .andExpect(status().isBadRequest());
     }
 }

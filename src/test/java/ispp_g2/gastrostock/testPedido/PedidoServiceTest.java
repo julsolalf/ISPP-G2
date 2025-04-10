@@ -68,6 +68,7 @@ class PedidoServiceTest {
         negocio = new Negocio();
         negocio.setId(1);
         negocio.setName("Restaurante Test");
+
         
         // Set up Pedido
         pedido = new Pedido();
@@ -82,29 +83,29 @@ class PedidoServiceTest {
     @Test
     void testGetById_Success() {
         // Given
-        when(pedidoRepository.findById("1")).thenReturn(Optional.of(pedido));
+        when(pedidoRepository.findById(1)).thenReturn(Optional.of(pedido));
         
         // When
-        Pedido result = pedidoService.getById("1");
+        Pedido result = pedidoService.getById(1);
         
         // Then
         assertNotNull(result);
         assertEquals(1, result.getId());
         assertEquals(45.50, result.getPrecioTotal());
-        verify(pedidoRepository, times(1)).findById("1");
+        verify(pedidoRepository, times(1)).findById(1);
     }
     
     @Test
     void testGetById_NotFound() {
         // Given
-        when(pedidoRepository.findById("999")).thenReturn(Optional.empty());
+        when(pedidoRepository.findById(999)).thenReturn(Optional.empty());
         
         // When
-        Pedido result = pedidoService.getById("999");
+        Pedido result = pedidoService.getById(999);
         
         // Then
         assertNull(result);
-        verify(pedidoRepository, times(1)).findById("999");
+        verify(pedidoRepository, times(1)).findById(999);
     }
     
     @Test
@@ -349,23 +350,23 @@ class PedidoServiceTest {
     @Test
     void testDelete_Success() {
         // Given
-        doNothing().when(pedidoRepository).deleteById("1");
+        doNothing().when(pedidoRepository).deleteById(1);
         
         // When
-        pedidoService.delete("1");
+        pedidoService.delete(1);
         
         // Then
-        verify(pedidoRepository, times(1)).deleteById("1");
+        verify(pedidoRepository, times(1)).deleteById(1);
     }
     
     @Test
     void testDelete_NonexistentId() {
         // Given
-        doThrow(new RuntimeException("Entity not found")).when(pedidoRepository).deleteById("999");
+        doThrow(new RuntimeException("Entity not found")).when(pedidoRepository).deleteById(999);
         
         // When & Then
-        assertThrows(RuntimeException.class, () -> pedidoService.delete("999"));
-        verify(pedidoRepository, times(1)).deleteById("999");
+        assertThrows(RuntimeException.class, () -> pedidoService.delete(999));
+        verify(pedidoRepository, times(1)).deleteById(999);
     }
     
     // Edge cases

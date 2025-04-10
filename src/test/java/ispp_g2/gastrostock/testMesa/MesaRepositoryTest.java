@@ -14,8 +14,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 
-import ispp_g2.gastrostock.dueño.Dueño;
-import ispp_g2.gastrostock.dueño.DueñoRepository;
+import ispp_g2.gastrostock.dueno.Dueno;
+import ispp_g2.gastrostock.dueno.DuenoRepository;
 import ispp_g2.gastrostock.empleado.Empleado;
 import ispp_g2.gastrostock.empleado.EmpleadoRepository;
 import ispp_g2.gastrostock.mesa.Mesa;
@@ -24,6 +24,10 @@ import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioRepository;
 import ispp_g2.gastrostock.pedido.Pedido;
 import ispp_g2.gastrostock.pedido.PedidoRepository;
+import ispp_g2.gastrostock.user.Authorities;
+import ispp_g2.gastrostock.user.AuthoritiesRepository;
+import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase
@@ -34,7 +38,7 @@ public class MesaRepositoryTest {
     private MesaRepository mesaRepository;
     
     @Autowired
-    private DueñoRepository dueñoRepository;
+    private DuenoRepository duenoRepository;
     
     @Autowired
     private NegocioRepository negocioRepository;
@@ -44,8 +48,14 @@ public class MesaRepositoryTest {
     
     @Autowired
     private PedidoRepository pedidoRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AuthoritiesRepository authoritiesRepository;
     
-    private Dueño dueño;
+    private Dueno dueno;
     private Negocio negocio;
     private Mesa mesa1, mesa2, mesa3;
     private Empleado empleado;
@@ -57,26 +67,37 @@ public class MesaRepositoryTest {
         mesaRepository.deleteAll();
         empleadoRepository.deleteAll();
         negocioRepository.deleteAll();
-        dueñoRepository.deleteAll();
+        duenoRepository.deleteAll();
         
-        // Crear un objeto Dueño
-        dueño = new Dueño();
-        dueño.setFirstName("Juan");
-        dueño.setLastName("Dueño");
-        dueño.setEmail("juan@gastrostock.com");
-        dueño.setNumTelefono("689594895");
-        dueño.setTokenDueño("TOKEN123");
-        dueño = dueñoRepository.save(dueño);
+        Authorities authority = new Authorities();
+        authority.setAuthority("DUENO");
+        authority = authoritiesRepository.save(authority);
+
+        // Crear usuario
+        User user = new User();
+        user.setUsername("juangarcia");
+        user.setPassword("password123");
+        user.setAuthority(authority);
+        user = userRepository.save(user);
+        // Crear un objeto Dueno
+        dueno = new Dueno();
+        dueno.setFirstName("Juan");
+        dueno.setLastName("Dueno");
+        dueno.setEmail("juan@gastrostock.com");
+        dueno.setNumTelefono("689594895");
+        dueno.setTokenDueno("TOKEN123");
+        dueno.setUser(user);
+        dueno = duenoRepository.save(dueno);
 
         // Crear un objeto Negocio
         negocio = new Negocio();
         negocio.setName("Restaurante La Tasca");
         negocio.setDireccion("Calle Principal 123");
         negocio.setCiudad("Sevilla");
-        negocio.setPais("España");
+        negocio.setPais("Espana");
         negocio.setCodigoPostal("41001");
         negocio.setTokenNegocio(12345);
-        negocio.setDueño(dueño);
+        negocio.setDueno(dueno);
         negocio = negocioRepository.save(negocio);
 
         // Crear un empleado
@@ -87,6 +108,7 @@ public class MesaRepositoryTest {
         empleado.setLastName("García");
         empleado.setEmail("antonio@test.com");
         empleado.setNumTelefono("666111222");
+        empleado.setUser(user);
         empleado = empleadoRepository.save(empleado);
 
         // Crear objetos Mesa para pruebas
@@ -128,7 +150,7 @@ public class MesaRepositoryTest {
         assertEquals(8, saved.getNumeroAsientos());
         
         // Verificar que se puede recuperar de la base de datos
-        Optional<Mesa> retrieved = mesaRepository.findById(Integer.toString(saved.getId()));
+        Optional<Mesa> retrieved = mesaRepository.findById(saved.getId());
         assertTrue(retrieved.isPresent());
         assertEquals("Mesa Nueva", retrieved.get().getName());
     }
@@ -150,7 +172,7 @@ public class MesaRepositoryTest {
     @Test
     void testFindById() {
         // Buscar una mesa existente por ID
-        Optional<Mesa> found = mesaRepository.findById(Integer.toString(mesa1.getId()));
+        Optional<Mesa> found = mesaRepository.findById(mesa1.getId());
         
         // Verificar que existe y tiene los datos correctos
         assertTrue(found.isPresent());
@@ -161,7 +183,7 @@ public class MesaRepositoryTest {
     @Test
     void testFindById_NotFound() {
         // Buscar una mesa que no existe
-        Optional<Mesa> notFound = mesaRepository.findById("999");
+        Optional<Mesa> notFound = mesaRepository.findById(999);
         
         // Verificar que no existe
         assertFalse(notFound.isPresent());
@@ -197,7 +219,7 @@ public class MesaRepositoryTest {
         mesaRepository.delete(mesa2);
         
         // Verificar que se eliminó
-        Optional<Mesa> shouldBeDeleted = mesaRepository.findById(Integer.toString(mesa2.getId()));
+        Optional<Mesa> shouldBeDeleted = mesaRepository.findById(mesa2.getId());
         assertFalse(shouldBeDeleted.isPresent());
         
         // Verificar que el resto sigue existiendo
@@ -207,10 +229,10 @@ public class MesaRepositoryTest {
     @Test
     void testDeleteById() {
         // Eliminar una mesa por ID
-        mesaRepository.deleteById(Integer.toString(mesa3.getId()));
+        mesaRepository.deleteById(mesa3.getId());
         
         // Verificar que se eliminó
-        Optional<Mesa> shouldBeDeleted = mesaRepository.findById(Integer.toString(mesa3.getId()));
+        Optional<Mesa> shouldBeDeleted = mesaRepository.findById(mesa3.getId());
         assertFalse(shouldBeDeleted.isPresent());
         
         // Verificar que el resto sigue existiendo
@@ -253,7 +275,7 @@ public class MesaRepositoryTest {
     @Test
     void testFindMesasByNegocio_Success() {
         // Buscar mesas por ID de negocio
-        List<Mesa> found = mesaRepository.findMesasByNegocio(negocio.getId().toString());
+        List<Mesa> found = mesaRepository.findMesasByNegocio(negocio.getId());
         
         // Verificar que se encontraron todas las mesas del negocio
         assertEquals(3, found.size());
@@ -262,7 +284,7 @@ public class MesaRepositoryTest {
     @Test
     void testFindMesasByNegocio_NotFound() {
         // Buscar mesas por ID de negocio que no existe
-        List<Mesa> notFound = mesaRepository.findMesasByNegocio("999");
+        List<Mesa> notFound = mesaRepository.findMesasByNegocio(999);
         
         // Verificar que la lista está vacía
         assertTrue(notFound.isEmpty());

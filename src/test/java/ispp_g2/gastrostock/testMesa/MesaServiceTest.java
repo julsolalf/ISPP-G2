@@ -17,7 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
-import ispp_g2.gastrostock.dueño.Dueño;
+import ispp_g2.gastrostock.dueno.Dueno;
 import ispp_g2.gastrostock.mesa.Mesa;
 import ispp_g2.gastrostock.mesa.MesaRepository;
 import ispp_g2.gastrostock.mesa.MesaService;
@@ -35,19 +35,19 @@ class MesaServiceTest {
 
     private Mesa mesa1, mesa2, mesa3, mesaInvalida;
     private Negocio negocio;
-    private Dueño dueño;
+    private Dueno dueno;
     private List<Mesa> mesasList;
 
     @BeforeEach
     void setUp() {
-        // Crear dueño
-        dueño = new Dueño();
-        dueño.setId(1);
-        dueño.setFirstName("Juan");
-        dueño.setLastName("García");
-        dueño.setEmail("juan@example.com");
-        dueño.setNumTelefono("652345678");
-        dueño.setTokenDueño("TOKEN123");
+        // Crear dueno
+        dueno = new Dueno();
+        dueno.setId(1);
+        dueno.setFirstName("Juan");
+        dueno.setLastName("García");
+        dueno.setEmail("juan@example.com");
+        dueno.setNumTelefono("652345678");
+        dueno.setTokenDueno("TOKEN123");
 
         // Crear negocio
         negocio = new Negocio();
@@ -55,10 +55,10 @@ class MesaServiceTest {
         negocio.setName("Restaurante La Tasca");
         negocio.setDireccion("Calle Principal 123");
         negocio.setCiudad("Sevilla");
-        negocio.setPais("España");
+        negocio.setPais("Espana");
         negocio.setCodigoPostal("41001");
         negocio.setTokenNegocio(12345);
-        negocio.setDueño(dueño);
+        negocio.setDueno(dueno);
 
         // Crear mesas
         mesa1 = new Mesa();
@@ -92,29 +92,29 @@ class MesaServiceTest {
     @Test
     void testGetById_Success() {
         // Arrange
-        when(mesaRepository.findById("1")).thenReturn(Optional.of(mesa1));
+        when(mesaRepository.findById(1)).thenReturn(Optional.of(mesa1));
 
         // Act
-        Mesa result = mesaService.getById("1");
+        Mesa result = mesaService.getById(1);
 
         // Assert
         assertNotNull(result);
         assertEquals(1, result.getId());
         assertEquals("Mesa Exterior", result.getName());
-        verify(mesaRepository).findById("1");
+        verify(mesaRepository).findById(1);
     }
 
     @Test
     void testGetById_NotFound() {
         // Arrange
-        when(mesaRepository.findById("999")).thenReturn(Optional.empty());
+        when(mesaRepository.findById(999)).thenReturn(Optional.empty());
 
         // Act
-        Mesa result = mesaService.getById("999");
+        Mesa result = mesaService.getById(999);
 
         // Assert
         assertNull(result);
-        verify(mesaRepository).findById("999");
+        verify(mesaRepository).findById(999);
     }
 
     @Test
@@ -292,10 +292,10 @@ class MesaServiceTest {
     @Test
     void testGetMesasByNegocio_Success() {
         // Arrange
-        when(mesaRepository.findMesasByNegocio("1")).thenReturn(mesasList);
+        when(mesaRepository.findMesasByNegocio(1)).thenReturn(mesasList);
 
         // Act
-        List<Mesa> result = mesaService.getMesasByNegocio("1");
+        List<Mesa> result = mesaService.getMesasByNegocio(1);
 
         // Assert
         assertNotNull(result);
@@ -303,21 +303,21 @@ class MesaServiceTest {
         assertEquals(1, result.get(0).getNegocio().getId());
         assertEquals(1, result.get(1).getNegocio().getId());
         assertEquals(1, result.get(2).getNegocio().getId());
-        verify(mesaRepository).findMesasByNegocio("1");
+        verify(mesaRepository).findMesasByNegocio(1);
     }
 
     @Test
     void testGetMesasByNegocio_NotFound() {
         // Arrange
-        when(mesaRepository.findMesasByNegocio("999")).thenReturn(Collections.emptyList());
+        when(mesaRepository.findMesasByNegocio(999)).thenReturn(Collections.emptyList());
 
         // Act
-        List<Mesa> result = mesaService.getMesasByNegocio("999");
+        List<Mesa> result = mesaService.getMesasByNegocio(999);
 
         // Assert
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(mesaRepository).findMesasByNegocio("999");
+        verify(mesaRepository).findMesasByNegocio(999);
     }
 
     @Test
@@ -407,23 +407,23 @@ class MesaServiceTest {
     @Test
     void testDeleteById_Success() {
         // Arrange
-        doNothing().when(mesaRepository).deleteById("1");
+        doNothing().when(mesaRepository).deleteById(1);
 
         // Act
-        mesaService.deleteById("1");
+        mesaService.deleteById(1);
 
         // Assert
-        verify(mesaRepository).deleteById("1");
+        verify(mesaRepository).deleteById(1);
     }
 
     @Test
     void testDeleteById_NotFound() {
         // Arrange
-        doThrow(new RuntimeException("Mesa no encontrada")).when(mesaRepository).deleteById("999");
+        doThrow(new RuntimeException("Mesa no encontrada")).when(mesaRepository).deleteById(999);
 
         // Act & Assert
-        assertThrows(RuntimeException.class, () -> mesaService.deleteById("999"));
-        verify(mesaRepository).deleteById("999");
+        assertThrows(RuntimeException.class, () -> mesaService.deleteById(999));
+        verify(mesaRepository).deleteById(999);
     }
 
     @Test

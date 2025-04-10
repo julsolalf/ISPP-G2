@@ -17,8 +17,8 @@ import org.springframework.test.context.ActiveProfiles;
 import ispp_g2.gastrostock.categorias.Categoria;
 import ispp_g2.gastrostock.categorias.CategoriaRepository;
 import ispp_g2.gastrostock.categorias.Pertenece;
-import ispp_g2.gastrostock.dueño.Dueño;
-import ispp_g2.gastrostock.dueño.DueñoRepository;
+import ispp_g2.gastrostock.dueno.Dueno;
+import ispp_g2.gastrostock.dueno.DuenoRepository;
 import ispp_g2.gastrostock.empleado.Empleado;
 import ispp_g2.gastrostock.empleado.EmpleadoRepository;
 import ispp_g2.gastrostock.lineaDePedido.LineaDePedido;
@@ -31,6 +31,10 @@ import ispp_g2.gastrostock.pedido.Pedido;
 import ispp_g2.gastrostock.pedido.PedidoRepository;
 import ispp_g2.gastrostock.productoVenta.ProductoVenta;
 import ispp_g2.gastrostock.productoVenta.ProductoVentaRepository;
+import ispp_g2.gastrostock.user.Authorities;
+import ispp_g2.gastrostock.user.AuthoritiesRepository;
+import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase
@@ -53,7 +57,7 @@ public class LineaDePedidoRepositoryTest {
     private EmpleadoRepository empleadoRepository;
     
     @Autowired
-    private DueñoRepository dueñoRepository;
+    private DuenoRepository duenoRepository;
     
     @Autowired
     private MesaRepository mesaRepository;
@@ -61,10 +65,18 @@ public class LineaDePedidoRepositoryTest {
     @Autowired
     private CategoriaRepository categoriaRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AuthoritiesRepository authoritiesRepository;
+
+
+
     private LineaDePedido lineaNormal, lineaCantidadGrande, lineaPrecioAlto, lineaMinima;
     private ProductoVenta producto1, producto2;
     private Pedido pedido1, pedido2;
-    private Dueño dueño;
+    private Dueno dueno;
     private Negocio negocio;
     private Empleado empleado;
     private Mesa mesa1, mesa2;
@@ -80,26 +92,38 @@ public class LineaDePedidoRepositoryTest {
         empleadoRepository.deleteAll();
         categoriaRepository.deleteAll();
         negocioRepository.deleteAll();
-        dueñoRepository.deleteAll();
+        duenoRepository.deleteAll();
         
-        // Crear dueño
-        dueño = new Dueño();
-        dueño.setFirstName("Juan");
-        dueño.setLastName("Dueño");
-        dueño.setEmail("juan@gastrostock.com");
-        dueño.setNumTelefono("689594895");
-        dueño.setTokenDueño("TOKEN123");
-        dueño = dueñoRepository.save(dueño);
+        Authorities authority = new Authorities();
+        authority.setAuthority("DUENO");
+        authority = authoritiesRepository.save(authority);
+
+        // Crear usuario
+        User user = new User();
+        user.setUsername("juangarcia");
+        user.setPassword("password123");
+        user.setAuthority(authority);
+        user = userRepository.save(user);
+
+        // Crear dueno
+        dueno = new Dueno();
+        dueno.setFirstName("Juan");
+        dueno.setLastName("Dueno");
+        dueno.setEmail("juan@gastrostock.com");
+        dueno.setNumTelefono("689594895");
+        dueno.setTokenDueno("TOKEN123");
+        dueno.setUser(user);
+        dueno = duenoRepository.save(dueno);
 
         // Crear negocio
         negocio = new Negocio();
         negocio.setName("Restaurante La Tasca");
         negocio.setDireccion("Calle Principal 123");
         negocio.setCiudad("Sevilla");
-        negocio.setPais("España");
+        negocio.setPais("Espana");
         negocio.setCodigoPostal("41001");
         negocio.setTokenNegocio(12345);
-        negocio.setDueño(dueño);
+        negocio.setDueno(dueno);
         negocio = negocioRepository.save(negocio);
 
         // Crear mesas
@@ -123,6 +147,7 @@ public class LineaDePedidoRepositoryTest {
         empleado.setLastName("García");
         empleado.setEmail("antonio@test.com");
         empleado.setNumTelefono("666111222");
+        empleado.setUser(user);
         empleado = empleadoRepository.save(empleado);
 
         // Crear categoría
@@ -145,6 +170,7 @@ public class LineaDePedidoRepositoryTest {
         producto2.setCategoria(categoria);
         producto2 = productoVentaRepository.save(producto2);
 
+        
         // Crear pedidos
         pedido1 = new Pedido();
         pedido1.setFecha(LocalDateTime.now().minusHours(1));
@@ -165,28 +191,28 @@ public class LineaDePedidoRepositoryTest {
         // Crear líneas de pedido con diferentes características para las pruebas
         lineaNormal = new LineaDePedido();
         lineaNormal.setCantidad(3);
-        lineaNormal.setPrecioLinea(9.0);
+        lineaNormal.setPrecioUnitario(3.0);
         lineaNormal.setProducto(producto1);
         lineaNormal.setPedido(pedido1);
         lineaNormal = lineaDePedidoRepository.save(lineaNormal);
 
         lineaCantidadGrande = new LineaDePedido();
         lineaCantidadGrande.setCantidad(10);
-        lineaCantidadGrande.setPrecioLinea(30.0);
+        lineaCantidadGrande.setPrecioUnitario(3.0);
         lineaCantidadGrande.setProducto(producto1);
         lineaCantidadGrande.setPedido(pedido1);
         lineaCantidadGrande = lineaDePedidoRepository.save(lineaCantidadGrande);
 
         lineaPrecioAlto = new LineaDePedido();
         lineaPrecioAlto.setCantidad(4);
-        lineaPrecioAlto.setPrecioLinea(20.0);
+        lineaPrecioAlto.setPrecioUnitario(5.0);
         lineaPrecioAlto.setProducto(producto2);
         lineaPrecioAlto.setPedido(pedido2);
         lineaPrecioAlto = lineaDePedidoRepository.save(lineaPrecioAlto);
 
         lineaMinima = new LineaDePedido();
         lineaMinima.setCantidad(1);
-        lineaMinima.setPrecioLinea(5.0);
+        lineaMinima.setPrecioUnitario(5.0);
         lineaMinima.setProducto(producto2);
         lineaMinima.setPedido(pedido2);
         lineaMinima = lineaDePedidoRepository.save(lineaMinima);
@@ -199,7 +225,7 @@ public class LineaDePedidoRepositoryTest {
         // Crear una nueva línea de pedido
         LineaDePedido nuevaLinea = new LineaDePedido();
         nuevaLinea.setCantidad(2);
-        nuevaLinea.setPrecioLinea(6.0);
+        nuevaLinea.setPrecioUnitario(3.0);
         nuevaLinea.setProducto(producto1);
         nuevaLinea.setPedido(pedido1);
         
@@ -212,7 +238,7 @@ public class LineaDePedidoRepositoryTest {
         assertEquals(6.0, saved.getPrecioLinea());
         
         // Verificar que se puede recuperar de la base de datos
-        LineaDePedido retrieved = lineaDePedidoRepository.findById(Integer.toString(saved.getId())).orElse(null);
+        LineaDePedido retrieved = lineaDePedidoRepository.findById(saved.getId()).orElse(null);
         assertNotNull(retrieved);
         assertEquals(2, retrieved.getCantidad());
     }
@@ -222,7 +248,7 @@ public class LineaDePedidoRepositoryTest {
         // Intentar guardar una línea sin pedido (debería fallar)
         LineaDePedido invalida = new LineaDePedido();
         invalida.setCantidad(2);
-        invalida.setPrecioLinea(6.0);
+        invalida.setPrecioUnitario(3.0);
         invalida.setProducto(producto1);
         // No establezco pedido
         
@@ -243,7 +269,7 @@ public class LineaDePedidoRepositoryTest {
     @Test
     void testFindById() {
         // Buscar una línea existente por ID
-        Optional<LineaDePedido> found = lineaDePedidoRepository.findById(Integer.toString(lineaNormal.getId()));
+        Optional<LineaDePedido> found = lineaDePedidoRepository.findById(lineaNormal.getId());
         
         // Verificar que existe y tiene los datos correctos
         assertTrue(found.isPresent());
@@ -254,7 +280,7 @@ public class LineaDePedidoRepositoryTest {
     @Test
     void testFindById_NotFound() {
         // Buscar una línea que no existe
-        Optional<LineaDePedido> notFound = lineaDePedidoRepository.findById("999");
+        Optional<LineaDePedido> notFound = lineaDePedidoRepository.findById(999);
         
         // Verificar que no existe
         assertFalse(notFound.isPresent());
@@ -281,7 +307,7 @@ public class LineaDePedidoRepositoryTest {
         lineaDePedidoRepository.delete(lineaPrecioAlto);
         
         // Verificar que se eliminó
-        Optional<LineaDePedido> shouldBeDeleted = lineaDePedidoRepository.findById(Integer.toString(lineaPrecioAlto.getId()));
+        Optional<LineaDePedido> shouldBeDeleted = lineaDePedidoRepository.findById(lineaPrecioAlto.getId());
         assertFalse(shouldBeDeleted.isPresent());
         
         // Verificar que el resto sigue existiendo
@@ -296,10 +322,10 @@ public class LineaDePedidoRepositoryTest {
     @Test
     void testDeleteById() {
         // Eliminar una línea por ID
-        lineaDePedidoRepository.deleteById(Integer.toString(lineaMinima.getId()));
+        lineaDePedidoRepository.deleteById(lineaMinima.getId());
         
         // Verificar que se eliminó
-        Optional<LineaDePedido> shouldBeDeleted = lineaDePedidoRepository.findById(Integer.toString(lineaMinima.getId()));
+        Optional<LineaDePedido> shouldBeDeleted = lineaDePedidoRepository.findById(lineaMinima.getId());
         assertFalse(shouldBeDeleted.isPresent());
         
         // Verificar que el resto sigue existiendo
@@ -323,7 +349,7 @@ public class LineaDePedidoRepositoryTest {
         // Crear otra línea con la misma cantidad para probar múltiples resultados
         LineaDePedido otraLinea = new LineaDePedido();
         otraLinea.setCantidad(3);
-        otraLinea.setPrecioLinea(15.0);
+        otraLinea.setPrecioUnitario(5.0);
         otraLinea.setProducto(producto2);
         otraLinea.setPedido(pedido1);
         lineaDePedidoRepository.save(otraLinea);
@@ -347,18 +373,18 @@ public class LineaDePedidoRepositoryTest {
     
     @Test
     void testFindLineaDePedidosByPrecioLinea_Success() {
-        // Buscar líneas con precioLinea 9.0
-        List<LineaDePedido> lineas = lineaDePedidoRepository.findLineaDePedidosByPrecioLinea(9.0);
+
+        List<LineaDePedido> lineas = lineaDePedidoRepository.findLineaDePedidosByPrecioUnitario(3.0);
         
-        // Verificar que se encontró 1 línea con precioLinea = 9.0
-        assertEquals(1, lineas.size());
+
+        assertEquals(2, lineas.size());
         assertEquals(lineaNormal.getId(), lineas.get(0).getId());
     }
     
     @Test
     void testFindLineaDePedidosByPrecioLinea_NotFound() {
         // Buscar líneas con un precio que no existe
-        List<LineaDePedido> lineas = lineaDePedidoRepository.findLineaDePedidosByPrecioLinea(999.0);
+        List<LineaDePedido> lineas = lineaDePedidoRepository.findLineaDePedidosByPrecioUnitario(999.0);
         
         // Verificar que no se encontraron líneas
         assertTrue(lineas.isEmpty());
@@ -368,7 +394,7 @@ public class LineaDePedidoRepositoryTest {
     @Test
     void testFindLineaDePedidosByPrecioLinea_Null() {
         // Buscar con precio null (debería devolver una lista vacía)
-        List<LineaDePedido> lineas = lineaDePedidoRepository.findLineaDePedidosByPrecioLinea(null);
+        List<LineaDePedido> lineas = lineaDePedidoRepository.findLineaDePedidosByPrecioUnitario(null);
         
         // Verificar que devuelve lista vacía
         assertTrue(lineas.isEmpty(), "Se esperaba una lista vacía cuando se busca con precioLinea null");
@@ -454,11 +480,11 @@ public class LineaDePedidoRepositoryTest {
     @Test
     void testFindLineaDePedidosByProductoIdAndPrecioLinea_Success() {
         // Buscar líneas por ID de producto y precio existente
-        List<LineaDePedido> lineas = lineaDePedidoRepository.findLineaDePedidosByProductoIdAndPrecioLinea(
-            producto1.getId(), 9.0);
+        List<LineaDePedido> lineas = lineaDePedidoRepository.findLineaDePedidosByProductoIdAndPrecioUnitario(
+            producto1.getId(), 3.0);
         
-        // Verificar que se encontró 1 línea con el producto y precio correctos
-        assertEquals(1, lineas.size());
+
+        assertEquals(2, lineas.size());
         assertEquals(producto1.getId(), lineas.get(0).getProducto().getId());
         assertEquals(9.0, lineas.get(0).getPrecioLinea());
     }
@@ -466,7 +492,7 @@ public class LineaDePedidoRepositoryTest {
     @Test
     void testFindLineaDePedidosByProductoIdAndPrecioLinea_NotFound() {
         // Buscar líneas con combinación que no existe
-        List<LineaDePedido> lineas = lineaDePedidoRepository.findLineaDePedidosByProductoIdAndPrecioLinea(
+        List<LineaDePedido> lineas = lineaDePedidoRepository.findLineaDePedidosByProductoIdAndPrecioUnitario(
             producto1.getId(), 999.0);
         
         // Verificar que no se encontraron líneas
@@ -476,7 +502,7 @@ public class LineaDePedidoRepositoryTest {
     @Test
     void testFindLineaDePedidosByProductoIdAndPrecioLinea_ProductoNoExiste() {
         // Buscar con producto que no existe
-        List<LineaDePedido> lineas = lineaDePedidoRepository.findLineaDePedidosByProductoIdAndPrecioLinea(
+        List<LineaDePedido> lineas = lineaDePedidoRepository.findLineaDePedidosByProductoIdAndPrecioUnitario(
             999, 9.0);
         
         // Verificar que no se encontraron líneas

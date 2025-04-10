@@ -17,10 +17,14 @@ import org.springframework.test.context.ActiveProfiles;
 import ispp_g2.gastrostock.categorias.Categoria;
 import ispp_g2.gastrostock.categorias.CategoriaRepository;
 import ispp_g2.gastrostock.categorias.Pertenece;
-import ispp_g2.gastrostock.dueño.Dueño;
-import ispp_g2.gastrostock.dueño.DueñoRepository;
+import ispp_g2.gastrostock.dueno.Dueno;
+import ispp_g2.gastrostock.dueno.DuenoRepository;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioRepository;
+import ispp_g2.gastrostock.user.Authorities;
+import ispp_g2.gastrostock.user.AuthoritiesRepository;
+import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase
@@ -34,7 +38,13 @@ class CategoriaRepositoryTest {
     private NegocioRepository negocioRepository;
 
     @Autowired
-    private DueñoRepository dueñoRepository;
+    private DuenoRepository duenoRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AuthoritiesRepository authoritiesRepository;
     
     private Categoria categoria1, categoria2, categoriaInvalida;
     private Negocio negocio;
@@ -43,22 +53,35 @@ class CategoriaRepositoryTest {
     void setUp() {
         // Limpiar repositorios se realiza automáticamente en un contexto de DataJpaTest
 
-        Dueño dueño1 = new Dueño();
-        dueño1.setFirstName("Juan");
-        dueño1.setLastName("García");
-        dueño1.setEmail("juan@example.com");
-        dueño1.setNumTelefono("666111222");
-        dueño1.setTokenDueño("TOKEN999");
-        dueño1 = dueñoRepository.save(dueño1);
+        // Crear autoridad
+        Authorities authority = new Authorities();
+        authority.setAuthority("DUENO");
+        authority = authoritiesRepository.save(authority);
+
+        // Crear usuario
+        User user = new User();
+        user.setUsername("juangarcia");
+        user.setPassword("password123");
+        user.setAuthority(authority);
+        user = userRepository.save(user);
+
+        Dueno dueno1 = new Dueno();
+        dueno1.setFirstName("Juan");
+        dueno1.setLastName("García");
+        dueno1.setEmail("juan@example.com");
+        dueno1.setNumTelefono("666111222");
+        dueno1.setTokenDueno("TOKEN999");
+        dueno1.setUser(user);
+        dueno1 = duenoRepository.save(dueno1);
 
         negocio = new Negocio();
         negocio.setName("Restaurante La Tasca");
         negocio.setDireccion("Calle Principal 123");
         negocio.setCiudad("Sevilla");
-        negocio.setPais("España");
+        negocio.setPais("Espana");
         negocio.setCodigoPostal("41001");
         negocio.setTokenNegocio(12345);
-        negocio.setDueño(dueño1);
+        negocio.setDueno(dueno1);
         negocio = negocioRepository.save(negocio);
 
         // Crear categoría válida
@@ -112,7 +135,7 @@ class CategoriaRepositoryTest {
     @Test
     void testFindById() {
         // Buscar categoría por ID existente convirtiendo el id a String
-        Optional<Categoria> found = categoriaRepository.findById(categoria1.getId().toString());
+        Optional<Categoria> found = categoriaRepository.findById(categoria1.getId());
         
         assertTrue(found.isPresent());
         assertEquals("Bebidas", found.get().getName());
@@ -121,7 +144,7 @@ class CategoriaRepositoryTest {
     @Test
     void testFindById_NotFound() {
         // Buscar categoría por un ID que no existe
-        Optional<Categoria> notFound = categoriaRepository.findById("999");
+        Optional<Categoria> notFound = categoriaRepository.findById(999);
         assertFalse(notFound.isPresent());
     }
     
@@ -131,7 +154,7 @@ class CategoriaRepositoryTest {
         categoriaRepository.delete(categoria2);
         
         // Verificar que se eliminó
-        Optional<Categoria> shouldBeDeleted = categoriaRepository.findById(categoria2.getId().toString());
+        Optional<Categoria> shouldBeDeleted = categoriaRepository.findById(categoria2.getId());
         assertFalse(shouldBeDeleted.isPresent());
         
         // Verificar que queda 1 categoría (la de Bebidas)
@@ -162,7 +185,7 @@ class CategoriaRepositoryTest {
     @Test
     void testFindByNegocioId_Success() {
         // Buscar categorías asociadas al negocio con ID "1"
-        List<Categoria> found = categoriaRepository.findByNegocioId(negocio.getId().toString());
+        List<Categoria> found = categoriaRepository.findByNegocioId(negocio.getId());
         assertNotNull(found);
         // Se esperan al menos 2 categorías creadas en setUp
         assertTrue(found.size() >= 2);
@@ -171,7 +194,7 @@ class CategoriaRepositoryTest {
     @Test
     void testFindByNegocioId_NotFound() {
         // Buscar categorías para un negocio que no existe
-        List<Categoria> notFound = categoriaRepository.findByNegocioId("999");
+        List<Categoria> notFound = categoriaRepository.findByNegocioId(999);
         assertNotNull(notFound);
         assertTrue(notFound.isEmpty());
     }

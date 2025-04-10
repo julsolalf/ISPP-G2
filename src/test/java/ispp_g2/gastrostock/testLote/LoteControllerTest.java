@@ -2,6 +2,8 @@ package ispp_g2.gastrostock.testLote;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import ispp_g2.gastrostock.config.jwt.JwtService;
 import ispp_g2.gastrostock.lote.Lote;
 import ispp_g2.gastrostock.lote.LoteController;
 import ispp_g2.gastrostock.lote.LoteService;
@@ -16,6 +18,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -26,13 +30,13 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(LoteController.class)
-@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
 public class LoteControllerTest {
@@ -42,7 +46,17 @@ public class LoteControllerTest {
     
     @MockBean
     private LoteService loteService;
+
+    @MockBean
+    private JwtService jwtService;
     
+    @MockBean
+    private AuthenticationProvider authenticationProvider;
+    
+    @MockBean
+    private UserDetailsService userDetailsService;
+    
+    @Autowired
     private ObjectMapper objectMapper;
     
     private Lote lote1, lote2, lote3;
@@ -87,6 +101,9 @@ public class LoteControllerTest {
         lote3.setFechaCaducidad(LocalDate.now().minusDays(1)); // Caducado
         lote3.setProducto(producto);
         lote3.setReabastecimiento(reabastecimiento);
+
+        when(jwtService.getUserNameFromJwtToken(anyString())).thenReturn("admin");
+        when(jwtService.validateJwtToken(anyString(), any())).thenReturn(true);
     }
     
     // TESTS PARA findAll
@@ -125,7 +142,7 @@ public class LoteControllerTest {
     @Test
     void testFindById_Success() throws Exception {
         // Arrange
-        when(loteService.getById("1")).thenReturn(lote1);
+        when(loteService.getById(1)).thenReturn(lote1);
         
         // Act & Assert
         mockMvc.perform(get("/api/lotes/1"))
@@ -134,19 +151,19 @@ public class LoteControllerTest {
             .andExpect(jsonPath("$.id", is(1)))
             .andExpect(jsonPath("$.cantidad", is(100)));
         
-        verify(loteService).getById("1");
+        verify(loteService).getById(1);
     }
     
     @Test
     void testFindById_NotFound() throws Exception {
         // Arrange
-        when(loteService.getById("999")).thenReturn(null);
+        when(loteService.getById(999)).thenReturn(null);
         
         // Act & Assert
         mockMvc.perform(get("/api/lotes/999"))
             .andExpect(status().isNotFound());
         
-        verify(loteService).getById("999");
+        verify(loteService).getById(999);
     }
     
     // TESTS PARA findByCantidad
@@ -356,7 +373,7 @@ public class LoteControllerTest {
         loteGuardado.setProducto(producto);
         loteGuardado.setReabastecimiento(reabastecimiento);
         
-        when(loteService.getById("1")).thenReturn(lote1);
+        when(loteService.getById(1)).thenReturn(lote1);
         when(loteService.save(any(Lote.class))).thenReturn(loteGuardado);
         
         // Act & Assert
@@ -368,7 +385,7 @@ public class LoteControllerTest {
             .andExpect(jsonPath("$.id", is(1)))
             .andExpect(jsonPath("$.cantidad", is(150)));
         
-        verify(loteService).getById("1");
+        verify(loteService).getById(1);
         verify(loteService).save(any(Lote.class));
     }
     
@@ -381,7 +398,7 @@ public class LoteControllerTest {
         loteActualizado.setProducto(producto);
         loteActualizado.setReabastecimiento(reabastecimiento);
         
-        when(loteService.getById("999")).thenReturn(null);
+        when(loteService.getById(999)).thenReturn(null);
         
         // Act & Assert
         mockMvc.perform(put("/api/lotes/999")
@@ -389,7 +406,7 @@ public class LoteControllerTest {
                 .content(objectMapper.writeValueAsString(loteActualizado)))
             .andExpect(status().isNotFound());
         
-        verify(loteService).getById("999");
+        verify(loteService).getById(999);
         verify(loteService, never()).save(any(Lote.class));
     }
     
@@ -398,27 +415,27 @@ public class LoteControllerTest {
     @Test
     void testDelete_Success() throws Exception {
         // Arrange
-        when(loteService.getById("1")).thenReturn(lote1);
-        doNothing().when(loteService).delete("1");
+        when(loteService.getById(1)).thenReturn(lote1);
+        doNothing().when(loteService).delete(1);
         
         // Act & Assert
         mockMvc.perform(delete("/api/lotes/1"))
             .andExpect(status().isNoContent());
         
-        verify(loteService).getById("1");
-        verify(loteService).delete("1");
+        verify(loteService).getById(1);
+        verify(loteService).delete(1);
     }
     
     @Test
     void testDelete_NotFound() throws Exception {
         // Arrange
-        when(loteService.getById("999")).thenReturn(null);
+        when(loteService.getById(999)).thenReturn(null);
         
         // Act & Assert
         mockMvc.perform(delete("/api/lotes/999"))
             .andExpect(status().isNotFound());
         
-        verify(loteService).getById("999");
-        verify(loteService, never()).delete(anyString());
+        verify(loteService).getById(999);
+        verify(loteService, never()).delete(anyInt());
     }
 }

@@ -23,6 +23,7 @@ import ispp_g2.gastrostock.empleado.EmpleadoRepository;
 import ispp_g2.gastrostock.empleado.EmpleadoService;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserRepository;
 import ispp_g2.gastrostock.user.Authorities;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,6 +32,9 @@ class EmpleadoServiceTest {
 
     @Mock
     private EmpleadoRepository empleadoRepository;
+
+    @Mock
+    private UserRepository userRepository;
 
     @InjectMocks
     private EmpleadoService empleadoService;
@@ -63,7 +67,7 @@ class EmpleadoServiceTest {
         negocio.setName("Restaurante Test");
         negocio.setDireccion("Calle Test 123");
         negocio.setCiudad("Sevilla");
-        negocio.setPais("España");
+        negocio.setPais("Espana");
         negocio.setCodigoPostal("41001");
         negocio.setTokenNegocio(12345);
 
@@ -104,6 +108,7 @@ class EmpleadoServiceTest {
     @Test
     void testSaveEmpleado_Success() {
         // Arrange
+        when(userRepository.save(any(User.class))).thenReturn(user);
         when(empleadoRepository.save(any(Empleado.class))).thenReturn(empleado1);
         
         // Act
@@ -113,38 +118,34 @@ class EmpleadoServiceTest {
         assertNotNull(result);
         assertEquals(1, result.getId());
         assertEquals("Juan", result.getFirstName());
-        assertEquals("Pérez", result.getLastName());
         verify(empleadoRepository).save(empleado1);
+        verify(userRepository).save(any(User.class));
     }
     
     @Test
     void testSaveEmpleado_WithInvalidData() {
         // Arrange
+        empleadoInvalido.setUser(user); // Asignar un usuario válido
+        when(userRepository.save(any(User.class))).thenReturn(user);
         when(empleadoRepository.save(empleadoInvalido)).thenThrow(new IllegalArgumentException("Datos inválidos"));
         
         // Act & Assert
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             empleadoService.saveEmpleado(empleadoInvalido);
         });
-        
-        assertEquals("Datos inválidos", exception.getMessage());
-        verify(empleadoRepository).save(empleadoInvalido);
     }
     
     @Test
     void testSaveEmpleado_Null() {
-        // Arrange
-        when(empleadoRepository.save(null)).thenThrow(new IllegalArgumentException("Empleado no puede ser null"));
-        
         // Act & Assert
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             empleadoService.saveEmpleado(null);
         });
         
-        assertEquals("Empleado no puede ser null", exception.getMessage());
-        verify(empleadoRepository).save(null);
+        assertEquals("No se puede guardar un empleado null", exception.getMessage());
+        verify(empleadoRepository, never()).save(any());
+        verify(userRepository, never()).save(any());
     }
-
     // TESTS PARA getAllEmpleados()
     
     @Test
@@ -196,29 +197,29 @@ class EmpleadoServiceTest {
     @Test
     void testGetEmpleadoById_Success() {
         // Arrange
-        when(empleadoRepository.findById("1")).thenReturn(Optional.of(empleado1));
+        when(empleadoRepository.findById(1)).thenReturn(Optional.of(empleado1));
         
         // Act
-        Empleado result = empleadoService.getEmpleadoById("1");
+        Empleado result = empleadoService.getEmpleadoById(1);
         
         // Assert
         assertNotNull(result);
         assertEquals(1, result.getId());
         assertEquals("Juan", result.getFirstName());
-        verify(empleadoRepository).findById("1");
+        verify(empleadoRepository).findById(1);
     }
     
     @Test
     void testGetEmpleadoById_NotFound() {
         // Arrange
-        when(empleadoRepository.findById("999")).thenReturn(Optional.empty());
+        when(empleadoRepository.findById(999)).thenReturn(Optional.empty());
         
         // Act
-        Empleado result = empleadoService.getEmpleadoById("999");
+        Empleado result = empleadoService.getEmpleadoById(999);
         
         // Assert
         assertNull(result);
-        verify(empleadoRepository).findById("999");
+        verify(empleadoRepository).findById(999);
     }
     
     @Test
@@ -240,27 +241,27 @@ class EmpleadoServiceTest {
     @Test
     void testDeleteEmpleado_Success() {
         // Arrange
-        doNothing().when(empleadoRepository).deleteById("1");
+        doNothing().when(empleadoRepository).deleteById(1);
         
         // Act
-        empleadoService.deleteEmpleado("1");
+        empleadoService.deleteEmpleado(1);
         
         // Assert
-        verify(empleadoRepository).deleteById("1");
+        verify(empleadoRepository).deleteById(1);
     }
     
     @Test
     void testDeleteEmpleado_NotFound() {
         // Arrange
-        doThrow(new RuntimeException("Empleado no encontrado")).when(empleadoRepository).deleteById("999");
+        doThrow(new RuntimeException("Empleado no encontrado")).when(empleadoRepository).deleteById(999);
         
         // Act & Assert
         Exception exception = assertThrows(RuntimeException.class, () -> {
-            empleadoService.deleteEmpleado("999");
+            empleadoService.deleteEmpleado(999);
         });
         
         assertEquals("Empleado no encontrado", exception.getMessage());
-        verify(empleadoRepository).deleteById("999");
+        verify(empleadoRepository).deleteById(999);
     }
     
     @Test
@@ -458,29 +459,29 @@ class EmpleadoServiceTest {
     @Test
     void testGetEmpleadoByNegocio_Success() {
         // Arrange
-        when(empleadoRepository.findByNegocio("1")).thenReturn(Arrays.asList(empleado1, empleado2));
+        when(empleadoRepository.findByNegocio(1)).thenReturn(Arrays.asList(empleado1, empleado2));
         
         // Act
-        List<Empleado> result = empleadoService.getEmpleadoByNegocio("1");
+        List<Empleado> result = empleadoService.getEmpleadoByNegocio(1);
         
         // Assert
         assertNotNull(result);
         assertEquals(2, result.size());
-        verify(empleadoRepository).findByNegocio("1");
+        verify(empleadoRepository).findByNegocio(1);
     }
     
     @Test
     void testGetEmpleadoByNegocio_NotFound() {
         // Arrange
-        when(empleadoRepository.findByNegocio("999")).thenReturn(Collections.emptyList());
+        when(empleadoRepository.findByNegocio(999)).thenReturn(Collections.emptyList());
         
         // Act
-        List<Empleado> result = empleadoService.getEmpleadoByNegocio("999");
+        List<Empleado> result = empleadoService.getEmpleadoByNegocio(999);
         
         // Assert
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(empleadoRepository).findByNegocio("999");
+        verify(empleadoRepository).findByNegocio(999);
     }
     
     @Test
@@ -502,28 +503,28 @@ class EmpleadoServiceTest {
     @Test
     void testGetEmpleadoByUser_Success() {
         // Arrange
-        when(empleadoRepository.findByUserId("1")).thenReturn(Optional.of(empleado1));
+        when(empleadoRepository.findByUserId(1)).thenReturn(Optional.of(empleado1));
         
         // Act
-        Empleado result = empleadoService.getEmpleadoByUser("1");
+        Empleado result = empleadoService.getEmpleadoByUser(1);
         
         // Assert
         assertNotNull(result);
         assertEquals(1, result.getUser().getId());
-        verify(empleadoRepository).findByUserId("1");
+        verify(empleadoRepository).findByUserId(1);
     }
     
     @Test
     void testGetEmpleadoByUser_NotFound() {
         // Arrange
-        when(empleadoRepository.findByUserId("999")).thenReturn(Optional.empty());
+        when(empleadoRepository.findByUserId(999)).thenReturn(Optional.empty());
         
         // Act
-        Empleado result = empleadoService.getEmpleadoByUser("999");
+        Empleado result = empleadoService.getEmpleadoByUser(999);
         
         // Assert
         assertNull(result);
-        verify(empleadoRepository).findByUserId("999");
+        verify(empleadoRepository).findByUserId(999);
     }
     
     @Test

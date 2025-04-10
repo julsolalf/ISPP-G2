@@ -1,11 +1,13 @@
 package ispp_g2.gastrostock.testCategoria;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import ispp_g2.gastrostock.categorias.Categoria;
 import ispp_g2.gastrostock.categorias.CategoriaController;
 import ispp_g2.gastrostock.categorias.CategoriaService;
 import ispp_g2.gastrostock.categorias.Pertenece;
+import ispp_g2.gastrostock.config.SecurityConfiguration;
+import ispp_g2.gastrostock.config.jwt.JwtAuthFilter;
+import ispp_g2.gastrostock.config.jwt.JwtService;
 import ispp_g2.gastrostock.negocio.Negocio;
 import java.util.Collections;
 import java.util.List;
@@ -15,22 +17,21 @@ import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
 @WebMvcTest(CategoriaController.class)
-@WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
+@Import({SecurityConfiguration.class, JwtAuthFilter.class})
+@ActiveProfiles("test")
 public class CategoriaControllerTest {
 
     @Autowired
@@ -38,6 +39,15 @@ public class CategoriaControllerTest {
     
     @MockBean
     private CategoriaService categoriaService;
+
+    @MockBean
+    private JwtService jwtService;
+    
+    @MockBean
+    private AuthenticationProvider authenticationProvider;
+    
+    @MockBean
+    private UserDetailsService userDetailsService;
     
     @Autowired
     private ObjectMapper objectMapper;
@@ -47,6 +57,7 @@ public class CategoriaControllerTest {
     
     @BeforeEach
     void setUp() {
+        // Configurar negocio y categoría
         negocio = new Negocio();
         negocio.setId(1);
         
@@ -55,7 +66,12 @@ public class CategoriaControllerTest {
         categoria.setName("Bebidas");
         categoria.setNegocio(negocio);
         categoria.setPertenece(Pertenece.INVENTARIO);
+
+        // Configurar JWT service con los métodos reales
+        when(jwtService.getUserNameFromJwtToken(anyString())).thenReturn("admin");
+        when(jwtService.validateJwtToken(anyString(), any())).thenReturn(true);
     }
+
     
     // GET /api/categorias
     @Test
@@ -85,87 +101,87 @@ public class CategoriaControllerTest {
     // GET /api/categorias/{id}
     @Test
     public void testFindById_ExistingCategoria() throws Exception {
-        when(categoriaService.getById("1")).thenReturn(categoria);
+        when(categoriaService.getById(1)).thenReturn(categoria);
         
         mockMvc.perform(get("/api/categorias/1")
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.name", is("Bebidas")));
         
-        verify(categoriaService).getById("1");
+        verify(categoriaService).getById(1);
     }
     
     @Test
     public void testFindById_NonExistingCategoria() throws Exception {
-        when(categoriaService.getById("99")).thenReturn(null);
+        when(categoriaService.getById(99)).thenReturn(null);
         
         mockMvc.perform(get("/api/categorias/99")
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
         
-        verify(categoriaService).getById("99");
+        verify(categoriaService).getById(99);
     }
     
     // GET /api/categorias/negocio/{negocioId}
     @Test
     public void testFindByNegocioId_ReturnsCategorias() throws Exception {
-        when(categoriaService.getCategoriasByNegocioId("1")).thenReturn(List.of(categoria));
+        when(categoriaService.getCategoriasByNegocioId(1)).thenReturn(List.of(categoria));
         
         mockMvc.perform(get("/api/categorias/negocio/1")
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", hasSize(1)));
         
-        verify(categoriaService).getCategoriasByNegocioId("1");
+        verify(categoriaService).getCategoriasByNegocioId(1);
     }
     
     @Test
     public void testFindByNegocioId_ReturnsNotFound() throws Exception {
-        when(categoriaService.getCategoriasByNegocioId("1")).thenReturn(Collections.emptyList());
+        when(categoriaService.getCategoriasByNegocioId(1)).thenReturn(Collections.emptyList());
         
         mockMvc.perform(get("/api/categorias/negocio/1")
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
         
-        verify(categoriaService).getCategoriasByNegocioId("1");
+        verify(categoriaService).getCategoriasByNegocioId(1);
     }
     
     // GET /api/categorias/negocio/{negocioId}/inventario
     @Test
     public void testFindByNegocioIdInventario_ReturnsCategorias() throws Exception {
         // La categoría es de INVENTARIO, así que el filtro debería devolverla.
-        when(categoriaService.getCategoriasByNegocioId("1")).thenReturn(List.of(categoria));
+        when(categoriaService.getCategoriasByNegocioId(1)).thenReturn(List.of(categoria));
         
         mockMvc.perform(get("/api/categorias/negocio/1/inventario")
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", hasSize(1)));
         
-        verify(categoriaService).getCategoriasByNegocioId("1");
+        verify(categoriaService).getCategoriasByNegocioId(1);
     }
     
     @Test
     public void testFindByNegocioIdInventario_ReturnsNotFound() throws Exception {
-        when(categoriaService.getCategoriasByNegocioId("1")).thenReturn(Collections.emptyList());
+        when(categoriaService.getCategoriasByNegocioId(1)).thenReturn(Collections.emptyList());
         
         mockMvc.perform(get("/api/categorias/negocio/1/inventario")
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
         
-        verify(categoriaService).getCategoriasByNegocioId("1");
+        verify(categoriaService).getCategoriasByNegocioId(1);
     }
     
     // GET /api/categorias/negocio/{negocioId}/venta
     @Test
     public void testFindByNegocioIdVenta_ReturnsNotFound() throws Exception {
         // Dado que la única categoría tiene Pertenece INVENTARIO, filtrando por VENTA se obtiene vacío.
-        when(categoriaService.getCategoriasByNegocioId("1")).thenReturn(List.of(categoria));
+        when(categoriaService.getCategoriasByNegocioId(1)).thenReturn(List.of(categoria));
         
         mockMvc.perform(get("/api/categorias/negocio/1/venta")
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
         
-        verify(categoriaService).getCategoriasByNegocioId("1");
+        verify(categoriaService).getCategoriasByNegocioId(1);
     }
     
     // GET /api/categorias/nombre/{name}
@@ -226,7 +242,7 @@ public class CategoriaControllerTest {
         categoriaActualizada.setNegocio(negocio);
         categoriaActualizada.setPertenece(Pertenece.INVENTARIO);
         
-        when(categoriaService.getById("1")).thenReturn(categoria);
+        when(categoriaService.getById(1)).thenReturn(categoria);
         when(categoriaService.save(any(Categoria.class))).thenReturn(categoriaActualizada);
         
         mockMvc.perform(put("/api/categorias/1")
@@ -236,13 +252,13 @@ public class CategoriaControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.name", is("Bebidas Actualizadas")));
         
-        verify(categoriaService).getById("1");
+        verify(categoriaService).getById(1);
         verify(categoriaService).save(any(Categoria.class));
     }
     
     @Test
     public void testUpdate_NonExistingCategoria() throws Exception {
-        when(categoriaService.getById("99")).thenReturn(null);
+        when(categoriaService.getById(99)).thenReturn(null);
         
         mockMvc.perform(put("/api/categorias/99")
                 .with(csrf())
@@ -250,7 +266,7 @@ public class CategoriaControllerTest {
                 .content(objectMapper.writeValueAsString(categoria)))
             .andExpect(status().isNotFound());
         
-        verify(categoriaService).getById("99");
+        verify(categoriaService).getById(99);
         verify(categoriaService, never()).save(any(Categoria.class));
     }
     
@@ -266,28 +282,28 @@ public class CategoriaControllerTest {
     // DELETE /api/categorias/{id}
     @Test
     public void testDelete_ExistingCategoria() throws Exception {
-        when(categoriaService.getById("1")).thenReturn(categoria);
-        doNothing().when(categoriaService).delete("1");
+        when(categoriaService.getById(1)).thenReturn(categoria);
+        doNothing().when(categoriaService).delete(1);
         
         mockMvc.perform(delete("/api/categorias/1")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
         
-        verify(categoriaService).getById("1");
-        verify(categoriaService).delete("1");
+        verify(categoriaService).getById(1);
+        verify(categoriaService).delete(1);
     }
     
     @Test
     public void testDelete_NonExistingCategoria() throws Exception {
-        when(categoriaService.getById("99")).thenReturn(null);
+        when(categoriaService.getById(99)).thenReturn(null);
         
         mockMvc.perform(delete("/api/categorias/99")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
         
-        verify(categoriaService).getById("99");
-        verify(categoriaService, never()).delete("99");
+        verify(categoriaService).getById(99);
+        verify(categoriaService, never()).delete(99);
     }
 }

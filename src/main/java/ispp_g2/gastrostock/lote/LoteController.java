@@ -13,7 +13,7 @@ import java.util.List;
 @RequestMapping("/api/lotes")
 public class LoteController {
 
-    private LoteService loteService;
+    private final LoteService loteService;
 
     @Autowired
     public LoteController(LoteService loteService) {
@@ -29,7 +29,7 @@ public class LoteController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Lote> findById(@PathVariable("id") String id) {
+    public ResponseEntity<Lote> findById(@PathVariable("id") Integer id) {
         Lote lote = loteService.getById(id);
         if(lote == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -82,19 +82,19 @@ public class LoteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Lote> update(@PathVariable("id") String id, @RequestBody @Valid Lote lote) {
+    public ResponseEntity<Lote> update(@PathVariable("id") Integer id, @RequestBody @Valid Lote lote) {
         if (lote == null) {
             throw new IllegalArgumentException("El lote no puede ser nulo");
         }
         if (loteService.getById(id) == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        lote.setId(Integer.valueOf(id));
+        lote.setId(id);
         return new ResponseEntity<>(loteService.save(lote), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") String id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
         if (loteService.getById(id) == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

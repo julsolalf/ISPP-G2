@@ -40,7 +40,6 @@ public class Pedido extends BaseEntity{
     private Empleado empleado;
 
     @ManyToOne(optional = false)
-
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "negocio_id")
     private Negocio negocio;

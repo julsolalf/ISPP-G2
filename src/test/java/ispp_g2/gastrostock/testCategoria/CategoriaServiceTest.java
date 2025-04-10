@@ -71,23 +71,23 @@ class CategoriaServiceTest {
 
     @Test
     void testGetById_Success() {
-        when(categoriaRepository.findById("1")).thenReturn(Optional.of(categoriaValida));
+        when(categoriaRepository.findById(1)).thenReturn(Optional.of(categoriaValida));
 
-        Categoria result = categoriaService.getById("1");
+        Categoria result = categoriaService.getById(1);
 
         assertNotNull(result);
         assertEquals("Bebidas", result.getName());
-        verify(categoriaRepository, times(1)).findById("1");
+        verify(categoriaRepository, times(1)).findById(1);
     }
 
     @Test
     void testGetById_NotFound() {
-        when(categoriaRepository.findById("99")).thenReturn(Optional.empty());
+        when(categoriaRepository.findById(99)).thenReturn(Optional.empty());
 
-        Categoria result = categoriaService.getById("99");
+        Categoria result = categoriaService.getById(99);
 
         assertNull(result);
-        verify(categoriaRepository, times(1)).findById("99");
+        verify(categoriaRepository, times(1)).findById(99);
     }
 
     // TEST PARA getCategorias()
@@ -129,24 +129,24 @@ class CategoriaServiceTest {
 
     @Test
     void testGetCategoriasByNegocioId_Success() {
-        when(categoriaRepository.findByNegocioId("1")).thenReturn(categoriaList);
+        when(categoriaRepository.findByNegocioId(1)).thenReturn(categoriaList);
 
-        List<Categoria> result = categoriaService.getCategoriasByNegocioId("1");
+        List<Categoria> result = categoriaService.getCategoriasByNegocioId(1);
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        verify(categoriaRepository, times(1)).findByNegocioId("1");
+        verify(categoriaRepository, times(1)).findByNegocioId(1);
     }
 
     @Test
     void testGetCategoriasByNegocioId_Empty() {
-        when(categoriaRepository.findByNegocioId("1")).thenReturn(Collections.emptyList());
+        when(categoriaRepository.findByNegocioId(1)).thenReturn(Collections.emptyList());
 
-        List<Categoria> result = categoriaService.getCategoriasByNegocioId("1");
+        List<Categoria> result = categoriaService.getCategoriasByNegocioId(1);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(categoriaRepository, times(1)).findByNegocioId("1");
+        verify(categoriaRepository, times(1)).findByNegocioId(1);
     }
 
     // TEST PARA getCategoriasByName()
@@ -214,22 +214,22 @@ class CategoriaServiceTest {
 
     @Test
     void testDeleteCategoria_Success() {
-        doNothing().when(categoriaRepository).deleteById("1");
+        doNothing().when(categoriaRepository).deleteById(1);
 
-        categoriaService.delete("1");
+        categoriaService.delete(1);
 
-        verify(categoriaRepository, times(1)).deleteById("1");
+        verify(categoriaRepository, times(1)).deleteById(1);
     }
 
     @Test
     void testDeleteCategoria_NotFound() {
-        doThrow(new RuntimeException("Categoria not found")).when(categoriaRepository).deleteById("99");
+        doThrow(new RuntimeException("Categoria not found")).when(categoriaRepository).deleteById(99);
 
         Exception exception = assertThrows(RuntimeException.class, () -> {
-            categoriaService.delete("99");
+            categoriaService.delete(99);
         });
         assertEquals("Categoria not found", exception.getMessage());
-        verify(categoriaRepository, times(1)).deleteById("99");
+        verify(categoriaRepository, times(1)).deleteById(99);
     }
 
     @Test

@@ -36,12 +36,12 @@ public class ReabastecimientoService {
     }
 
     @Transactional(readOnly = true)
-    public List<Reabastecimiento> getByNegocio(String negocio) {
+    public List<Reabastecimiento> getByNegocio(Integer negocio) {
         return reabastecimientoRepository.findByNegocio(negocio);
     }
 
     @Transactional(readOnly = true)
-    public Reabastecimiento getById(String  id) {
+    public Reabastecimiento getById(Integer  id) {
         return reabastecimientoRepository.findById(id).orElse(null);
     }
 
@@ -56,7 +56,7 @@ public class ReabastecimientoService {
     }
 
     @Transactional(readOnly = true)
-    public List<Reabastecimiento> getByProveedor(String proveedor) {
+    public List<Reabastecimiento> getByProveedor(Integer proveedor) {
         return reabastecimientoRepository.findByProveedor(proveedor);
     }
 
@@ -66,7 +66,7 @@ public class ReabastecimientoService {
     }
 
     @Transactional
-    public void deleteById(String id) {
+    public void deleteById(Integer id) {
         reabastecimientoRepository.deleteById(id);
     }
 
