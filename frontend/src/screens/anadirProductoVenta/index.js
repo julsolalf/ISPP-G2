@@ -1,4 +1,3 @@
-// Importaciones existentes...
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../css/listados/styles.css";
@@ -16,29 +15,69 @@ function PantallaAñadirProductoCarta() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
+  const storedNegocioId = localStorage.getItem("negocioId");
 
   // Cargar categoría
   useEffect(() => {
-    const storedCategoriaNombre = localStorage.getItem("categoriaNombre");
-    setCategoriaNombre(storedCategoriaNombre);
-
-    if (storedCategoriaNombre) {
-      fetch(`http://localhost:8080/api/categorias/nombre/${storedCategoriaNombre}`)
-        .then(res => res.json())
-        .then(data => {
-          const categoriaDelNegocio = data.find(c => c.negocio.id === negocioId);
-          if (categoriaDelNegocio) setCategoriaId(categoriaDelNegocio.id);
-          else alert("No se encontró la categoría para este negocio");
-        });
-    }
-  }, []);
+      const storedCategoriaNombre = localStorage.getItem("categoriaNombre");
+      setCategoriaNombre(storedCategoriaNombre);
+    
+      if (storedCategoriaNombre && storedNegocioId) {
+        fetch(`http://localhost:8080/api/categorias/nombre/${storedCategoriaNombre}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (Array.isArray(data)) {
+              const categoriaDelNegocio = data.find(categoria => categoria.negocio.id === parseInt(storedNegocioId));
+              if (categoriaDelNegocio) {
+                setCategoriaId(categoriaDelNegocio.id);
+              } else {
+                alert("No se encontró la categoría para este negocio");
+              }
+            } else {
+              alert("La respuesta de la API no es una lista de categorías");
+            }
+          })
+          .catch((error) => {
+            console.error("Error obteniendo el ID de la categoría", error);
+            alert("Hubo un problema al obtener el ID de la categoría");
+          });
+      } else {
+        alert("No se encontró la categoría o negocioId en el almacenamiento local.");
+      }
+    }, []);
 
   // Cargar productos de inventario
   useEffect(() => {
-    fetch("http://localhost:8080/api/productosInventario")
-      .then(res => res.json())
-      .then(data => setProductosInventario(data))
-      .catch(err => console.error("Error cargando productos inventario:", err));
+    // Cargar los productos del inventario
+    const cargarProductosInventario = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/productosInventario", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+  
+        if (!response.ok) {
+          throw new Error(`Error HTTP: ${response.status}`);
+        }
+  
+        const data = await response.json();
+        setProductosInventario(data);
+      } catch (err) {
+        console.error("Error cargando productos inventario:", err);
+        alert("Hubo un problema al cargar los productos del inventario.");
+      }
+    };
+  
+    cargarProductosInventario();
   }, []);
 
   const toggleNotifications = () => {
@@ -71,84 +110,126 @@ function PantallaAñadirProductoCarta() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!nombre.trim() || !precioVenta || !categoriaId) {
-      alert("Todos los campos son obligatorios");
-      return;
-    }
-
+  
     try {
+      // Validación de campos requeridos
+      if (!nombre || nombre.trim() === "") {
+        throw new Error("El nombre del producto no puede estar vacío.");
+      }
+  
+      if (!precioVenta || isNaN(precioVenta) || precioVenta <= 0) {
+        throw new Error("El precio de venta debe ser un número positivo.");
+      }
+  
+      if (!categoriaId) {
+        throw new Error("La categoría no puede ser nula o vacía.");
+      }
+  
+      // Validar ingredientes
+      if (ingredientes.some(ing => !ing.productoInventarioId || !ing.cantidad)) {
+        throw new Error("Todos los ingredientes deben tener producto y cantidad.");
+      }
+  
+      // Verificar que todos los ingredientes tengan cantidades válidas
+      ingredientes.forEach(ingrediente => {
+        if (isNaN(ingrediente.cantidad) || ingrediente.cantidad <= 0) {
+          throw new Error("La cantidad de los ingredientes debe ser un número positivo.");
+        }
+      });
+  
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Token de autenticación no encontrado.");
+      }
+  
       // Crear producto de venta
       const productoResponse = await fetch("http://localhost:8080/api/productosVenta", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
-          name: nombre,
+          name: nombre.trim(),
           precioVenta: parseFloat(precioVenta),
-          categoria: { id: categoriaId }
+          categoriaId: parseInt(categoriaId),
         }),
       });
-
-      if (!productoResponse.ok) throw new Error("Error al crear el producto de venta");
-
+  
+      if (!productoResponse.ok) {
+        const errorText = await productoResponse.text();
+        throw new Error(`Error al crear el producto de venta: ${errorText}`);
+      }
+  
       const productoCreado = await productoResponse.json();
-
+  
       // Crear ingredientes vinculados
       for (const ingrediente of ingredientes) {
         if (ingrediente.productoInventarioId && ingrediente.cantidad) {
-          await fetch("http://localhost:8080/api/ingredientes", {
+          const ingredienteResponse = await fetch("http://localhost:8080/api/ingredientes", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
             body: JSON.stringify({
               cantidad: parseInt(ingrediente.cantidad),
               productoInventario: { id: ingrediente.productoInventarioId },
               productoVenta: { id: productoCreado.id }
             }),
           });
+  
+          if (!ingredienteResponse.ok) {
+            const errorText = await ingredienteResponse.text();
+            console.error("Error al crear ingrediente:", errorText);
+            throw new Error("Hubo un problema al añadir un ingrediente.");
+          }
         }
       }
-
+  
       alert("Producto añadido con éxito");
       navigate(-1);
+  
     } catch (error) {
       console.error("Error al añadir el producto y sus ingredientes:", error);
-      alert("Hubo un problema al añadir el producto");
+      alert(error.message || "Hubo un problema al añadir el producto.");
     }
   };
-
+  
   return (
     <div className="home-container" style={{ backgroundImage: `url(${process.env.PUBLIC_URL + "/background-spices.jpg"})`, backgroundSize: "cover", backgroundPosition: "center", height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center" }}>
       <div className="content">
         <div className="icon-container-right">
-                  <Bell size={30} className="icon" onClick={toggleNotifications} />
-                  <User size={30} className="icon" onClick={toggleUserOptions} />
-                </div>
-                {showNotifications && (
-                  <div className="notification-bubble">
-                    <div className="notification-header">
-                      <strong>Notificaciones</strong>
-                      <button className="close-btn" onClick={() => setShowNotifications(false)}>X</button>
-                    </div>
-                    <ul>
-                      <li>Notificación 1</li>
-                      <li>Notificación 2</li>
-                      <li>Notificación 3</li>
-                    </ul>
-                  </div>
-                )}
+          <Bell size={30} className="icon" onClick={toggleNotifications} />
+          <User size={30} className="icon" onClick={toggleUserOptions} />
+        </div>
+        {showNotifications && (
+          <div className="notification-bubble">
+            <div className="notification-header">
+              <strong>Notificaciones</strong>
+              <button className="close-btn" onClick={() => setShowNotifications(false)}>X</button>
+            </div>
+            <ul>
+              <li>Notificación 1</li>
+              <li>Notificación 2</li>
+              <li>Notificación 3</li>
+            </ul>
+          </div>
+        )}
         
-                {showUserOptions && (
-                  <div className="notification-bubble user-options">
-                    <div className="notification-header">
-                      <strong>Usuario</strong>
-                      <button className="close-btn" onClick={toggleUserOptions}>X</button>
-                    </div>
-                    <ul>
-                      <li><button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button></li>
-                      <li><button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button></li>
-                      <li><button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button></li>
-                    </ul>
-                  </div>
-                )}
+        {showUserOptions && (
+          <div className="notification-bubble user-options">
+            <div className="notification-header">
+              <strong>Usuario</strong>
+              <button className="close-btn" onClick={toggleUserOptions}>X</button>
+            </div>
+            <ul>
+              <li><button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button></li>
+              <li><button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button></li>
+              <li><button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button></li>
+            </ul>
+          </div>
+        )}
         <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
         <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
         <h1 className="title">GastroStock</h1>
