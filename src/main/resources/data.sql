@@ -140,9 +140,9 @@ INSERT INTO pedido (id, fecha, precio_total, mesa_id, empleado_id, negocio_id)
 VALUES (1, '2025-03-17 13:00:00', 15.00, (SELECT id FROM mesa WHERE name = 'Mesa 1'), (SELECT id FROM empleado WHERE first_name = 'Juan' AND last_name = 'Garcia'), 1);
 
 -- Insertando líneas de pedido
-INSERT INTO linea_de_pedido (id, cantidad, estado, precio_unitario, pedido_id, producto_id)
+INSERT INTO linea_de_pedido (id, cantidad, salio_de_cocina, precio_unitario, pedido_id, producto_id)
 VALUES (1, 1, true, 12.50, (SELECT id FROM pedido WHERE precio_total = 15.00), (SELECT id FROM producto_venta WHERE name = 'Pizza Margherita'));
-INSERT INTO linea_de_pedido (id, cantidad, estado, precio_unitario, pedido_id, producto_id)
+INSERT INTO linea_de_pedido (id, cantidad, salio_de_cocina, precio_unitario, pedido_id, producto_id)
 VALUES (2, 1, true, 2.50, (SELECT id FROM pedido WHERE precio_total = 15.00), (SELECT id FROM producto_venta WHERE name = 'Coca Cola'));
 
 -- Insertando proveedores
