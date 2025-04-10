@@ -8,7 +8,7 @@ const negocioId = localStorage.getItem("negocioId");
 
 const obtenerProveedor = async (id) => {
   try {
-    const response = await fetch(`http://localhost:8080/api/proveedores/${id}`, {
+    const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/proveedores/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -27,7 +27,7 @@ const obtenerProveedor = async (id) => {
 
 const actualizarProveedor = async (id, proveedor) => {
   try {
-    const response = await fetch(`http://localhost:8080/api/proveedores/${id}`, {
+    const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/proveedores/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
