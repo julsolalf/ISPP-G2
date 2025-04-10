@@ -85,3 +85,31 @@ In this file we will present an explicit mapping of each one of the main Use Cas
 5. Pulsar **Exportar** para descargar los datos.
 6. Pulsar **Añadir** para registrar un nuevo proveedor.
 7. ⚠️ **Nota**: No está implementada la visualización de detalles ni reabastecimientos.
+
+
+### Necessary Data
+
+##### Landing Page
+
+    https://jsalasm5.github.io/GastroStock_LandingPage
+
+##### Credentials
+
+- Dueño:
+    - Usuario: admin
+    - Contraseña: password
+- Empleado:
+    - Usuario: paco
+    - Contraseña: password
+
+##### Url of the deployed App
+
+    https://ispp-2425-g2.ew.r.appspot.com
+
+##### Url of GitHub Repository
+
+    https://github.com/julsolalf/ISPP-G2.git
+
+##### Url of Time Tracking Tool
+
+    https://app.clockify.me/reports/detailed?start=2025-03-14T00:00:00.000Z&end=2025-04-11T23:59:59.999Z&filterValuesData=%7B%22projects%22:%5B%2267f009cf002a3d02a259a604%22,%2267e6c9ef007aaf14ddb07163%22%5D%7D&filterOptions=%7B%22projects%22:%7B%22status%22:%22ACTIVE%22%7D%7D&page=1&pageSize=50
