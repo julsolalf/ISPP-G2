@@ -16,42 +16,25 @@ function VerTipoProducto() {
   const [ordenAscendente, setOrdenAscendente] = useState(true); 
   const [ordenPorCantidad, setOrdenPorCantidad] = useState(false); 
 
-const obtenerProductosPorCategoria = async () => {
-  try {
-    const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/productosInventario/categoria/${localStorage.getItem("categoriaNombre")}`);
-    if (!response.ok) {
-      throw new Error("Error al obtener los productos de la categoría");
+  const obtenerProductosPorCategoria = async () => {
+    try {
+      const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com//api/productosInventario/categoria/${categoria}`, {
+        headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+        }
+      });
+  
+      if (!response.ok) {
+        throw new Error("Error al obtener los productos de la categoría");
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error al obtener los productos:", error);
+      return [];
     }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error al obtener los productos:", error);
-    return [];
-  }
-};
-
-function VerTipoProducto() {
-  const { categoriaId } = useParams();
-  const navigate = useNavigate();
-  const [categoria, setCategoria] = useState(null);
-  const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
-  const [showNotifications, setShowNotifications] = useState(false); // Estado para notificaciones
-  const [showUserOptions, setShowUserOptions] = useState(false); // Estado para opciones de usuario
-  const [productos, setProductos] = useState([]);
-
-
-  const toggleNotifications = () => {
-    setShowNotifications(!showNotifications);
   };
-
-  const toggleUserOptions = () => {
-    setShowUserOptions(!showUserOptions);
-  };
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate("/"); // Redirigir a la pantalla de inicio de sesión
-  };
-
 
   useEffect(() => {
     const cargarProductos = async () => {
@@ -116,44 +99,9 @@ function VerTipoProducto() {
           <User size={30} className="icon" />
         </div>
 
-        {showNotifications && (
-          <div className="notification-bubble">
-            <div className="notification-header">
-              <strong>Notificaciones</strong>
-              <button className="close-btn" onClick={() => setShowNotifications(false)}>X</button>
-            </div>
-            <ul>
-              <li>Notificación 1</li>
-              <li>Notificación 2</li>
-              <li>Notificación 3</li>
-            </ul>
-          </div>
-        )}
-
-        {showUserOptions && (
-          <div className="notification-bubble user-options">
-            <div className="notification-header">
-              <strong>Usuario</strong>
-              <button className="close-btn" onClick={() => setShowUserOptions(false)}>X</button>
-            </div>
-            <ul>
-              <li>
-                <button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button>
-              </li>
-              <li>
-                <button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button>
-              </li>
-              <li>
-                <button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
-              </li>
-            </ul>
-          </div>
-        )}
-
         <button onClick={() => navigate("/inventario")} className="back-button">⬅ Volver</button>
         <Link to="/inicioDueno">
           <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
-        </Link>
         </Link>
         <h1 className="title">GastroStock</h1>
         <h2>Productos</h2>
@@ -215,21 +163,6 @@ function VerTipoProducto() {
                 onClick={() => {
                   localStorage.setItem("productoId", producto.id);
                   navigate(`/categoria/${localStorage.getItem("categoriaNombre")}/producto/${producto.id}`);
-                }}
-                style={{ cursor: "pointer" }}>
-                <h3>{producto.name}</h3>
-                <p>Cantidad: {producto.cantidadDeseada}</p>
-                {producto.cantidadDeseada <= producto.cantidadAviso && (
-                  <p style={{ color: "red" }}>⚠ Stock bajo</p>
-                )}
-              </div>
-            ))}
-          <div className="empleados-grid">
-            {productos.map((producto) => (
-              <div key={producto.id} className="empleado-card"
-                onClick={() => {
-                  localStorage.setItem("productoId", producto.id);
-                  navigate(`/categoria/${localStorage.getItem("categoriaNombre")}/producto/${producto.id}`)
                 }}
                 style={{ cursor: "pointer" }}>
                 <h3>{producto.name}</h3>
