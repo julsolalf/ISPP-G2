@@ -18,50 +18,49 @@ function EditarProducto() {
 
   const storedNegocioId = localStorage.getItem("negocioId");
   const token = localStorage.getItem("token");
-const productoId = localStorage.getItem("productoId");
+  const productoId = localStorage.getItem("productoId");
 
-const obtenerProducto = async (id) => {
-  try {
-    const response = await fetch(`http://localhost:8080/api/productosInventario/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (!response.ok) {
-      throw new Error("Error al obtener el producto");
+  const obtenerProducto = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/productosInventario/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Error al obtener el producto");
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Error al obtener el producto:", error);
+      return null;
     }
-    return await response.json();
-  } catch (error) {
-    console.error("Error al obtener el producto:", error);
-    return null;
-  }
-};
+  };
 
-const actualizarProducto = async (producto) => {
-  try {
-    const response = await fetch(`http://localhost:8080/api/productosInventario/${productoId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(producto),
-    });
-    if (!response.ok) {
-      throw new Error("Error al actualizar el producto");
+  const actualizarProducto = async (producto) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/productosInventario/${productoId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(producto),
+      });
+      if (!response.ok) {
+        throw new Error("Error al actualizar el producto");
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Error al actualizar el producto:", error);
+      return null;
     }
-    return await response.json();
-  } catch (error) {
-    console.error("Error al actualizar el producto:", error);
-    return null;
-  }
-};
+  };
 
-  // Cargar proveedores y categoría al montar el componente
   useEffect(() => {
-    // Obtener los proveedores
+    // Obtener proveedores
     if (storedNegocioId) {
       fetch(`http://localhost:8080/api/proveedores/negocio/${storedNegocioId}`, {
         method: "GET",
@@ -78,16 +77,23 @@ const actualizarProducto = async (producto) => {
         });
     }
 
-    // Obtener los detalles del producto
+    // Obtener producto
     if (productoId) {
       obtenerProducto(productoId).then((data) => {
         if (data) {
-          setProducto(data);
-          setCategoriaNombre(data.categoria?.name || "");
+          setProducto({
+            name: data.name,
+            precioCompra: data.precioCompra,
+            cantidadDeseada: data.cantidadDeseada,
+            cantidadAviso: data.cantidadAviso,
+            categoriaId: data.categoria.id,
+            proveedorId: data.proveedor.id,
+          });
+          setCategoriaNombre(data.categoria.name);
         }
       });
     }
-  }, [productoId]);
+  }, []);
 
   const handleChange = (e) => {
     setProducto({ ...producto, [e.target.name]: e.target.value });
@@ -102,7 +108,7 @@ const actualizarProducto = async (producto) => {
 
     const actualizado = await actualizarProducto(producto);
     if (actualizado) {
-      navigate(`/categoria/${producto.categoria?.name}/producto/${productoId}`);
+      navigate(`/categoria/${categoriaNombre}/producto/${productoId}`);
     }
   };
 
@@ -125,7 +131,9 @@ const actualizarProducto = async (producto) => {
           <Bell size={30} className="icon" />
           <User size={30} className="icon" />
         </div>
-        <button onClick={() => navigate(`/categoria/${producto.categoria?.name}/producto/${productoId}`)} className="back-button">⬅ Volver</button>
+        <button onClick={() => navigate(`/categoria/${categoriaNombre}/producto/${productoId}`)} className="back-button">
+          ⬅ Volver
+        </button>
         <Link to="/inicioDueno">
           <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
         </Link>
