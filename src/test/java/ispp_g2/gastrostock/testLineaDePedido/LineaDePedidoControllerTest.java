@@ -469,7 +469,7 @@ public class LineaDePedidoControllerTest {
     void testFindByProductoIdAndPrecioLinea_Success() throws Exception {
         // Given
         List<LineaDePedido> lineasProducto1Precio9 = Collections.singletonList(linea);
-        when(lineaDePedidoService.getLineasDePedidoByProductoIdAndPrecioLinea(1, 9.0)).thenReturn(lineasProducto1Precio9);
+        when(lineaDePedidoService.getLineasDePedidoByProductoIdAndPrecioUnitario(1, 9.0)).thenReturn(lineasProducto1Precio9);
         
         // When & Then
         mockMvc.perform(get("/api/lineasDePedido/producto/1/precioLinea/9.0"))
@@ -478,32 +478,32 @@ public class LineaDePedidoControllerTest {
                 .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].precioLinea", is(9.0)));
         
-        verify(lineaDePedidoService).getLineasDePedidoByProductoIdAndPrecioLinea(1, 9.0);
+        verify(lineaDePedidoService).getLineasDePedidoByProductoIdAndPrecioUnitario(1, 9.0);
     }
     
     @Test
     void testFindByProductoIdAndPrecioLinea_NotFound() throws Exception {
         // Given
-        when(lineaDePedidoService.getLineasDePedidoByProductoIdAndPrecioLinea(1, 999.0)).thenReturn(null);
+        when(lineaDePedidoService.getLineasDePedidoByProductoIdAndPrecioUnitario(1, 999.0)).thenReturn(null);
         
         // When & Then
         mockMvc.perform(get("/api/lineasDePedido/producto/1/precioLinea/999.0"))
                 .andExpect(status().isNotFound());
         
-        verify(lineaDePedidoService).getLineasDePedidoByProductoIdAndPrecioLinea(1, 999.0);
+        verify(lineaDePedidoService).getLineasDePedidoByProductoIdAndPrecioUnitario(1, 999.0);
     }
     
     @Test
     void testFindByProductoIdAndPrecioLinea_EmptyList() throws Exception {
         // Given
-        when(lineaDePedidoService.getLineasDePedidoByProductoIdAndPrecioLinea(1, 999.0)).thenReturn(Collections.emptyList());
+        when(lineaDePedidoService.getLineasDePedidoByProductoIdAndPrecioUnitario(1, 999.0)).thenReturn(Collections.emptyList());
         
         // When & Then
         mockMvc.perform(get("/api/lineasDePedido/producto/1/precioLinea/999.0"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
         
-        verify(lineaDePedidoService).getLineasDePedidoByProductoIdAndPrecioLinea(1, 999.0);
+        verify(lineaDePedidoService).getLineasDePedidoByProductoIdAndPrecioUnitario(1, 999.0);
     }
     
     // TESTS PARA save()

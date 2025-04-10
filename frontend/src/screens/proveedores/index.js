@@ -159,7 +159,9 @@ function Proveedores() {
                 <h3>{proveedor.name}</h3>
                 <p>{proveedor.direccion}</p>
                 <p>{proveedor.telefono}</p>
-                <button className="ver-btn" onClick={() => navigate(`/verProveedor/${proveedor.id}`)}>Ver</button>
+                <button className="ver-btn" onClick={() => {
+                  localStorage.setItem("proveedorId", proveedor.id);
+                  navigate(`/verProveedor/${proveedor.id}`)}}>Ver</button>
               </div>
             ))
           ) : (

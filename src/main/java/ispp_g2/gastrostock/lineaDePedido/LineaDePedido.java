@@ -29,7 +29,7 @@ public class LineaDePedido extends BaseEntity{
     private Double precioUnitario;
 
     @NotNull
-    private Boolean estado;
+    private Boolean salioDeCocina;
 
     @Transient
     public Double getPrecioLinea() {

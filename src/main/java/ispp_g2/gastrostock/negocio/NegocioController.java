@@ -268,9 +268,9 @@ public class NegocioController {
 			if (!toDelete.getDueno().getId().equals(dueno.getId()))
 				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 			negocioService.delete(id);
-			return new ResponseEntity<>(HttpStatus.ACCEPTED);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		} else {
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 	}
 

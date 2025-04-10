@@ -136,7 +136,9 @@ function VerVentaEspecifica() {
           <p className="producto-atributo"><strong>Mesa:</strong> {venta.mesa.name}</p>
           <p className="producto-atributo"><strong>Empleado:</strong> {venta.empleado.firstName} {venta.empleado.lastName}</p>
           <p className="producto-atributo"><strong>Negocio:</strong> {venta.mesa.negocio.name}</p>
-          <button style={{ background: "#157E03", color: "white" }} onClick={() => navigate(`/editarVenta/${venta.id}`)}>Editar Pedido</button>
+          <button style={{ background: "#157E03", color: "white" }} onClick={() => {
+            localStorage.setItem("ventaId", venta.id)
+            navigate(`/editarVenta/${venta.id}`)}}>Editar Pedido</button>
           <button style={{ background: "#9A031E", color: "white" }} onClick={() => setShowDeleteModal(true)}>Eliminar Pedido</button>
         </div>
         {showDeleteModal && (

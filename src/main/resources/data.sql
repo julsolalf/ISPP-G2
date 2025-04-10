@@ -140,9 +140,9 @@ INSERT INTO pedido (id, fecha, precio_total, mesa_id, empleado_id, negocio_id)
 VALUES (1, '2025-03-17 13:00:00', 15.00, (SELECT id FROM mesa WHERE name = 'Mesa 1'), (SELECT id FROM empleado WHERE first_name = 'Juan' AND last_name = 'Garcia'), 1);
 
 -- Insertando líneas de pedido
-INSERT INTO linea_de_pedido (id, cantidad, estado, precio_unitario, pedido_id, producto_id)
+INSERT INTO linea_de_pedido (id, cantidad, salio_de_cocina, precio_unitario, pedido_id, producto_id)
 VALUES (1, 1, 1, 12.50, (SELECT id FROM pedido WHERE precio_total = 15.00), (SELECT id FROM producto_venta WHERE name = 'Pizza Margherita'));
-INSERT INTO linea_de_pedido (id, cantidad, estado, precio_unitario, pedido_id, producto_id)
+INSERT INTO linea_de_pedido (id, cantidad, salio_de_cocina, precio_unitario, pedido_id, producto_id)
 VALUES (2, 1, 1, 2.50, (SELECT id FROM pedido WHERE precio_total = 15.00), (SELECT id FROM producto_venta WHERE name = 'Coca Cola'));
 
 -- Insertando proveedores
@@ -167,13 +167,17 @@ VALUES (2, 5, (SELECT id FROM producto_inventario WHERE name = 'Carne Buey'), (S
 
 -- Insertando reabastecimientos
 INSERT INTO reabastecimiento (id, precio_total, referencia, fecha, proveedor_id, negocio_id)
-VALUES (1, 100, 'REF001', '2025-03-01', (SELECT id FROM proveedor WHERE name = 'Proveedor A'), (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
+VALUES (1, 100, 'REF001', '2025-06-01', (SELECT id FROM proveedor WHERE name = 'Proveedor A'), (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
 INSERT INTO reabastecimiento (id, precio_total, referencia, fecha, proveedor_id, negocio_id)
-VALUES (2, 200, 'REF002', '2025-03-02', (SELECT id FROM proveedor WHERE name = 'Proveedor B'), (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
+VALUES (2, 200, 'REF002', '2025-06-02', (SELECT id FROM proveedor WHERE name = 'Proveedor B'), (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
 
 -- Insertando lotes
 INSERT INTO lote (id, cantidad, fecha_caducidad, producto_id, reabastecimiento_id)
-VALUES (1, 100, '2025-05-01', (SELECT id FROM producto_inventario WHERE name = 'Harina'), (SELECT id FROM reabastecimiento WHERE referencia = 'REF001'));
+VALUES (1, 100, '2025-08-01', (SELECT id FROM producto_inventario WHERE name = 'Harina'), (SELECT id FROM reabastecimiento WHERE referencia = 'REF001'));
+INSERT INTO lote (id, cantidad, fecha_caducidad, producto_id, reabastecimiento_id)
+VALUES (2, 100, '2025-08-02', (SELECT id FROM producto_inventario WHERE name = 'Harina'), (SELECT id FROM reabastecimiento WHERE referencia = 'REF002'));
+INSERT INTO lote (id, cantidad, fecha_caducidad, producto_id, reabastecimiento_id)
+VALUES (3, 100, '2025-07-02', (SELECT id FROM producto_inventario WHERE name = 'Carne Buey'), (SELECT id FROM reabastecimiento WHERE referencia = 'REF002'));
 
 --Insertando diaReparto
 INSERT INTO dia_reparto (id, descripcion, dia_semana, proveedor_id)

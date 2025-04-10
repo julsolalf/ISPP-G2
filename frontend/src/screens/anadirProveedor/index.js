@@ -42,7 +42,7 @@ function AnadirProveedor() {
         email,
         telefono,
         direccion,
-        negocio: { id: negocio_id }
+        negocioId: negocio_id
       };
   
       const response = await fetch("https://ispp-2425-g2.ew.r.appspot.com/api/proveedores", {
@@ -55,6 +55,7 @@ function AnadirProveedor() {
       });
   
       if (response.status === 201) {
+        alert("Proveedor añadido con éxito");
         navigate("/proveedores"); // Redirige a la página de proveedores si la creación es exitosa
       } else {
         console.error("Error al añadir el proveedor:", response.statusText);

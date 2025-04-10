@@ -1,54 +1,53 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "../../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
-const token = localStorage.getItem("token"); // Obtener el token del usuario desde localStorage
-const obtenerEmpleado = async () => {
-  try {
-    const response = await fetch(`http://localhost:8080/api/empleados/${localStorage.getItem("empleadoId")}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (!response.ok) {
-      throw new Error("Error al obtener el empleado");
-    }
-    return await response.json();
-  } catch (error) {
-    console.error("Error al obtener el empleado:", error);
-    return null;
-  }
-};
-
 function VerEmpleado() {
-  const { id } = useParams(); // Obtener ID desde la URL
   const navigate = useNavigate();
   const [empleado, setEmpleado] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false); 
-
+  const token = localStorage.getItem("token"); // Obtener el token del usuario desde localStorage
+  const empleadoId = localStorage.getItem("empleadoId"); // Obtener el ID del empleado desde localStorage
 
   const handleLogout = () => {
     localStorage.clear();
     navigate("/"); // Redirigir a la pantalla de inicio de sesión
   };
 
+  const obtenerEmpleado = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/empleados/${empleadoId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Error al obtener el empleado");
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Error al obtener el empleado:", error);
+      return null;
+    }
+  };  
+
   useEffect(() => {
     const cargarEmpleado = async () => {
-      const data = await obtenerEmpleado(id);
+      const data = await obtenerEmpleado(empleadoId);
       setEmpleado(data);
     };
     cargarEmpleado();
-  }, [id]);
+  }, [empleadoId]);
 
   const eliminarEmpleado = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/empleados/${localStorage.getItem("empleadoId")}`, {
+      const response = await fetch(`http://localhost:8080/api/empleados/${empleadoId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -139,7 +138,7 @@ function VerEmpleado() {
           <p><strong>Teléfono:</strong> {empleado.numTelefono}</p>
           <p><strong>Descripción:</strong> {empleado.descripcion}</p>
 
-          <button style={{ background: "#157E03", color: "white" }} onClick={() => navigate(`/editarEmpleado/${empleado.user.username}`)}>Editar Empleado</button>
+          <button style={{ background: "#157E03", color: "white" }} onClick={() => navigate(`/editarEmpleado/${empleadoId}`)}>Editar Empleado</button>
           <button style={{ background: "#9A031E", color: "white" }} onClick={() => setShowDeleteModal(true)}>Eliminar Empleado</button>
         </div>
 
