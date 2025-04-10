@@ -30,7 +30,7 @@ public class Proveedor extends NamedEntity {
     private String direccion;
 
     @ManyToOne(optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
     @JoinColumn(name = "negocio_id", nullable = false)
     private Negocio negocio;
 

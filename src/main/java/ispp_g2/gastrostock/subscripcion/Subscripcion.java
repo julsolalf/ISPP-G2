@@ -34,9 +34,10 @@ public class Subscripcion extends BaseEntity implements Serializable {
     private LocalDateTime endDate;
     private LocalDateTime nextBillingDate;
     
-    @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @OneToOne
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
     @JoinColumn(name = "user_id", unique = true)
-	private User user;
+    private User user;
     
     public boolean isActive() {
         return status == SubscripcionStatus.ACTIVE && 

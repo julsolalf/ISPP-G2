@@ -22,16 +22,16 @@ INSERT INTO authorities (id, authority) VALUES (2,'empleado');
 INSERT INTO authorities (id, authority) VALUES (3, 'admin');
 
 -- Insertar suscripciones gratuitas para todos los usuarios
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (1, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (2, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (3, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (4, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (5, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (6, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (7, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (8, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (9, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (10, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
+INSERT INTO subscripcion (id, type, status, start_date) VALUES (1, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP);
+INSERT INTO subscripcion (id, type, status, start_date) VALUES (2, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP);
+INSERT INTO subscripcion (id, type, status, start_date) VALUES (3, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP);
+INSERT INTO subscripcion (id, type, status, start_date) VALUES (4, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP);
+INSERT INTO subscripcion (id, type, status, start_date) VALUES (5, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP);
+INSERT INTO subscripcion (id, type, status, start_date) VALUES (6, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP);
+INSERT INTO subscripcion (id, type, status, start_date) VALUES (7, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP);
+INSERT INTO subscripcion (id, type, status, start_date) VALUES (8, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP);
+INSERT INTO subscripcion (id, type, status, start_date) VALUES (9, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP);
+INSERT INTO subscripcion (id, type, status, start_date) VALUES (10, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP);
 UPDATE subscripcion SET stripe_customer_id = 'cus_test_123456' WHERE id = 1;
 -- Actualizar usuarios para asociarlos con sus suscripciones
 UPDATE app_user SET subscripcion_id = 1 WHERE id = 1; -- admin
@@ -141,9 +141,9 @@ VALUES (1, '2025-03-17 13:00:00', 15.00, (SELECT id FROM mesa WHERE name = 'Mesa
 
 -- Insertando líneas de pedido
 INSERT INTO linea_de_pedido (id, cantidad, estado, precio_unitario, pedido_id, producto_id)
-VALUES (1, 1, true, 12.50, (SELECT id FROM pedido WHERE precio_total = 15.00), (SELECT id FROM producto_venta WHERE name = 'Pizza Margherita'));
+VALUES (1, 1, 1, 12.50, (SELECT id FROM pedido WHERE precio_total = 15.00), (SELECT id FROM producto_venta WHERE name = 'Pizza Margherita'));
 INSERT INTO linea_de_pedido (id, cantidad, estado, precio_unitario, pedido_id, producto_id)
-VALUES (2, 1, true, 2.50, (SELECT id FROM pedido WHERE precio_total = 15.00), (SELECT id FROM producto_venta WHERE name = 'Coca Cola'));
+VALUES (2, 1, 1, 2.50, (SELECT id FROM pedido WHERE precio_total = 15.00), (SELECT id FROM producto_venta WHERE name = 'Coca Cola'));
 
 -- Insertando proveedores
 INSERT INTO proveedor (id, name, email, telefono, direccion, negocio_id)

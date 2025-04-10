@@ -29,12 +29,12 @@ public class Reabastecimiento extends BaseEntity {
     private String referencia;
 
     @ManyToOne(optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
     @JoinColumn(name = "proveedor_id", nullable = false)
     private Proveedor proveedor;
 
     @ManyToOne(optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
     @JoinColumn(name = "negocio_id")
     private Negocio negocio;
 

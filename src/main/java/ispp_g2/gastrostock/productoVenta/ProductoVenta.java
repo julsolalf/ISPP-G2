@@ -18,7 +18,7 @@ public class ProductoVenta extends NamedEntity {
     private Double precioVenta;
 
     @ManyToOne(optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 }

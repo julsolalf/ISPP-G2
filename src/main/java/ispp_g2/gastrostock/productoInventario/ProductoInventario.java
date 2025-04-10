@@ -35,7 +35,7 @@ public class ProductoInventario extends NamedEntity {
     private Categoria categoria;
 
     @ManyToOne(optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
     @JoinColumn(name = "proveedor_id", nullable = false)
     private Proveedor proveedor;
 
