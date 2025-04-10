@@ -2,11 +2,13 @@
 title: Revision
 groupNumber: 2
 groupName: GastroStock
-deliverable: Sprint 2
+deliverable: Sprint 3
 description: 
 author: Writing by 
 ---
 
-# [Sprint 2] Revision - GastroStock (Group 2)
+# [Sprint 3] Revision - GastroStock (Group 2)
+
+
 
 ISPP-G2
