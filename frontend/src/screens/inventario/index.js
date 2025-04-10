@@ -48,7 +48,7 @@ function Inventario() {
 
 
   const handleLogout = () => {
-    localStorage.removeItem("userToken"); // Eliminamos el token del usuario
+    localStorage.clear();
     navigate("/"); // Redirigir a la pantalla de inicio de sesión
   };
 

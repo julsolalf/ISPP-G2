@@ -1,6 +1,7 @@
 package ispp_g2.gastrostock.user;
 
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
@@ -22,7 +23,8 @@ public interface UserRepository extends  CrudRepository<User, Integer>{
 	@Query("SELECT u FROM User u WHERE u.username = ?1")
 	Optional<User> findUserByUsername(String username);
 
-
+	@Query("SELECT u FROM User u WHERE u.subscripcion IS NULL")
+	List<User> findUsersWithoutSubscription();
 
 
 }

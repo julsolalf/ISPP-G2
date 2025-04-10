@@ -67,6 +67,16 @@ public class ProductoInventarioService {
         return productoInventarioRepository.findByProveedorId(proveedorId);
     }
 
+    @Transactional(readOnly = true)
+    public List<ProductoInventario> getProductoInventarioByNegocioId(Integer negocioId) {
+        return productoInventarioRepository.findByNegocioId(negocioId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductoInventario> getProductoInventarioByDuenoId(Integer duenoId) {
+        return productoInventarioRepository.findByDuenoId(duenoId);
+    }
+
     @Transactional
     public ProductoInventario save(@Valid ProductoInventario newProductoInventario){
         return productoInventarioRepository.save(newProductoInventario);

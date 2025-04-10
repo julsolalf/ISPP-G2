@@ -3,9 +3,16 @@ import { useNavigate, useParams, Link } from "react-router-dom";
 import "../../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
+const token = localStorage.getItem("token"); // Obtener el token del usuario desde localStorage
 const obtenerEmpleado = async () => {
   try {
-    const response = await fetch(`http://localhost:8080/api/empleados/${localStorage.getItem("empleadoId")}`);
+    const response = await fetch(`http://localhost:8080/api/empleados/${localStorage.getItem("empleadoId")}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
     if (!response.ok) {
       throw new Error("Error al obtener el empleado");
     }
@@ -23,6 +30,13 @@ function VerEmpleado() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false); 
+
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/"); // Redirigir a la pantalla de inicio de sesión
+  };
 
   useEffect(() => {
     const cargarEmpleado = async () => {
@@ -36,6 +50,10 @@ function VerEmpleado() {
     try {
       const response = await fetch(`http://localhost:8080/api/empleados/${localStorage.getItem("empleadoId")}`, {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       });
       if (!response.ok) {
         throw new Error("Error al eliminar el empleado");
@@ -91,10 +109,23 @@ function VerEmpleado() {
             <ul>
               <li><button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button></li>
               <li><button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button></li>
-              <li><button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button></li>
+              <li><button className="user-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button></li>
             </ul>
           </div>
         )}
+
+{showLogoutModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>¿Está seguro que desea abandonar la sesión?</h3>
+              <div className="modal-buttons">
+                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
+                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
+              </div>
+            </div>
+          </div>
+        )}
+
 
         <button onClick={() => navigate("/empleados")} className="back-button">⬅ Volver</button>
         <Link to="/inicioDueno">
