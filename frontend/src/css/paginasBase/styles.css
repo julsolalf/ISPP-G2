@@ -44,6 +44,18 @@ body, html {
   align-items: center;
 }
 
+.fondo-login {
+  background: rgba(234, 197, 197, 0.85); /* Más opacidad para mejor visibilidad */
+  padding: 40px 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  height: 90%;
+  width: 40%;
+  margin: 5%;
+  justify-content: center;
+  align-items: center;
+}
+
 /* Estilo para el logo */
 .app-logo {
   width: 120px; /* Aumentado el tamano */

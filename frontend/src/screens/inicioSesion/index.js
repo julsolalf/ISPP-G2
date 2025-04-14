@@ -64,30 +64,44 @@ function PantallaInicioSesion() {
   };
 
   return (
-    <div className="content">
-      <button onClick={() => navigate("/")} className="back-button">⬅ Volver</button>
-      <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
-      <h1 className="title">GastroStock</h1>
-      <h2>Iniciar Sesión</h2>
-
-      <input
-        type="Usuario"
-        placeholder="Usuario"
-        value={usuario}
-        onChange={(e) => setUsuario(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Contrasena"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button onClick={handleLogin} className="login-btn">Iniciar Sesión</button>
-
-      <Link to="/recuperarcontrasena" className="forgot-password-link">
-        ¿Has olvidado la contrasena?
-      </Link>
+    <div className="page-container">
+      <div className="fondo-login">
+        <button onClick={() => navigate("/")} className="back-button" style={{marginLeft:"30%", fontSize:"24px"}}>⬅ Volver</button>
+        <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+        <div className="clearfix"></div>
+        <h1 className="title" style={{marginTop:"10%"}}>GastroStock</h1>
+        <div className="clearfix"></div>
+        <h2>Iniciar Sesión</h2>
+        <div className="clearfix" style={{marginTop:"5%"}}></div>
+        <div style={{textAlign :"left", width:"80%", marginLeft:"20%"}}>
+          <strong style={{fontSize:"24px"}}>Usuario:</strong>
+          <div className="clearfix"></div>
+          <input
+            type="Usuario"
+            placeholder="Usuario"
+            value={usuario}
+            onChange={(e) => setUsuario(e.target.value)}
+            style={{width:"70%"}}
+          />
+          <div className="clearfix" style={{marginTop:"5%"}}></div>
+          <strong style={{fontSize:"24px"}}>Contraseña:</strong>
+          <div className="clearfix"></div>
+          <input
+            type="password"
+            placeholder="Contrasena"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            style={{width:"70%"}}
+          />
+        </div>
+        <div className="clearfix"></div>
+        <button onClick={handleLogin} className="login-btn" style={{marginTop:"5%"}}>Iniciar Sesión</button>
+        <div className="clearfix"></div>
+        <Link to="/recuperarcontrasena" className="forgot-password-link">
+          ¿Has olvidado la contrasena?
+        </Link>
     </div>
+  </div>
   );
 }
 

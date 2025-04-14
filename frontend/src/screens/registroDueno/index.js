@@ -86,15 +86,32 @@ function PantallaRegistroDueno() {
         <h1 className="title" style={{paddingTop:"5%"}}>GastroStock</h1>
         <h2 style={{marginBottom:"3%"}}>Ingrese sus datos</h2>
         <div className="clearfix"></div>
-        <input type="text" placeholder="Nombre del dueno" style={{width:"18.5%"}} value={ownerFirstName} onChange={(e) => setOwnerFirstName(e.target.value)} />
-        <input type="text" placeholder="Apellidos del dueno" style={{marginLeft:"5%", width:"45%"}} value={ownerLastName} onChange={(e) => setOwnerLastName(e.target.value)} />
-        <input type="email" placeholder="Correo Electrónico" style={{width:"70%"}} value={email} onChange={(e) => setEmail(e.target.value)} />
-        <input type="tel" placeholder="Teléfono" style={{width:"70%"}} value={phone} onChange={(e) => setPhone(e.target.value)} />
-        <input type="text" placeholder="Usuario" style={{width:"70%"}} value={usuario} onChange={(e) => setUsuario(e.target.value)} />
-        <input type="password" placeholder="Contrasena" style={{width:"70%"}} value={password} onChange={(e) => setPassword(e.target.value)} />
-        <input type="password" placeholder="Confirmar Contrasena" style={{width:"70%"}} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
         <div className="clearfix"></div>
-        <button onClick={handleRegister} className="login-btn" disabled={loading}>
+        <div style={{textAlign :"left", width:"80%", marginLeft:"20%"}}>
+          <strong style={{fontSize:"24px"}}>Nombre y apellidos:</strong>
+          <div className="clearfix"></div>
+          <input type="text" placeholder="Nombre del dueno" style={{width:"18.5%"}} value={ownerFirstName} onChange={(e) => setOwnerFirstName(e.target.value)} />
+          <input type="text" placeholder="Apellidos del dueno" style={{marginLeft:"5%", width:"45%"}} value={ownerLastName} onChange={(e) => setOwnerLastName(e.target.value)} />
+          <div className="clearfix" style={{marginTop:"1%"}}></div>
+          <strong style={{fontSize:"24px"}}>Correo electrónico:</strong>
+          <div className="clearfix"></div>
+          <input type="email" placeholder="Correo Electrónico" style={{width:"70%"}} value={email} onChange={(e) => setEmail(e.target.value)} />
+          <div className="clearfix" style={{marginTop:"1%"}}></div>
+          <strong style={{fontSize:"24px"}}>Teléfono:</strong>
+          <div className="clearfix"></div>
+          <input type="tel" placeholder="Teléfono" style={{width:"70%"}} value={phone} onChange={(e) => setPhone(e.target.value)} />
+          <div className="clearfix" style={{marginTop:"1%"}}></div>
+          <strong style={{fontSize:"24px"}}>Nombre de usuario:</strong>
+          <div className="clearfix"></div>
+          <input type="text" placeholder="Usuario" style={{width:"70%"}} value={usuario} onChange={(e) => setUsuario(e.target.value)} />
+          <div className="clearfix" style={{marginTop:"1%"}}></div>
+          <strong style={{fontSize:"24px"}}>Contraseña:</strong>
+          <div className="clearfix"></div>
+          <input type="password" placeholder="Contrasena" style={{width:"32.5%", margin:"0%"}} value={password} onChange={(e) => setPassword(e.target.value)} />
+          <input type="password" placeholder="Confirmar Contrasena" style={{width:"32.5%", marginLeft:"3%"}} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+        </div>
+        <div className="clearfix"></div>
+        <button onClick={handleRegister} className="login-btn" disabled={loading} style={{marginTop:"5%"}}>
           {loading ? "Registrando..." : "Registrarse"}
         </button>
       </div>
