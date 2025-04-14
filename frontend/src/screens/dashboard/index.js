@@ -107,7 +107,7 @@ function Dashboard() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("userToken");
+    localStorage.clear();
     navigate("/");
   };
 

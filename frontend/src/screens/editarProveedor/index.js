@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import { useNavigate, Link, useParams } from "react-router-dom";
 import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
 const token = localStorage.getItem("token");
 const negocioId = localStorage.getItem("negocioId");
-const id = localStorage.getItem("proveedorId");
 
 const obtenerProveedor = async (id) => {
   try {
-    const response = await fetch(`http://localhost:8080/api/proveedores/${id}`,
-       {
-        method: "GET",
-          headers: { "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-           }});
+    const response = await fetch(`http://localhost:8080/api/proveedores/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
     if (!response.ok) {
       throw new Error("Error al obtener el proveedor");
     }
@@ -29,17 +29,17 @@ const actualizarProveedor = async (id, proveedor) => {
   try {
     const response = await fetch(`http://localhost:8080/api/proveedores/${id}`, {
       method: "PUT",
-        headers: { "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-         },
-        body: JSON.stringify(proveedor),
-      });
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(proveedor),
+    });
 
     if (!response.ok) {
-      const errorData = await response.json();  // Obtener detalles de la respuesta de error
+      const errorData = await response.json(); // Obtener detalles de la respuesta de error
       throw new Error(errorData.message || "Error al actualizar el proveedor");
     }
-
     return await response.json();
   } catch (error) {
     console.error("Error al actualizar el proveedor:", error.message);
@@ -49,21 +49,28 @@ const actualizarProveedor = async (id, proveedor) => {
 
 function EditarProveedor() {
   const navigate = useNavigate();
+  const { id } = useParams(); // Usamos useParams para obtener el ID de la URL
   const [proveedor, setProveedor] = useState({
     name: "",
     direccion: "",
     email: "",
     telefono: "",
-    negocio: {id:negocioId},
+    negocioId: negocioId,
   });
+  const [loading, setLoading] = useState(true); // Estado de carga
 
+  // Este useEffect se ejecutará cada vez que cambie el ID
   useEffect(() => {
     const cargarProveedor = async () => {
+      setLoading(true); // Marcamos como cargando
       const data = await obtenerProveedor(id);
-      if (data) setProveedor(data);
+      if (data) {
+        setProveedor(data); // Actualizamos el estado con los datos del nuevo proveedor
+      }
+      setLoading(false); // Terminamos la carga
     };
     cargarProveedor();
-  }, []);
+  }, [id]); // Dependencia añadida para que recargue los datos cada vez que cambie el ID
 
   const handleChange = (e) => {
     setProveedor({ ...proveedor, [e.target.name]: e.target.value });
@@ -71,9 +78,17 @@ function EditarProveedor() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const actualizado = await actualizarProveedor(id, proveedor);
+    const proveedorActualizado = {
+      ...proveedor,
+      negocioId: negocioId,
+    };
+    const actualizado = await actualizarProveedor(id, proveedorActualizado);
     if (actualizado) navigate(`/verProveedor/${id}`);
   };
+
+  if (loading) {
+    return <div>Cargando...</div>;
+  }
 
   return (
       <div className="content">

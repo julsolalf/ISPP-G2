@@ -1,5 +1,6 @@
 package ispp_g2.gastrostock.productoVenta;
 
+import ispp_g2.gastrostock.categorias.CategoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,10 +12,12 @@ import java.util.stream.StreamSupport;
 public class ProductoVentaService {
 
     private final ProductoVentaRepository productoVentaRepository;
+    private final CategoriaRepository categoriaRepository;
 
     @Autowired
-    public ProductoVentaService(ProductoVentaRepository productoVentaRepository) {
+    public ProductoVentaService(ProductoVentaRepository productoVentaRepository, CategoriaRepository categoriaRepository) {
         this.productoVentaRepository = productoVentaRepository;
+        this.categoriaRepository = categoriaRepository;
     }
 
     @Transactional(readOnly = true)
@@ -32,6 +35,16 @@ public class ProductoVentaService {
     @Transactional(readOnly = true)
     public List<ProductoVenta> getProductosVentaByNombre(String nombre) {
         return productoVentaRepository.findProductoVentaByNombre(nombre);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductoVenta> getProductosVentaByNegocioID(Integer negocioId) {
+        return productoVentaRepository.findProductoVentaByNegocioID(negocioId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductoVenta> getProductosVentaByDuenoID(Integer duenoId) {
+        return productoVentaRepository.findProductoVentaByDuenoID(duenoId);
     }
 
     @Transactional(readOnly = true)
@@ -57,6 +70,24 @@ public class ProductoVentaService {
     @Transactional
     public void delete(Integer id) {
         productoVentaRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public ProductoVenta convertirDTOProductoVenta(ProductoVentaDTO productoVentaDTO) {
+        ProductoVenta productoVenta = new ProductoVenta();
+        productoVenta.setName(productoVentaDTO.getName());
+        productoVenta.setPrecioVenta(productoVentaDTO.getPrecioVenta());
+        productoVenta.setCategoria(categoriaRepository.findById(productoVentaDTO.getCategoriaId()).orElse(null));
+        return productoVenta;
+    }
+
+    @Transactional(readOnly = true)
+    public ProductoVentaDTO convertirProductoVentaDTO(ProductoVenta productoVenta) {
+        ProductoVentaDTO productoVentaDTO = new ProductoVentaDTO();
+        productoVentaDTO.setName(productoVenta.getName());
+        productoVentaDTO.setPrecioVenta(productoVenta.getPrecioVenta());
+        productoVentaDTO.setCategoriaId(productoVenta.getCategoria().getId());
+        return productoVentaDTO;
     }
     
 }

@@ -3,25 +3,38 @@ import { useNavigate, Link } from "react-router-dom";
 import "../../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
-const obtenerProducto = async () => {
-  try {
-    const response = await fetch(`http://localhost:8080/api/productosInventario/${localStorage.getItem("productoId")}`);
-    if (!response.ok) {
-      throw new Error("Error al obtener el producto");
-    }
-    return await response.json();
-  } catch (error) {
-    console.error("Error al obtener el producto:", error);
-    return null;
-  }
-};
-
 function VerProducto() {
   const navigate = useNavigate();
   const [producto, setProducto] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const token = localStorage.getItem("token");
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/"); // Redirigir a la pantalla de inicio de sesión
+  };
+
+  const obtenerProducto = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/productosInventario/${localStorage.getItem("productoId")}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Error al obtener el producto");
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Error al obtener el producto:", error);
+      return null;
+    }
+  };
 
   useEffect(() => {
     const cargarProducto = async () => {
@@ -35,6 +48,9 @@ function VerProducto() {
     try {
       const response = await fetch(`http://localhost:8080/api/productosInventario/${producto.id}`, {
         method: "DELETE",
+        headers: { "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+           },
       });
       if (!response.ok) {
         throw new Error("Error al eliminar el producto");
@@ -79,12 +95,24 @@ function VerProducto() {
             <ul>
               <li><button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button></li>
               <li><button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button></li>
-              <li><button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button></li>
+              <li><button className="user-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button></li>
             </ul>
           </div>
         )}
 
-        <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
+{showLogoutModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>¿Está seguro que desea abandonar la sesión?</h3>
+              <div className="modal-buttons">
+                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
+                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <button onClick={() => navigate(`/verTipoProducto/${localStorage.getItem("categoriaNombre")}`)} className="back-button">⬅ Volver</button>
         <Link to="/inicioDueno">
           <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
         </Link>        
@@ -95,6 +123,8 @@ function VerProducto() {
           <p><strong>Precio Compra:</strong> {producto.precioCompra}</p>
           <p><strong>Cantidad Deseada:</strong> {producto.cantidadDeseada}</p>
           <p><strong>Cantidad Aviso:</strong> {producto.cantidadAviso}</p>
+          <p><strong>Proveedor:</strong> {producto.proveedor.name}</p>
+
           {producto.cantidadDeseada <= producto.cantidadAviso && (
             <p className="producto-alerta">⚠ Stock bajo</p>
           )}

@@ -98,19 +98,19 @@ function Proveedores() {
         </div>
       )}
 
-      {showUserOptions && (
-        <div className="notification-bubble user-options">
-          <div className="notification-header">
-            <strong>Usuario</strong>
-            <button className="close-btn" onClick={() => setShowUserOptions(false)}>X</button>
+        {showUserOptions && (
+          <div className="notification-bubble user-options">
+            <div className="notification-header">
+              <strong>Usuario</strong>
+              <button className="close-btn" onClick={() => setShowUserOptions(false)}>X</button>
+            </div>
+            <ul>
+              <li><button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button></li>
+              <li><button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button></li>
+              <li><button className="user-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button></li>
+            </ul>
           </div>
-          <ul>
-            <li><button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button></li>
-            <li><button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button></li>
-            <li><button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button></li>
-          </ul>
-        </div>
-      )}
+        )}
 
       <button onClick={() => navigate("/inicioDueno")} className="back-button">
         ⬅ Volver
@@ -142,20 +142,22 @@ function Proveedores() {
         </div>
       </div>
 
-      <div className="empleados-grid">
-        {proveedoresOrdenados.length > 0 ? (
-          proveedoresOrdenados.map((proveedor) => (
-            <div key={proveedor.id} className="empleado-card">
-              <h3>{proveedor.name}</h3>
-              <p>{proveedor.direccion}</p>
-              <p>{proveedor.telefono}</p>
-              <button className="ver-btn" onClick={() => navigate(`/verProveedor/${proveedor.id}`)}>Ver</button>
-            </div>
-          ))
-        ) : (
-          <p>No se encontraron proveedores</p>
-        )}
-      </div>
+        <div className="empleados-grid">
+          {proveedoresOrdenados.length > 0 ? (
+            proveedoresOrdenados.map((proveedor) => (
+              <div key={proveedor.id} className="empleado-card">
+                <h3>{proveedor.name}</h3>
+                <p>{proveedor.direccion}</p>
+                <p>{proveedor.telefono}</p>
+                <button className="ver-btn" onClick={() => {
+                  localStorage.setItem("proveedorId", proveedor.id);
+                  navigate(`/verProveedor/${proveedor.id}`)}}>Ver</button>
+              </div>
+            ))
+          ) : (
+            <p>No se encontraron proveedores</p>
+          )}
+        </div>
 
       {showLogoutModal && (
         <div className="modal-overlay">

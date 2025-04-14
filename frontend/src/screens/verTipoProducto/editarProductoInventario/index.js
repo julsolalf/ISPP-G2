@@ -1,61 +1,99 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import "../../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
-const token = localStorage.getItem("token");
-const productoId = localStorage.getItem("productoId");
-
-const obtenerProducto = async (id) => {
-  try {
-    const response = await fetch(`http://localhost:8080/api/productosInventario/${productoId}`, {
-      method: "GET",
-        headers: { "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-         },
-    });
-    if (!response.ok) {
-      throw new Error("Error al obtener el producto");
-    }
-    return await response.json();
-  } catch (error) {
-    console.error("Error al obtener el producto:", error);
-    return null;
-  }
-};
-
-const actualizarProducto = async (producto) => {
-  try {
-    const response = await fetch(`http://localhost:8080/api/productosInventario/${productoId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify(producto),
-    });
-    if (!response.ok) {
-      throw new Error("Error al actualizar el producto");
-    }
-    return await response.json();
-  } catch (error) {
-    console.error("Error al actualizar el producto:", error);
-    return null;
-  }
-};
-
 function EditarProducto() {
-  const { id } = useParams();
   const navigate = useNavigate();
-  const [producto, setProducto] = useState({ name: "", precioCompra: "", cantidadDeseada: "", cantidadAviso: "" });
+  const [producto, setProducto] = useState({
+    name: "",
+    precioCompra: "",
+    cantidadDeseada: "",
+    cantidadAviso: "",
+    categoriaId: "",
+    proveedorId: "",
+  });
+  const [proveedores, setProveedores] = useState([]);
+  const [categoriaNombre, setCategoriaNombre] = useState("");
+
+  const storedNegocioId = localStorage.getItem("negocioId");
+  const token = localStorage.getItem("token");
+  const productoId = localStorage.getItem("productoId");
+
+  const obtenerProducto = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/productosInventario/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Error al obtener el producto");
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Error al obtener el producto:", error);
+      return null;
+    }
+  };
+
+  const actualizarProducto = async (producto) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/productosInventario/${productoId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(producto),
+      });
+      if (!response.ok) {
+        throw new Error("Error al actualizar el producto");
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Error al actualizar el producto:", error);
+      return null;
+    }
+  };
 
   useEffect(() => {
-    const cargarProducto = async () => {
-      const data = await obtenerProducto();
-      if (data) setProducto(data);
-    };
-    cargarProducto();
-  }, [id]);
+    // Obtener proveedores
+    if (storedNegocioId) {
+      fetch(`http://localhost:8080/api/proveedores/negocio/${storedNegocioId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => setProveedores(data))
+        .catch((error) => {
+          console.error("Error al obtener los proveedores:", error);
+          alert("No se pudieron cargar los proveedores.");
+        });
+    }
+
+    // Obtener producto
+    if (productoId) {
+      obtenerProducto(productoId).then((data) => {
+        if (data) {
+          setProducto({
+            name: data.name,
+            precioCompra: data.precioCompra,
+            cantidadDeseada: data.cantidadDeseada,
+            cantidadAviso: data.cantidadAviso,
+            categoriaId: data.categoria.id,
+            proveedorId: data.proveedor.id,
+          });
+          setCategoriaNombre(data.categoria.name);
+        }
+      });
+    }
+  }, []);
 
   const handleChange = (e) => {
     setProducto({ ...producto, [e.target.name]: e.target.value });
@@ -63,8 +101,15 @@ function EditarProducto() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!producto.name || !producto.precioCompra || !producto.cantidadDeseada || !producto.cantidadAviso || !producto.proveedorId) {
+      alert("Todos los campos son obligatorios");
+      return;
+    }
+
     const actualizado = await actualizarProducto(producto);
-    if (actualizado) navigate(`/categoria/${producto.categoria?.name}/producto/${id}`);
+    if (actualizado) {
+      navigate(`/categoria/${categoriaNombre}/producto/${productoId}`);
+    }
   };
 
   return (
@@ -73,18 +118,71 @@ function EditarProducto() {
         <Bell size={30} className="icon" />
         <User size={30} className="icon" />
       </div>
-      <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
+      <button onClick={() => navigate(`/categoria/${categoriaNombre}/producto/${productoId}`)} className="back-button">
+        ⬅ Volver
+      </button>
       <Link to="/inicioDueno">
         <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
-      </Link>        
+      </Link>
       <h1 className="title">GastroStock</h1>
       <h2>Editar Producto</h2>
-      <form className="form-container" onSubmit={handleSubmit}>
-        <input type="text" name="name" value={producto.name} onChange={handleChange} placeholder="Nombre" required />
-        <input type="number" name="precioCompra" value={producto.precioCompra} onChange={handleChange} placeholder="Precio de Compra" required />
-        <input type="number" name="cantidadDeseada" value={producto.cantidadDeseada} onChange={handleChange} placeholder="Cantidad Deseada" required />
-        <input type="number" name="cantidadAviso" value={producto.cantidadAviso} onChange={handleChange} placeholder="Cantidad Aviso" required />
-        <button type="submit" className="button">💾 Guardar</button>
+
+      <form onSubmit={handleSubmit} className="form-container">
+        <input
+          type="text"
+          name="name"
+          value={producto.name}
+          onChange={handleChange}
+          placeholder="Nombre del producto"
+          required
+        />
+        <input
+          type="number"
+          name="precioCompra"
+          value={producto.precioCompra}
+          onChange={handleChange}
+          placeholder="Precio de compra"
+          required
+        />
+        <input
+          type="number"
+          name="cantidadDeseada"
+          value={producto.cantidadDeseada}
+          onChange={handleChange}
+          placeholder="Cantidad deseada"
+          required
+        />
+        <input
+          type="number"
+          name="cantidadAviso"
+          value={producto.cantidadAviso}
+          onChange={handleChange}
+          placeholder="Cantidad de aviso"
+          required
+        />
+        {categoriaNombre && (
+          <div>
+            <strong>Categoría: </strong>
+            <span>{categoriaNombre}</span>
+          </div>
+        )}
+
+        <label>Selecciona un proveedor:</label>
+        <select
+          name="proveedorId"
+          value={producto.proveedorId}
+          onChange={handleChange}
+          required
+        >
+          <option value="">-- Selecciona un proveedor --</option>
+          {proveedores.map((proveedor) => (
+            <option key={proveedor.id} value={proveedor.id}>
+              {proveedor.name}
+            </option>
+          ))}
+        </select>
+
+        <input type="submit" value="Guardar Cambios" className="button" />
       </form>
     </div>
   );

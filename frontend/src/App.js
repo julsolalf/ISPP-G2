@@ -32,6 +32,8 @@ import PantallaEditarProveedor from "./screens/editarProveedor/index.js";
 import PantallaEditarVenta from "./screens/editarVenta/index.js";
 import PantallaVentaEmpleado from "./screens/ventasEmpleado/index.js";
 import PantallaVerVentaEmpleado from "./screens/ventasEmpleado/ventaEspecifica/index.js";
+import StripePricing from "./screens/stripe/stripePricing.js";
+import PantallaSubscriptionSuccess from "./screens/stripe/pantallaSuccess.js";
 import Home from "./screens/home/index.js";
 import "./App.css";
 
@@ -45,7 +47,9 @@ function App() {
       <Route path="/masInformacion" element={<PantallaMasInfo />} />
       <Route path="/inicioDueno" element={<PantallaInicioDueno />} />
       <Route path="/inicioEmpleado" element={<PantallaInicioEmpleado />} />
+      <Route path="/stripe-pricing" element={<StripePricing />} />
       <Route path="/planes" element={<PantallaPlanes />} />
+      <Route path="/success" element={<PantallaSubscriptionSuccess />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/inventario" element={<PantallaInventario />} />
       <Route path="/ventas" element={<VerVentas/>} />

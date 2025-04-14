@@ -4,9 +4,11 @@ import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
 const token = localStorage.getItem("token");
-const obtenerProveedor = async (id) => {
+const idProveedor = localStorage.getItem("proveedorId");
+
+const obtenerProveedor = async () => {
   try {
-    const response = await fetch(`http://localhost:8080/api/proveedores/${id}`, {
+    const response = await fetch(`http://localhost:8080/api/proveedores/${idProveedor}`, {
       method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -27,13 +29,20 @@ function VerProveedor() {
   const { id } = useParams(); 
   const navigate = useNavigate();
   const [proveedor, setProveedor] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false); 
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/"); // Redirigir a la pantalla de inicio de sesión
+  };
+
 
   useEffect(() => {
     const cargarProveedor = async () => {
-      const data = await obtenerProveedor(id);
+      const data = await obtenerProveedor();
       setProveedor(data);
     };
     cargarProveedor();
@@ -41,7 +50,7 @@ function VerProveedor() {
 
   const eliminarProveedor = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/proveedores/${id}`, {
+      const response = await fetch(`http://localhost:8080/api/proveedores/${idProveedor}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -91,7 +100,7 @@ function VerProveedor() {
             <ul>
               <li><button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button></li>
               <li><button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button></li>
-              <li><button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button></li>
+              <li><button className="user-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button></li>
             </ul>
           </div>
         )}
@@ -121,6 +130,18 @@ function VerProveedor() {
               <div className="modal-buttons">
                 <button className="confirm-btn" onClick={eliminarProveedor}>Sí</button>
                 <button className="cancel-btn" onClick={() => setShowDeleteModal(false)}>No</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+{showLogoutModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>¿Está seguro que desea abandonar la sesión?</h3>
+              <div className="modal-buttons">
+                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
+                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
               </div>
             </div>
           </div>

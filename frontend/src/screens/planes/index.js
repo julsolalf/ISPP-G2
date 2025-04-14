@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import "../../css/planes/styles.css";
 import { Bell, User } from "lucide-react";
@@ -15,8 +15,85 @@ function PantallaPlanes() {
   const toggleUserOptions = () => setShowUserOptions(!showUserOptions);
 
   const handleLogout = () => {
-    localStorage.removeItem("userToken"); // Eliminamos el token del usuario
+    localStorage.clear();
     navigate("/"); // Redirigir a la pantalla de inicio de sesión
+  };
+
+  useEffect(() => {
+    async function checkSubscription() {
+      const token = localStorage.getItem("token");
+      try {
+        const response = await fetch("http://localhost:8080/api/subscriptions/status", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          // If the planType is PREMIUM and currently ACTIVE, update states accordingly
+          if (data.planType === "PREMIUM" && data.status === "ACTIVE") {
+            setIsPremiumPlanActive(true);
+            setIsFreePlanActive(false);
+          } else {
+            setIsPremiumPlanActive(false);
+            setIsFreePlanActive(true);
+          }
+        } else {
+          console.error("Error fetching subscription status: ", response.status);
+        }
+      } catch (error) {
+        console.error("Error in fetching subscription status: ", error);
+      }
+    }
+    checkSubscription();
+  }, []);
+
+  const handleUpgrade = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:8080/api/subscriptions/create-checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ planType: "PREMIUM" }),
+      });
+      if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`Error en upgrade: ${response.status} - ${errText}`);
+      }
+      const data = await response.json();
+      if (data.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
+      } else {
+        alert("No se pudo obtener la URL de pago.");
+      }
+    } catch (error) {
+      console.error("Error en upgrade:", error);
+      alert(error.message);
+    }
+  };
+
+  const handleCancelSubscription = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:8080/api/subscriptions/cancel", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        alert("Suscripción cancelada correctamente");
+        navigate("/dashboard");
+      } else {
+        const errText = await response.text();
+        throw new Error(`Error cancelando la suscripción: ${response.status} - ${errText}`);
+      }
+    } catch (error) {
+      console.error("Error al cancelar la suscripción:", error.message);
+      alert(error.message);
+    }
   };
 
   return (

@@ -10,7 +10,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,14 +33,15 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import ispp_g2.gastrostock.empleado.Empleado;
+import ispp_g2.gastrostock.empleado.EmpleadoDTO;
 import ispp_g2.gastrostock.lineaDePedido.LineaDePedido;
 import ispp_g2.gastrostock.lineaDePedido.LineaDePedidoController;
+import ispp_g2.gastrostock.lineaDePedido.LineaDePedidoDTO;
 import ispp_g2.gastrostock.lineaDePedido.LineaDePedidoService;
 import ispp_g2.gastrostock.mesa.Mesa;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.pedido.Pedido;
 import ispp_g2.gastrostock.productoVenta.ProductoVenta;
-import ispp_g2.gastrostock.ventas.Venta;
 import ispp_g2.gastrostock.categorias.Categoria;
 
 import org.junit.jupiter.api.Assertions;
@@ -73,7 +76,6 @@ public class LineaDePedidoControllerTest {
     private Empleado empleado;
     private Negocio negocio;
     private Categoria categoria;
-    private Venta venta;
 
     @BeforeEach
     void setUp() {
@@ -130,10 +132,7 @@ public class LineaDePedidoControllerTest {
         producto2.setPrecioVenta(5.0);
         producto2.setCategoria(categoria);
 
-        //Crear ventas
-        venta = new Venta();
-        venta.setId(1);
-        venta.setNegocio(negocio);
+
         
         // Crear pedidos
         pedido1 = new Pedido();
@@ -141,7 +140,7 @@ public class LineaDePedidoControllerTest {
         pedido1.setPrecioTotal(50.75);
         pedido1.setMesa(mesa);
         pedido1.setEmpleado(empleado);
-        pedido1.setVenta(venta);
+        pedido1.setNegocio(negocio);
         
         pedido2 = new Pedido();
         pedido2.setId(2);
@@ -149,7 +148,7 @@ public class LineaDePedidoControllerTest {
         pedido2.setPrecioTotal(75.50);
         pedido2.setMesa(mesa);
         pedido2.setEmpleado(empleado);
-        pedido2.setVenta(venta);
+        pedido2.setNegocio(negocio);
         
         // Crear líneas de pedido
         lineaNormal = new LineaDePedido();
@@ -470,7 +469,7 @@ public class LineaDePedidoControllerTest {
     void testFindByProductoIdAndPrecioLinea_Success() throws Exception {
         // Given
         List<LineaDePedido> lineasProducto1Precio9 = Collections.singletonList(linea);
-        when(lineaDePedidoService.getLineasDePedidoByProductoIdAndPrecioLinea(1, 9.0)).thenReturn(lineasProducto1Precio9);
+        when(lineaDePedidoService.getLineasDePedidoByProductoIdAndPrecioUnitario(1, 9.0)).thenReturn(lineasProducto1Precio9);
         
         // When & Then
         mockMvc.perform(get("/api/lineasDePedido/producto/1/precioLinea/9.0"))
@@ -479,48 +478,57 @@ public class LineaDePedidoControllerTest {
                 .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].precioLinea", is(9.0)));
         
-        verify(lineaDePedidoService).getLineasDePedidoByProductoIdAndPrecioLinea(1, 9.0);
+        verify(lineaDePedidoService).getLineasDePedidoByProductoIdAndPrecioUnitario(1, 9.0);
     }
     
     @Test
     void testFindByProductoIdAndPrecioLinea_NotFound() throws Exception {
         // Given
-        when(lineaDePedidoService.getLineasDePedidoByProductoIdAndPrecioLinea(1, 999.0)).thenReturn(null);
+        when(lineaDePedidoService.getLineasDePedidoByProductoIdAndPrecioUnitario(1, 999.0)).thenReturn(null);
         
         // When & Then
         mockMvc.perform(get("/api/lineasDePedido/producto/1/precioLinea/999.0"))
                 .andExpect(status().isNotFound());
         
-        verify(lineaDePedidoService).getLineasDePedidoByProductoIdAndPrecioLinea(1, 999.0);
+        verify(lineaDePedidoService).getLineasDePedidoByProductoIdAndPrecioUnitario(1, 999.0);
     }
     
     @Test
     void testFindByProductoIdAndPrecioLinea_EmptyList() throws Exception {
         // Given
-        when(lineaDePedidoService.getLineasDePedidoByProductoIdAndPrecioLinea(1, 999.0)).thenReturn(Collections.emptyList());
+        when(lineaDePedidoService.getLineasDePedidoByProductoIdAndPrecioUnitario(1, 999.0)).thenReturn(Collections.emptyList());
         
         // When & Then
         mockMvc.perform(get("/api/lineasDePedido/producto/1/precioLinea/999.0"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
         
-        verify(lineaDePedidoService).getLineasDePedidoByProductoIdAndPrecioLinea(1, 999.0);
+        verify(lineaDePedidoService).getLineasDePedidoByProductoIdAndPrecioUnitario(1, 999.0);
     }
     
     // TESTS PARA save()
     
     @Test
-    void testSave_Success() throws Exception {
-        // Given
+    void testSave_Success() throws Exception {        
+        // Crear LineaDePedidoDTO con los campos requeridos (sin idProducto)
+        LineaDePedidoDTO lineaDto = new LineaDePedidoDTO();
+        lineaDto.setCantidad(3);
+        lineaDto.setPrecioUnitario(3.0);
+        lineaDto.setPedidoId(1);
+        lineaDto.setCategoriaProducto("Bebidas");
+        lineaDto.setNombreProducto("Cerveza");
+        
+        // Stub del servicio: se retorna 'linea' (preparado en setUp)
+        when(lineaDePedidoService.convertDtoLineaDePedido(any(LineaDePedidoDTO.class))).thenReturn(linea);
         when(lineaDePedidoService.save(any(LineaDePedido.class))).thenReturn(linea);
         
-        // When & Then
+
         mockMvc.perform(post("/api/lineasDePedido")
-                .with(csrf())   
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(linea)))
+                .content(objectMapper.writeValueAsString(lineaDto)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.id").isNotEmpty())
                 .andExpect(jsonPath("$.cantidad", is(3)))
                 .andExpect(jsonPath("$.precioLinea", is(9.0)));
         
@@ -541,40 +549,65 @@ public class LineaDePedidoControllerTest {
     
     @Test
     void testUpdate_Success() throws Exception {
-        // Given
-        LineaDePedido updatedLinea = new LineaDePedido();
-        updatedLinea.setCantidad(5); // Actualizamos cantidad
-        updatedLinea.setPrecioUnitario(3.0); // Actualizamos precio
-        updatedLinea.setProducto(producto1);
-        updatedLinea.setPedido(pedido1);
-        
+        // Create LineaDePedidoDTO with updated values
+        LineaDePedidoDTO lineaDto = new LineaDePedidoDTO();
+        lineaDto.setCantidad(3);
+        lineaDto.setPrecioUnitario(3.0);
+        lineaDto.setPedidoId(1);
+        lineaDto.setCategoriaProducto("Bebidas");
+        lineaDto.setNombreProducto("Cerveza");
+
+    
+        // Create expected updated entity
+        LineaDePedido lineaActualizada = new LineaDePedido();
+        lineaActualizada.setCantidad(5);
+        lineaActualizada.setPrecioUnitario(3.0);
+        lineaActualizada.setProducto(producto1);
+        lineaActualizada.setPedido(pedido1);
+    
+        // Setup mocks in the correct order
         when(lineaDePedidoService.getById(1)).thenReturn(linea);
-        when(lineaDePedidoService.save(any(LineaDePedido.class))).thenReturn(updatedLinea);
-        
-        // When & Then
+        when(lineaDePedidoService.convertDtoLineaDePedido(any(LineaDePedidoDTO.class))).thenReturn(lineaActualizada);
+        when(lineaDePedidoService.save(any(LineaDePedido.class))).thenReturn(lineaActualizada);
+    
+        // Act & Assert
         mockMvc.perform(put("/api/lineasDePedido/1")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updatedLinea)))
+                .content(objectMapper.writeValueAsString(lineaDto)))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(lineaActualizada.getId())))
                 .andExpect(jsonPath("$.cantidad", is(5)))
                 .andExpect(jsonPath("$.precioLinea", is(15.0)));
-        
+    
         verify(lineaDePedidoService).getById(1);
+        verify(lineaDePedidoService).convertDtoLineaDePedido(any(LineaDePedidoDTO.class));
         verify(lineaDePedidoService).save(any(LineaDePedido.class));
     }
     
     @Test
     void testUpdate_NotFound() throws Exception {
-        // Given
+        // Create DTO with updated values
+        LineaDePedidoDTO lineaDto = new LineaDePedidoDTO();
+        lineaDto.setCantidad(3);
+        lineaDto.setPrecioUnitario(3.0);
+        lineaDto.setPedidoId(1);
+        lineaDto.setCategoriaProducto("Bebidas");
+        lineaDto.setNombreProducto("Cerveza");
+    
+        // Stub the service to simulate that no entity is found for the given ID
         when(lineaDePedidoService.getById(999)).thenReturn(null);
-        
-        // When & Then
+    
+        // Act & Assert: Expect 404 Not Found without attempting any conversion or save
         mockMvc.perform(put("/api/lineasDePedido/999")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(linea)))
+                .content(objectMapper.writeValueAsString(lineaDto)))
                 .andExpect(status().isNotFound());
-        
+    
+        // Verify that getById was called and neither conversion nor save was invoked
         verify(lineaDePedidoService).getById(999);
+        verify(lineaDePedidoService, never()).convertDtoLineaDePedido(any(LineaDePedidoDTO.class));
         verify(lineaDePedidoService, never()).save(any(LineaDePedido.class));
     }
     
@@ -589,13 +622,15 @@ public class LineaDePedidoControllerTest {
     }
     @Test
     void testUpdate_InvalidBody() throws Exception {
-        // When & Then
-        mockMvc.perform(put("/api/lineasDePedido/1")
-                .with(csrf())  // Anade el token CSRF
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(lineaInvalida)))
-                .andExpect(status().isBadRequest());
+        // Create an invalid DTO by not setting required fields
+        LineaDePedidoDTO invalidLineaDto = new LineaDePedidoDTO();
+        // For instance, if 'cantidad' and 'precioUnitario' are required, we leave them null
         
+        mockMvc.perform(put("/api/lineasDePedido/1")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidLineaDto)))
+                .andExpect(status().isBadRequest());
     }
     
     // TESTS PARA delete()

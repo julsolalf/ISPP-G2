@@ -3,6 +3,8 @@ package ispp_g2.gastrostock.productoInventario;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
+import ispp_g2.gastrostock.categorias.CategoriaRepository;
+import ispp_g2.gastrostock.proveedores.ProveedorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,10 +15,14 @@ import jakarta.validation.Valid;
 public class ProductoInventarioService {
         
     private final ProductoInventarioRepository productoInventarioRepository;
+    private final CategoriaRepository categoriaRepository;
+    private final ProveedorRepository proveedorRepository;
 
     @Autowired
-    public ProductoInventarioService(ProductoInventarioRepository ProductoInventarioRepository) {
+    public ProductoInventarioService(ProductoInventarioRepository ProductoInventarioRepository, CategoriaRepository categoriaRepository, ProveedorRepository proveedorRepository) {
         this.productoInventarioRepository = ProductoInventarioRepository;
+        this.categoriaRepository = categoriaRepository;
+        this.proveedorRepository = proveedorRepository;
     }
 
     @Transactional(readOnly = true)
@@ -56,6 +62,21 @@ public class ProductoInventarioService {
         return productoInventarioRepository.findByCantidadAviso(cantidadAviso);
     }
 
+    @Transactional(readOnly = true)
+    public List<ProductoInventario> getProductoInventarioByProveedorId(Integer proveedorId) {
+        return productoInventarioRepository.findByProveedorId(proveedorId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductoInventario> getProductoInventarioByNegocioId(Integer negocioId) {
+        return productoInventarioRepository.findByNegocioId(negocioId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductoInventario> getProductoInventarioByDuenoId(Integer duenoId) {
+        return productoInventarioRepository.findByDuenoId(duenoId);
+    }
+
     @Transactional
     public ProductoInventario save(@Valid ProductoInventario newProductoInventario){
         return productoInventarioRepository.save(newProductoInventario);
@@ -64,5 +85,29 @@ public class ProductoInventarioService {
     @Transactional
     public void delete(Integer id){
         productoInventarioRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public ProductoInventarioDTO convertirProductoInventarioDTO(ProductoInventario productoInventario) {
+        ProductoInventarioDTO productoInventarioDTO = new ProductoInventarioDTO();
+        productoInventarioDTO.setName(productoInventario.getName());
+        productoInventarioDTO.setPrecioCompra(productoInventario.getPrecioCompra());
+        productoInventarioDTO.setCantidadDeseada(productoInventario.getCantidadDeseada());
+        productoInventarioDTO.setCantidadAviso(productoInventario.getCantidadAviso());
+        productoInventarioDTO.setCategoriaId(productoInventario.getCategoria().getId());
+        productoInventarioDTO.setProveedorId(productoInventario.getProveedor().getId());
+        return productoInventarioDTO;
+    }
+
+    @Transactional(readOnly = true)
+    public ProductoInventario convertirDTOProductoInventario(ProductoInventarioDTO productoInventarioDTO) {
+        ProductoInventario productoInventario = new ProductoInventario();
+        productoInventario.setName(productoInventarioDTO.getName());
+        productoInventario.setPrecioCompra(productoInventarioDTO.getPrecioCompra());
+        productoInventario.setCantidadDeseada(productoInventarioDTO.getCantidadDeseada());
+        productoInventario.setCantidadAviso(productoInventarioDTO.getCantidadAviso());
+        productoInventario.setCategoria(categoriaRepository.findById(productoInventarioDTO.getCategoriaId()).orElse(null));
+        productoInventario.setProveedor(proveedorRepository.findById(productoInventarioDTO.getProveedorId()).orElse(null));
+        return productoInventario;
     }
 }

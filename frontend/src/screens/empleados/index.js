@@ -2,14 +2,20 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Bell, User } from "lucide-react";
 import "../../css/listados/styles.css";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 function Empleados() {
   const navigate = useNavigate();
-  const [empleados, setEmpleados] = useState([]);  // Cambia el estado para manejar empleados vacíos
+  const [empleados, setEmpleados] = useState([]);
+  const [filtro, setFiltro] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
-  const token = localStorage.getItem("userToken"); // Obtener el token del usuario desde localStorage
-  const negocioId = localStorage.getItem("negocioId"); // Obtener el ID del negocio desde localStorage
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [ordenAscendente, setOrdenAscendente] = useState(true);
+  const [showFilterOptions, setShowFilterOptions] = useState(false); // Estado para desplegar filtro
+  const token = localStorage.getItem("token");
+  const negocioId = localStorage.getItem("negocioId");
 
   const loadEmpleados = async () => {
     try {
@@ -20,32 +26,66 @@ function Empleados() {
           Authorization: `Bearer ${token}`,
         },
       });
-  
+
       if (!response.ok) {
         throw new Error("Error al cargar los empleados");
       }
-  
+
       const data = await response.json();
-      setEmpleados(data);  // Supongo que 'setEmpleados' es una función para actualizar el estado
+      setEmpleados(data); // Asignar empleados al estado
     } catch (error) {
       console.error("Error al cargar los empleados:", error);
     }
   };
-  
 
   useEffect(() => {
-    loadEmpleados();  
-  }, []);  
+    loadEmpleados();
+  }, []);
 
   const toggleNotifications = () => setShowNotifications(!showNotifications);
   const toggleUserOptions = () => setShowUserOptions(!showUserOptions);
 
-  const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
-
   const handleLogout = () => {
-    localStorage.removeItem("userToken"); // Eliminamos el token del usuario
-    navigate("/inicioSesion"); // Redirigir a la pantalla de inicio de sesión
+    localStorage.clear();
+    navigate("/inicioSesion");
   };
+
+  const exportarPDF = () => {
+    const doc = new jsPDF();
+    doc.text("Lista de Empleados", 14, 10);
+    autoTable(doc, {
+      startY: 20,
+      head: [["Nombre", "Apellidos", "Rol", "Descripción", "Teléfono", "Email", "Usuario"]],
+      body: empleadosOrdenados.map((emp) => [
+        emp.firstName,
+        emp.lastName,
+        emp.user?.authority?.authority || "",
+        emp.descripcion,
+        emp.numTelefono,
+        emp.email,
+        emp.user?.username,
+      ]),
+    });
+    doc.save("empleados.pdf");
+  };
+
+
+  const empleadosFiltrados = empleados.filter((empleado) =>
+    empleado.firstName.toLowerCase().includes(filtro.toLowerCase())
+  );
+
+  const empleadosOrdenados = [...empleadosFiltrados].sort((a, b) => {
+    const nombreA = a.firstName.toLowerCase();
+    const nombreB = b.firstName.toLowerCase();
+
+    if (nombreA < nombreB) {
+      return ordenAscendente ? -1 : 1;
+    }
+    if (nombreA > nombreB) {
+      return ordenAscendente ? 1 : -1;
+    }
+    return 0;
+  });
 
   return (
     <div className="content">
@@ -89,40 +129,65 @@ function Empleados() {
       <h1 className="title">GastroStock</h1>
       <h2>Empleados</h2>
 
-      <div className="button-container3">
-        <button className="button" onClick={() => navigate("/anadirEmpleado")}>➕ Anadir</button>
-        <button className="button">📥 Exportar</button>
-        <button className="button">🔍 Filtrar</button>
-      </div>
+        <div className="button-container3">
+          <button className="button" onClick={() => navigate("/anadirEmpleado")}>➕ Añadir</button>
+          <button className="button" onClick={exportarPDF}>📥 Exportar</button>
 
-      <div className="empleados-grid">
-        {empleados.length > 0 ? (
-          empleados.map((empleado, index) => (
-            <div key={index} className="empleado-card">
-              <h3>{empleado.firstName}</h3>
-              <p>{empleado.user.authority.authority}</p>
-              <p>{empleado.numTelefono}</p>
-              <button className="ver-btn" onClick={() => {
-                localStorage.setItem("empleadoId", empleado.id); // Guardar el ID del empleado en localStorage
-                navigate(`/verEmpleado/${empleado.id}`)}}>Ver</button>
-            </div>
-          ))
-        ) : (
-          <p>No hay empleados disponibles</p> 
-        )}
-      </div>
-      {/* Modal de Confirmación para Logout */}
-      {showLogoutModal && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h3>¿Está seguro que desea abandonar la sesión?</h3>
-            <div className="modal-buttons">
-              <button className="confirm-btn" onClick={handleLogout}>Sí</button>
-              <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
-            </div>
+          <div className="filter-container">
+            <button 
+              className="filter-btn" 
+              onClick={() => setShowFilterOptions(!showFilterOptions)} // Alternar visibilidad de opciones
+            >
+              🔍 Filtrar
+            </button>
+
+            {showFilterOptions && (
+              <div className="filter-options">
+                <input
+                  type="text"
+                  placeholder="Filtrar por nombre"
+                  value={filtro}
+                  onChange={(e) => setFiltro(e.target.value)} // Cambiar filtro
+                  className="filter-input"
+                />
+                <div className="sort-options">
+                  <button onClick={() => setOrdenAscendente(true)} className="sort-btn">🔼 Ascendente</button>
+                  <button onClick={() => setOrdenAscendente(false)} className="sort-btn">🔽 Descendente</button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
-      )}
+
+        <div className="empleados-grid">
+          {empleadosOrdenados.length > 0 ? (
+            empleadosOrdenados.map((empleado) => (
+              <div key={empleado.id} className="empleado-card">
+                <h3>{empleado.firstName}</h3>
+                <p>{empleado.user.authority.authority}</p>
+                <p>{empleado.numTelefono}</p>
+                <button className="ver-btn" onClick={() => {
+                  localStorage.setItem("empleadoId", empleado.id);
+                  navigate(`/verEmpleado/${empleado.id}`);
+                }}>Ver</button>
+              </div>
+            ))
+          ) : (
+            <p>No hay empleados disponibles</p>
+          )}
+        </div>
+
+        {showLogoutModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>¿Está seguro que desea abandonar la sesión?</h3>
+              <div className="modal-buttons">
+                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
+                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
+              </div>
+            </div>
+          </div>
+        )}
     </div>
   );
 }

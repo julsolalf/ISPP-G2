@@ -9,15 +9,14 @@ function Empleados() {
   const [negocios, setNegocios] = useState([]);  
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
-  const token = localStorage.getItem("token");
-  const duenoId = localStorage.getItem("duenoId");
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
 
   const loadNegocios = async () => {
+    const token = localStorage.getItem("token");
+    const duenoId = localStorage.getItem("duenoId");
     try {
-  
       if (duenoId) {
-        const response = await fetch(`http://localhost:8080/api/negocios/dueno/${duenoId}`, {
+        const response = await fetch(`http://localhost:8080/api/negocios`, {
           method: "GET", 
           headers: {
             "Content-Type": "application/json",
@@ -53,7 +52,7 @@ function Empleados() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("userToken"); // Eliminamos el token del usuario
+    localStorage.clear();
     navigate("/"); // Redirigir a la pantalla de inicio de sesión
   };
 

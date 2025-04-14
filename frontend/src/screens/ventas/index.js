@@ -11,7 +11,7 @@ const negocioId = localStorage.getItem("negocioId");
 // Función para obtener los pedidos desde la API
 const obtenerPedidos = async () => {
   try {
-    const response = await fetch(`http://localhost:8080/api/pedidos/negocio/${negocioId}`,{
+    const response = await fetch(`http://localhost:8080/api/pedidos/venta/${negocioId}`,{
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -34,8 +34,14 @@ function VerPedidos() {
   const [pedidos, setPedidos] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false); 
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("");  
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/"); // Redirigir a la pantalla de inicio de sesión
+  };
 
   useEffect(() => {
     const cargarDatos = async () => {
@@ -109,25 +115,37 @@ function VerPedidos() {
         </div>
       )}
 
-      {showUserOptions && (
-        <div className="notification-bubble user-options">
-          <div className="notification-header">
-            <strong>Usuario</strong>
-            <button className="close-btn" onClick={() => setShowUserOptions(false)}>X</button>
+{showLogoutModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>¿Está seguro que desea abandonar la sesión?</h3>
+              <div className="modal-buttons">
+                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
+                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
+              </div>
+            </div>
           </div>
-          <ul>
-            <li>
-              <button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button>
-            </li>
-            <li>
-              <button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button>
-            </li>
-            <li>
-              <button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button>
-            </li>
-          </ul>
-        </div>
-      )}
+        )}
+
+        {showUserOptions && (
+          <div className="notification-bubble user-options">
+            <div className="notification-header">
+              <strong>Usuario</strong>
+              <button className="close-btn" onClick={() => setShowUserOptions(false)}>X</button>
+            </div>
+            <ul>
+              <li>
+                <button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button>
+              </li>
+              <li>
+                <button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button>
+              </li>
+              <li>
+                <button className="user-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
+              </li>
+            </ul>
+          </div>
+        )}
 
       <button onClick={() => navigate("/inicioDueno")} className="back-button">⬅ Volver</button>
       <Link to="/inicioDueno">

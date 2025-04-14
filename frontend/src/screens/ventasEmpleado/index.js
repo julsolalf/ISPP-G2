@@ -34,6 +34,12 @@ function VerPedidos() {
   const [showUserOptions, setShowUserOptions] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("");  
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/"); // Redirigir a la pantalla de inicio de sesión
+  };
 
   useEffect(() => {
     const cargarDatos = async () => {
@@ -87,25 +93,37 @@ function VerPedidos() {
         </div>
       )}
 
-      {showUserOptions && (
-        <div className="notification-bubble user-options">
-          <div className="notification-header">
-            <strong>Usuario</strong>
-            <button className="close-btn" onClick={() => setShowUserOptions(false)}>X</button>
+{showLogoutModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>¿Está seguro que desea abandonar la sesión?</h3>
+              <div className="modal-buttons">
+                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
+                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
+              </div>
+            </div>
           </div>
-          <ul>
-            <li>
-              <button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button>
-            </li>
-            <li>
-              <button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button>
-            </li>
-            <li>
-              <button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button>
-            </li>
-          </ul>
-        </div>
-      )}
+        )}
+
+        {showUserOptions && (
+          <div className="notification-bubble user-options">
+            <div className="notification-header">
+              <strong>Usuario</strong>
+              <button className="close-btn" onClick={() => setShowUserOptions(false)}>X</button>
+            </div>
+            <ul>
+              <li>
+                <button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button>
+              </li>
+              <li>
+                <button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button>
+              </li>
+              <li>
+                <button className="user-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
+              </li>
+            </ul>
+          </div>
+        )}
 
       <button onClick={() => navigate("/inicioEmpleado")} className="back-button">⬅ Volver</button>
       <Link to="/inicioEmpleado">

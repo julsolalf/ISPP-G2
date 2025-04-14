@@ -11,22 +11,30 @@ function PantallaAñadirProducto() {
   const [cantidadAviso, setCantidadAviso] = useState("");
   const [categoriaNombre, setCategoriaNombre] = useState("");
   const [categoriaId, setCategoriaId] = useState("");
+  const [proveedorId, setProveedorId] = useState("");
+  const [proveedores, setProveedores] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const token = localStorage.getItem("token");
   const storedNegocioId = localStorage.getItem("negocioId");
 
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/");
+  };
+
   useEffect(() => {
     const storedCategoriaNombre = localStorage.getItem("categoriaNombre");
-    setCategoriaNombre(storedCategoriaNombre)
-  
+    setCategoriaNombre(storedCategoriaNombre);
+
     if (storedCategoriaNombre && storedNegocioId) {
-      fetch(`http://localhost:8080/api/categorias/nombre/${storedCategoriaNombre}`,{
+      fetch(`http://localhost:8080/api/categorias/nombre/${storedCategoriaNombre}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${token}`,
         },
       })
         .then(response => response.json())
@@ -49,16 +57,34 @@ function PantallaAñadirProducto() {
     } else {
       alert("No se encontró la categoría o negocioId en el almacenamiento local.");
     }
+
+    // Obtener proveedores del negocio
+    if (storedNegocioId) {
+      fetch(`http://localhost:8080/api/proveedores/negocio/${storedNegocioId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then(res => res.json())
+        .then(data => {
+          setProveedores(data);
+        })
+        .catch(error => {
+          console.error("Error al obtener los proveedores:", error);
+          alert("No se pudieron cargar los proveedores.");
+        });
+    }
   }, []);
-  
 
   const toggleNotifications = () => setShowNotifications(!showNotifications);
   const toggleUserOptions = () => setShowUserOptions(!showUserOptions);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!nombre.trim() || !precioCompra || !cantidadDeseada || !cantidadAviso ) {
-      alert("Todos los campos son obligatorios");
+    if (!nombre.trim() || !precioCompra || !cantidadDeseada || !cantidadAviso || !proveedorId) {
+      alert("Todos los campos son obligatorios, incluyendo el proveedor");
       return;
     }
 
@@ -74,12 +100,15 @@ function PantallaAñadirProducto() {
           precioCompra: parseFloat(precioCompra),
           cantidadDeseada: parseInt(cantidadDeseada),
           cantidadAviso: parseInt(cantidadAviso),
-          categoria: { id: categoriaId }
+          categoriaId: parseInt(categoriaId),
+          proveedorId: parseInt(proveedorId),
         }),
       });
+
       if (!response.ok) {
         throw new Error("Error al añadir el producto");
       }
+
       alert("Producto añadido con éxito");
       navigate(-1);
     } catch (error) {
@@ -118,8 +147,20 @@ function PantallaAñadirProducto() {
             <ul>
               <li><button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button></li>
               <li><button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button></li>
-              <li><button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button></li>
+              <li><button className="user-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button></li>
             </ul>
+          </div>
+        )}
+
+        {showLogoutModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>¿Está seguro que desea abandonar la sesión?</h3>
+              <div className="modal-buttons">
+                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
+                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
+              </div>
+            </div>
           </div>
         )}
 
@@ -134,12 +175,24 @@ function PantallaAñadirProducto() {
           <input type="number" placeholder="Precio de compra" value={precioCompra} onChange={(e) => setPrecioCompra(e.target.value)} required />
           <input type="number" placeholder="Cantidad deseada" value={cantidadDeseada} onChange={(e) => setCantidadDeseada(e.target.value)} required />
           <input type="number" placeholder="Cantidad aviso" value={cantidadAviso} onChange={(e) => setCantidadAviso(e.target.value)} required />
+          
           {categoriaNombre && (
             <div>
               <strong>Categoría: </strong>
               <span>{categoriaNombre}</span>
             </div>
           )}
+
+          <label>Selecciona un proveedor:</label>
+          <select value={proveedorId} onChange={(e) => setProveedorId(e.target.value)} required>
+            <option value="">-- Selecciona un proveedor --</option>
+            {proveedores.map((proveedor) => (
+              <option key={proveedor.id} value={proveedor.id}>
+                {proveedor.name}
+              </option>
+            ))}
+          </select>
+
           <input type="submit" value="Añadir" className="button" />
         </form>
       </div>

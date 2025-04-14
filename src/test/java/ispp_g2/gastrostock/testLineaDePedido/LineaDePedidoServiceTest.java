@@ -91,7 +91,7 @@ class LineaDePedidoServiceTest {
     @Test
     void testGetLineasDePedidoByProductoIdAndPrecioLinea() {
         when(repository.findLineaDePedidosByProductoIdAndPrecioUnitario(1, 100.0)).thenReturn(List.of(linea));
-        List<LineaDePedido> result = service.getLineasDePedidoByProductoIdAndPrecioLinea(1, 100.0);
+        List<LineaDePedido> result = service.getLineasDePedidoByProductoIdAndPrecioUnitario(1, 100.0);
         assertFalse(result.isEmpty());
     }
 
