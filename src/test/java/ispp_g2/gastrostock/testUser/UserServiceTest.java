@@ -123,7 +123,7 @@ class UserServiceTest {
 
     @Test
     void testFindUserByUsername_ValidUsername() {
-        when(userRepository.findByUsername("juanito")).thenReturn(user1);
+        when(userRepository.findByUsername("juanito").orElse(null)).thenReturn(user1);
 
         User result = userService.findUserByUsername("juanito");
 
