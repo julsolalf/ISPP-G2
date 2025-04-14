@@ -31,7 +31,7 @@ function HomeScreen() {
           <User size={40} style={{marginLeft:"3%"}} className="icon" onClick={toggleUserOptions} />
         </div>
         {showNotifications && (
-        <div className="notification-bubble" style={{marginRight:"17.5%",marginTop:"5%"}}>
+        <div className="notification-bubble" style={{marginRight:"72%",marginTop:"5%"}}>
           <div className="notification-header">
             <strong>Notificaciones</strong>
             <button className="close-btn" onClick={toggleNotifications}>X</button>
@@ -43,7 +43,7 @@ function HomeScreen() {
           </ul>
         </div>)}
         {showUserOptions && (
-        <div className="notification-bubble user-options" style={{marginRight:"13.5%",marginTop:"5%"}}>
+        <div className="notification-bubble user-options" style={{marginRight:"72%",marginTop:"5%"}}>
           <div className="notification-header">
             <strong>Usuario</strong>
             <button className="close-btn" onClick={toggleUserOptions}>X</button>
@@ -63,15 +63,15 @@ function HomeScreen() {
         <div className="button-container1">
           <div className="clearfix"></div>
           <button className="menu-btn" style={{fontSize:"32px"}} onClick={() => navigate("/empleados")}><span role="img" aria-label="empleados">👨‍💼</span> Empleados</button>
-          <div className="clearfix"></div>
+          <div className="clearfix" style={{marginTop:"2%"}}></div>
           <button className="menu-btn" style={{fontSize:"32px"}} onClick={() => navigate("/dashboard")}><span role="img" aria-label="dashboard">📊</span> Dashboard</button>
-          <div className="clearfix"></div>
+          <div className="clearfix" style={{marginTop:"2%"}}></div>
           <button className="menu-btn" style={{fontSize:"32px"}} onClick={() => navigate("/inventario")}><span role="img" aria-label="inventario">📦</span> Inventario</button>
-          <div className="clearfix"></div>
+          <div className="clearfix" style={{marginTop:"2%"}}></div>
           <button className="menu-btn" style={{fontSize:"32px"}} onClick={() => navigate("/ventas")}><span role="img" aria-label="ventas">💰</span> Ventas</button>
-          <div className="clearfix"></div>
+          <div className="clearfix" style={{marginTop:"2%"}}></div>
           <button className="menu-btn" style={{fontSize:"32px"}} onClick={() => navigate("/carta")}><span role="img" aria-label="carta">🍽️</span> Carta</button>
-          <div className="clearfix"></div>
+          <div className="clearfix" style={{marginTop:"2%"}}></div>
           <button className="menu-btn" style={{fontSize:"32px"}} onClick={() => navigate("/proveedores")}><span role="img" aria-label="proveedores">📋</span> Proveedores</button>
         </div>
         {/* Modal de Confirmación para Logout */}
