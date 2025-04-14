@@ -24,6 +24,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Getter
 @Setter
@@ -60,6 +62,7 @@ public class User extends BaseEntity implements UserDetails{
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return List.of(new SimpleGrantedAuthority(authority.getAuthority()));
 	}
+	@JsonManagedReference
 	@OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "subscripcion_id")
 	private Subscripcion subscripcion;

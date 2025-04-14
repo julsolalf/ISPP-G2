@@ -78,14 +78,21 @@ function VerProductoCartaDueno() {
   const eliminarProducto = async () => {
     try {
       const response = await fetch(`http://localhost:8080/api/productosVenta/${producto.id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         method: "DELETE",
       });
-      if (!response.ok) throw new Error("Error al eliminar el producto");
-      navigate(`/verTipoProductoCartaDueno/${localStorage.getItem("categoriaNombre")}`);
+      if (!response.ok) {
+        throw new Error("Error al eliminar el producto");
+      }
+      navigate(`/verTipoProductoCartaDueno/${localStorage.getItem("categoriaNombre")}`); 
     } catch (error) {
       console.error("Error al eliminar el producto:", error);
     }
   };
+  
 
   if (!producto) return <h2>Producto no encontrado</h2>;
 

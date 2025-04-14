@@ -14,6 +14,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ispp_g2.gastrostock.user.Authorities;
 import ispp_g2.gastrostock.user.AuthoritiesController;
 import ispp_g2.gastrostock.user.AuthoritiesService;
+import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserService;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -25,12 +28,14 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
+@WithMockUser(username = "owner", roles = {"admin"})
 class AuthoritiesControllerTest {
 
     private MockMvc mockMvc;
@@ -38,12 +43,17 @@ class AuthoritiesControllerTest {
 
     @Mock
     private AuthoritiesService authoritiesService;
+    
+    @Mock
+    private UserService userService; 
 
     @InjectMocks
     private AuthoritiesController authoritiesController;
 
     private Authorities auth1;
     private Authorities auth2;
+    private User user1;
+    private User user2;
     private List<Authorities> authList;
     
     @BeforeEach
@@ -58,7 +68,22 @@ class AuthoritiesControllerTest {
 
         auth2 = new Authorities();
         auth2.setId(2);
-        auth2.setAuthority("ROLE_ADMIN");
+        auth2.setAuthority("admin");
+
+        user1 = new User();
+        user1.setId(1);
+        user1.setUsername("johndoe");
+        user1.setPassword("password123");
+        user1.setAuthority(auth1);
+    
+        user2 = new User();
+        user2.setId(2);
+        user2.setUsername("admin");
+        user2.setPassword("adminpass");
+        user2.setAuthority(auth2);
+    
+        // Simula un usuario autenticado con rol admin
+        lenient().when(userService.findCurrentUser()).thenReturn(user2);
 
         authList = Arrays.asList(auth1, auth2);
     }

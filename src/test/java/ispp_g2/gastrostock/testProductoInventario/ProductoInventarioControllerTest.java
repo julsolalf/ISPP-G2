@@ -9,8 +9,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -20,22 +18,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
+import ispp_g2.gastrostock.user.UserService;
+import ispp_g2.gastrostock.empleado.EmpleadoService;
+import ispp_g2.gastrostock.dueno.DuenoService;
+import ispp_g2.gastrostock.categorias.CategoriaService;
+import ispp_g2.gastrostock.negocio.NegocioService;
 import ispp_g2.gastrostock.categorias.Categoria;
+
 import ispp_g2.gastrostock.config.SecurityConfiguration;
 import ispp_g2.gastrostock.config.jwt.JwtAuthFilter;
 import ispp_g2.gastrostock.config.jwt.JwtService;
+
 import ispp_g2.gastrostock.productoInventario.ProductoInventario;
 import ispp_g2.gastrostock.productoInventario.ProductoInventarioController;
 import ispp_g2.gastrostock.productoInventario.ProductoInventarioService;
 
+
 import org.mockito.InjectMocks;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 @WebMvcTest(ProductoInventarioController.class)
 @Import({SecurityConfiguration.class, JwtAuthFilter.class})
 @ActiveProfiles("test")
+@WithMockUser(username = "owner", roles = {"owner"})
 class ProductoInventarioControllerTest {
 
     @Autowired
@@ -43,6 +49,21 @@ class ProductoInventarioControllerTest {
 
     @MockBean
     private ProductoInventarioService productoInventarioService;
+
+    @MockBean
+    private UserService userService;
+    
+    @MockBean
+    private EmpleadoService empleadoService;
+    
+    @MockBean
+    private DuenoService duenoService;
+    
+    @MockBean 
+    private CategoriaService categoriaService;
+    
+    @MockBean
+    private NegocioService negocioService;
 
     @InjectMocks
     private ProductoInventarioController productoInventarioController;

@@ -41,7 +41,7 @@ function AnadirProveedor() {
         email,
         telefono,
         direccion,
-        negocio: { id: negocio_id }
+        negocioId: negocio_id
       };
   
       const response = await fetch("http://localhost:8080/api/proveedores", {
@@ -54,6 +54,7 @@ function AnadirProveedor() {
       });
   
       if (response.status === 201) {
+        alert("Proveedor añadido con éxito");
         navigate("/proveedores"); // Redirige a la página de proveedores si la creación es exitosa
       } else {
         console.error("Error al añadir el proveedor:", response.statusText);
