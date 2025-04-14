@@ -94,17 +94,16 @@ function Empleados() {
         <div className="clearfix"></div>
 
         <h2>Inicia en tu negocio</h2>
-        <div className="empleados-grid">
+        <div className="grid-2-columns">
         {negocios.length > 0 ? (
           negocios.map((negocio, index) => (
-            <div key={index} className="empleado-card">
+            <div key={index} className="card" style={{marginLeft:"25%",justifyContent:"center"}}>
               <h3>{negocio.name}</h3>
-              <button className="ver-btn" onClick={() => handleVerNegocio(negocio.id)}>Ver</button>
+              <button className="ver-btn" style={{fontSize:"20px"}} onClick={() => handleVerNegocio(negocio.id)}>Ver</button>
             </div>
           ))
         ) : (
-        <>
-        </>
+        <></>
         )}
         </div>
         <button className="login-btn" onClick={() => navigate("/registroNegocio")} style={{fontSize:"26px"}}>Registrar negocio</button>

@@ -249,13 +249,26 @@
 
 
 /* Estilos para la lista de empleados con scroll */
-.empleados-grid {
+.grid-2-columns {
+  justify-items: center;
+  width: 60%;
+  margin-left: 15%;
   display: grid;
   grid-template-columns: repeat(2, 1fr);  /* Dos columnas */
-  gap: 20px;
   padding: 20px;
   max-height: 400px;  /* Altura máxima para permitir el scroll */
   overflow-y: auto;   /* Habilita el scroll si el contenido excede el tamano */
+}
+
+.card {
+  width: 80%;
+  font-size: 22px;
+  background-color: #a92d4e;
+  border: 1px solid #a92d4e;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
 }
 
 .empleados-grid1 {
