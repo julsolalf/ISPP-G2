@@ -111,7 +111,7 @@ function PantallaRegistroDueno() {
           <input type="password" placeholder="Confirmar Contrasena" style={{width:"32.5%", marginLeft:"3%"}} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
         </div>
         <div className="clearfix"></div>
-        <button onClick={handleRegister} className="login-btn" disabled={loading} style={{marginTop:"5%"}}>
+        <button onClick={handleRegister} className="login-btn" disabled={loading} style={{marginTop:"5%", fontSize:"26px"}}>
           {loading ? "Registrando..." : "Registrarse"}
         </button>
       </div>

@@ -95,7 +95,7 @@ function PantallaInicioSesion() {
           />
         </div>
         <div className="clearfix"></div>
-        <button onClick={handleLogin} className="login-btn" style={{marginTop:"5%"}}>Iniciar Sesión</button>
+        <button onClick={handleLogin} className="login-btn" style={{marginTop:"5%", fontSize:"26px"}}>Iniciar Sesión</button>
         <div className="clearfix"></div>
         <Link to="/recuperarcontrasena" className="forgot-password-link">
           ¿Has olvidado la contrasena?

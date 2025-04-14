@@ -42,7 +42,7 @@ function PantallaMasInfo() {
               <h3 style={{height:"20%", fontSize:"35px", color:"black"}}>5€/mes durante el primer año</h3>
             </div>
           </div>
-          <button onClick={() => navigate("/")} className="login-btn">Volver al Inicio</button>
+          <button onClick={() => navigate("/")} className="login-btn" style={{fontSize:"26px"}}>Volver al Inicio</button>
       </div>
     </div>
   );
