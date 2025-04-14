@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
+const token = localStorage.getItem("token");
 const obtenerProductosPorCategoria = async () => {
   try {
-    const response = await fetch(`http://localhost:8080/api/productosVenta/categoriaVenta/${localStorage.getItem("categoriaNombre")}`);
+    const response = await fetch(`http://localhost:8080/api/productosVenta/categoriaVenta/${localStorage.getItem("categoriaNombre")}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
     if (!response.ok) {
       throw new Error("Error al obtener los productos de la categoría");
     }
@@ -100,7 +107,12 @@ function VerProductosVenta() {
         )}
 
         <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
-        <h1>Productos</h1>
+        <button onClick={() => navigate("/cartaDueno")} className="back-button">⬅ Volver</button>
+        <Link to="/inicioEmpleado">
+          <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+        </Link>        
+        <h1 className="title">GastroStock</h1>
+        <h2>Productos</h2>
         <div className="button-container3">
           <button className="button">📥 Exportar</button>
           <button className="button">🔍 Filtrar</button>
