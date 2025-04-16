@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -19,6 +20,8 @@ import ispp_g2.gastrostock.productoInventario.ProductoInventario;
 import ispp_g2.gastrostock.productoInventario.ProductoInventarioRepository;
 import ispp_g2.gastrostock.productoVenta.ProductoVenta;
 import ispp_g2.gastrostock.productoVenta.ProductoVentaRepository;
+import ispp_g2.gastrostock.proveedores.Proveedor;
+import ispp_g2.gastrostock.proveedores.ProveedorRepository;
 import ispp_g2.gastrostock.user.Authorities;
 import ispp_g2.gastrostock.user.AuthoritiesRepository;
 import ispp_g2.gastrostock.user.User;
@@ -56,7 +59,13 @@ public class IngredienteRepositoryTest {
     private DuenoRepository duenoRepository;
 
     @Autowired
+    private ProveedorRepository proveedorRepository;
+
+    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private TestEntityManager entityManager;
 
     @Autowired
     private AuthoritiesRepository authoritiesRepository;
@@ -98,6 +107,8 @@ public class IngredienteRepositoryTest {
         dueno.setUser(user);
         dueno = duenoRepository.save(dueno);
 
+
+
         // Crear negocio
         negocio = new Negocio();
         negocio.setName("Restaurante La Tasca");
@@ -108,6 +119,14 @@ public class IngredienteRepositoryTest {
         negocio.setTokenNegocio(12345);
         negocio.setDueno(dueno);
         negocio = negocioRepository.save(negocio);
+
+        Proveedor proveedor = new Proveedor();
+        proveedor.setName("Proveedor Test");
+        proveedor.setEmail("proveedor@test.com");
+        proveedor.setTelefono("123456789");
+        proveedor.setDireccion("Calle Test");
+        proveedor.setNegocio(negocio);
+        proveedor = proveedorRepository.save(proveedor);
 
         // Crear categorías
         categoriaInventario = new Categoria();
@@ -131,6 +150,7 @@ public class IngredienteRepositoryTest {
         productoInventario1.setCantidadDeseada(20);
         productoInventario1.setCantidadAviso(5);
         productoInventario1.setCategoria(categoriaInventario);
+        productoInventario1.setProveedor(proveedor);
         productoInventario1 = productoInventarioRepository.save(productoInventario1);
 
         productoInventario2 = new ProductoInventario();
@@ -141,6 +161,7 @@ public class IngredienteRepositoryTest {
         productoInventario2.setCantidadDeseada(30);
         productoInventario2.setCantidadAviso(8);
         productoInventario2.setCategoria(categoriaInventario);
+        productoInventario2.setProveedor(proveedor);
         productoInventario2 = productoInventarioRepository.save(productoInventario2);
 
         // Crear productos de venta
@@ -206,13 +227,20 @@ public class IngredienteRepositoryTest {
         // Crear ingrediente con valores nulos donde no deberían serlo
         Ingrediente ingredienteInvalido = new Ingrediente();
         ingredienteInvalido.setCantidad(null);
-        // No asignar productoInventario ni productoVenta
-
-        // Intentar guardar - debería fallar
-        assertThrows(ConstraintViolationException.class, () -> {
+        ingredienteInvalido.setProductoInventario(null);
+        ingredienteInvalido.setProductoVenta(null);
+    
+        Exception exception = assertThrows(Exception.class, () -> {
             ingredienteRepository.save(ingredienteInvalido);
-            ingredienteRepository.findAll(); // Forzar que se ejecute la operación
+            entityManager.flush();
         });
+    
+        // Verificar que la excepción es del tipo esperado
+        assertTrue(
+            exception instanceof ConstraintViolationException ||
+            exception instanceof org.hibernate.exception.ConstraintViolationException,
+            "Se esperaba una excepción de violación de restricciones"
+        );
     }
 
     @Test
