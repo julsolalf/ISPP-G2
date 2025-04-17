@@ -22,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
 import ispp_g2.gastrostock.empleado.Empleado;
+import ispp_g2.gastrostock.exceptions.ResourceNotFoundException;
 import ispp_g2.gastrostock.mesa.Mesa;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.pedido.Pedido;
@@ -100,11 +101,12 @@ class PedidoServiceTest {
         // Given
         when(pedidoRepository.findById(999)).thenReturn(Optional.empty());
         
-        // When
-        Pedido result = pedidoService.getById(999);
-        
-        // Then
-        assertNull(result);
+        // When & Then
+        ResourceNotFoundException exception = assertThrows(
+            ResourceNotFoundException.class,
+            () -> pedidoService.getById(999)
+        );
+        assertEquals("Pedido no encontrado", exception.getMessage());
         verify(pedidoRepository, times(1)).findById(999);
     }
     

@@ -60,7 +60,7 @@ import java.time.LocalDateTime;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
-public class LineaDePedidoControllerTest {
+class LineaDePedidoControllerTest {
 
     private MockMvc mockMvc;
 
