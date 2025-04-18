@@ -6,6 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import ispp_g2.gastrostock.dueno.DuenoService;
+import ispp_g2.gastrostock.empleado.EmpleadoService;
+import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserService;
+
 import java.util.List;
 
 @RestController
@@ -13,18 +18,33 @@ import java.util.List;
 public class ProveedorController {
 
     private final ProveedorService proveedorService;
+    private final UserService userService;
+    private final DuenoService duenoService;
+    private final EmpleadoService empleadoService;
+
+    private static final String ADMIN = "admin";
+    private static final String DUENO = "dueno";
+    private static final String EMPLEADO = "empleado";
 
     @Autowired
-    public ProveedorController(ProveedorService proveedorService) {
+    public ProveedorController(ProveedorService proveedorService, UserService userService,
+        DuenoService duenoService, EmpleadoService empleadoService) {
         this.proveedorService = proveedorService;
+        this.userService = userService;
+        this.duenoService = duenoService;
+        this.empleadoService = empleadoService;
     }
 
     @GetMapping
     public ResponseEntity<List<Proveedor>> findAll() {
-        if(proveedorService.findAll().isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        User user = userService.findCurrentUser();
+        if(user.hasAnyAuthority(ADMIN).equals(true)) {
+            if(proveedorService.findAll().isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(proveedorService.findAll(), HttpStatus.OK);
         }
-        return new ResponseEntity<>(proveedorService.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @GetMapping("/dto")

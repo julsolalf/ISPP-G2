@@ -23,7 +23,6 @@ public class Proveedor extends NamedEntity {
     private String email;
 
     @NotBlank
-    @Digits(fraction = 0, integer = 9)
     private String telefono;
 
     @NotBlank
