@@ -70,7 +70,7 @@ public class ProveedorService {
         Proveedor toUpdate = proveedorRepository.findById(id)
             .orElseThrow(()-> new ResourceNotFoundException("Proveedor no encontrado"));
         BeanUtils.copyProperties(proveedor, toUpdate,"id");
-        return proveedorRepository.save(proveedor);
+        return proveedorRepository.save(toUpdate);
     }
 
     @Transactional
