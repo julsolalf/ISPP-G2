@@ -41,6 +41,9 @@ public class CategoriaController {
     public ResponseEntity<List<Categoria>> findAll() {
         User user = userService.findCurrentUser();
         if(user.hasAnyAuthority(ADMIN).equals(true)) {
+            if(categoriaService.getCategorias().isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
             return new ResponseEntity<>(categoriaService.getCategorias(), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -90,15 +93,24 @@ public class CategoriaController {
     public ResponseEntity<List<Categoria>> findByNegocioId(@PathVariable("negocioId") Integer negocioId) {
         User user = userService.findCurrentUser();
         if(user.hasAnyAuthority(ADMIN).equals(true)) {
+            if(categoriaService.getCategoriasByNegocioId(negocioId).isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
             return new ResponseEntity<>(categoriaService.getCategoriasByNegocioId(negocioId), HttpStatus.OK);  
         } else if(user.hasAnyAuthority(DUENO).equals(true)) {
             Negocio negocio = negocioService.getById(negocioId);
             if(negocio.getDueno().getUser().getId().equals(user.getId())) {
+                if(categoriaService.getCategoriasByNegocioId(negocioId).isEmpty()) {
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                }
                 return new ResponseEntity<>(categoriaService.getCategoriasByNegocioId(negocioId), HttpStatus.OK);
             } 
         } else if(user.hasAnyAuthority(EMPLEADO).equals(true)) {
             Empleado empleado = empleadoService.getEmpleadoByUser(user.getId());
             if(empleado.getNegocio().getId().equals(negocioId)) {
+                if(categoriaService.getCategoriasByNegocioId(negocioId).isEmpty()) {
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                }
                 return new ResponseEntity<>(categoriaService.getCategoriasByNegocioId(negocioId), HttpStatus.OK);
             }
         }
@@ -109,17 +121,26 @@ public class CategoriaController {
     public ResponseEntity<List<CategoriaDTO>> findByNegocioIdDto(@PathVariable("negocioId") Integer negocioId) {
         User user = userService.findCurrentUser();
         if(user.hasAnyAuthority(ADMIN).equals(true)) {
+            if(categoriaService.getCategoriasByNegocioId(negocioId).isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
             return new ResponseEntity<>(categoriaService.getCategoriasByNegocioId(negocioId)
                     .stream().map(CategoriaDTO::of).toList(), HttpStatus.OK);  
         } else if(user.hasAnyAuthority(DUENO).equals(true)) {
             Negocio negocio = negocioService.getById(negocioId);
             if(negocio.getDueno().getUser().getId().equals(user.getId())) {
+                if(categoriaService.getCategoriasByNegocioId(negocioId).isEmpty()) {
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                }
                 return new ResponseEntity<>(categoriaService.getCategoriasByNegocioId(negocioId)
                 .stream().map(CategoriaDTO::of).toList(), HttpStatus.OK);
             } 
         } else if(user.hasAnyAuthority(EMPLEADO).equals(true)) {
             Empleado empleado = empleadoService.getEmpleadoByUser(user.getId());
             if(empleado.getNegocio().getId().equals(negocioId)) {
+                if(categoriaService.getCategoriasByNegocioId(negocioId).isEmpty()) {
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                }
                 return new ResponseEntity<>(categoriaService.getCategoriasByNegocioId(negocioId)
                 .stream().map(CategoriaDTO::of).toList(), HttpStatus.OK);
             }
@@ -131,15 +152,24 @@ public class CategoriaController {
     public ResponseEntity<List<Categoria>> findByNegocioIdInventario(@PathVariable("negocioId") Integer negocioId) {
         User user = userService.findCurrentUser();
         if(user.hasAnyAuthority(ADMIN).equals(true)) {
+            if(categoriaService.getCategoriasInventarioByNegocioId(negocioId).isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
             return new ResponseEntity<>(categoriaService.getCategoriasInventarioByNegocioId(negocioId), HttpStatus.OK);  
         } else if(user.hasAnyAuthority(DUENO).equals(true)) {
             Negocio negocio = negocioService.getById(negocioId);
             if(negocio.getDueno().getUser().getId().equals(user.getId())) {
+                if(categoriaService.getCategoriasInventarioByNegocioId(negocioId).isEmpty()) {
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                }
                 return new ResponseEntity<>(categoriaService.getCategoriasInventarioByNegocioId(negocioId), HttpStatus.OK);
             } 
         } else if(user.hasAnyAuthority(EMPLEADO).equals(true)) {
             Empleado empleado = empleadoService.getEmpleadoByUser(user.getId());
             if(empleado.getNegocio().getId().equals(negocioId)) {
+                if(categoriaService.getCategoriasInventarioByNegocioId(negocioId).isEmpty()) {
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                }
                 return new ResponseEntity<>(categoriaService.getCategoriasInventarioByNegocioId(negocioId), HttpStatus.OK);
             }
         }
@@ -150,17 +180,26 @@ public class CategoriaController {
     public ResponseEntity<List<CategoriaDTO>> findByNegocioIdInventarioDto(@PathVariable("negocioId") Integer negocioId) {
         User user = userService.findCurrentUser();
         if(user.hasAnyAuthority(ADMIN).equals(true)) {
+            if(categoriaService.getCategoriasInventarioByNegocioId(negocioId).isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
             return new ResponseEntity<>(categoriaService.getCategoriasInventarioByNegocioId(negocioId)
             .stream().map(CategoriaDTO::of).toList(), HttpStatus.OK);  
         } else if(user.hasAnyAuthority(DUENO).equals(true)) {
             Negocio negocio = negocioService.getById(negocioId);
             if(negocio.getDueno().getUser().getId().equals(user.getId())) {
+                if(categoriaService.getCategoriasInventarioByNegocioId(negocioId).isEmpty()) {
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                }
                 return new ResponseEntity<>(categoriaService.getCategoriasInventarioByNegocioId(negocioId)
                 .stream().map(CategoriaDTO::of).toList(), HttpStatus.OK);
             } 
         } else if(user.hasAnyAuthority(EMPLEADO).equals(true)) {
             Empleado empleado = empleadoService.getEmpleadoByUser(user.getId());
             if(empleado.getNegocio().getId().equals(negocioId)) {
+                if(categoriaService.getCategoriasInventarioByNegocioId(negocioId).isEmpty()) {
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                }
                 return new ResponseEntity<>(categoriaService.getCategoriasInventarioByNegocioId(negocioId)
                 .stream().map(CategoriaDTO::of).toList(), HttpStatus.OK);
             }
@@ -176,11 +215,17 @@ public class CategoriaController {
         } else if(user.hasAnyAuthority(DUENO).equals(true)) {
             Negocio negocio = negocioService.getById(negocioId);
             if(negocio.getDueno().getUser().getId().equals(user.getId())) {
+                if(categoriaService.getCategoriasVentaByNegocioId(negocioId).isEmpty()) {
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                }
                 return new ResponseEntity<>(categoriaService.getCategoriasVentaByNegocioId(negocioId), HttpStatus.OK);
             } 
         } else if(user.hasAnyAuthority(EMPLEADO).equals(true)) {
             Empleado empleado = empleadoService.getEmpleadoByUser(user.getId());
             if(empleado.getNegocio().getId().equals(negocioId)) {
+                if(categoriaService.getCategoriasVentaByNegocioId(negocioId).isEmpty()) {
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                }
                 return new ResponseEntity<>(categoriaService.getCategoriasVentaByNegocioId(negocioId), HttpStatus.OK);
             }
         }
@@ -191,17 +236,26 @@ public class CategoriaController {
     public ResponseEntity<List<CategoriaDTO>> findByNegocioIdVentaDto(@PathVariable("negocioId") Integer negocioId) {
         User user = userService.findCurrentUser();
         if(user.hasAnyAuthority(ADMIN).equals(true)) {
+            if(categoriaService.getCategoriasVentaByNegocioId(negocioId).isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
             return new ResponseEntity<>(categoriaService.getCategoriasVentaByNegocioId(negocioId)
             .stream().map(CategoriaDTO::of).toList(), HttpStatus.OK);  
         } else if(user.hasAnyAuthority(DUENO).equals(true)) {
             Negocio negocio = negocioService.getById(negocioId);
             if(negocio.getDueno().getUser().getId().equals(user.getId())) {
+                if(categoriaService.getCategoriasVentaByNegocioId(negocioId).isEmpty()) {
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                }
                 return new ResponseEntity<>(categoriaService.getCategoriasVentaByNegocioId(negocioId)
                 .stream().map(CategoriaDTO::of).toList(), HttpStatus.OK);
             } 
         } else if(user.hasAnyAuthority(EMPLEADO).equals(true)) {
             Empleado empleado = empleadoService.getEmpleadoByUser(user.getId());
             if(empleado.getNegocio().getId().equals(negocioId)) {
+                if(categoriaService.getCategoriasVentaByNegocioId(negocioId).isEmpty()) {
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                }
                 return new ResponseEntity<>(categoriaService.getCategoriasVentaByNegocioId(negocioId)
                 .stream().map(CategoriaDTO::of).toList(), HttpStatus.OK);
             }
@@ -214,6 +268,9 @@ public class CategoriaController {
     public ResponseEntity<List<Categoria>> findByName(@PathVariable("name") String name) {
         User user = userService.findCurrentUser();
         if(user.hasAnyAuthority(ADMIN).equals(true)) {
+            if(categoriaService.getCategoriasByName(name).isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
             return new ResponseEntity<>(categoriaService.getCategoriasByName(name), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
