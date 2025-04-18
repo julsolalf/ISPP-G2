@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends  CrudRepository<User, Integer>{
 
 	@Query("SELECT u FROM User u WHERE u.username = ?1")
-	User findByUsername(String username);
+	Optional<User> findByUsername(String username);
 
 	@Query("SELECT u FROM User u WHERE u.username = ?1 AND u.password = ?2")
 	User findByUsernameAndPassword(String username, String password);

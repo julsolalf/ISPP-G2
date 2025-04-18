@@ -433,7 +433,7 @@ class EmpleadoControllerTest {
 
         when(negocioService.getById(1)).thenReturn(negocio);
         when(userService.findUserByUsername("anton")).thenReturn(null);
-        when(empleadoService.convertirDTOEmpleado(any(EmpleadoDTO.class), eq(negocio))).thenReturn(empleado);
+        when(empleadoService.convertirDTOEmpleado(any(EmpleadoDTO.class))).thenReturn(empleado);
         when(empleadoService.saveEmpleado(any(Empleado.class))).thenReturn(empleado1);
 
         mockMvc.perform(post("/api/empleados")
@@ -487,7 +487,7 @@ class EmpleadoControllerTest {
 
         when(empleadoService.getEmpleadoById(1)).thenReturn(empleado1);
         when(negocioService.getById(1)).thenReturn(negocio);
-        when(empleadoService.convertirDTOEmpleado(any(EmpleadoDTO.class), eq(negocio))).thenReturn(empleadoActualizado);
+        when(empleadoService.convertirDTOEmpleado(any(EmpleadoDTO.class))).thenReturn(empleadoActualizado);
         when(empleadoService.saveEmpleado(any(Empleado.class))).thenReturn(empleadoActualizado);
 
         mockMvc.perform(put("/api/empleados/1")

@@ -4,7 +4,10 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.StreamSupport;
 
+import ispp_g2.gastrostock.exceptions.ResourceNotFoundException;
 import ispp_g2.gastrostock.negocio.Negocio;
+import ispp_g2.gastrostock.negocio.NegocioRepository;
+import ispp_g2.gastrostock.negocio.NegocioService;
 import ispp_g2.gastrostock.user.AuthoritiesRepository;
 import ispp_g2.gastrostock.user.User;
 import ispp_g2.gastrostock.user.UserRepository;
@@ -20,12 +23,15 @@ public class EmpleadoService {
     private final EmpleadoRepository empleadoRepository;
     private final AuthoritiesRepository authoritiesRepository;
     private final UserRepository userRepository;
+    private final NegocioRepository negocioRepository;
 
     @Autowired
-    public EmpleadoService(EmpleadoRepository empleadoRepository, AuthoritiesRepository authoritiesRepository, UserRepository userRepository) {
+    public EmpleadoService(EmpleadoRepository empleadoRepository, AuthoritiesRepository authoritiesRepository,
+        UserRepository userRepository, NegocioRepository negocioRepository) {
         this.empleadoRepository = empleadoRepository;
         this.authoritiesRepository = authoritiesRepository;
         this.userRepository = userRepository;
+        this.negocioRepository = negocioRepository;
     }
 
     // Crear o actualizar un empleado
@@ -98,12 +104,10 @@ public class EmpleadoService {
     }
 
     @Transactional(readOnly = true)
-    public Empleado convertirDTOEmpleado(EmpleadoDTO empleadoDTO, Negocio negocio) {
+    public Empleado convertirDTOEmpleado(EmpleadoDTO empleadoDTO) {
         Empleado empleado = new Empleado();
-        User user = new User();
-        user.setUsername(empleadoDTO.getUsername());
-        user.setPassword(empleadoDTO.getPassword());
-        user.setAuthority(authoritiesRepository.findByAuthority("empleado"));
+        User user = userRepository.findByUsername(empleadoDTO.getUsername())
+           .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
         empleado.setFirstName(empleadoDTO.getFirstName());
         empleado.setLastName(empleadoDTO.getLastName());
         empleado.setEmail(empleadoDTO.getEmail());
@@ -111,7 +115,8 @@ public class EmpleadoService {
         empleado.setNumTelefono(empleadoDTO.getNumTelefono());
         empleado.setDescripcion(empleadoDTO.getDescripcion());
         empleado.setUser(user);
-        empleado.setNegocio(negocio);
+        empleado.setNegocio(negocioRepository.findById(empleadoDTO.getNegocio())
+            .orElseThrow(() -> new ResourceNotFoundException("Negocio no encontrado")));
         return empleado;
     }
 
