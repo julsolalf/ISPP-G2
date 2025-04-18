@@ -278,6 +278,9 @@ public class CategoriaController {
 
     @PostMapping
     public ResponseEntity<Categoria> save(@Valid @RequestBody Categoria categoria) {
+        if(categoria==null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); 
+        }
         User user = userService.findCurrentUser();
         if(user.hasAnyAuthority(ADMIN).equals(true)) {
             return new ResponseEntity<>(categoriaService.save(categoria), HttpStatus.CREATED);
@@ -296,6 +299,9 @@ public class CategoriaController {
 
     @PostMapping("/dto")
     public ResponseEntity<Categoria> saveDto(@Valid @RequestBody CategoriaDTO categoriaDTO) {
+        if(categoriaDTO==null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); 
+        }
         User user = userService.findCurrentUser();
         if(user.hasAnyAuthority(ADMIN).equals(true)) {
             Categoria categoria = categoriaService.convertirCategoria(categoriaDTO);
@@ -321,20 +327,23 @@ public class CategoriaController {
             throw new IllegalArgumentException("Categoria cannot be null");
         }
         Categoria existingCategoria = categoriaService.getById(id);
-        if(!existingCategoria.getNegocio().getId().equals(categoria.getNegocio().getId())) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN); // Si el negocio de la categoría no coincide con el de la categoría en la bdd, no se puede actualizar la categoría
-        }
         User user = userService.findCurrentUser();
 
         if(user.hasAnyAuthority(ADMIN).equals(true)) {
             return new ResponseEntity<>(categoriaService.update(id, categoria), HttpStatus.OK);
         } else if(user.hasAnyAuthority(DUENO).equals(true)) {
             if(categoria.getNegocio().getDueno().getUser().getId().equals(user.getId())) {
+                if(!existingCategoria.getNegocio().getId().equals(categoria.getNegocio().getId())) {
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN); // Si el negocio de la categoría no coincide con el de la categoría en la bdd, no se puede actualizar la categoría
+                }
                 return new ResponseEntity<>(categoriaService.update(id, categoria), HttpStatus.OK);
             }
         } else if(user.hasAnyAuthority(EMPLEADO).equals(true)) {
             Empleado empleado = empleadoService.getEmpleadoByUser(user.getId());
             if(empleado.getNegocio().getId().equals(categoria.getNegocio().getId())) {
+                if(!existingCategoria.getNegocio().getId().equals(categoria.getNegocio().getId())) {
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN); // Si el negocio de la categoría no coincide con el de la categoría en la bdd, no se puede actualizar la categoría
+                }
                 return new ResponseEntity<>(categoriaService.update(id, categoria), HttpStatus.OK);
             }
         }
@@ -347,9 +356,6 @@ public class CategoriaController {
             throw new IllegalArgumentException("CategoriaDTO cannot be null");
         }
         Categoria existingCategoria = categoriaService.getById(id);
-        if(!existingCategoria.getNegocio().getId().equals(categoriaDTO.getNegocioId())) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN); // Si el negocio de la categoría no coincide con el de la categoría en la bdd, no se puede actualizar la categoría
-        }
         User user = userService.findCurrentUser();
         if(user.hasAnyAuthority(ADMIN).equals(true)) {
             Categoria categoria = categoriaService.convertirCategoria(categoriaDTO);
@@ -357,11 +363,17 @@ public class CategoriaController {
         } else if(user.hasAnyAuthority(DUENO).equals(true)) {
             Categoria categoria = categoriaService.convertirCategoria(categoriaDTO);
             if(categoria.getNegocio().getDueno().getUser().getId().equals(user.getId())) {
+                if(!existingCategoria.getNegocio().getId().equals(categoriaDTO.getNegocioId())) {
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN); // Si el negocio de la categoría no coincide con el de la categoría en la bdd, no se puede actualizar la categoría
+                }
                 return new ResponseEntity<>(categoriaService.update(id, categoria), HttpStatus.OK);
             }
         } else if(user.hasAnyAuthority(EMPLEADO).equals(true)) {
             Empleado empleado = empleadoService.getEmpleadoByUser(user.getId());
             if(empleado.getNegocio().getId().equals(categoriaDTO.getNegocioId())) {
+                if(!existingCategoria.getNegocio().getId().equals(categoriaDTO.getNegocioId())) {
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN); // Si el negocio de la categoría no coincide con el de la categoría en la bdd, no se puede actualizar la categoría
+                }
                 Categoria categoria = categoriaService.convertirCategoria(categoriaDTO);
                 return new ResponseEntity<>(categoriaService.update(id, categoria), HttpStatus.OK);
             }
