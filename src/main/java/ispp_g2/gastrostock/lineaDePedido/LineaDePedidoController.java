@@ -326,6 +326,13 @@ public class LineaDePedidoController {
     @PostMapping
     public ResponseEntity<LineaDePedidoDTO> save(@RequestBody @Valid LineaDePedidoDTO lineaDePedidoDTO) {
         User user = userService.findCurrentUser();
+        if (user.hasAnyAuthority(ADMIN).equals(true)) {
+            LineaDePedido lineaDePedido = lineaDePedidoService.convertDtoLineaDePedido(lineaDePedidoDTO);
+            lineaDePedido.setSalioDeCocina(false);
+            isLineaDePedidoValid(lineaDePedido);
+            return new ResponseEntity<>(LineaDePedidoDTO.of(lineaDePedidoService.save(lineaDePedido)),
+                    HttpStatus.CREATED);
+        }
         if (user.hasAnyAuthority(DUENO).equals(true)) {
             Dueno dueno = duenoService.getDuenoByUser(user.getId());
             LineaDePedido lineaDePedido = lineaDePedidoService.convertDtoLineaDePedido(lineaDePedidoDTO);
@@ -352,6 +359,12 @@ public class LineaDePedidoController {
     public ResponseEntity<LineaDePedidoDTO> update(@PathVariable("id") Integer id,
             @RequestBody @Valid LineaDePedidoDTO lineaDePedidoDTO) {
         User user = userService.findCurrentUser();
+        if (user.hasAnyAuthority(ADMIN).equals(true)) {
+            LineaDePedido lineaDePedido = lineaDePedidoService.convertDtoLineaDePedido(lineaDePedidoDTO);
+            isLineaDePedidoValid(lineaDePedido);
+            return new ResponseEntity<>(LineaDePedidoDTO.of(lineaDePedidoService.update(id,lineaDePedido)),
+                    HttpStatus.CREATED);
+        }
         if (user.hasAnyAuthority(DUENO).equals(true)) {
             Dueno dueno = duenoService.getDuenoByUser(user.getId());
             LineaDePedido toUpdate = lineaDePedidoService.getById(id);
@@ -381,6 +394,9 @@ public class LineaDePedidoController {
     @PutMapping("/{id}/saleDeCocina")
     public ResponseEntity<LineaDePedidoDTO> updateEstado(@PathVariable("id") Integer id) {
         User user = userService.findCurrentUser();
+        if(user.hasAnyAuthority(ADMIN).equals(true)){
+            return new ResponseEntity<>(LineaDePedidoDTO.of(lineaDePedidoService.cambiarEstado(id)), HttpStatus.OK);
+        }
         if (user.hasAnyAuthority(DUENO).equals(true)) {
             Dueno dueno = duenoService.getDuenoByUser(user.getId());
             LineaDePedido lineaDePedido = lineaDePedidoService.getById(id);
@@ -403,6 +419,10 @@ public class LineaDePedidoController {
     public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
         User user = userService.findCurrentUser();
         LineaDePedido toDelete = lineaDePedidoService.getById(id);
+        if(user.hasAnyAuthority(ADMIN).equals(true)){
+            lineaDePedidoService.delete(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
         if (user.hasAnyAuthority(DUENO).equals(true)) {
             Dueno dueno = duenoService.getDuenoByUser(user.getId());
             if (toDelete.getPedido().getMesa().getNegocio().getDueno().getId().equals(dueno.getId())) {
