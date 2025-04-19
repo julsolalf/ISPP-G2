@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
 import ispp_g2.gastrostock.dueno.Dueno;
+import ispp_g2.gastrostock.exceptions.ResourceNotFoundException;
 import ispp_g2.gastrostock.mesa.Mesa;
 import ispp_g2.gastrostock.mesa.MesaRepository;
 import ispp_g2.gastrostock.mesa.MesaService;
@@ -108,22 +109,17 @@ class MesaServiceTest {
     void testGetById_NotFound() {
         // Arrange
         when(mesaRepository.findById(999)).thenReturn(Optional.empty());
-
         // Act
-        Mesa result = mesaService.getById(999);
+        assertThrows(ResourceNotFoundException.class, () -> { mesaService.getById(999);} );
 
-        // Assert
-        assertNull(result);
         verify(mesaRepository).findById(999);
     }
 
     @Test
     void testGetById_NullId() {
         // Arrange & Act
-        Mesa result = mesaService.getById(null);
-
+        assertThrows(ResourceNotFoundException.class, () -> { mesaService.getById(null);} );
         // Assert
-        assertNull(result);
         verify(mesaRepository).findById(null);
     }
 
