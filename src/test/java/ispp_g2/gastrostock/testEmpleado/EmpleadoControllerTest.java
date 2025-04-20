@@ -25,7 +25,8 @@ import ispp_g2.gastrostock.dueno.DuenoService;
 import ispp_g2.gastrostock.dueno.Dueno;
 import ispp_g2.gastrostock.user.UserService;       
 import ispp_g2.gastrostock.user.User;  
-import ispp_g2.gastrostock.user.Authorities;  
+import ispp_g2.gastrostock.user.Authorities;
+import ispp_g2.gastrostock.user.AuthoritiesService;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,6 +38,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -62,6 +64,12 @@ class EmpleadoControllerTest {
     @Mock
     private DuenoService duenoService;
 
+    @Mock
+    private PasswordEncoder encoder;
+
+    @Mock
+    private AuthoritiesService authorityService;
+
     private ObjectMapper objectMapper;
     private Empleado empleado1, empleadoNuevo, empleado;
     private Empleado empleado2;
@@ -85,8 +93,11 @@ class EmpleadoControllerTest {
 
         objectMapper = new ObjectMapper();
 
+        encoder = mock(PasswordEncoder.class);
+ 
+
         // Crear autoridad para empleado
-        authority = new Authorities();
+        authority = new Authorities();  
         authority.setId(1);
         authority.setAuthority("empleado");
 
@@ -118,7 +129,7 @@ class EmpleadoControllerTest {
         lenient().when(userService.findCurrentUser()).thenReturn(adminUser);
 
 
-        Dueno duenoNormal = new Dueno();
+        duenoNormal = new Dueno();
         duenoNormal.setId(1);
         duenoNormal.setFirstName("Juan");
         duenoNormal.setLastName("García");
@@ -422,29 +433,32 @@ class EmpleadoControllerTest {
         // Crear EmpleadoDTO de prueba
         EmpleadoDTO empleadoDTO = new EmpleadoDTO();
         empleadoDTO.setUsername("anton");
-        empleadoDTO.setPassword("password123");
+        empleadoDTO.setPassword("Password123!"); // Password válido
         empleadoDTO.setFirstName("Antonio");
         empleadoDTO.setLastName("Almanza");
         empleadoDTO.setEmail("antonio@example.com");
-        empleadoDTO.setNumTelefono("666151222");
-        empleadoDTO.setTokenEmpleado("TOKEN129");
+        empleadoDTO.setNumTelefono("666151222"); // Formato válido
         empleadoDTO.setDescripcion("Camarero principal");
         empleadoDTO.setNegocio(1);
-
+    
+        // Configurar todos los mocks necesarios
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(duenoService.getDuenoByUser(adminUser.getId())).thenReturn(duenoNormal);
         when(negocioService.getById(1)).thenReturn(negocio);
-        when(userService.findUserByUsername("anton")).thenReturn(null);
-        when(empleadoService.convertirDTOEmpleado(any(EmpleadoDTO.class))).thenReturn(empleado);
-        when(empleadoService.saveEmpleado(any(Empleado.class))).thenReturn(empleado1);
-
+        when(authorityService.findByAuthority(anyString())).thenReturn(authority);
+        when(userService.saveUser(any(User.class))).thenReturn(user);
+        when(empleadoService.saveEmpleado(any(Empleado.class))).thenReturn(empleado);
+        
         mockMvc.perform(post("/api/empleados")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(empleadoDTO)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.firstName", is("Juan")));
-
+                .andExpect(jsonPath("$.firstName", is("Antonio")));
+        
         verify(negocioService).getById(1);
-        verify(userService).findUserByUsername("anton");
+        verify(authorityService).findByAuthority(anyString());
+        verify(userService).saveUser(any(User.class));
         verify(empleadoService).saveEmpleado(any(Empleado.class));
     }
 

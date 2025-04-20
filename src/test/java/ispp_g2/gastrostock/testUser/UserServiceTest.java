@@ -123,22 +123,24 @@ class UserServiceTest {
 
     @Test
     void testFindUserByUsername_ValidUsername() {
-        when(userRepository.findByUsername("juanito").orElse(null)).thenReturn(user1);
-
+        when(userRepository.findByUsername("juanito")).thenReturn(Optional.of(user1));
+    
         User result = userService.findUserByUsername("juanito");
-
+    
         assertNotNull(result);
         assertEquals(1, result.getId());
+        assertEquals("juanito", result.getUsername());
+        assertEquals("password123", result.getPassword());
+        assertEquals("DUENO", result.getAuthority().getAuthority());
         verify(userRepository).findByUsername("juanito");
     }
 
     @Test
     void testFindUserByUsername_Null() {
-        when(userRepository.findByUsername(null)).thenReturn(null);
+        when(userRepository.findByUsername(null)).thenReturn(Optional.empty());
 
-        User result = userService.findUserByUsername(null);
+        assertThrows(ResourceNotFoundException.class, () -> userService.findUserByUsername(null));
 
-        assertNull(result);
         verify(userRepository).findByUsername(null);
     }
 
@@ -273,7 +275,7 @@ class UserServiceTest {
         verify(userRepository).deleteById(null);
     }
 
-        @Test
+    @Test
     void testFindAll_NullIterableHandledGracefully() {
         when(userRepository.findAll()).thenReturn(null);
 
@@ -282,14 +284,12 @@ class UserServiceTest {
 
     @Test
     void testFindUserByUsername_EmptyString() {
-        when(userRepository.findByUsername("")).thenReturn(null);
-
-        User result = userService.findUserByUsername("");
-
-        assertNull(result);
+        when(userRepository.findByUsername("")).thenReturn(Optional.empty());
+        
+        assertThrows(ResourceNotFoundException.class, () -> userService.findUserByUsername(""));
+        
         verify(userRepository).findByUsername("");
     }
-
     @Test
     void testFindUserByUsernameAndPassword_EmptyUsername() {
         when(userRepository.findByUsernameAndPassword("", "secure456")).thenReturn(null);
@@ -462,11 +462,10 @@ class UserServiceTest {
 
     @Test
     void testFindUserByUsername_NullReturnFromRepo() {
-        when(userRepository.findByUsername("juanito")).thenReturn(null);
+        when(userRepository.findByUsername("juanito")).thenReturn(Optional.empty());
 
-        User result = userService.findUserByUsername("juanito");
+        assertThrows(ResourceNotFoundException.class, () -> userService.findUserByUsername("juanito"));
 
-        assertNull(result);
     }
 
 }

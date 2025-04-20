@@ -313,10 +313,11 @@ class PedidoControllerTest {
         List<Pedido> pedidos = Collections.singletonList(pedido);
         when(pedidoService.getPedidoByNegocioId(1)).thenReturn(pedidos);
         
-        mockMvc.perform(get("/api/pedidos/negocio/1"))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].negocio.id").value(1));
+        mockMvc.perform(get("/api/pedidos/venta/1"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.length()").value(1))
+        .andExpect(jsonPath("$[0].negocio.id").value(1));
+
         
         verify(pedidoService).getPedidoByNegocioId(1);
     }
@@ -456,19 +457,21 @@ class PedidoControllerTest {
     updatedPedido.setPrecioTotal(60.75); // Precio actualizado
     updatedPedido.setMesa(mesaUpdate);
     updatedPedido.setEmpleado(empleadoUpdate);
-    updatedPedido.setNegocio(negocioUpdate);;
+    updatedPedido.setNegocio(negocioUpdate);
 
 
-    lenient().when(pedidoService.getById(1)).thenReturn(pedido);
-    lenient().when(pedidoService.save(any(Pedido.class))).thenReturn(updatedPedido);
-    lenient().when(duenoService.getDuenoByUser(duenoUser.getId())).thenReturn(dueno);
-    lenient().when(userService.findCurrentUser()).thenReturn(duenoUser);
+    when(pedidoService.update(eq(1), any(Pedido.class))).thenReturn(updatedPedido);
+    when(duenoService.getDuenoByUser(duenoUser.getId())).thenReturn(dueno);
+    when(userService.findCurrentUser()).thenReturn(duenoUser);
     mockMvc.perform(put("/api/pedidos/1")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(updatedPedido)))
-            .andExpect(status().isOk());
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(5))
+            .andExpect(jsonPath("$.precioTotal").value(60.75))
+            .andExpect(jsonPath("$.mesa.name").value("Mesa Actualizada"));
     
-    verify(pedidoService).save(any(Pedido.class));
+    verify(pedidoService).update(eq(1), any(Pedido.class));
 }
     
     // Test para update() - ID no coincide
@@ -499,36 +502,34 @@ class PedidoControllerTest {
     // Test para delete() - Caso éxito
     @Test
     void testDelete_Success() throws Exception {
-        // Ensure the current user is a "dueno"
+
         duenoUser = new User();
         duenoUser.setId(98);
         Authorities duenoAuth = new Authorities();
         duenoAuth.setAuthority("dueno");
         duenoUser.setAuthority(duenoAuth);
         
-        // Create a valid Dueno for the Negocio
+
         dueno = new Dueno();
         dueno.setId(1);
         dueno.setFirstName("Juan Propietario");
-        
         dueno.setUser(duenoUser);
-        duenoService.saveDueno(dueno);
-        
-        // Create a valid Negocio with a non-null Dueno
+
         negocio = new Negocio();
         negocio.setId(1);
         negocio.setName("Restaurante Test");
         negocio.setDueno(dueno);
         
-        // Set up the pedido with a valid negocio
+
         pedido = new Pedido();
         pedido.setId(1);
         pedido.setNegocio(negocio);
         
-        // Stub the service calls
+        // Configurar los mocks correctos - ESTE ES EL CAMBIO CLAVE
+        when(userService.findCurrentUser()).thenReturn(duenoUser);
+        when(duenoService.getDuenoByUser(duenoUser.getId())).thenReturn(dueno);
         when(pedidoService.getById(1)).thenReturn(pedido);
         doNothing().when(pedidoService).delete(1);
-        lenient().when(userService.findCurrentUser()).thenReturn(duenoUser);
         
         mockMvc.perform(delete("/api/pedidos/1"))
                 .andExpect(status().isNoContent());

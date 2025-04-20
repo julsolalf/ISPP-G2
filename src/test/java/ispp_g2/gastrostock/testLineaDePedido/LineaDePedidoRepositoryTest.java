@@ -39,7 +39,7 @@ import ispp_g2.gastrostock.user.UserRepository;
 @DataJpaTest
 @AutoConfigureTestDatabase
 @ActiveProfiles("test")
-public class LineaDePedidoRepositoryTest {
+class LineaDePedidoRepositoryTest {
 
     @Autowired
     private LineaDePedidoRepository lineaDePedidoRepository;
@@ -194,6 +194,7 @@ public class LineaDePedidoRepositoryTest {
         lineaNormal.setPrecioUnitario(3.0);
         lineaNormal.setProducto(producto1);
         lineaNormal.setPedido(pedido1);
+        lineaNormal.setSalioDeCocina(false);
         lineaNormal = lineaDePedidoRepository.save(lineaNormal);
 
         lineaCantidadGrande = new LineaDePedido();
@@ -201,6 +202,7 @@ public class LineaDePedidoRepositoryTest {
         lineaCantidadGrande.setPrecioUnitario(3.0);
         lineaCantidadGrande.setProducto(producto1);
         lineaCantidadGrande.setPedido(pedido1);
+        lineaCantidadGrande.setSalioDeCocina(false);
         lineaCantidadGrande = lineaDePedidoRepository.save(lineaCantidadGrande);
 
         lineaPrecioAlto = new LineaDePedido();
@@ -208,6 +210,7 @@ public class LineaDePedidoRepositoryTest {
         lineaPrecioAlto.setPrecioUnitario(5.0);
         lineaPrecioAlto.setProducto(producto2);
         lineaPrecioAlto.setPedido(pedido2);
+        lineaPrecioAlto.setSalioDeCocina(false);
         lineaPrecioAlto = lineaDePedidoRepository.save(lineaPrecioAlto);
 
         lineaMinima = new LineaDePedido();
@@ -215,6 +218,7 @@ public class LineaDePedidoRepositoryTest {
         lineaMinima.setPrecioUnitario(5.0);
         lineaMinima.setProducto(producto2);
         lineaMinima.setPedido(pedido2);
+        lineaMinima.setSalioDeCocina(false);
         lineaMinima = lineaDePedidoRepository.save(lineaMinima);
     }
 
@@ -352,6 +356,7 @@ public class LineaDePedidoRepositoryTest {
         otraLinea.setPrecioUnitario(5.0);
         otraLinea.setProducto(producto2);
         otraLinea.setPedido(pedido1);
+        otraLinea.setSalioDeCocina(false);
         lineaDePedidoRepository.save(otraLinea);
         
         // Buscar líneas con cantidad 3
