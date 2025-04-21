@@ -4,10 +4,11 @@ import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
 const token = localStorage.getItem("token");
-const idProveedor = localStorage.getItem("proveedorId");
+
 
 const obtenerProveedor = async () => {
   try {
+    const idProveedor = localStorage.getItem("proveedorId");
     const response = await fetch(`http://localhost:8080/api/proveedores/${idProveedor}`, {
       method: "GET",
         headers: {
@@ -50,6 +51,7 @@ function VerProveedor() {
 
   const eliminarProveedor = async () => {
     try {
+      const idProveedor = localStorage.getItem("proveedorId");
       const response = await fetch(`http://localhost:8080/api/proveedores/${idProveedor}`, {
         headers: {
           "Content-Type": "application/json",
