@@ -56,8 +56,8 @@ INSERT INTO app_user (id, username, password, authority_id) VALUES (7, 'fernando
 --Usuarios temporales mientras se conecta el frontend con el backend
 INSERT INTO app_user (id, username, password, authority_id) VALUES (8, 'owner1', 'password', (SELECT id FROM authorities WHERE authority = 'dueno'));
 INSERT INTO app_user (id, username, password, authority_id) VALUES (9, 'empleado', 'password', (SELECT id FROM authorities WHERE authority = 'empleado'));
--- Usuario admin, psswd = Gastroadmin_1
-INSERT INTO app_user (id, username, password, authority_id) VALUES (10,'gastroAdmin','$2a$10$tUjv1hrypXUFFruLgv1r8upPmXJYxjMb1KjQpjHuIgmILKjqhGtPy',(SELECT id FROM authorities WHERE authority ='admin'));
+-- Usuario admin, psswd = password
+INSERT INTO app_user (id, username, password, authority_id) VALUES (10,'gastroAdmin','$2a$10$wPqDTEhcLj7vLpEVxvlreehCK1tZl0FtvaxXxTiQoJOIOJL2uXSQm',(SELECT id FROM authorities WHERE authority ='admin'));
 
 -- Insertando duenos
 INSERT INTO dueno (id, first_name, last_name, email, num_telefono, token_dueno, user_id)

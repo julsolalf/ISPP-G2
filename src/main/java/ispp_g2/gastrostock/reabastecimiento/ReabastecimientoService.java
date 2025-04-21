@@ -60,6 +60,11 @@ public class ReabastecimientoService {
         return reabastecimientoRepository.findByProveedor(proveedor);
     }
 
+    @Transactional(readOnly = true)
+    public List<Reabastecimiento> getByDueno(Integer dueno) {
+        return reabastecimientoRepository.findByDueno(dueno);
+    }
+
     @Transactional
     public Reabastecimiento save(Reabastecimiento reabastecimiento) {
         return reabastecimientoRepository.save(reabastecimiento);
