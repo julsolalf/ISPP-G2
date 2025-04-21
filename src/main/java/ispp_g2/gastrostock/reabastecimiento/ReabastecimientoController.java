@@ -122,7 +122,7 @@ public class ReabastecimientoController {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
         }
-        if(reabastecimientos == null) {
+        if(reabastecimientos.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(reabastecimientos, HttpStatus.OK);
@@ -151,7 +151,7 @@ public class ReabastecimientoController {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
         }
-        if(reabastecimientos == null) {
+        if(reabastecimientos.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(reabastecimientos, HttpStatus.OK);
@@ -180,7 +180,7 @@ public class ReabastecimientoController {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
         }
-        if(reabastecimientos == null) {
+        if(reabastecimientos.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(reabastecimientos, HttpStatus.OK);
@@ -212,7 +212,7 @@ public class ReabastecimientoController {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
         }
-        if(reabastecimientos == null) {
+        if(reabastecimientos.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(reabastecimientos, HttpStatus.OK);
@@ -241,7 +241,7 @@ public class ReabastecimientoController {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
         }
-        if(reabastecimientos == null) {
+        if(reabastecimientos.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(reabastecimientos, HttpStatus.OK);
@@ -270,7 +270,7 @@ public class ReabastecimientoController {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
         }
-        if(reabastecimientos == null) {
+        if(reabastecimientos.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(reabastecimientos, HttpStatus.OK);
