@@ -37,6 +37,15 @@ import PantallaVentaEmpleado from "./screens/ventasEmpleado/index.js";
 import PantallaVerVentaEmpleado from "./screens/ventasEmpleado/ventaEspecifica/index.js";
 import StripePricing from "./screens/stripe/stripePricing.js";
 import PantallaSubscriptionSuccess from "./screens/stripe/pantallaSuccess.js";
+import CartaDueno from "./screens/cartaDueno/index.js";
+import VerTipoProductoCartaDueno from "./screens/verTipoProductoCartaDueno/index.js";
+import VerProductoCartaDueno from "./screens/verTipoProductoCartaDueno/verProductoCartaDueno/index.js";
+import PantallaAñadirProductoCarta from "./screens/anadirProductoVenta/index.js";
+import EditarProductoCarta from "./screens/verTipoProductoCartaDueno/editarProductoCartaDueno/index.js";
+import CartaEmpleado from "./screens/cartaEmpleado/index.js";
+import VerProductosVenta from "./screens/verTipoProductoCartaEmpleado/index.js";
+import VerProductoCartaEmpleado from "./screens/verTipoProductoCartaEmpleado/verProductoCartaEmpleado/index.js";
+
 
 
 function AppScreen() {
@@ -118,6 +127,14 @@ function App() {
         <Route path="/editarVenta/:id" element={<PantallaEditarVenta />} />
         <Route path="/ventasEmpleado" element={<PantallaVentaEmpleado />} />
         <Route path="/ventasEmpleado/:ventaId" element={<PantallaVerVentaEmpleado />} />
+        <Route path="/cartaDueno" element={<CartaDueno />} />
+        <Route path="/verTipoProductoCartaDueno/:categoriaId" element={<VerTipoProductoCartaDueno />} />
+        <Route path="/categoriaVenta/:categoriaNombre/producto/:productoNombre" element={<VerProductoCartaDueno />} />
+        <Route path="/anadirProductoVenta" element={<PantallaAñadirProductoCarta />} />
+        <Route path="/editarProductoCartaDueno/:id" element={<EditarProductoCarta />} />
+        <Route path="/cartaEmpleado" element={<CartaEmpleado />} />
+        <Route path="/verTipoProductoCartaEmpleado/:categoriaId" element={<VerProductosVenta />} />
+        <Route path="/categoriaVenta/:categoriaNombre/productoVenta/:productoNombre" element={<VerProductoCartaEmpleado />} />
       </Routes>
     </Router>
   );
