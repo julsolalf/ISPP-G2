@@ -1,5 +1,6 @@
 package ispp_g2.gastrostock.testNegocio;
 
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -21,6 +22,7 @@ import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioRepository;
 import ispp_g2.gastrostock.negocio.NegocioService;
 import ispp_g2.gastrostock.dueno.Dueno;
+import ispp_g2.gastrostock.exceptions.ResourceNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -122,21 +124,20 @@ class NegocioServiceTest {
         // Arrange
         when(negocioRepository.findById(999)).thenReturn(Optional.empty());
 
-        // Act
-        Negocio result = negocioService.getById(999);
-
-        // Assert
-        assertNull(result);
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+            negocioService.getById(999);
+        });
+        assertEquals("El negocio no existe", exception.getMessage());
         verify(negocioRepository).findById(999);
     }
 
     @Test
     void testGetById_NullId() {
         // Arrange & Act
-        Negocio result = negocioService.getById(null);
-
-        // Assert
-        assertNull(result);
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+            negocioService.getById(null);
+        });
+        assertEquals("El negocio no existe", exception.getMessage());
         verify(negocioRepository).findById(null);
     }
 

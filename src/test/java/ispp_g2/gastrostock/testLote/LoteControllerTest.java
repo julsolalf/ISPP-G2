@@ -4,15 +4,26 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import ispp_g2.gastrostock.config.jwt.JwtService;
+import ispp_g2.gastrostock.dueno.DuenoService;
+import ispp_g2.gastrostock.empleado.EmpleadoService;
+import ispp_g2.gastrostock.exceptions.ExceptionHandlerController;
 import ispp_g2.gastrostock.lote.Lote;
 import ispp_g2.gastrostock.lote.LoteController;
 import ispp_g2.gastrostock.lote.LoteService;
+import ispp_g2.gastrostock.negocio.NegocioService;
 import ispp_g2.gastrostock.productoInventario.ProductoInventario;
 import ispp_g2.gastrostock.reabastecimiento.Reabastecimiento;
+import ispp_g2.gastrostock.reabastecimiento.ReabastecimientoService;
+import ispp_g2.gastrostock.user.AuthoritiesService;
+import ispp_g2.gastrostock.user.UserService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -22,6 +33,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -36,35 +48,55 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(LoteController.class)
+@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
-public class LoteControllerTest {
+class LoteControllerTest {
 
-    @Autowired
     private MockMvc mockMvc;
     
-    @MockBean
+    @Mock
     private LoteService loteService;
 
-    @MockBean
-    private JwtService jwtService;
-    
-    @MockBean
-    private AuthenticationProvider authenticationProvider;
-    
-    @MockBean
+    @Mock
+    private UserService userService;
+
+    @Mock 
+    private AuthoritiesService authorityService;
+
+    @Mock
+    private NegocioService negocioService;
+
+    @Mock
+    private ReabastecimientoService reabastecimientoService;
+
+    @Mock
+    private DuenoService duenoService;
+
+    @Mock
+    private EmpleadoService empleadoService;
+        
+    @Mock
     private UserDetailsService userDetailsService;
     
     @Autowired
     private ObjectMapper objectMapper;
     
+    @InjectMocks
+    private LoteController loteController;
+
     private Lote lote1, lote2, lote3;
     private ProductoInventario producto;
     private Reabastecimiento reabastecimiento;
     
     @BeforeEach
     void setUp() {
+         // Configurar MockMvc
+        mockMvc = MockMvcBuilders.standaloneSetup(loteController)
+                .setControllerAdvice(new ExceptionHandlerController())
+                .build();
+        
+        // Configurar ObjectMapper
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         
@@ -102,8 +134,7 @@ public class LoteControllerTest {
         lote3.setProducto(producto);
         lote3.setReabastecimiento(reabastecimiento);
 
-        when(jwtService.getUserNameFromJwtToken(anyString())).thenReturn("admin");
-        when(jwtService.validateJwtToken(anyString(), any())).thenReturn(true);
+
     }
     
     // TESTS PARA findAll

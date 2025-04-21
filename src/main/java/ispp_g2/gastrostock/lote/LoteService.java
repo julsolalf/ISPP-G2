@@ -50,6 +50,11 @@ public class LoteService {
         return loteRepository.findByReabastecimientoId(reabastecimiento);
     }
 
+    @Transactional(readOnly = true)
+    public List<Lote> getLotesCaducadosByNegocioId(Integer negocioId, LocalDate fechaActual) {
+        return loteRepository.findCaducadosByNegocioId(negocioId, fechaActual); 
+    }
+
     @Transactional
     public Lote save(Lote lote) {
         return loteRepository.save(lote);

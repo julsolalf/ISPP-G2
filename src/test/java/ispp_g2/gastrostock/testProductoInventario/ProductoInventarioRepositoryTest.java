@@ -19,6 +19,8 @@ import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioRepository;
 import ispp_g2.gastrostock.productoInventario.ProductoInventario;
 import ispp_g2.gastrostock.productoInventario.ProductoInventarioRepository;
+import ispp_g2.gastrostock.proveedores.Proveedor;
+import ispp_g2.gastrostock.proveedores.ProveedorRepository;
 import ispp_g2.gastrostock.user.Authorities;
 import ispp_g2.gastrostock.user.AuthoritiesRepository;
 import ispp_g2.gastrostock.user.User;
@@ -46,12 +48,17 @@ class ProductoInventarioRepositoryTest {
     @Autowired
     private AuthoritiesRepository authoritiesRepository;
 
+    @Autowired
+    private ProveedorRepository proveedorRepository;
+
     private Categoria categoriaBebidas;
     private Categoria categoriaAlimentos;
     
     private ProductoInventario prod1;
     private ProductoInventario prod2;
     private ProductoInventario prod3;
+
+    private Proveedor  proveedor1;
     
     @BeforeEach
     void setUp() {
@@ -98,9 +105,18 @@ class ProductoInventarioRepositoryTest {
         categoriaAlimentos.setNegocio(negocio1);
         categoriaAlimentos.setPertenece(Pertenece.INVENTARIO);
         categoriaRepository.save(categoriaAlimentos);
-        
+
+        proveedor1 = new Proveedor();
+        proveedor1.setName("Proveedor A");
+        proveedor1.setEmail("proveedor@gmail.com");
+        proveedor1.setTelefono("123456789");
+        proveedor1.setDireccion("Calle Proveedor 1");
+        proveedor1.setNegocio(negocio1);
+        proveedor1 = proveedorRepository.save(proveedor1);
+
         prod1 = new ProductoInventario();
         prod1.setName("Cerveza");
+        prod1.setProveedor(proveedor1);
         prod1.setCategoria(categoriaBebidas);
         prod1.setPrecioCompra(10.5);
         prod1.setCantidadDeseada(100);
@@ -108,6 +124,7 @@ class ProductoInventarioRepositoryTest {
         
         prod2 = new ProductoInventario();
         prod2.setName("Agua Mineral");
+        prod2.setProveedor(proveedor1);
         prod2.setCategoria(categoriaBebidas);
         prod2.setPrecioCompra(5.0);
         prod2.setCantidadDeseada(200);
@@ -115,6 +132,7 @@ class ProductoInventarioRepositoryTest {
         
         prod3 = new ProductoInventario();
         prod3.setName("Pan");
+        prod3.setProveedor(proveedor1);
         prod3.setCategoria(categoriaAlimentos);
         prod3.setPrecioCompra(2.0);
         prod3.setCantidadDeseada(50);
@@ -224,6 +242,7 @@ class ProductoInventarioRepositoryTest {
         nuevoProd.setCategoria(categoriaBebidas);
         nuevoProd.setPrecioCompra(15.0);
         nuevoProd.setCantidadDeseada(50);
+        nuevoProd.setProveedor(proveedor1);
         nuevoProd.setCantidadAviso(5);
 
         ProductoInventario savedProd = productoInventarioRepository.save(nuevoProd);

@@ -66,7 +66,7 @@ class UserRepositoryTest {
     
     @Test
     void testFindByUsername_Success() {
-        User found = userRepository.findByUsername("john");
+        User found = userRepository.findByUsername("john").orElse(null);
         assertNotNull(found, "El usuario debería existir.");
         assertEquals("john", found.getUsername());
         assertEquals("user", found.getAuthority().getAuthority());
@@ -74,7 +74,7 @@ class UserRepositoryTest {
     
     @Test
     void testFindByUsername_NotFound() {
-        User notFound = userRepository.findByUsername("nonexistent");
+        User notFound = userRepository.findByUsername("nonexistent").orElse(null);
         assertNull(notFound, "No se debería encontrar un usuario inexistente.");
     }
     
@@ -212,7 +212,7 @@ class UserRepositoryTest {
     
     @Test
     void testFindByUsernameWithNull() {
-        User found = userRepository.findByUsername(null);
+        User found = userRepository.findByUsername(null).orElse(null);
         assertNull(found, "Pasar null debería devolver null o arrojar excepción (según implementación).");
     }
     

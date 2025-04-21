@@ -10,6 +10,7 @@ import ispp_g2.gastrostock.ingrediente.Ingrediente;
 import ispp_g2.gastrostock.ingrediente.IngredienteRepository;
 import ispp_g2.gastrostock.lote.Lote;
 import ispp_g2.gastrostock.lote.LoteRepository;
+import ispp_g2.gastrostock.pedido.Pedido;
 import ispp_g2.gastrostock.pedido.PedidoRepository;
 import ispp_g2.gastrostock.productoInventario.ProductoInventario;
 import ispp_g2.gastrostock.productoVenta.ProductoVentaRepository;
@@ -119,6 +120,9 @@ public class LineaDePedidoService {
                 restarInventario(lotes, cantidadGastada, 0);
                 loteRepository.saveAll(lotes);
             }
+            Pedido pedido = lineaDePedido.getPedido();
+            pedido.setPrecioTotal(pedido.getPrecioTotal() + lineaDePedido.getPrecioLinea());
+            pedidoRepository.save(pedido);
             return lineaDePedidoRepository.save(lineaDePedido);
         }
     }

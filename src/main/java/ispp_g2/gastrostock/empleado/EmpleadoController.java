@@ -2,17 +2,22 @@ package ispp_g2.gastrostock.empleado;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.regex.Pattern;
 
 import ispp_g2.gastrostock.dueno.Dueno;
 import ispp_g2.gastrostock.dueno.DuenoService;
+import ispp_g2.gastrostock.exceptions.BadRequestException;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioService;
+import ispp_g2.gastrostock.user.AuthoritiesService;
 import ispp_g2.gastrostock.user.User;
 import ispp_g2.gastrostock.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,17 +28,22 @@ public class EmpleadoController {
     private final UserService userService;
     private final NegocioService negocioService;
     private final DuenoService duenoService;
+    private final PasswordEncoder encoder;
+    private final AuthoritiesService authoritiesService;
 
-    private final String adminAuth ="admin";
-    private final String empleadoAuth ="empleado";
-    private final String duenoAuth = "dueno";
+    private static final String adminAuth ="admin";
+    private static final String empleadoAuth ="empleado";
+    private static final String duenoAuth = "dueno";
 
     @Autowired
-    public EmpleadoController(EmpleadoService empleadoService, UserService userService, NegocioService negocioService,DuenoService duenoService) {
+    public EmpleadoController(EmpleadoService empleadoService, UserService userService, NegocioService negocioService,
+    DuenoService duenoService, PasswordEncoder encoder, AuthoritiesService authoritiesService) {
         this.empleadoService = empleadoService;
         this.userService = userService;
         this.negocioService = negocioService;
         this.duenoService = duenoService;
+        this.encoder = encoder;
+        this.authoritiesService = authoritiesService;
     }
 
     @GetMapping
@@ -352,20 +362,71 @@ public class EmpleadoController {
         if(empleadoDTO==null)
             throw new IllegalArgumentException("Empleado no puede ser nulo");
 
+        if(!validarPassword(empleadoDTO.getPassword())) {
+            throw new BadRequestException("La contraseña debe tener entre 8 y 32 caracteres, 1 mayúscula, " +
+            "1 minúscula, un número y un caracter especial");
+        }
+        if(!validarTelefono(empleadoDTO.getNumTelefono())) {
+            throw new BadRequestException("El teléfono debe ser correcto");
+        }
+
         Negocio negocio = negocioService.getById(empleadoDTO.getNegocio());
+        if(negocio == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         if( !((user.getAuthority().getAuthority().equals(adminAuth)) ||
                 (user.getAuthority().getAuthority().equals(duenoAuth) && dueno.getId().equals(negocio.getDueno().getId())))){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-        if(negocio == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        Empleado empleado = empleadoService.convertirDTOEmpleado(empleadoDTO, negocio);
-        if(userService.findUserByUsername(empleadoDTO.getUsername())!=null){
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
+        
+        User newUser = new User();
+        newUser.setUsername(empleadoDTO.getUsername());
+        newUser.setPassword(encoder.encode(empleadoDTO.getPassword()));
+        newUser.setAuthority(authoritiesService.findByAuthority(empleadoAuth));
+        userService.saveUser(newUser);
+        
+        Empleado empleado = new Empleado();
+        empleado.setFirstName(empleadoDTO.getFirstName());
+        empleado.setLastName(empleadoDTO.getLastName());
+        empleado.setEmail(empleadoDTO.getEmail());
+        empleado.setNegocio(negocio);
+        empleado.setUser(newUser);
+        empleado.setNumTelefono(empleadoDTO.getNumTelefono());
+        empleado.setTokenEmpleado(generarToken()+newUser.getId());
+        empleado.setDescripcion(empleadoDTO.getDescripcion());
+        
 
         return new ResponseEntity<>(empleadoService.saveEmpleado(empleado), HttpStatus.CREATED);
+    }
+
+    private boolean validarPassword(String password) {
+        Pattern pattern = Pattern.compile(
+            "^(?=.*[a-z])" +
+            "(?=.*[A-Z])" +
+            "(?=.*\\d)" +
+            "(?=.*[#$@!%&?¡\"+,.:;='^|~_()¿{}\\[\\]\\\\-])" +
+            ".{8,32}$"
+        );
+        return pattern.matcher(password).matches();
+    }
+
+    private boolean validarTelefono(String telefono) {
+        Pattern pattern = Pattern.compile("^[6789]\\d{8}$");
+        return pattern.matcher(telefono).matches();
+    }
+
+
+    private String generarToken() {
+        String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        Integer l = 30;
+        Random r = new Random();
+
+        StringBuilder sb = new StringBuilder(l);
+        for (int i = 0; i < l; i++) {
+            int index = r.nextInt(caracteres.length());
+            sb.append(caracteres.charAt(index));
+        }
+
+        return "gst-" + sb.toString();
     }
 
     private boolean checkUsernameNonAvailable(String username, Integer id){
@@ -402,7 +463,7 @@ public class EmpleadoController {
         }
 
         // Convert the DTO to an employee
-        Empleado empleado = empleadoService.convertirDTOEmpleado(empleadoDTO,negocio);
+        Empleado empleado = empleadoService.convertirDTOEmpleado(empleadoDTO);
         empleado.setId(id);
         // Check if the username is available
         if(checkUsernameNonAvailable(empleadoDTO.getUsername(),id)){
