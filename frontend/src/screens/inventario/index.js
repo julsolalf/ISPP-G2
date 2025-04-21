@@ -15,6 +15,7 @@ function Inventario() {
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
   const toggleNotifications = () => setShowNotifications(!showNotifications);
   const toggleUserOptions = () => setShowUserOptions(!showUserOptions);
+  const [proveedoresProximos, setProveedoresProximos] = useState([]);
 
   const token = localStorage.getItem("token");
   const negocioId = localStorage.getItem("negocioId");
@@ -41,6 +42,11 @@ function Inventario() {
   };
 
   useEffect(() => {
+    const storedReabastecimientos = localStorage.getItem("reabastecimientos");
+    if (storedReabastecimientos) {
+      setProveedoresProximos(JSON.parse(storedReabastecimientos));
+    }
+
     const cargarDatos = async () => {
       const datosCategorias = await obtenerCategorias();
       setCategorias(datosCategorias);
@@ -108,9 +114,14 @@ function Inventario() {
               <button className="close-btn" onClick={toggleNotifications}>X</button>
             </div>
             <ul>
-              <li>Notificación 1</li>
-              <li>Notificación 2</li>
-              <li>Notificación 3</li>
+              {proveedoresProximos.length > 0 ? (
+                proveedoresProximos.map((proveedor, index) => (
+                  
+                  <li key={index}>Reabastecimiento proximo: {proveedor}</li> // Mostrar los proveedores que están en el localStorage
+         ))
+              ) : (
+                <li>No hay notificaciones</li> // En caso de que no haya proveedores en las notificaciones
+              )}
             </ul>
           </div>
         )}
