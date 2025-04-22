@@ -39,7 +39,7 @@ public class Subscripcion extends BaseEntity implements Serializable {
     @JsonBackReference
     @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "user_id", unique = true)
-	private User user;
+    private User user;
     
     public boolean isActive() {
         return status == SubscripcionStatus.ACTIVE && 

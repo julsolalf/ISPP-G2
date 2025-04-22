@@ -10,12 +10,32 @@ function VerProducto() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [lotes, setLotes] = useState([]);
   const token = localStorage.getItem("token");
 
   const handleLogout = () => {
     localStorage.clear();
     navigate("/"); // Redirigir a la pantalla de inicio de sesión
   };
+
+  const obtenerLotes = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/lotes/producto/${localStorage.getItem("productoId")}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Error al obtener el lote");
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Error al obtener el lote:", error);
+      return null;
+    }
+  }
 
   const obtenerProducto = async () => {
     try {
@@ -39,7 +59,11 @@ function VerProducto() {
   useEffect(() => {
     const cargarProducto = async () => {
       const data = await obtenerProducto();
-      setProducto(data);
+      if (data) {
+        setProducto(data);
+        const lote = await obtenerLotes(data.id);
+        setLotes(lote);
+      }
     };
     cargarProducto();
   }, []);
@@ -135,6 +159,28 @@ function VerProducto() {
           <p><strong>Cantidad Deseada:</strong> {producto.cantidadDeseada}</p>
           <p><strong>Cantidad Aviso:</strong> {producto.cantidadAviso}</p>
           <p><strong>Proveedor:</strong> {producto.proveedor.name}</p>
+          {lotes && lotes.length > 0 ? (
+  <div>
+    <p className="lotes-titulo">Lotes:</p>
+    <ul>
+      {lotes.map((lote, index) => (
+        <li key={index}>
+          <p><strong>Cantidad:</strong> {lote.cantidad}</p>
+          <p>
+  <strong>Fecha de caducidad:</strong>{" "}
+  {new Date(lote.fechaCaducidad + "T00:00:00").toLocaleDateString("es-ES", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  })}
+</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+) : (
+  <p>No hay lotes disponibles para este producto.</p>
+)}
 
           {producto.cantidadDeseada <= producto.cantidadAviso && (
             <p className="producto-alerta">⚠ Stock bajo</p>
