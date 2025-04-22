@@ -3,6 +3,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { Bell, User } from "lucide-react";
 import "../../css/listados/styles.css";
 
+const negocioId = localStorage.getItem("negocioId");
+
 function AlertaStock() {
   const navigate = useNavigate();
   const [productos, setProductos] = useState([]);
@@ -24,7 +26,7 @@ function AlertaStock() {
   const cargarDatos = async () => {
     try {
       const [productosRes, lotesRes] = await Promise.all([
-        fetch("http://localhost:8080/api/productosInventario", {
+        fetch(`http://localhost:8080/api/productosInventario/negocio/${negocioId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
