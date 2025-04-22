@@ -270,7 +270,7 @@ public class ProductoInventarioController {
 				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 			}
 		}
-		if (productoInventario == null)
+		if (productoInventario == null || productoInventario.isEmpty())
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		return new ResponseEntity<>(productoInventario, HttpStatus.OK);
 	}
