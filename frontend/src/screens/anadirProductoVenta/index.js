@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
@@ -230,8 +230,10 @@ function PantallaAñadirProductoCarta() {
             </ul>
           </div>
         )}
-        <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
-        <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+        <button onClick={() => navigate("/cartaDueno")} className="back-button">⬅ Volver</button>
+        <Link to="/inicioDueno">
+          <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+        </Link>        
         <h1 className="title">GastroStock</h1>
         <h2>Añadir Producto</h2>
 

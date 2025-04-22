@@ -16,7 +16,7 @@ const obtenerCategorias = async () => {
       }
       const response = await fetch(`http://localhost:8080/api/categorias/negocio/${negocioId}/inventario`);*/
   
-      const response = await fetch(`http://localhost:8080/api/categorias/negocio/${negocioId}`,{
+      const response = await fetch(`http://localhost:8080/api/categorias/negocio/${negocioId}/venta`,{
         method: "GET",
         headers: {
           "Content-Type": "application/json",
