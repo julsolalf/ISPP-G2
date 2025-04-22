@@ -248,6 +248,66 @@ public class ProductoInventarioController {
 		return new ResponseEntity<>(productoInventario, HttpStatus.OK);
 	}
 
+	@GetMapping("/categoriaId/{categoriaId}")
+	public ResponseEntity<List<ProductoInventario>> findByCategoriaId(@PathVariable("categoriaId") Integer categoriaId) {
+		User user = userService.findCurrentUser();
+		List<ProductoInventario> productoInventario;
+		switch (user.getAuthority().getAuthority()){
+			case admin -> productoInventario = productoInventarioService.getProductoInventarioByCategoriaId(categoriaId);
+			case empleado -> {
+				Empleado currEmpleado = empleadoService.getEmpleadoByUser(user.getId());
+				productoInventario = productoInventarioService.getProductoInventarioByNegocioId(currEmpleado.getNegocio().getId()).stream()
+						.filter(p -> p.getCategoria().getId().equals(categoriaId))
+						.toList();
+			}
+			case dueno -> {
+				Dueno currDueno = duenoService.getDuenoByUser(user.getId());
+				productoInventario = productoInventarioService.getProductoInventarioByDuenoId(currDueno.getId()).stream()
+						.filter(p -> p.getCategoria().getId().equals(categoriaId))
+						.toList();
+			}
+			default -> {
+				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			}
+		}
+		if (productoInventario == null)
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(productoInventario, HttpStatus.OK);
+	}
+
+	@GetMapping("/dto/categoriaId/{categoriaId}")
+	public ResponseEntity<List<ProductoInventarioDTO>> findByCategoriaIdDTO(@PathVariable("categoriaId") Integer categoriaId) {
+		User user = userService.findCurrentUser();
+		List<ProductoInventario> productoInventario;
+		switch (user.getAuthority().getAuthority()){
+			case admin -> productoInventario = productoInventarioService.getProductoInventarioByCategoriaId(categoriaId);
+			case empleado -> {
+				Empleado currEmpleado = empleadoService.getEmpleadoByUser(user.getId());
+				productoInventario = productoInventarioService.getProductoInventarioByNegocioId(currEmpleado.getNegocio().getId()).stream()
+						.filter(p -> p.getCategoria().getId().equals(categoriaId))
+						.toList();
+			}
+			case dueno -> {
+				Dueno currDueno = duenoService.getDuenoByUser(user.getId());
+				productoInventario = productoInventarioService.getProductoInventarioByDuenoId(currDueno.getId()).stream()
+						.filter(p -> p.getCategoria().getId().equals(categoriaId))
+						.toList();
+			}
+			default -> {
+				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			}
+		}
+		if (productoInventario == null)
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+		List<ProductoInventarioDTO> productosInventarioDto = productoInventario
+				.stream()
+				.map(productoInventarioService::convertirProductoInventarioDTO)
+				.toList();
+
+		return new ResponseEntity<>(productosInventarioDto, HttpStatus.OK);
+	}
+
     @GetMapping("/name/{name}")
 	public ResponseEntity<ProductoInventario> findByName(@PathVariable("name") String name) {
 		User user = userService.findCurrentUser();
