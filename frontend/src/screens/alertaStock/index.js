@@ -67,9 +67,7 @@ function AlertaStock() {
           };
         })
         .filter((producto) =>
-          producto.cantidad < producto.cantidadAviso ||
-          producto.cantidad < producto.cantidadDeseada ||
-          producto.cantidad < producto.cantidadReserva
+          producto.cantidad < producto.cantidadAviso 
         );
 
       setProductos(productosFiltrados);
