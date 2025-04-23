@@ -4,6 +4,7 @@ import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+import Notificaciones from "../../components/Notifications";
 
 function Inventario() {
   const navigate = useNavigate();
@@ -15,7 +16,6 @@ function Inventario() {
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
   const toggleNotifications = () => setShowNotifications(!showNotifications);
   const toggleUserOptions = () => setShowUserOptions(!showUserOptions);
-  const [proveedoresProximos, setProveedoresProximos] = useState([]);
 
   const token = localStorage.getItem("token");
   const negocioId = localStorage.getItem("negocioId");
@@ -42,11 +42,7 @@ function Inventario() {
   };
 
   useEffect(() => {
-    const storedReabastecimientos = localStorage.getItem("reabastecimientos");
-    if (storedReabastecimientos) {
-      setProveedoresProximos(JSON.parse(storedReabastecimientos));
-    }
-
+    
     const cargarDatos = async () => {
       const datosCategorias = await obtenerCategorias();
       setCategorias(datosCategorias);
@@ -108,22 +104,10 @@ function Inventario() {
         </div>
 
         {showNotifications && (
-          <div className="notification-bubble">
-            <div className="notification-header">
-              <strong>Notificaciones</strong>
-              <button className="close-btn" onClick={toggleNotifications}>X</button>
-            </div>
-            <ul>
-              {proveedoresProximos.length > 0 ? (
-                proveedoresProximos.map((proveedor, index) => (
-                  
-                  <li key={index}>Reabastecimiento proximo: {proveedor}</li> // Mostrar los proveedores que están en el localStorage
-         ))
-              ) : (
-                <li>No hay notificaciones</li> // En caso de que no haya proveedores en las notificaciones
-              )}
-            </ul>
-          </div>
+          <div className="icon-container-right">
+          <Notificaciones />
+          <User size={30} className="icon" onClick={toggleUserOptions} />
+        </div>
         )}
 
         {showUserOptions && (

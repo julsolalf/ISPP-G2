@@ -3,15 +3,15 @@ import { useEffect } from "react";
 import { useNavigate, Link  } from "react-router-dom";
 import { Bell, User } from "lucide-react";
 import "../../css/inicio/styles.css";
+import Notificaciones from "../../components/Notifications";
 
 function HomeScreen() {
   const navigate = useNavigate();
-  const [showReabastecimientoModal, setShowReabastecimientoModal] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
+  const [showReabastecimientoModal, setShowReabastecimientoModal] = useState(false);
   const [proveedoresProximos, setProveedoresProximos] = useState([]);
-
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
@@ -28,57 +28,57 @@ function HomeScreen() {
 
   useEffect(() => {
     const fetchReabastecimientos = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const negocioId = localStorage.getItem("negocioId");
-  
-        const response = await fetch(`http://localhost:8080/api/reabastecimientos/negocio/${negocioId}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-  
-        if (response.ok) {
-          const data = await response.json();
-          
-          const hoy = new Date(); // <-- FECHA FAKE para probar poner "2025-05-30"
-          const tresDiasDespues = new Date(hoy);
-          tresDiasDespues.setDate(hoy.getDate() + 7);
-  
-          const reabastecimientosProximos = data.filter((r) => {
-            const fecha = new Date(r.fecha);
-            return fecha >= hoy && fecha <= tresDiasDespues;
+        try {
+          const token = localStorage.getItem("token");
+          const negocioId = localStorage.getItem("negocioId");
+      
+          const response = await fetch(`http://localhost:8080/api/reabastecimientos/negocio/${negocioId}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
           });
-  
-          if (reabastecimientosProximos.length > 0) {
-            setShowReabastecimientoModal(true);
-            const proveedores = [...new Set(reabastecimientosProximos.map((r) => r.proveedor.name))];
-            setProveedoresProximos(proveedores);
-            
-            // Guardar notificaciones en localStorage
-            localStorage.setItem('reabastecimientos', JSON.stringify(proveedores));
+      
+          if (response.ok) {
+            const data = await response.json();
+      
+            const hoy = new Date(); // Para uno de ejemplo poner "2025-05-30"
+            const tresDiasDespues = new Date(hoy);
+            tresDiasDespues.setDate(hoy.getDate() + 7);
+      
+            const reabastecimientosProximos = data.filter((r) => {
+              const fecha = new Date(r.fecha);
+              return fecha >= hoy && fecha <= tresDiasDespues;
+            });
+      
+            if (reabastecimientosProximos.length > 0) {
+              setShowReabastecimientoModal(true);
+              const proveedores = [...new Set(reabastecimientosProximos.map((r) => r.proveedor.name))];
+              setProveedoresProximos(proveedores);
+              localStorage.setItem('reabastecimientos', JSON.stringify(proveedores));
+            } else {
+              // Limpiar notificaciones si ya no hay reabastecimientos próximos
+              localStorage.removeItem('reabastecimientos');
+              setProveedoresProximos([]);
+            }
           }
+        } catch (error) {
+          console.error("Error al obtener reabastecimientos:", error);
         }
-      } catch (error) {
-        console.error("Error al obtener reabastecimientos:", error);
-      }
-    };
-  
-    fetchReabastecimientos();
-  }, []);
-  
-  useEffect(() => {
-    // Verificar si hay notificaciones en localStorage
-    const storedReabastecimientos = localStorage.getItem('reabastecimientos');
+      };    
+    
+      fetchReabastecimientos();
+
+
+    const storedReabastecimientos = localStorage.getItem("reabastecimientos");
     if (storedReabastecimientos) {
       setProveedoresProximos(JSON.parse(storedReabastecimientos));
-      setShowNotifications(true);  // Mostrar notificaciones si existen
+    } else {
+      setProveedoresProximos([]);
     }
   }, []);
     
-
   return (
     <div
       className="home-container"
@@ -100,22 +100,10 @@ function HomeScreen() {
         </div>
 
         {showNotifications && (
-          <div className="notification-bubble">
-            <div className="notification-header">
-              <strong>Notificaciones</strong>
-              <button className="close-btn" onClick={toggleNotifications}>X</button>
-            </div>
-            <ul>
-              {proveedoresProximos.length > 0 ? (
-                proveedoresProximos.map((proveedor, index) => (
-                  
-                  <li key={index}>Reabastecimiento proximo: {proveedor}</li> // Mostrar los proveedores que están en el localStorage
-         ))
-              ) : (
-                <li>No hay notificaciones</li> // En caso de que no haya proveedores en las notificaciones
-              )}
-            </ul>
-          </div>
+          <div className="icon-container-right">
+          <Notificaciones />
+          <User size={30} className="icon" onClick={toggleUserOptions} />
+        </div>
         )}
 
         {showUserOptions && (
@@ -153,6 +141,7 @@ function HomeScreen() {
             <button className="menu-btn" onClick={() => navigate("/carta")}><span role="img" aria-label="carta">🍽️</span> Carta</button>
             <button className="menu-btn" onClick={() => navigate("/proveedores")}><span role="img" aria-label="proveedores">📋</span> Proveedores</button>
         </div>
+        
         {showReabastecimientoModal && (
             <div className="modal-overlay">
               <div className="modal">
