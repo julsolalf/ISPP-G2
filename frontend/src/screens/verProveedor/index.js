@@ -26,10 +26,31 @@ const obtenerProveedor = async () => {
   }
 };
 
+const obtenerDiasRepartoProveedor = async () => {
+  try {
+    const idProveedor = localStorage.getItem("proveedorId");
+    const response = await fetch(`http://localhost:8080/api/diasReparto/proveedor/${idProveedor}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Error al obtener los días de reparto del proveedor");
+    }
+    return await response.json(); // Se espera un array tipo ["Lunes", "Miércoles", ...]
+  } catch (error) {
+    console.error("Error al obtener los días de reparto:", error);
+    return [];
+  }
+};
+
 function VerProveedor() {
   const { id } = useParams(); 
   const navigate = useNavigate();
   const [proveedor, setProveedor] = useState(null);
+  const [diasReparto, setDiasReparto] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false); 
@@ -42,12 +63,17 @@ function VerProveedor() {
 
 
   useEffect(() => {
-    const cargarProveedor = async () => {
-      const data = await obtenerProveedor();
-      setProveedor(data);
+    const cargarDatos = async () => {
+      const dataProveedor = await obtenerProveedor();
+      setProveedor(dataProveedor);
+
+      const dias = await obtenerDiasRepartoProveedor();
+      const diasFormateados = dias.map(d => d.diaSemana); // extrae solo los nombres
+      setDiasReparto(diasFormateados);
     };
-    cargarProveedor();
+    cargarDatos();
   }, [id]);
+  
 
   const eliminarProveedor = async () => {
     try {
@@ -129,11 +155,13 @@ function VerProveedor() {
           <p><strong>Email:</strong> {proveedor.email}</p>
           <p><strong>Teléfono:</strong> {proveedor.telefono}</p>
           <p><strong>Dirección:</strong> {proveedor.direccion}</p>
+          <p><strong>Días de Reparto:</strong> {diasReparto.length > 0 ? diasReparto.join(", ") : "No especificados"}</p>
           
           <button style={{ background: "#157E03", color: "white" }} onClick={() => {
             localStorage.setItem("proveedorId", proveedor.id)
             navigate(`/editarProveedor/${proveedor.id}`)}}>Editar Proveedor</button>
           <button style={{ background: "#9A031E", color: "white" }} onClick={() => setShowDeleteModal(true)}>Eliminar Proveedor</button>
+          <button style={{ background: "#F57C20", color: "white" }} onClick={() => navigate(`/verCarritoProveedor/${proveedor.id}`)}>Ver Carrito</button>
         </div>
 
         {showDeleteModal && (
