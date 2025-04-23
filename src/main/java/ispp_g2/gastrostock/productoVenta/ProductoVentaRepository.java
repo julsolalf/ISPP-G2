@@ -16,6 +16,9 @@ public interface ProductoVentaRepository extends CrudRepository<ProductoVenta,In
     @Query("SELECT p FROM ProductoVenta p WHERE p.categoria.name = ?1")
     List<ProductoVenta> findProductoVentaByCategoriaVenta(String categoriaVenta);
 
+    @Query("SELECT p FROM ProductoVenta p WHERE p.categoria.id = ?1")
+    List<ProductoVenta> findProductoVentaByCategoriaId(Integer categoriaId);
+
     @Query("SELECT p FROM ProductoVenta p WHERE p.precioVenta = ?1")
     List<ProductoVenta> findProductoVentaByPrecioVenta(Double precioVenta);
 
