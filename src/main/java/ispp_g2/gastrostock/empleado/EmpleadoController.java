@@ -430,7 +430,7 @@ public class EmpleadoController {
     }
 
     private boolean checkUsernameNonAvailable(String username, Integer id){
-        if(userService.findUserByUsername(username) == null){
+        if(userService.findUserByUsernameNull(username) == null){
             return false;
         }
         Integer empleadoToUpdate = userService.findUserByUsername(username).getId();
@@ -441,38 +441,42 @@ public class EmpleadoController {
     @PutMapping("/{id}")
     public ResponseEntity<Empleado> update(@PathVariable("id") Integer id, @RequestBody @Valid  EmpleadoDTO empleadoDTO) {
         User user = userService.findCurrentUser();
-        Dueno dueno = duenoService.getDuenoByUser(user.getId());
-
-        // Check if the data is empty
         if(empleadoDTO==null)
             throw new IllegalArgumentException("Empleado no puede ser nulo");
-        Negocio negocio = negocioService.getById(empleadoDTO.getNegocio());
-        // Check if the employee exists
-        Empleado empleadoToUpdate = empleadoService.getEmpleadoById(id);
-        if(empleadoToUpdate == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
+        if(!validarPassword(empleadoDTO.getPassword())) {
+            throw new BadRequestException("La contraseña debe tener entre 8 y 32 caracteres, 1 mayúscula, " +
+            "1 minúscula, un número y un caracter especial");
+        }
+        if(!validarTelefono(empleadoDTO.getNumTelefono())) {
+            throw new BadRequestException("El teléfono debe ser correcto");
+        }
+        if(checkUsernameNonAvailable(empleadoDTO.getUsername(), id)){
+            throw new BadRequestException("El nombre de usuario ya está en uso"); 
+        }
+
+        Empleado toUpdate = empleadoService.getEmpleadoById(id);
         if( !((user.getAuthority().getAuthority().equals(adminAuth)) ||
-                // El empleado para actualizar pertenece al negocio del usuario y el negocio al que se le asigna el empleado esta dentro de los negocios del dueno
-                (user.getAuthority().getAuthority().equals(duenoAuth) && dueno.getId().equals(empleadoToUpdate.getNegocio().getDueno().getId()) &&
-                        negocioService.getByDueno(dueno.getId()).contains(negocio)) ||
-                // El empleado para actualizar es el mismo que el usuario, y no cambia de negocio
-                (user.getAuthority().getAuthority().equals(empleadoAuth) && empleadoToUpdate.getUser().getId().equals(user.getId()) &&
-                        empleadoDTO.getNegocio().equals(empleadoToUpdate.getNegocio().getId())))){
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                (user.getAuthority().getAuthority().equals(duenoAuth) && user.getId().equals(toUpdate.getNegocio().getDueno().getUser().getId()))||
+                (user.getAuthority().getAuthority().equals(empleadoAuth) && empleadoService.getEmpleadoByUser(user.getId()).getId().equals(id)))){
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
+        User newUser = new User();
+        newUser.setUsername(empleadoDTO.getUsername());
+        newUser.setPassword(encoder.encode(empleadoDTO.getPassword()));
+        userService.updateUser(toUpdate.getUser().getId(), newUser);
+        Empleado newEmpleado = new Empleado();
+        newEmpleado.setFirstName(empleadoDTO.getFirstName());
+        newEmpleado.setLastName(empleadoDTO.getLastName());
+        newEmpleado.setEmail(empleadoDTO.getEmail());
+        newEmpleado.setNumTelefono(empleadoDTO.getNumTelefono());
+        newEmpleado.setDescripcion(empleadoDTO.getDescripcion());
+        empleadoService.update(id, newEmpleado);
 
-        // Convert the DTO to an employee
-        Empleado empleado = empleadoService.convertirDTOEmpleado(empleadoDTO);
-        empleado.setId(id);
-        // Check if the username is available
-        if(checkUsernameNonAvailable(empleadoDTO.getUsername(),id)){
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
+        return new ResponseEntity<>(empleadoService.getEmpleadoById(id), HttpStatus.OK);
 
-        // Save the user
-        empleado.getUser().setId(empleadoService.getEmpleadoById(id).getUser().getId());
-        return new ResponseEntity<>(empleadoService.saveEmpleado(empleado), HttpStatus.OK);
+        
+       
     }
 
     @DeleteMapping("/{id}")
