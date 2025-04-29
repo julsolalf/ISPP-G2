@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import ispp_g2.gastrostock.diaReparto.DiaReparto;
 import ispp_g2.gastrostock.diaReparto.DiaRepartoRepository;
 import ispp_g2.gastrostock.diaReparto.DiaRepartoService;
+import ispp_g2.gastrostock.exceptions.ResourceNotFoundException;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.proveedores.Proveedor;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,11 +63,13 @@ class DiaRepartoServiceTest {
 
     @Test
     void testGetById_NonExistingId() {
+        // Dado que el repositorio no encuentra el ID
         when(diaRepartoRepository.findById(99)).thenReturn(Optional.empty());
-
-        DiaReparto result = diaRepartoService.getById(99);
-
-        assertNull(result);
+    
+        assertThrows(ResourceNotFoundException.class, () -> {
+            diaRepartoService.getById(99);
+        });
+    
         verify(diaRepartoRepository).findById(99);
     }
 

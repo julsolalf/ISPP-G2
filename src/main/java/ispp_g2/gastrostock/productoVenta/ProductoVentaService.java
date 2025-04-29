@@ -53,6 +53,11 @@ public class ProductoVentaService {
     }
 
     @Transactional(readOnly = true)
+    public List<ProductoVenta> getProductosVentaByCategoriaId(Integer categoriaId) {
+        return productoVentaRepository.findProductoVentaByCategoriaId(categoriaId);
+    }
+
+    @Transactional(readOnly = true)
     public List<ProductoVenta> getProductosVentaByPrecioVenta(Double precioVenta) {
         return productoVentaRepository.findProductoVentaByPrecioVenta(precioVenta);
     }
