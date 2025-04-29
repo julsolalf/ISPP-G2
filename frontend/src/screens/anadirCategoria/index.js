@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 import { MenuIconos } from "../../components/MenuIconos";
+import Notificaciones from "../../components/Notifications";
 
 function PantallaAnadirCategoria() {
   const navigate = useNavigate();
@@ -68,23 +69,16 @@ function PantallaAnadirCategoria() {
       }}
     >
       <div className="content">
-        <div className="icon-container-right">
-          <Bell size={30} className="icon" onClick={toggleNotifications} />
-          <User size={30} className="icon" onClick={toggleUserOptions} />
-        </div>
+         <div className="icon-container-right">
+                  <Bell size={30} className="icon" onClick={toggleNotifications} />
+                  <User size={30} className="icon" onClick={toggleUserOptions} />
+                </div>
 
         {showNotifications && (
-          <div className="notification-bubble">
-            <div className="notification-header">
-              <strong>Notificaciones</strong>
-              <button className="close-btn" onClick={toggleNotifications}>X</button>
-            </div>
-            <ul>
-              <li>Notificación 1</li>
-              <li>Notificación 2</li>
-              <li>Notificación 3</li>
-            </ul>
-          </div>
+          <div className="icon-container-right">
+          <Notificaciones />
+          <User size={30} className="icon" onClick={toggleUserOptions} />
+        </div>
         )}
 
         {showUserOptions && (
@@ -110,7 +104,7 @@ function PantallaAnadirCategoria() {
                 <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
                 <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
                 <h1 className="title">GastroStock</h1>
-                <MenuIconos/>
+        
                 <h1>Anadir categoría</h1>
 
         <form onSubmit={handleSubmit} className="form-container">

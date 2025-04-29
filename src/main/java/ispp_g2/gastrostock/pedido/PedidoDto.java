@@ -2,6 +2,7 @@ package ispp_g2.gastrostock.pedido;
 
 import java.time.LocalDateTime;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
@@ -14,12 +15,11 @@ public class PedidoDto {
 
     private Integer id;
 
-    @NotNull
     @PastOrPresent
     private LocalDateTime fecha;
 
     @NotNull
-    @Positive
+    @Min(0)
     private Double precioTotal;
 
     @NotNull

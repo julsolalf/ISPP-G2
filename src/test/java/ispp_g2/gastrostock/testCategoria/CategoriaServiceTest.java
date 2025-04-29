@@ -13,6 +13,7 @@ import ispp_g2.gastrostock.categorias.Categoria;
 import ispp_g2.gastrostock.categorias.CategoriaRepository;
 import ispp_g2.gastrostock.categorias.CategoriaService;
 import ispp_g2.gastrostock.categorias.Pertenece;
+import ispp_g2.gastrostock.exceptions.ResourceNotFoundException;
 import ispp_g2.gastrostock.negocio.Negocio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -82,11 +83,14 @@ class CategoriaServiceTest {
 
     @Test
     void testGetById_NotFound() {
+        // Dado que el repositorio devuelve vacío
         when(categoriaRepository.findById(99)).thenReturn(Optional.empty());
-
-        Categoria result = categoriaService.getById(99);
-
-        assertNull(result);
+    
+        // Entonces esperamos que getById lance ResourceNotFoundException
+        assertThrows(ResourceNotFoundException.class, () -> {
+            categoriaService.getById(99);
+        });
+    
         verify(categoriaRepository, times(1)).findById(99);
     }
 

@@ -1,7 +1,7 @@
 package ispp_g2.gastrostock.testReabastecimiento;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -26,20 +27,31 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import ispp_g2.gastrostock.dueno.Dueno;
+import ispp_g2.gastrostock.dueno.DuenoService;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.proveedores.Proveedor;
 import ispp_g2.gastrostock.reabastecimiento.Reabastecimiento;
 import ispp_g2.gastrostock.reabastecimiento.ReabastecimientoController;
 import ispp_g2.gastrostock.reabastecimiento.ReabastecimientoService;
+import ispp_g2.gastrostock.user.Authorities;
+import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserService;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
+@WithMockUser(username = "admin", roles = {"admin"})
 public class ReabastecimientoControllerTest {
 
     private MockMvc mockMvc;
 
     @Mock
     private ReabastecimientoService reabastecimientoService;
+
+    @Mock
+    private UserService userService;
+
+    @Mock
+    private DuenoService duenoService;
 
     @InjectMocks
     private ReabastecimientoController reabastecimientoController;
@@ -54,6 +66,10 @@ public class ReabastecimientoControllerTest {
     private Dueno dueno;
     private LocalDate fecha1;
     private LocalDate fecha2;
+    private User user;
+    private User adminUser;
+    private Authorities authority;
+    private Authorities adminAuth;
 
     @BeforeEach
     void setUp() {
@@ -66,6 +82,13 @@ public class ReabastecimientoControllerTest {
         objectMapper.registerModule(new JavaTimeModule());
         
 
+         adminUser = new User();
+         adminUser.setId(1);
+         adminUser.setUsername("adminUser");
+         adminAuth = new Authorities();
+         adminAuth.setAuthority("admin");
+         adminUser.setAuthority(adminAuth);
+
         // Crear dueno
         dueno = new Dueno();
         dueno.setId(1);
@@ -73,6 +96,7 @@ public class ReabastecimientoControllerTest {
         dueno.setLastName("García");
         dueno.setEmail("juan@example.com");
         dueno.setNumTelefono("652345678");
+        dueno.setUser(adminUser);
         dueno.setTokenDueno("TOKEN123");
         // Crear negocio
         negocio = new Negocio();
@@ -122,6 +146,7 @@ public class ReabastecimientoControllerTest {
     @Test
     void testFindAll_Success() throws Exception {
         // Given
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         when(reabastecimientoService.getAll()).thenReturn(reabastecimientos);
         
         // When & Then
@@ -138,6 +163,7 @@ public class ReabastecimientoControllerTest {
     @Test
     void testFindAll_NoContent() throws Exception {
         // Given
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         when(reabastecimientoService.getAll()).thenReturn(Collections.emptyList());
         
         // When & Then
@@ -152,6 +178,7 @@ public class ReabastecimientoControllerTest {
     @Test
     void testFindById_Success() throws Exception {
         // Given
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         when(reabastecimientoService.getById(1)).thenReturn(reabastecimiento1);
         
         // When & Then
@@ -167,6 +194,7 @@ public class ReabastecimientoControllerTest {
     @Test
     void testFindById_NotFound() throws Exception {
         // Given
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         when(reabastecimientoService.getById(999)).thenReturn(null);
         
         // When & Then
@@ -181,6 +209,7 @@ public class ReabastecimientoControllerTest {
     @Test
     void testFindByFecha_Success() throws Exception {
         // Given
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         List<Reabastecimiento> reabastecimientosFecha = Collections.singletonList(reabastecimiento1);
         when(reabastecimientoService.getByFecha(fecha1)).thenReturn(reabastecimientosFecha);
         
@@ -196,21 +225,25 @@ public class ReabastecimientoControllerTest {
     @Test
     void testFindByFecha_NotFound() throws Exception {
         // Given
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         LocalDate fechaNoExistente = LocalDate.of(2020, 1, 1);
-        when(reabastecimientoService.getByFecha(fechaNoExistente)).thenReturn(null);
+        when(reabastecimientoService.getByFecha(fechaNoExistente))
+            .thenReturn(Collections.emptyList());
         
         // When & Then
         mockMvc.perform(get("/api/reabastecimientos/fecha/2020-01-01"))
-                .andExpect(status().isNotFound());
+               .andExpect(status().isNotFound());
         
         verify(reabastecimientoService).getByFecha(fechaNoExistente);
     }
+    
         
     // TEST PARA findByFechaBetween()
     
     @Test
     void testFindByFechaBetween_Success() throws Exception {
         // Given
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         LocalDate startDate = LocalDate.of(2023, 3, 1);
         LocalDate endDate = LocalDate.of(2023, 5, 1);
         when(reabastecimientoService.getByFechaBetween(startDate, endDate)).thenReturn(reabastecimientos);
@@ -227,14 +260,16 @@ public class ReabastecimientoControllerTest {
     @Test
     void testFindByFechaBetween_NotFound() throws Exception {
         // Given
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         LocalDate startDate = LocalDate.of(2020, 1, 1);
-        LocalDate endDate = LocalDate.of(2020, 2, 1);
-        when(reabastecimientoService.getByFechaBetween(startDate, endDate)).thenReturn(null);
-        
+        LocalDate endDate   = LocalDate.of(2020, 2, 1);
+        when(reabastecimientoService.getByFechaBetween(startDate, endDate))
+            .thenReturn(Collections.emptyList());
+    
         // When & Then
         mockMvc.perform(get("/api/reabastecimientos/fecha/2020-01-01/2020-02-01"))
-                .andExpect(status().isNotFound());
-        
+               .andExpect(status().isNotFound());
+    
         verify(reabastecimientoService).getByFechaBetween(startDate, endDate);
     }
     
@@ -243,6 +278,7 @@ public class ReabastecimientoControllerTest {
     @Test
     void testFindByPrecioTotal_Success() throws Exception {
         // Given
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         List<Reabastecimiento> reabastecimientosPrecio = Collections.singletonList(reabastecimiento1);
         when(reabastecimientoService.getByPrecioTotal(1250.75)).thenReturn(reabastecimientosPrecio);
         
@@ -258,8 +294,9 @@ public class ReabastecimientoControllerTest {
     @Test
     void testFindByPrecioTotal_NotFound() throws Exception {
         // Given
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         Double precioNoExistente = 999.99;
-        when(reabastecimientoService.getByPrecioTotal(precioNoExistente)).thenReturn(null);
+        when(reabastecimientoService.getByPrecioTotal(precioNoExistente)).thenReturn(Collections.emptyList());
         
         // When & Then
         mockMvc.perform(get("/api/reabastecimientos/precioTotal/" + precioNoExistente))
@@ -273,6 +310,7 @@ public class ReabastecimientoControllerTest {
     @Test
     void testFindByReferencia_Success() throws Exception {
         // Given
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         List<Reabastecimiento> reabastecimientosReferencia = Collections.singletonList(reabastecimiento1);
         when(reabastecimientoService.getByReferencia("REF-001")).thenReturn(reabastecimientosReferencia);
         
@@ -288,8 +326,9 @@ public class ReabastecimientoControllerTest {
     @Test
     void testFindByReferencia_NotFound() throws Exception {
         // Given
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         String referenciaNoExistente = "REF-INVALID";
-        when(reabastecimientoService.getByReferencia(referenciaNoExistente)).thenReturn(null);
+        when(reabastecimientoService.getByReferencia(referenciaNoExistente)).thenReturn(Collections.emptyList());
         
         // When & Then
         mockMvc.perform(get("/api/reabastecimientos/referencia/REF-INVALID"))
@@ -303,6 +342,7 @@ public class ReabastecimientoControllerTest {
     @Test
     void testFindByProveedor_Success() throws Exception {
         // Given
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         when(reabastecimientoService.getByProveedor(1)).thenReturn(reabastecimientos);
         
         // When & Then
@@ -317,7 +357,8 @@ public class ReabastecimientoControllerTest {
     @Test
     void testFindByProveedor_NotFound() throws Exception {
         // Given
-        when(reabastecimientoService.getByProveedor(999)).thenReturn(null);
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(reabastecimientoService.getByProveedor(999)).thenReturn(Collections.emptyList());
         
         // When & Then
         mockMvc.perform(get("/api/reabastecimientos/proveedor/999"))
@@ -331,6 +372,7 @@ public class ReabastecimientoControllerTest {
     @Test
     void testFindByNegocio_Success() throws Exception {
         // Given
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         when(reabastecimientoService.getByNegocio(1)).thenReturn(reabastecimientos);
         
         // When & Then
@@ -345,7 +387,8 @@ public class ReabastecimientoControllerTest {
     @Test
     void testFindByNegocio_NotFound() throws Exception {
         // Given
-        when(reabastecimientoService.getByNegocio(999)).thenReturn(null);
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(reabastecimientoService.getByNegocio(999)).thenReturn(Collections.emptyList());
         
         // When & Then
         mockMvc.perform(get("/api/reabastecimientos/negocio/999"))
@@ -383,35 +426,48 @@ public class ReabastecimientoControllerTest {
         nuevoProveedor.setTelefono("954111222");
         nuevoProveedor.setDireccion("Polígono Industrial, Nave 7");
     
-        // Crear Reabastecimiento
+        // Crear Reabastecimiento de entrada
         Reabastecimiento nuevoReabastecimiento = new Reabastecimiento();
+        nuevoReabastecimiento.setId(1); // Importante para que el controlador lo use
         nuevoReabastecimiento.setFecha(LocalDate.now());
         nuevoReabastecimiento.setPrecioTotal(500.0);
         nuevoReabastecimiento.setReferencia("REF-NEW");
         nuevoReabastecimiento.setProveedor(nuevoProveedor);
         nuevoReabastecimiento.setNegocio(nuevoNegocio);
-        
-        // Preparar respuesta del servicio (con ID asignado)
+    
+        // Mock: usuario actual
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+    
+        // Mock: getById() devuelve un objeto con el mismo negocio
+        Reabastecimiento existente = new Reabastecimiento();
+        existente.setId(1);
+        existente.setNegocio(nuevoNegocio);
+        when(reabastecimientoService.getById(1)).thenReturn(existente);
+    
+        // Mock: save() devuelve el objeto guardado
         Reabastecimiento reabastecimientoGuardado = new Reabastecimiento();
+        reabastecimientoGuardado.setId(1);
         reabastecimientoGuardado.setFecha(nuevoReabastecimiento.getFecha());
         reabastecimientoGuardado.setPrecioTotal(nuevoReabastecimiento.getPrecioTotal());
         reabastecimientoGuardado.setReferencia(nuevoReabastecimiento.getReferencia());
         reabastecimientoGuardado.setProveedor(nuevoProveedor);
         reabastecimientoGuardado.setNegocio(nuevoNegocio);
-        
-        // Mock del servicio
-        when(reabastecimientoService.save(any(Reabastecimiento.class))).thenReturn(reabastecimientoGuardado);
-        
-        // Test del endpoint
+        when(reabastecimientoService.save(any(Reabastecimiento.class)))
+                .thenReturn(reabastecimientoGuardado);
+    
+        // Ejecutar la petición POST
         mockMvc.perform(post("/api/reabastecimientos")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(nuevoReabastecimiento)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.referencia").value("REF-NEW"))
                 .andExpect(jsonPath("$.precioTotal").value(500.0));
-        
+    
+        // Verificar invocaciones
+        verify(reabastecimientoService).getById(1);
         verify(reabastecimientoService).save(any(Reabastecimiento.class));
     }
+    
     
     @Test
     void testSave_BadRequest() throws Exception {
@@ -434,55 +490,55 @@ public class ReabastecimientoControllerTest {
     
     @Test
     void testUpdate_Success() throws Exception {
-                // Crear Dueno
-                Dueno nuevoDueno = new Dueno();
-                nuevoDueno.setFirstName("Juan");
-                nuevoDueno.setLastName("García");
-                nuevoDueno.setEmail("juan@example.com");
-                nuevoDueno.setNumTelefono("652345678");
-                nuevoDueno.setTokenDueno("TOKEN123");
-            
-                // Crear Negocio
-                Negocio nuevoNegocio = new Negocio();
-                nuevoNegocio.setName("Restaurante La Tasca");
-                nuevoNegocio.setDireccion("Calle Principal 123");
-                nuevoNegocio.setCiudad("Sevilla");
-                nuevoNegocio.setPais("Espana");
-                nuevoNegocio.setCodigoPostal("41001");
-                nuevoNegocio.setTokenNegocio(12345);
-                nuevoNegocio.setDueno(nuevoDueno);
-            
-                // Crear Proveedor
-                Proveedor nuevoProveedor = new Proveedor();
-                nuevoProveedor.setName("Distribuciones Alimentarias S.L.");
-                nuevoProveedor.setEmail("distribuciones@example.com");
-                nuevoProveedor.setTelefono("954111222");
-                nuevoProveedor.setDireccion("Polígono Industrial, Nave 7");
-            
-                // Crear Reabastecimiento
-                Reabastecimiento nuevoReabastecimiento = new Reabastecimiento();
-                nuevoReabastecimiento.setId(1);
-                nuevoReabastecimiento.setFecha(LocalDate.now());
-                nuevoReabastecimiento.setPrecioTotal(500.0);
-                nuevoReabastecimiento.setReferencia("REF-NEW");
-                nuevoReabastecimiento.setProveedor(nuevoProveedor);
-                nuevoReabastecimiento.setNegocio(nuevoNegocio);
-                
-
-      //  when(reabastecimientoService.getById("1")).thenReturn(reabastecimiento1);
-        when(reabastecimientoService.save(any(Reabastecimiento.class))).thenReturn(nuevoReabastecimiento);
-        
-        // When & Then
+        // given
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(duenoService.getDuenoByUser(adminUser.getId())).thenReturn(dueno);
+    
+        // Mock del existente en BD
+        Reabastecimiento existente = new Reabastecimiento();
+        existente.setId(1);
+        existente.setNegocio(negocio);
+        when(reabastecimientoService.getById(1)).thenReturn(existente);
+    
+        // Mock del guardado por el service
+        Reabastecimiento guardado = new Reabastecimiento();
+        guardado.setId(1);
+        guardado.setFecha(LocalDate.of(2025, 4, 23));
+        guardado.setPrecioTotal(123.45);
+        guardado.setReferencia("UPDATED");
+        guardado.setProveedor(proveedor);
+        guardado.setNegocio(negocio);
+        when(reabastecimientoService.save(any(Reabastecimiento.class))).thenReturn(guardado);
+    
+        // payload JSON — sólo IDs en las relaciones para evitar errores de deserialización
+        String json = """
+          {
+            "id": 1,
+            "fecha": "2025-04-23",
+            "precioTotal": 123.45,
+            "referencia": "UPDATED",
+            "proveedor": { "id": %d },
+            "negocio":   { "id": %d }
+          }
+        """.formatted(proveedor.getId(), negocio.getId());
+    
+        // when & then
         mockMvc.perform(put("/api/reabastecimientos/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(nuevoReabastecimiento)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.referencia").value("REF-NEW"))
-                .andExpect(jsonPath("$.precioTotal").value(500.0));
-        
-        //verify(reabastecimientoService).getById("1");
+                .content(json))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(1))
+            .andExpect(jsonPath("$.referencia").value("UPDATED"))
+            .andExpect(jsonPath("$.precioTotal").value(123.45));
+    
+        // verify
+        verify(userService).findCurrentUser();
+        verify(duenoService).getDuenoByUser(adminUser.getId());
         verify(reabastecimientoService).save(any(Reabastecimiento.class));
     }
+    
+    
+    
     
     @Test
     void testUpdate_NotFound() throws Exception {
@@ -515,6 +571,7 @@ public class ReabastecimientoControllerTest {
     @Test
     void testDelete_Success() throws Exception {
         // Given
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         when(reabastecimientoService.getById(1)).thenReturn(reabastecimiento1);
         doNothing().when(reabastecimientoService).deleteById(1);
         
@@ -529,6 +586,7 @@ public class ReabastecimientoControllerTest {
     @Test
     void testDelete_NotFound() throws Exception {
         // Given
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         when(reabastecimientoService.getById(999)).thenReturn(null);
         
         // When & Then

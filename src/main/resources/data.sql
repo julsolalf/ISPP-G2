@@ -150,6 +150,8 @@ INSERT INTO proveedor (id, name, email, telefono, direccion, negocio_id)
 VALUES (1, 'Proveedor A', 'proveedorA@mail.com', '987654321', 'Calle Proveedor A',(SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
 INSERT INTO proveedor (id, name, email, telefono, direccion, negocio_id)
 VALUES (2, 'Proveedor B', 'proveedorB@mail.com', '987654322', 'Calle Proveedor B',(SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
+INSERT INTO proveedor (id, name, email, telefono, direccion, negocio_id)
+VALUES (3, 'Proveedor La Burguer', 'proveedorLa@mail.com', '987654323', 'Calle Proveedor La Burguer',(SELECT id FROM negocio WHERE name = 'Restaurante Burguer'));
 
 -- Insertando productos en inventario
 INSERT INTO producto_inventario (id, name, categoria_id, precio_compra, cantidad_deseada, cantidad_aviso, proveedor_id)
@@ -157,7 +159,7 @@ VALUES (1, 'Harina', 5, 0.50, 100, 10, 1);
 INSERT INTO producto_inventario (id, name, categoria_id, precio_compra, cantidad_deseada, cantidad_aviso, proveedor_id)
 VALUES (2, 'Tomate', 6, 0.30, 100, 10,1);
 INSERT INTO producto_inventario (id, name, categoria_id, precio_compra, cantidad_deseada, cantidad_aviso, proveedor_id)
-VALUES (3, 'Carne Buey', 7, 5.50, 50, 5, 1);
+VALUES (3, 'Carne Buey', 7, 5.50, 50, 5, 3);
 
 -- Insertando ingredientes
 INSERT INTO ingrediente (id, cantidad, producto_inventario_id, producto_venta_id)
