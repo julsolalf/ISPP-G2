@@ -2,13 +2,16 @@ package ispp_g2.gastrostock.dueno;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
+import ispp_g2.gastrostock.exceptions.BadRequestException;
 import ispp_g2.gastrostock.user.User;
 import ispp_g2.gastrostock.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -18,13 +21,17 @@ public class DuenoController {
 
     private final DuenoService duenoService;
     private final UserService userService;
+    private final PasswordEncoder encoder;
+
 
     private final String adminAuth = "admin";
+    private final String duenoAuth = "dueno";
 
     @Autowired
-    public DuenoController(DuenoService duenoService, UserService userService) {
+    public DuenoController(DuenoService duenoService, UserService userService, PasswordEncoder encoder) {
         this.duenoService = duenoService;
         this.userService = userService;
+        this.encoder = encoder;
     }
 
     @GetMapping
@@ -167,8 +174,25 @@ public class DuenoController {
         return new ResponseEntity<>(duenoService.saveDueno(dueno), HttpStatus.CREATED);
     }
 
+    private boolean validarPassword(String password) {
+        Pattern pattern = Pattern.compile(
+            "^(?=.*[a-z])" +
+            "(?=.*[A-Z])" +
+            "(?=.*\\d)" +
+            "(?=.*[#$@!%&?¡\"+,.:;='^|~_()¿{}\\[\\]\\\\-])" +
+            ".{8,32}$"
+        );
+        return pattern.matcher(password).matches();
+    }
+
+    private boolean validarTelefono(String telefono) {
+        Pattern pattern = Pattern.compile("^[6789]\\d{8}$");
+        return pattern.matcher(telefono).matches();
+    }
+
+
     private boolean checkUsernameNonAvailable(String username, Integer id){
-        User existingUser = userService.findUserByUsername(username);
+        User existingUser = userService.findUserByUsernameNull(username);
         if(existingUser == null){
             return false;
         }
@@ -180,27 +204,37 @@ public class DuenoController {
     @PutMapping("/{id}")
     public ResponseEntity<Dueno> update(@PathVariable("id") Integer id, @RequestBody @Valid DuenoDTO duenoDTO) {
         User user = userService.findCurrentUser();
-        Dueno duenoToGet = duenoService.getDuenoById(id);
-        if (duenoToGet == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        if(!(user.getAuthority().getAuthority().equals(adminAuth) || user.getId().equals(duenoToGet.getUser().getId()))) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-        // Check if the data is empty
-        if (duenoDTO == null) {
-            throw new IllegalArgumentException("Dueno no puede ser nulo");
-        }
-        Dueno dueno = duenoService.convertirDTODueno(duenoDTO);
-        dueno.setId(id);
-        // Check if the username is already in use
-        if (checkUsernameNonAvailable(duenoDTO.getUsername(), id))
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        if(duenoDTO==null)
+            throw new IllegalArgumentException("Empleado no puede ser nulo");
 
-        // Save the user
-        dueno.getUser().setId(duenoService.getDuenoById(id).getUser().getId());
-        return new ResponseEntity<>(duenoService.saveDueno(dueno), HttpStatus.OK);
+        if(!validarPassword(duenoDTO.getPassword())) {
+            throw new BadRequestException("La contraseña debe tener entre 8 y 32 caracteres, 1 mayúscula, " +
+            "1 minúscula, un número y un caracter especial");
+        }
+        if(!validarTelefono(duenoDTO.getNumTelefono())) {
+            throw new BadRequestException("El teléfono debe ser correcto");
+        }
+        if(checkUsernameNonAvailable(duenoDTO.getUsername(), id)){
+            throw new BadRequestException("El nombre de usuario ya está en uso"); 
+        }
 
+        Dueno toUpdate = duenoService.getDuenoById(id);
+        if( !((user.getAuthority().getAuthority().equals(adminAuth)) ||
+                (user.getAuthority().getAuthority().equals(duenoAuth) && user.getId().equals(toUpdate.getUser().getId())))){
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        User newUser = new User();
+        newUser.setUsername(duenoDTO.getUsername());
+        newUser.setPassword(encoder.encode(duenoDTO.getPassword()));
+        userService.updateUser(toUpdate.getUser().getId(), newUser);
+        Dueno newDueno = new Dueno();
+        newDueno.setFirstName(duenoDTO.getFirstName());
+        newDueno.setLastName(duenoDTO.getLastName());
+        newDueno.setEmail(duenoDTO.getEmail());
+        newDueno.setNumTelefono(duenoDTO.getNumTelefono());
+        duenoService.updateDueno(id, newDueno);
+
+        return new ResponseEntity<>(duenoService.getDuenoById(id), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

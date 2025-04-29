@@ -44,6 +44,16 @@ public class IngredienteService {
         return ingredienteRepository.findByProductoVentaId(productoVenta);
     }
 
+    @Transactional(readOnly = true)
+    public List<Ingrediente> getIngredientesByNegocioId(Integer negocio) {
+        return ingredienteRepository.findByNegocioId(negocio);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Ingrediente> getIngredientesByDuenoId(Integer dueno) {
+        return ingredienteRepository.findByDuenoId(dueno);
+    }
+
     @Transactional
     public Ingrediente save(Ingrediente ingrediente) {
         return ingredienteRepository.save(ingrediente);

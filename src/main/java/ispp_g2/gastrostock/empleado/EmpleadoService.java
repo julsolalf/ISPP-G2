@@ -5,12 +5,12 @@ import java.util.Random;
 import java.util.stream.StreamSupport;
 
 import ispp_g2.gastrostock.exceptions.ResourceNotFoundException;
-import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioRepository;
-import ispp_g2.gastrostock.negocio.NegocioService;
 import ispp_g2.gastrostock.user.AuthoritiesRepository;
 import ispp_g2.gastrostock.user.User;
 import ispp_g2.gastrostock.user.UserRepository;
+
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +42,13 @@ public class EmpleadoService {
         }
         userRepository.save(empleado.getUser());
         return empleadoRepository.save(empleado);
+    }
+
+    @Transactional 
+    public Empleado update(Integer id, Empleado empleado) {
+       Empleado toUpdate = empleadoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Empleado no encontrado")); 
+       BeanUtils.copyProperties(empleado, toUpdate, "id", "user", "negocio", "tokenEmpleado");
+       return empleadoRepository.save(toUpdate);
     }
 
     // Obtener todos los empleados
@@ -111,7 +118,7 @@ public class EmpleadoService {
         empleado.setFirstName(empleadoDTO.getFirstName());
         empleado.setLastName(empleadoDTO.getLastName());
         empleado.setEmail(empleadoDTO.getEmail());
-        empleado.setTokenEmpleado(generarToken(empleadoDTO.getNegocio()));
+        empleado.setTokenEmpleado(empleadoDTO.getTokenEmpleado());
         empleado.setNumTelefono(empleadoDTO.getNumTelefono());
         empleado.setDescripcion(empleadoDTO.getDescripcion());
         empleado.setUser(user);
@@ -135,18 +142,6 @@ public class EmpleadoService {
         return empleadoDTO;
     }
 
-    private String generarToken(Integer id) {
-        String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        Integer l = 30;
-        Random r = new Random();
-
-        StringBuilder sb = new StringBuilder(l);
-        for (int i = 0; i < l; i++) {
-            int index = r.nextInt(caracteres.length());
-            sb.append(caracteres.charAt(index));
-        }
-
-        return "gst-" + sb.toString()+"-emp"+id.toString();
-    }
+    
     
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
+import Notificaciones from "../../components/Notifications";
 
 const token = localStorage.getItem("token");
 
@@ -58,6 +59,11 @@ function VerProveedor() {
     localStorage.clear();
     navigate("/");
   };
+
+  const toggleUserOptions = () => {
+    setShowUserOptions(!showUserOptions);
+  };
+
 
   useEffect(() => {
     const cargarDatos = async () => {
@@ -123,17 +129,10 @@ function VerProveedor() {
         </div>
 
         {showNotifications && (
-          <div className="notification-bubble">
-            <div className="notification-header">
-              <strong>Notificaciones</strong>
-              <button className="close-btn" onClick={() => setShowNotifications(false)}>X</button>
-            </div>
-            <ul>
-              <li>Notificación 1</li>
-              <li>Notificación 2</li>
-              <li>Notificación 3</li>
-            </ul>
-          </div>
+          <div className="icon-container-right">
+          <Notificaciones />
+          <User size={30} className="icon" onClick={toggleUserOptions} />
+        </div>
         )}
 
         {showUserOptions && (

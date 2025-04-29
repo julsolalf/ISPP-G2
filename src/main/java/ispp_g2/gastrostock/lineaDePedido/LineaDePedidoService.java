@@ -96,7 +96,7 @@ public class LineaDePedidoService {
     public LineaDePedido update(Integer id, LineaDePedido lineaDePedido) {
         LineaDePedido toUpdate = lineaDePedidoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("La linea de pedido no existe"));
-        BeanUtils.copyProperties(lineaDePedido, toUpdate, "id", "estado");
+        BeanUtils.copyProperties(lineaDePedido, toUpdate, "id", "salioDeCocina", "pedido", "producto");
         return lineaDePedidoRepository.save(toUpdate);
     }
 
@@ -144,8 +144,7 @@ public class LineaDePedidoService {
         lineaDePedido.setPedido(pedidoRepository.findById(lineaDePedidoDTO.getPedidoId())
                 .orElseThrow(() -> new ResourceNotFoundException("El pedido no existe")));
         lineaDePedido.setProducto(productoVentaRepository
-                .findProductoVentaByNombreAndNegocioId(lineaDePedidoDTO.getNombreProducto(),
-                        lineaDePedido.getPedido().getMesa().getNegocio().getId())
+                .findById(lineaDePedidoDTO.getProductoId())
                 .orElseThrow(() -> new ResourceNotFoundException("El producto no existe")));
         return lineaDePedido;
     }
