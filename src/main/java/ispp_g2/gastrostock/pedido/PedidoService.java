@@ -11,6 +11,7 @@ import ispp_g2.gastrostock.mesa.MesaRepository;
 import ispp_g2.gastrostock.negocio.NegocioRepository;
 import jakarta.annotation.Resource;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.StreamSupport;
@@ -80,6 +81,12 @@ public class PedidoService {
         return pedidoRepository.save(pedidoActual); 
     }
 
+    public Pedido updatePagado(Integer id, LocalDateTime fecha) {
+        Pedido pedido = pedidoRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Pedido no encontrado"));
+        pedido.setFecha(fecha);
+        return pedidoRepository.save(pedido);
+    }
+
     @Transactional
     public void delete(Integer id) {
         pedidoRepository.deleteById(id);
@@ -105,5 +112,7 @@ public class PedidoService {
         pedidoDTO.setNegocioId(pedido.getNegocio().getId());
         return pedidoDTO; 
     }
+
+
     
 }

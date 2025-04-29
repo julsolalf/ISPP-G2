@@ -20,11 +20,12 @@ public class LineaDePedidoDTO {
     
     private Double precioLinea;
 
-    @NotNull
     private Boolean estado;
     @NotNull
     private Integer pedidoId;
-    @NotBlank
+    @NotNull
+    private Integer productoId;
+
     private String nombreProducto;
 
     private String categoriaProducto;
@@ -37,6 +38,7 @@ public class LineaDePedidoDTO {
         res.setPrecioLinea(lineaDePedido.getPrecioLinea());
         res.setEstado(lineaDePedido.getSalioDeCocina());
         res.setPedidoId(lineaDePedido.getPedido().getId());
+        res.setProductoId(lineaDePedido.getProducto().getId());
         res.setNombreProducto(lineaDePedido.getProducto().getName());
         res.setCategoriaProducto(lineaDePedido.getProducto().getCategoria().getName());
 
