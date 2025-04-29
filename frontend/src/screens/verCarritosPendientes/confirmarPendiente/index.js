@@ -4,7 +4,7 @@ import { Bell, User } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../../../css/listados/styles.css";
-import Notificaciones from "../../components/Notifications";
+import Notificaciones from "../../../components/Notifications";
 
 const ConfirmarPendiente = () => {
   const { carritoId } = useParams();
