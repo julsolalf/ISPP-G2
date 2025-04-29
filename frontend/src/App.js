@@ -45,7 +45,7 @@ import EditarProductoCarta from "./screens/verTipoProductoCartaDueno/editarProdu
 import CartaEmpleado from "./screens/cartaEmpleado/index.js";
 import VerProductosVenta from "./screens/verTipoProductoCartaEmpleado/index.js";
 import VerProductoCartaEmpleado from "./screens/verTipoProductoCartaEmpleado/verProductoCartaEmpleado/index.js";
-
+import Productos from "./screens/r/verProductosTPV/index.js";
 
 
 function AppScreen() {
@@ -135,6 +135,8 @@ function App() {
         <Route path="/cartaEmpleado" element={<CartaEmpleado />} />
         <Route path="/verTipoProductoCartaEmpleado/:categoriaId" element={<VerProductosVenta />} />
         <Route path="/categoriaVenta/:categoriaNombre/productoVenta/:productoNombre" element={<VerProductoCartaEmpleado />} />
+        <Route path="/TPV" element={<TPV />} />
+        <Route exact path="/productos/:mesaId" element={<Productos/>} />
       </Routes>
     </Router>
   );
