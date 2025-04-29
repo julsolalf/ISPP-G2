@@ -5,16 +5,14 @@ import { Bell, User } from "lucide-react";
 
 const token = localStorage.getItem("token");
 
-
-const obtenerProveedor = async () => {
+const obtenerProveedor = async (idProveedor) => {
   try {
-    const idProveedor = localStorage.getItem("proveedorId");
     const response = await fetch(`http://localhost:8080/api/proveedores/${idProveedor}`, {
       method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
     if (!response.ok) {
       throw new Error("Error al obtener el proveedor");
@@ -26,9 +24,8 @@ const obtenerProveedor = async () => {
   }
 };
 
-const obtenerDiasRepartoProveedor = async () => {
+const obtenerDiasRepartoProveedor = async (idProveedor) => {
   try {
-    const idProveedor = localStorage.getItem("proveedorId");
     const response = await fetch(`http://localhost:8080/api/diasReparto/proveedor/${idProveedor}`, {
       method: "GET",
       headers: {
@@ -39,7 +36,7 @@ const obtenerDiasRepartoProveedor = async () => {
     if (!response.ok) {
       throw new Error("Error al obtener los días de reparto del proveedor");
     }
-    return await response.json(); // Se espera un array tipo ["Lunes", "Miércoles", ...]
+    return await response.json();
   } catch (error) {
     console.error("Error al obtener los días de reparto:", error);
     return [];
@@ -55,21 +52,23 @@ function VerProveedor() {
   const [showUserOptions, setShowUserOptions] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false); 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [cargando, setCargando] = useState(true);
 
   const handleLogout = () => {
     localStorage.clear();
-    navigate("/"); // Redirigir a la pantalla de inicio de sesión
+    navigate("/");
   };
-
 
   useEffect(() => {
     const cargarDatos = async () => {
-      const dataProveedor = await obtenerProveedor();
+      setCargando(true); // empezamos cargando
+      const dataProveedor = await obtenerProveedor(id);
       setProveedor(dataProveedor);
-
-      const dias = await obtenerDiasRepartoProveedor();
-      const diasFormateados = dias.map(d => d.diaSemana); // extrae solo los nombres
+  
+      const dias = await obtenerDiasRepartoProveedor(id);
+      const diasFormateados = dias.map(d => d.diaSemana);
       setDiasReparto(diasFormateados);
+      setCargando(false); // terminamos de cargar
     };
     cargarDatos();
   }, [id]);
@@ -77,13 +76,12 @@ function VerProveedor() {
 
   const eliminarProveedor = async () => {
     try {
-      const idProveedor = localStorage.getItem("proveedorId");
-      const response = await fetch(`http://localhost:8080/api/proveedores/${idProveedor}`, {
+      const response = await fetch(`http://localhost:8080/api/proveedores/${id}`, {
+        method: "DELETE",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        method: "DELETE",
       });
       if (!response.ok) {
         throw new Error("Error al eliminar el proveedor");
@@ -98,6 +96,14 @@ function VerProveedor() {
     return <h2>Proveedor no encontrado</h2>;
   }
 
+  if (cargando) {
+    return <h2>Cargando proveedor...</h2>;
+  }
+  
+  if (!proveedor) {
+    return <h2>Proveedor no encontrado</h2>;
+  }
+  
   return (
     <div className="home-container"
       style={{
@@ -157,9 +163,7 @@ function VerProveedor() {
           <p><strong>Dirección:</strong> {proveedor.direccion}</p>
           <p><strong>Días de Reparto:</strong> {diasReparto.length > 0 ? diasReparto.join(", ") : "No especificados"}</p>
           
-          <button style={{ background: "#157E03", color: "white" }} onClick={() => {
-            localStorage.setItem("proveedorId", proveedor.id)
-            navigate(`/editarProveedor/${proveedor.id}`)}}>Editar Proveedor</button>
+          <button style={{ background: "#157E03", color: "white" }} onClick={() => navigate(`/editarProveedor/${proveedor.id}`)}>Editar Proveedor</button>
           <button style={{ background: "#9A031E", color: "white" }} onClick={() => setShowDeleteModal(true)}>Eliminar Proveedor</button>
           <button style={{ background: "#F57C20", color: "white" }} onClick={() => navigate(`/verCarritoProveedor/${proveedor.id}`)}>Ver Carrito</button>
           <button style={{ background: "#F57C20", color: "white" }} onClick={() => navigate(`/productosProveedor/${proveedor.id}`)}>Ver Pendientes</button>
@@ -177,7 +181,7 @@ function VerProveedor() {
           </div>
         )}
 
-{showLogoutModal && (
+        {showLogoutModal && (
           <div className="modal-overlay">
             <div className="modal">
               <h3>¿Está seguro que desea abandonar la sesión?</h3>
