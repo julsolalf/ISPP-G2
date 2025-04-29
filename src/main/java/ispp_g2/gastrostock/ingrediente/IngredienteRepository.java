@@ -17,7 +17,7 @@ public interface IngredienteRepository extends CrudRepository<Ingrediente,Intege
     List<Ingrediente> findByProductoInventarioId(@Positive Integer productoInventario);
 
     @Query("SELECT i FROM Ingrediente i WHERE i.productoInventario.proveedor.negocio.id = ?1")
-    List<Ingrediente> findByNegocioId(@Positive Integer proveedor);
+    List<Ingrediente> findByNegocioId(@Positive Integer negocio);
 
     @Query("SELECT i FROM Ingrediente i WHERE i.productoInventario.proveedor.negocio.dueno.id = ?1")
     List<Ingrediente> findByDuenoId(@Positive Integer dueno);
