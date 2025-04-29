@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Bell, User } from "lucide-react";
 import "../../css/listados/styles.css";
+import Notificaciones from "../../components/Notifications";
 
 const negocioId = localStorage.getItem("negocioId");
 
@@ -104,16 +105,11 @@ function AlertaStock() {
         </div>
 
         {showNotifications && (
-          <div className="notification-bubble">
-            <div className="notification-header">
-              <strong>Notificaciones</strong>
-              <button className="close-btn" onClick={toggleNotifications}>X</button>
-            </div>
-            <ul>
-              <li>Stock bajo detectado</li>
-            </ul>
-          </div>
-        )}
+                  <div className="icon-container-right">
+                  <Notificaciones />
+                  <User size={30} className="icon" onClick={toggleUserOptions} />
+                </div>
+                )}
 
         {showUserOptions && (
           <div className="notification-bubble user-options">
