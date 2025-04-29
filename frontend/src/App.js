@@ -46,6 +46,7 @@ import CartaEmpleado from "./screens/cartaEmpleado/index.js";
 import VerProductosVenta from "./screens/verTipoProductoCartaEmpleado/index.js";
 import VerProductoCartaEmpleado from "./screens/verTipoProductoCartaEmpleado/verProductoCartaEmpleado/index.js";
 import VerCarritoProveedor from "./screens/carritoProveedor/index.js";
+import VerCarritosPendientes from "./screens/verCarritosPendientes/index.js";
 
 
 function AppScreen() {
@@ -136,6 +137,7 @@ function App() {
         <Route path="/verTipoProductoCartaEmpleado/:categoriaId" element={<VerProductosVenta />} />
         <Route path="/categoriaVenta/:categoriaNombre/productoVenta/:productoNombre" element={<VerProductoCartaEmpleado />} />
         <Route path="/verCarritoProveedor/:proveedorId" element={<VerCarritoProveedor />} />
+        <Route path="/verCarritosPendientes/:proveedorId" element={<VerCarritosPendientes />} />
       </Routes>
     </Router>
   );

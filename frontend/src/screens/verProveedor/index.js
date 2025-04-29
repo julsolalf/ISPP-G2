@@ -162,6 +162,7 @@ function VerProveedor() {
             navigate(`/editarProveedor/${proveedor.id}`)}}>Editar Proveedor</button>
           <button style={{ background: "#9A031E", color: "white" }} onClick={() => setShowDeleteModal(true)}>Eliminar Proveedor</button>
           <button style={{ background: "#F57C20", color: "white" }} onClick={() => navigate(`/verCarritoProveedor/${proveedor.id}`)}>Ver Carrito</button>
+          <button style={{ background: "#F57C20", color: "white" }} onClick={() => navigate(`/productosProveedor/${proveedor.id}`)}>Ver Pendientes</button>
         </div>
 
         {showDeleteModal && (
