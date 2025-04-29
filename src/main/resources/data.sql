@@ -56,8 +56,8 @@ INSERT INTO app_user (id, username, password, authority_id) VALUES (7, 'fernando
 --Usuarios temporales mientras se conecta el frontend con el backend
 INSERT INTO app_user (id, username, password, authority_id) VALUES (8, 'owner1', 'password', (SELECT id FROM authorities WHERE authority = 'dueno'));
 INSERT INTO app_user (id, username, password, authority_id) VALUES (9, 'empleado', 'password', (SELECT id FROM authorities WHERE authority = 'empleado'));
--- Usuario admin, psswd = Gastroadmin_1
-INSERT INTO app_user (id, username, password, authority_id) VALUES (10,'gastroAdmin','$2a$10$tUjv1hrypXUFFruLgv1r8upPmXJYxjMb1KjQpjHuIgmILKjqhGtPy',(SELECT id FROM authorities WHERE authority ='admin'));
+-- Usuario admin, psswd = password
+INSERT INTO app_user (id, username, password, authority_id) VALUES (10,'gastroAdmin','$2a$10$wPqDTEhcLj7vLpEVxvlreehCK1tZl0FtvaxXxTiQoJOIOJL2uXSQm',(SELECT id FROM authorities WHERE authority ='admin'));
 
 -- Insertando duenos
 INSERT INTO dueno (id, first_name, last_name, email, num_telefono, token_dueno, user_id)
@@ -150,6 +150,8 @@ INSERT INTO proveedor (id, name, email, telefono, direccion, negocio_id)
 VALUES (1, 'Proveedor A', 'proveedorA@mail.com', '987654321', 'Calle Proveedor A',(SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
 INSERT INTO proveedor (id, name, email, telefono, direccion, negocio_id)
 VALUES (2, 'Proveedor B', 'proveedorB@mail.com', '987654322', 'Calle Proveedor B',(SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'));
+INSERT INTO proveedor (id, name, email, telefono, direccion, negocio_id)
+VALUES (3, 'Proveedor La Burguer', 'proveedorLa@mail.com', '987654323', 'Calle Proveedor La Burguer',(SELECT id FROM negocio WHERE name = 'Restaurante Burguer'));
 
 -- Insertando productos en inventario
 INSERT INTO producto_inventario (id, name, categoria_id, precio_compra, cantidad_deseada, cantidad_aviso, proveedor_id)
@@ -157,7 +159,7 @@ VALUES (1, 'Harina', 5, 0.50, 100, 10, 1);
 INSERT INTO producto_inventario (id, name, categoria_id, precio_compra, cantidad_deseada, cantidad_aviso, proveedor_id)
 VALUES (2, 'Tomate', 6, 0.30, 100, 10,1);
 INSERT INTO producto_inventario (id, name, categoria_id, precio_compra, cantidad_deseada, cantidad_aviso, proveedor_id)
-VALUES (3, 'Carne Buey', 7, 5.50, 50, 5, 1);
+VALUES (3, 'Carne Buey', 7, 5.50, 50, 5, 3);
 
 -- Insertando ingredientes
 INSERT INTO ingrediente (id, cantidad, producto_inventario_id, producto_venta_id)

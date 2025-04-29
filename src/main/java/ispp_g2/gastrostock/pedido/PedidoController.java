@@ -15,6 +15,7 @@ import ispp_g2.gastrostock.negocio.NegocioService;
 import ispp_g2.gastrostock.user.User;
 import ispp_g2.gastrostock.user.UserService;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -430,6 +431,29 @@ public class PedidoController {
             }
         }
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    }
+
+    @PutMapping("{id}/pagado")
+    public ResponseEntity<Pedido> updatePagado(@PathVariable("id") Integer id,
+        @RequestBody LocalDateTime fecha) {
+        User user = userService.findCurrentUser();
+        Pedido pedido = pedidoService.getById(id);
+        if(pedido.getFecha() != null) {
+            throw new IllegalArgumentException("Pedido ya pagado");
+        }
+        if(user.hasAnyAuthority(ADMIN).equals(true)){
+            return new ResponseEntity<>(pedidoService.updatePagado(id, fecha), HttpStatus.OK); 
+        } else if(user.hasAnyAuthority(DUENO).equals(true)) {
+            if(pedido.getNegocio().getDueno().getUser().getId().equals(user.getId())) {
+                return new ResponseEntity<>(pedidoService.updatePagado(id, fecha), HttpStatus.OK);
+            }
+        } else if(user.hasAnyAuthority(EMPLEADO).equals(true)) {
+            if(pedido.getNegocio().getId().equals(empleadoService.getEmpleadoByUser(user.getId()).getNegocio().getId())) {
+                return new ResponseEntity<>(pedidoService.updatePagado(id, fecha), HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        
     }
 
     @DeleteMapping("/{id}")

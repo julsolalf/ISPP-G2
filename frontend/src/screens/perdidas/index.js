@@ -1,148 +1,80 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable"; // IMPORTACIÓN DEL PLUGIN
+
+import { useNavigate, Link } from "react-router-dom";
 import { Bell, User } from "lucide-react";
 import "../../css/listados/styles.css";
 import Notificaciones from "../../components/Notifications";
 
-function Perdidas() {
-  const navigate = useNavigate();
-  const [productos, setProductos] = useState([
-    {
-      nombre: "Lata de Refresco",
-      categoria: "Bebidas",
-      cantidad: 100,
-      cantidadAlerta: 70,
-      caducidades: [
-        { unidades: 70, fecha: "2026-09-13" },
-        { unidades: 30, fecha: "2026-09-17" }
-      ]
-    },
-    {
-      nombre: "Botella de Agua",
-      categoria: "Bebidas",
-      cantidad: 50,
-      cantidadAlerta: 20,
-      caducidades: [
-        { unidades: 25, fecha: "2025-06-30" },
-        { unidades: 25, fecha: "2025-07-10" }
-      ]
-    },
-    {
-      nombre: "Paquete de Galletas",
-      categoria: "Snacks",
-      cantidad: 80,
-      cantidadAlerta: 40,
-      caducidades: [
-        { unidades: 50, fecha: "2024-12-20" },
-        { unidades: 30, fecha: "2025-01-05" }
-      ]
-    },
-    {
-      nombre: "Caja de Cereal",
-      categoria: "Desayuno",
-      cantidad: 150,
-      cantidadAlerta: 100,
-      caducidades: [
-        { unidades: 80, fecha: "2025-03-01" },
-        { unidades: 70, fecha: "2025-03-15" }
-      ]
-    },
-    {
-      nombre: "Paquete de Harina",
-      categoria: "Ingredientes",
-      cantidad: 120,
-      cantidadAlerta: 50,
-      caducidades: [
-        { unidades: 60, fecha: "2025-06-15" },
-        { unidades: 60, fecha: "2025-06-20" }
-      ]
-    },
-    {
-      nombre: "Salsa de Tomate",
-      categoria: "Salsas",
-      cantidad: 200,
-      cantidadAlerta: 100,
-      caducidades: [
-        { unidades: 120, fecha: "2024-11-01" },
-        { unidades: 80, fecha: "2024-11-15" }
-      ]
-    },
-    {
-      nombre: "Leche UHT",
-      categoria: "Lácteos",
-      cantidad: 70,
-      cantidadAlerta: 30,
-      caducidades: [
-        { unidades: 40, fecha: "2025-04-15" },
-        { unidades: 30, fecha: "2025-04-25" }
-      ]
-    },
-    {
-      nombre: "Aceite de Oliva",
-      categoria: "Aceites y Vinagres",
-      cantidad: 60,
-      cantidadAlerta: 20,
-      caducidades: [
-        { unidades: 30, fecha: "2025-09-01" },
-        { unidades: 30, fecha: "2025-09-10" }
-      ]
-    },
-    {
-      nombre: "Arroz",
-      categoria: "Granos",
-      cantidad: 200,
-      cantidadAlerta: 100,
-      caducidades: [
-        { unidades: 100, fecha: "2025-11-01" },
-        { unidades: 100, fecha: "2025-11-15" }
-      ]
-    },
-    {
-      nombre: "Manzanas",
-      categoria: "Frutas",
-      cantidad: 120,
-      cantidadAlerta: 60,
-      caducidades: [
-        { unidades: 60, fecha: "2025-03-01" },
-        { unidades: 60, fecha: "2025-03-10" }
-      ]
-    },
-    {
-      nombre: "Pechuga de Pollo",
-      categoria: "Carnes",
-      cantidad: 50,
-      cantidadAlerta: 20,
-      caducidades: [
-        { unidades: 30, fecha: "2025-04-20" },
-        { unidades: 20, fecha: "2025-04-30" }
-      ]
-    },
-    {
-      nombre: "Papas Fritas",
-      categoria: "Snacks",
-      cantidad: 100,
-      cantidadAlerta: 40,
-      caducidades: [
-        { unidades: 60, fecha: "2025-01-20" },
-        { unidades: 40, fecha: "2025-02-01" }
-      ]
-    }
-  ]);
-  
-  
+function PantallaPerdidas() {
+  const [productosCaducados, setProductosCaducados] = useState([]);
+  const [filtro, setFiltro] = useState("");
+  const [ordenAscendente, setOrdenAscendente] = useState(true);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
-  const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
-const [searchTerm, setSearchTerm] = useState("");
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const navigate = useNavigate();  
+
+  useEffect(() => {
+    const fetchCaducados = async () => {
+      try {
+        const negocioId = localStorage.getItem("negocioId");
+        const fechaActual = new Date(); // Obtener la fecha actual, si quieres ver lotes en esta pantalla pon una fecha posterior a 10-10-2025
+        const formattedDate = fechaActual.toISOString().split('T')[0];
+        const token = localStorage.getItem("token");
+  
+        const response = await fetch(`http://localhost:8080/api/lotes/negocio/${negocioId}/fecha/${formattedDate}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        if (!response.ok) {
+          throw new Error("Error al obtener los lotes caducados");
+        }
+  
+        const data = await response.json();
+        setProductosCaducados(data);
+      } catch (error) {
+        console.error("Error al obtener productos caducados:", error);
+      }
+    };
+  
+    fetchCaducados();
+  }, []);
   
 
-  const toggleNotifications = () => setShowNotifications(!showNotifications);
-  const toggleUserOptions = () => setShowUserOptions(!showUserOptions);
+  const productosFiltrados = productosCaducados
+  .filter((lote) =>
+    lote.producto.name.toLowerCase().includes(filtro.toLowerCase())
+  )
+  .sort((a, b) => {
+    const nombreA = a.producto.name.toLowerCase();
+    const nombreB = b.producto.name.toLowerCase();
+    return ordenAscendente ? nombreA.localeCompare(nombreB) : nombreB.localeCompare(nombreA);
+  });
 
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate("/"); // Redirigir a la pantalla de inicio de sesión
-  };
+
+    const exportarPDF = () => {
+      const doc = new jsPDF();
+      doc.text("Productos Caducados", 14, 10);
+    
+      const tabla = productosFiltrados.map((producto) => [
+        producto.nombre,
+        producto.cantidadTotal,
+        producto.fechasCaducidad.map((fecha) => new Date(fecha).toLocaleDateString()).join(", "),
+      ]);
+    
+      autoTable(doc, {
+        head: [["Nombre", "Cantidad", "Fechas de caducidad"]],
+        body: tabla,
+      });
+    
+      doc.save("productos_caducados.pdf");
+    };
 
   return (
     <div
@@ -157,11 +89,12 @@ const [searchTerm, setSearchTerm] = useState("");
     >
       <div className="content">
         <div className="icon-container-right">
-          <Bell size={30} className="icon" onClick={toggleNotifications} />
-          <User size={30} className="icon" onClick={toggleUserOptions} />
+          <Bell size={30} className="icon" onClick={() => setShowNotifications(!showNotifications)} />
+          <User size={30} className="icon" onClick={() => setShowUserOptions(!showUserOptions)} />
         </div>
 
         {showNotifications && (
+
           <div className="icon-container-right">
           <Notificaciones />
           <User size={30} className="icon" onClick={toggleUserOptions} />
@@ -172,62 +105,75 @@ const [searchTerm, setSearchTerm] = useState("");
           <div className="notification-bubble user-options">
             <div className="notification-header">
               <strong>Usuario</strong>
-              <button className="close-btn" onClick={toggleUserOptions}>X</button>
+              <button className="close-btn" onClick={() => setShowUserOptions(false)}>X</button>
             </div>
             <ul>
               <li><button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button></li>
               <li><button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button></li>
-              <li><button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button></li>
+              <li><button className="user-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button></li>
             </ul>
           </div>
         )}
 
-        <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
-        <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+        <button onClick={() => navigate("/inicioDueno")} className="back-button">
+          ⬅ Volver
+        </button>
+        <Link to="/inicioDueno">
+          <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+        </Link>
         <h1 className="title">GastroStock</h1>
         <h2>Pérdidas</h2>
 
-        <div className="button-container1">
-          <input 
-            type="text" 
-            className="search-input" 
-            placeholder="🔍 Buscar" 
-            onChange={(e) => setSearchTerm(e.target.value)} 
-          />
-          <button className="button">🔍 Filtrar</button>
-        </div>
-        
-        <div className="empleados-grid1">
-        {productos.map((producto, index) => (
-            <div key={index} className="empleado-card">
-            <h3>{producto.nombre}</h3>
-            {producto.caducidades.map((caducidad, idx) => (
-                <div key={idx}>
-                <p>Cantidad: {caducidad.unidades}</p>
-                <p>CAD: {caducidad.fecha}</p>
-                </div>
-            ))}
+        <div className="button-container3">
+          <button className="button" onClick={exportarPDF}>📥 Exportar</button>
+
+          <div className="filter-container">
+            <button className="filter-btn">🔍 Filtrar</button>
+            <div className="filter-options">
+              <input
+                type="text"
+                placeholder="Filtrar por nombre"
+                value={filtro}
+                onChange={(e) => setFiltro(e.target.value)}
+                className="filter-input"
+              />
+              <div className="sort-options">
+                <button onClick={() => setOrdenAscendente(true)} className="sort-btn">🔼 Ascendente</button>
+                <button onClick={() => setOrdenAscendente(false)} className="sort-btn">🔽 Descendente</button>
+              </div>
             </div>
-        ))}
+          </div>
         </div>
-        {/* Modal de Confirmación para Logout */}
+
+        <div className="empleados-grid">
+        {productosFiltrados.length > 0 ? (
+  productosFiltrados.map((lote, index) => (
+    <div key={index} className="empleado-card">
+      <h3>{lote.producto.name}</h3>
+      <p>Cantidad: {lote.cantidad}</p>
+      <p>Fecha de caducidad: {new Date(lote.fechaCaducidad).toLocaleDateString()}</p>
+    </div>
+  ))
+) : (
+  <p>No se encontraron productos caducados</p>
+)}
+
+        </div>
+
         {showLogoutModal && (
           <div className="modal-overlay">
             <div className="modal">
               <h3>¿Está seguro que desea abandonar la sesión?</h3>
               <div className="modal-buttons">
-                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
+                <button className="confirm-btn" onClick={() => navigate("/")}>Sí</button>
                 <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
               </div>
             </div>
           </div>
         )}
-
-
-
       </div>
     </div>
   );
 }
 
-export default Perdidas;
+export default PantallaPerdidas;
