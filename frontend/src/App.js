@@ -45,7 +45,9 @@ import EditarProductoCarta from "./screens/verTipoProductoCartaDueno/editarProdu
 import CartaEmpleado from "./screens/cartaEmpleado/index.js";
 import VerProductosVenta from "./screens/verTipoProductoCartaEmpleado/index.js";
 import VerProductoCartaEmpleado from "./screens/verTipoProductoCartaEmpleado/verProductoCartaEmpleado/index.js";
-
+import VerCarritoProveedor from "./screens/carritoProveedor/index.js";
+import VerCarritosPendientes from "./screens/verCarritosPendientes/index.js";
+import ConfirmarPendiente from "./screens/verCarritosPendientes/confirmarPendiente/index.js";
 
 
 function AppScreen() {
@@ -135,6 +137,9 @@ function App() {
         <Route path="/cartaEmpleado" element={<CartaEmpleado />} />
         <Route path="/verTipoProductoCartaEmpleado/:categoriaId" element={<VerProductosVenta />} />
         <Route path="/categoriaVenta/:categoriaNombre/productoVenta/:productoNombre" element={<VerProductoCartaEmpleado />} />
+        <Route path="/verCarritoProveedor/:proveedorId" element={<VerCarritoProveedor />} />
+        <Route path="/verCarritosPendientes/:proveedorId" element={<VerCarritosPendientes />} />
+        <Route path="/confirmarPendiente/:carritoId" element={<ConfirmarPendiente />} />
       </Routes>
     </Router>
   );
