@@ -279,17 +279,16 @@ public class ReabastecimientoController {
     @PostMapping
     public ResponseEntity<Reabastecimiento> save(@RequestBody @Valid Reabastecimiento reabastecimiento) {
         User user = userService.findCurrentUser();
-        if(reabastecimiento == null) {
-            throw new IllegalArgumentException("Reabastecimiento no puede ser nulo");
-        }
-        Negocio negocio = reabastecimientoService.getById(reabastecimiento.getId()).getNegocio();
-        if(negocio == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (reabastecimiento == null || reabastecimiento.getNegocio() == null || reabastecimiento.getNegocio().getId() == null) {
+            throw new IllegalArgumentException("Datos de reabastecimiento inválidos");
         }
 
+        Negocio negocioCompleto = negocioService.getById(reabastecimiento.getNegocio().getId());
+        reabastecimiento.setNegocio(negocioCompleto);
+
         if(! ((user.getAuthority().getAuthority().equals(admin)) ||
-                (user.getAuthority().getAuthority().equals(dueno)) && negocio.getDueno().getUser().getId().equals(user.getId()) ||
-                (user.getAuthority().getAuthority().equals(empleado) && empleadoService.getEmpleadoByUser(user.getId()).getNegocio().getId().equals(negocio.getId())))) {
+                (user.getAuthority().getAuthority().equals(dueno)) && negocioCompleto.getDueno().getUser().getId().equals(user.getId()) ||
+                (user.getAuthority().getAuthority().equals(empleado) && empleadoService.getEmpleadoByUser(user.getId()).getNegocio().getId().equals(negocioCompleto.getId())))) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         return new ResponseEntity<>(reabastecimientoService.save(reabastecimiento), HttpStatus.CREATED);
