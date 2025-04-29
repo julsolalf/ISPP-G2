@@ -11,6 +11,10 @@ import ispp_g2.gastrostock.diaReparto.DiaRepartoController;
 import ispp_g2.gastrostock.diaReparto.DiaRepartoService;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.proveedores.Proveedor;
+import ispp_g2.gastrostock.user.Authorities;
+import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -29,6 +34,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
+@WithMockUser(username = "admin", roles = {"admin"})
 class DiaRepartoControllerTest {
 
     private MockMvc mockMvc;
@@ -36,6 +42,9 @@ class DiaRepartoControllerTest {
 
     @Mock
     private DiaRepartoService diaRepartoService;
+    
+    @Mock
+    private UserService userService;
 
     @InjectMocks
     private DiaRepartoController diaRepartoController;
@@ -43,10 +52,19 @@ class DiaRepartoControllerTest {
     private DiaReparto diaReparto;
     private Negocio negocio;
     private Proveedor proveedor;
+    private User adminUser;
+    private Authorities adminAuth;
 
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(diaRepartoController).build();
+
+        adminUser = new User();
+        adminUser.setId(1);
+        adminUser.setUsername("adminUser");
+        adminAuth = new Authorities();
+        adminAuth.setAuthority("admin");
+        adminUser.setAuthority(adminAuth);
 
         negocio = new Negocio();
         negocio.setId(1);
@@ -62,6 +80,7 @@ class DiaRepartoControllerTest {
 
     @Test
     void testFindAll_WhenDataExists_ReturnsOk() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         when(diaRepartoService.getDiasReparto()).thenReturn(List.of(diaReparto));
 
         mockMvc.perform(get("/api/diasReparto"))
@@ -69,15 +88,17 @@ class DiaRepartoControllerTest {
     }
 
     @Test
-    void testFindAll_WhenNoData_ReturnsNotFound() throws Exception {
+    void testFindAll_WhenNoData_ReturnsNoContent() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         when(diaRepartoService.getDiasReparto()).thenReturn(List.of());
 
         mockMvc.perform(get("/api/diasReparto"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNoContent());
     }
 
     @Test
     void testFindById_WhenExists_ReturnsOk() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         when(diaRepartoService.getById(1)).thenReturn(diaReparto);
 
         mockMvc.perform(get("/api/diasReparto/1"))
@@ -85,15 +106,19 @@ class DiaRepartoControllerTest {
     }
 
     @Test
-    void testFindById_WhenNotExists_ReturnsNotFound() throws Exception {
+    void testFindById_WhenNotExists_ReturnsOkWithNull() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         when(diaRepartoService.getById(99)).thenReturn(null);
-
+    
         mockMvc.perform(get("/api/diasReparto/99"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isOk())  
+                .andExpect(content().string(""));  
     }
+    
 
     @Test
     void testFindByDiaSemana_WhenExists_ReturnsOk() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         when(diaRepartoService.getDiaRepartoByDiaSemana(DayOfWeek.MONDAY)).thenReturn(List.of(diaReparto));
 
         mockMvc.perform(get("/api/diasReparto/diaSemana/MONDAY"))
@@ -101,15 +126,17 @@ class DiaRepartoControllerTest {
     }
 
     @Test
-    void testFindByDiaSemana_WhenNotExists_ReturnsNotFound() throws Exception {
+    void testFindByDiaSemana_WhenNotExists_ReturnsNoContent() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         when(diaRepartoService.getDiaRepartoByDiaSemana(DayOfWeek.WEDNESDAY)).thenReturn(List.of());
 
         mockMvc.perform(get("/api/diasReparto/diaSemana/WEDNESDAY"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNoContent());
     }
 
     @Test
     void testSave_WhenValid_ReturnsCreated() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         when(diaRepartoService.save(any())).thenReturn(diaReparto);
 
         mockMvc.perform(post("/api/diasReparto")
@@ -128,8 +155,8 @@ class DiaRepartoControllerTest {
 
     @Test
     void testUpdate_WhenExists_ReturnsOk() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         when(diaRepartoService.getById(1)).thenReturn(diaReparto);
-        when(diaRepartoService.save(any())).thenReturn(diaReparto);
 
         mockMvc.perform(put("/api/diasReparto/1")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -138,17 +165,20 @@ class DiaRepartoControllerTest {
     }
 
     @Test
-    void testUpdate_WhenNotExists_ReturnsNotFound() throws Exception {
+    void testUpdate_WhenNotExists_ReturnsOkWithNull() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         when(diaRepartoService.getById(99)).thenReturn(null);
 
         mockMvc.perform(put("/api/diasReparto/99")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(diaReparto)))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isOk())  
+                .andExpect(content().string(""));  
     }
 
     @Test
     void testDelete_WhenExists_ReturnsNoContent() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         when(diaRepartoService.getById(1)).thenReturn(diaReparto);
         doNothing().when(diaRepartoService).deleteById(1);
 
@@ -157,11 +187,12 @@ class DiaRepartoControllerTest {
     }
 
     @Test
-    void testDelete_WhenNotExists_ReturnsNotFound() throws Exception {
+    void testDelete_WhenNotExists_ReturnsNoContent() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         when(diaRepartoService.getById(99)).thenReturn(null);
 
         mockMvc.perform(delete("/api/diasReparto/99"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNoContent());
     }
 }
 

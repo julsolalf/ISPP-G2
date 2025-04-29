@@ -48,6 +48,11 @@ public class ProductoInventarioService {
     }
 
     @Transactional(readOnly = true)
+    public List<ProductoInventario> getProductoInventarioByCategoriaId(Integer categoriaId) {
+        return productoInventarioRepository.findByCategoriaId(categoriaId);
+    }
+
+    @Transactional(readOnly = true)
     public List<ProductoInventario> getProductoInventarioByPrecioCompra(Double precioCompra) {
         return productoInventarioRepository.findByPrecioCompra(precioCompra);
     }

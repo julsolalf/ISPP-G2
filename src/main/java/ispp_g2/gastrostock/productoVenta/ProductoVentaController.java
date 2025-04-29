@@ -246,6 +246,66 @@ public class ProductoVentaController {
         return new ResponseEntity<>(productosVenta, HttpStatus.OK);
     }
 
+    @GetMapping("/categoriaId/{categoriaId}")
+    public ResponseEntity<List<ProductoVenta>> findByCategoriaId(@PathVariable("categoriaId") Integer categoriaId) {
+        User user = userService.findCurrentUser();
+        List<ProductoVenta> productosVenta;
+        switch (user.getAuthority().getAuthority()) {
+            case admin -> productosVenta = productoVentaService.getProductosVentaByCategoriaId(categoriaId);
+            case empleado -> {
+                Empleado currEmpleado = empleadoService.getEmpleadoByUser(user.getId());
+                productosVenta = productoVentaService.getProductosVentaByNegocioID(currEmpleado.getNegocio().getId()).stream()
+                        .filter(p -> p.getCategoria().getId().equals(categoriaId))
+                        .toList();
+            }
+            case dueno -> {
+                Dueno currDueno = duenoService.getDuenoByUser(user.getId());
+                productosVenta = productoVentaService.getProductosVentaByDuenoID(currDueno.getId()).stream()
+                        .filter(p -> p.getCategoria().getId().equals(categoriaId))
+                        .toList();
+            }
+            default -> {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+        }
+        if (productosVenta.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(productosVenta, HttpStatus.OK);
+    }
+
+    @GetMapping("/dto/categoriaId/{categoriaId}")
+    public ResponseEntity<List<ProductoVentaDTO>> findByCategoriaIdDTO(@PathVariable("categoriaId") Integer categoriaId) {
+        User user = userService.findCurrentUser();
+        List<ProductoVenta> productosVenta;
+        switch (user.getAuthority().getAuthority()) {
+            case admin -> productosVenta = productoVentaService.getProductosVentaByCategoriaId(categoriaId);
+            case empleado -> {
+                Empleado currEmpleado = empleadoService.getEmpleadoByUser(user.getId());
+                productosVenta = productoVentaService.getProductosVentaByNegocioID(currEmpleado.getNegocio().getId()).stream()
+                        .filter(p -> p.getCategoria().getId().equals(categoriaId))
+                        .toList();
+            }
+            case dueno -> {
+                Dueno currDueno = duenoService.getDuenoByUser(user.getId());
+                productosVenta = productoVentaService.getProductosVentaByDuenoID(currDueno.getId()).stream()
+                        .filter(p -> p.getCategoria().getId().equals(categoriaId))
+                        .toList();
+            }
+            default -> {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+        }
+        if (productosVenta.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        List<ProductoVentaDTO> productosDTO = new ArrayList<>();
+        for (ProductoVenta producto : productosVenta) {
+            productosDTO.add(productoVentaService.convertirProductoVentaDTO(producto));
+        }
+        return new ResponseEntity<>(productosDTO, HttpStatus.OK);
+    }
+
     @GetMapping("/categoriaVenta/{categoriaVenta}")
     public ResponseEntity<List<ProductoVenta>> findByCategoriaVenta(@PathVariable("categoriaVenta") String categoriaVenta) {
         User user = userService.findCurrentUser();
