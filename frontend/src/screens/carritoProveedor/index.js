@@ -155,7 +155,8 @@ const getProximoDiaReparto = (diasReparto) => {
       }
   
       alert("Pedido realizado correctamente");
-      navigate(`/verProveedor/${proveedorId}`);      
+      navigate(`/verProveedor/${proveedorId}`);
+            
     } catch (error) {
       console.error("Error al hacer el pedido:", error);
       alert("Ocurrió un error al procesar el pedido");
