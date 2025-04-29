@@ -233,5 +233,20 @@
   background-color: #388E3C;
 }
 
+.notification-bubble .clickable {
+  cursor: pointer;
+  text-decoration: underline;
+  color: #0c0d0dc8;
+}
+.notification-bubble .clickable:hover {
+  color: #0c0d0d;
+}
   
-  
+.clickable2 {
+  text-decoration: none; /* Quita subrayado general */
+  cursor: pointer;
+}
+
+.clickable2:hover .subrayado {
+  text-decoration: underline; /* Subraya solo el texto deseado al hacer hover */
+}
