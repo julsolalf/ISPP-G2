@@ -38,12 +38,11 @@ public class LoteController {
 
     @Autowired
     public LoteController(LoteService loteService, UserService userService,
-                          NegocioService negocioService, ReabastecimientoService reabastecimientoService,
+                          NegocioService negocioService,
                           DuenoService duenoService, EmpleadoService empleadoService, CategoriaService categoriaService) {
         this.loteService = loteService;
         this.userService = userService;
         this.negocioService = negocioService;
-        this.reabastecimientoService = reabastecimientoService;
         this.duenoService = duenoService;
         this.empleadoService = empleadoService;
         this.categoriaService = categoriaService;
