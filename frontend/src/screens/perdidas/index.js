@@ -15,6 +15,8 @@ function PantallaPerdidas() {
   const [showUserOptions, setShowUserOptions] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const navigate = useNavigate();  
+  const toggleUserOptions = () => setShowUserOptions(!showUserOptions);
+
 
   useEffect(() => {
     const fetchCaducados = async () => {

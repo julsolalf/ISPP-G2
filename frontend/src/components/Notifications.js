@@ -13,10 +13,34 @@ function Notificaciones() {
     setShowNotifications(!showNotifications);
   };
 
-  const handleStockClick = () => {
-    setShowNotifications(false);
-    navigate("/alertaStock");
-  };
+  const handleStockClick = async (producto) => {
+  setShowNotifications(false);
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`http://localhost:8080/api/productosInventario/name/${encodeURIComponent(producto.name)}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.ok) {
+      const productoCompleto = await response.json();
+      const proveedorId = productoCompleto.proveedor?.id;
+
+      if (proveedorId) {
+        navigate(`/verCarritoProveedor/${proveedorId}`);
+      } else {
+        console.warn("No se encontró proveedor para el producto:", producto.name);
+      }
+    } else {
+      console.error("Error al buscar producto por nombre:", producto.name);
+    }
+  } catch (error) {
+    console.error("Error en handleStockClick:", error);
+  }
+};
+
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -122,8 +146,8 @@ function Notificaciones() {
           <ul>
             {productosConStockBajo.length > 0 ? (
               productosConStockBajo.map((producto, index) => (
-                <li key={index} onClick={handleStockClick} className="clickable2">
-                    📉 <span className="subrayado">Stock bajo: {producto.name} ({producto.cantidad} / {producto.cantidadAviso})</span>
+                <li key={index} onClick={() => handleStockClick(producto)} className="clickable2">
+                  📉 <span className="subrayado">Stock bajo: {producto.name} ({producto.cantidad} / {producto.cantidadAviso})</span>
                 </li>
               ))
             ) : (
