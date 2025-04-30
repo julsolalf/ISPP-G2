@@ -409,7 +409,7 @@ public class ProductoVentaController {
                 Dueno currDueno = duenoService.getDuenoByUser(user.getId());
                 List<Negocio> negocios = negocioService.getByDueno(currDueno.getId());
                 Negocio negocio = negocioService.getById(negocioId);
-                if(!negocios.contains(negocio)  || !currDueno.getUser().hasPremiumAccess()){
+                if(!negocios.contains(negocio)  || !user.hasPremiumAccess()){
                     return new ResponseEntity<>(HttpStatus.FORBIDDEN);
                 }
                 productosVenta = productoVentaService.getProductosVentaMasVendidosByNegocio(negocioId);
