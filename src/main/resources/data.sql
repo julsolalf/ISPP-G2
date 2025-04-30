@@ -36,8 +36,8 @@ INSERT INTO app_user (id, username, password, authority_id) VALUES (9, 'empleado
 INSERT INTO app_user (id, username, password, authority_id) VALUES (10,'gastroAdmin','$2a$10$wPqDTEhcLj7vLpEVxvlreehCK1tZl0FtvaxXxTiQoJOIOJL2uXSQm',(SELECT id FROM authorities WHERE authority ='admin'));
 
 -- Insertar suscripciones gratuitas para todos los usuarios
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (1, 'PREMIUM', 'ACTIVE', CURRENT_TIMESTAMP());
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (2, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
+INSERT INTO subscripcion (id, type, status, start_date, end_date) VALUES (1, 'PREMIUM', 'ACTIVE', CURRENT_TIMESTAMP(),'2025-12-31');
+INSERT INTO subscripcion (id, type, status, start_date, end_date) VALUES (2, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP(), '2025-12-31');
 INSERT INTO subscripcion (id, type, status, start_date) VALUES (3, 'PREMIUM', 'ACTIVE', CURRENT_TIMESTAMP());
 INSERT INTO subscripcion (id, type, status, start_date) VALUES (4, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
 INSERT INTO subscripcion (id, type, status, start_date) VALUES (5, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
@@ -74,6 +74,8 @@ INSERT INTO negocio (id, name, token_negocio, direccion, codigo_postal, ciudad, 
 VALUES (1, 'Restaurante La Trattoria', 12345, 'Calle Falsa 123', '28001', 'Madrid', 'Espana', (SELECT id FROM dueno WHERE first_name = 'Carlos')); --Cambiar de dueño cuando se borre el temporal
 INSERT INTO negocio (id, name, token_negocio, direccion, codigo_postal, ciudad, pais, dueno_id)
 VALUES (2, 'Restaurante Burguer', 09876, 'Calle Falsa 123', '28001', 'Madrid', 'Espana', (SELECT id FROM dueno WHERE first_name = 'Carlos'));
+INSERT INTO negocio (id, name, token_negocio, direccion, codigo_postal, ciudad, pais, dueno_id)
+VALUES (3, 'Restaurante 400', 02876, 'Calle Falsa 123', '28001', 'Madrid', 'Espana', (SELECT id FROM dueno WHERE first_name = 'Pablo'));
 
 -- Insertando empleados
 INSERT INTO empleado (id, first_name, last_name, email, num_telefono, token_empleado, descripcion, negocio_id, user_id)
@@ -145,6 +147,10 @@ INSERT INTO linea_de_pedido (id, cantidad, salio_de_cocina, precio_unitario, ped
 VALUES (1, 1, true, 12.50, (SELECT id FROM pedido WHERE precio_total = 15.00), (SELECT id FROM producto_venta WHERE name = 'Pizza Margherita'));
 INSERT INTO linea_de_pedido (id, cantidad, salio_de_cocina, precio_unitario, pedido_id, producto_id)
 VALUES (2, 1, true, 2.50, (SELECT id FROM pedido WHERE precio_total = 15.00), (SELECT id FROM producto_venta WHERE name = 'Coca Cola'));
+INSERT INTO linea_de_pedido (id, cantidad, salio_de_cocina, precio_unitario, pedido_id, producto_id)
+VALUES (3, 4, true, 2.50, (SELECT id FROM pedido WHERE precio_total = 15.00), (SELECT id FROM producto_venta WHERE name = 'Coca Cola'));
+INSERT INTO linea_de_pedido (id, cantidad, salio_de_cocina, precio_unitario, pedido_id, producto_id)
+VALUES (4, 10, true, 2.50, (SELECT id FROM pedido WHERE precio_total = 15.00), (SELECT id FROM producto_venta WHERE name = 'Coca Cola'));
 
 -- Insertando proveedores
 INSERT INTO proveedor (id, name, email, telefono, direccion, negocio_id)
