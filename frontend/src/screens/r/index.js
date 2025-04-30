@@ -37,10 +37,13 @@ const TPV = () => {
 
   return (
     <div className="mesa-container">
+      <button onClick={() => navigate(-1)} className="mb-4">⬅️ Volver</button>
       <h1>Selecciona una Mesa</h1>
       <div className="mesas">
         {mesas.map((mesa) => (
-          <button key={mesa.id} onClick={() => handleMesaClick(mesa.id)}>
+          <button key={mesa.id} onClick={() => {
+            localStorage.setItem("mesaId", mesa.id);  // Guardar el ID de la mesa en el localStorage
+            handleMesaClick(mesa.id)}}>
             {mesa.name || `Mesa ${mesa.id}`}
           </button>
         ))}
