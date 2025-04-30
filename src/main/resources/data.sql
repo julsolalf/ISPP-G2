@@ -21,30 +21,6 @@ INSERT INTO authorities (id, authority) VALUES (1,'dueno');
 INSERT INTO authorities (id, authority) VALUES (2,'empleado');
 INSERT INTO authorities (id, authority) VALUES (3, 'admin');
 
--- Insertar suscripciones gratuitas para todos los usuarios
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (1, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (2, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (3, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (4, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (5, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (6, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (7, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (8, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (9, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (10, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-UPDATE subscripcion SET stripe_customer_id = 'cus_test_123456' WHERE id = 1;
--- Actualizar usuarios para asociarlos con sus suscripciones
-UPDATE app_user SET subscripcion_id = 1 WHERE id = 1; -- admin
-UPDATE app_user SET subscripcion_id = 2 WHERE id = 2; -- admin2
-UPDATE app_user SET subscripcion_id = 3 WHERE id = 3; -- juan
-UPDATE app_user SET subscripcion_id = 4 WHERE id = 4; -- alejandro
-UPDATE app_user SET subscripcion_id = 5 WHERE id = 5; -- antonio
-UPDATE app_user SET subscripcion_id = 6 WHERE id = 6; -- paco
-UPDATE app_user SET subscripcion_id = 7 WHERE id = 7; -- fernando
-UPDATE app_user SET subscripcion_id = 8 WHERE id = 8; -- owner1 (temporal)
-UPDATE app_user SET subscripcion_id = 9 WHERE id = 9; -- empleado (temporal)
-UPDATE app_user SET subscripcion_id = 10 WHERE id = 10; -- gastroAdmin
-
 -- Insertando usuarios todos con password como contraseña
 INSERT INTO app_user (id, username, password, authority_id) VALUES (1, 'admin', '$2a$10$wPqDTEhcLj7vLpEVxvlreehCK1tZl0FtvaxXxTiQoJOIOJL2uXSQm', (SELECT id FROM authorities WHERE authority = 'dueno'));
 INSERT INTO app_user (id, username, password, authority_id) VALUES (2, 'admin2', '$2a$10$wPqDTEhcLj7vLpEVxvlreehCK1tZl0FtvaxXxTiQoJOIOJL2uXSQm', (SELECT id FROM authorities WHERE authority = 'dueno'));
@@ -58,6 +34,31 @@ INSERT INTO app_user (id, username, password, authority_id) VALUES (8, 'owner1',
 INSERT INTO app_user (id, username, password, authority_id) VALUES (9, 'empleado', 'password', (SELECT id FROM authorities WHERE authority = 'empleado'));
 -- Usuario admin, psswd = password
 INSERT INTO app_user (id, username, password, authority_id) VALUES (10,'gastroAdmin','$2a$10$wPqDTEhcLj7vLpEVxvlreehCK1tZl0FtvaxXxTiQoJOIOJL2uXSQm',(SELECT id FROM authorities WHERE authority ='admin'));
+
+-- Insertar suscripciones gratuitas para todos los usuarios
+INSERT INTO subscripcion (id, type, status, start_date) VALUES (1, 'PREMIUM', 'ACTIVE', CURRENT_TIMESTAMP());
+INSERT INTO subscripcion (id, type, status, start_date) VALUES (2, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
+INSERT INTO subscripcion (id, type, status, start_date) VALUES (3, 'PREMIUM', 'ACTIVE', CURRENT_TIMESTAMP());
+INSERT INTO subscripcion (id, type, status, start_date) VALUES (4, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
+INSERT INTO subscripcion (id, type, status, start_date) VALUES (5, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
+INSERT INTO subscripcion (id, type, status, start_date) VALUES (6, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
+INSERT INTO subscripcion (id, type, status, start_date) VALUES (7, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
+INSERT INTO subscripcion (id, type, status, start_date) VALUES (8, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
+INSERT INTO subscripcion (id, type, status, start_date) VALUES (9, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
+INSERT INTO subscripcion (id, type, status, start_date) VALUES (10, 'PREMIUM', 'ACTIVE', CURRENT_TIMESTAMP());
+UPDATE subscripcion SET stripe_customer_id = 'cus_test_123456' WHERE id = 1;
+-- Actualizar usuarios para asociarlos con sus suscripciones
+UPDATE app_user SET subscripcion_id = 1 WHERE id = 1; -- admin
+UPDATE app_user SET subscripcion_id = 2 WHERE id = 2; -- admin2
+UPDATE app_user SET subscripcion_id = 3 WHERE id = 3; -- juan
+UPDATE app_user SET subscripcion_id = 4 WHERE id = 4; -- alejandro
+UPDATE app_user SET subscripcion_id = 5 WHERE id = 5; -- antonio
+UPDATE app_user SET subscripcion_id = 6 WHERE id = 6; -- paco
+UPDATE app_user SET subscripcion_id = 7 WHERE id = 7; -- fernando
+UPDATE app_user SET subscripcion_id = 8 WHERE id = 8; -- owner1 (temporal)
+UPDATE app_user SET subscripcion_id = 9 WHERE id = 9; -- empleado (temporal)
+UPDATE app_user SET subscripcion_id = 10 WHERE id = 10; -- gastroAdmin
+
 
 -- Insertando duenos
 INSERT INTO dueno (id, first_name, last_name, email, num_telefono, token_dueno, user_id)
