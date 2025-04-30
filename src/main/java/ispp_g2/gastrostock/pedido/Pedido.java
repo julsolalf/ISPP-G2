@@ -8,6 +8,7 @@ import ispp_g2.gastrostock.mesa.Mesa;
 import ispp_g2.gastrostock.model.BaseEntity;
 import ispp_g2.gastrostock.negocio.Negocio;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
@@ -21,12 +22,12 @@ import org.hibernate.annotations.OnDeleteAction;
 @Setter
 public class Pedido extends BaseEntity{
 
-    @NotNull
+    
     @PastOrPresent
     private LocalDateTime fecha;
 
     @NotNull
-    @Positive
+    @Min(0)
     private Double precioTotal;
 
     @ManyToOne(optional = false)

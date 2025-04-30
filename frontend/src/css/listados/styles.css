@@ -473,3 +473,10 @@
   margin-bottom: 4px;
   margin-top: 4px;
 }
+
+
+.producto-card.clickable:hover {
+  background-color: #a92d4ebc;
+  transform: scale(1.02);
+  transition: all 0.2s ease;
+}
