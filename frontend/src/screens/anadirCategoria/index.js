@@ -30,15 +30,15 @@ function PantallaAnadirCategoria() {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/api/categorias", {
+      const response = await fetch("http://localhost:8080/api/categorias/dto", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          name: nombre,
-          negocio: { id: negocioId },
+          nombre: nombre,
+          negocioId: negocioId,
           pertenece: "INVENTARIO",
         }),
       });
