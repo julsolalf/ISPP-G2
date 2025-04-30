@@ -477,6 +477,35 @@ public class ProductoInventarioController {
 		return new ResponseEntity<>(productoInventario, HttpStatus.OK);
 	}
 
+	@GetMapping("/aviso/{negocioId}")
+	public ResponseEntity<Map<ProductoInventario,Integer>> findProductoInventarioAviso(@PathVariable("negocioId") Integer negocioId) {
+		User user = userService.findCurrentUser();
+		Map<ProductoInventario,Integer> productoInventario;
+		switch (user.getAuthority().getAuthority()){
+			case admin -> productoInventario = productoInventarioService.getProductoInventarioStockEmergencia(negocioId);
+			case empleado -> {
+				Empleado currEmpleado = empleadoService.getEmpleadoByUser(user.getId());
+				if(!currEmpleado.getNegocio().getId().equals(negocioId)){
+					return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+				}
+				productoInventario = productoInventarioService.getProductoInventarioStockEmergencia(negocioId);
+			}
+			case dueno -> {
+				Dueno currDueno = duenoService.getDuenoByUser(user.getId());
+				List<Negocio> negocios = negocioService.getByDueno(currDueno.getId());
+				Negocio negocio = negocioService.getById(negocioId);
+				if(!negocios.contains(negocio)){
+					return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+				}
+				productoInventario = productoInventarioService.getProductoInventarioStockEmergencia(negocioId);
+			}
+			default -> {
+				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			}
+		}
+		return new ResponseEntity<>(productoInventario, HttpStatus.OK);
+	}
+
 
 	@PostMapping
 	public ResponseEntity<ProductoInventario> createProductoInventario(@RequestBody @Valid ProductoInventarioDTO newProductoInventario) {

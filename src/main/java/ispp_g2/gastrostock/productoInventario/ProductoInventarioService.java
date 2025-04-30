@@ -102,6 +102,21 @@ public class ProductoInventarioService {
                 .collect(HashMap::new, (m, e) -> m.put(e.getKey(), e.getValue()), HashMap::putAll);
     }
 
+    @Transactional(readOnly = true)
+    public Map<ProductoInventario,Integer> getProductoInventarioStockEmergencia(Integer negocioId) {
+        Map<ProductoInventario,Integer> productoInventarioMenosCantidad = new HashMap<>();
+        List<ProductoInventario> productosInventario = productoInventarioRepository.findByNegocioId(negocioId);
+        productosInventario.forEach(p -> {
+            List<Lote> lotes = loteRepository.findByProductoId(p.getId());
+            Integer cantidad = p.calcularCantidad(lotes);
+            if(p.getCantidadAviso()>=cantidad)
+                productoInventarioMenosCantidad.put(p, cantidad);
+        });
+        return productoInventarioMenosCantidad.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue())
+                .collect(HashMap::new, (m, e) -> m.put(e.getKey(), e.getValue()), HashMap::putAll);
+    }
+
     @Transactional
     public ProductoInventario save(@Valid ProductoInventario newProductoInventario){
         return productoInventarioRepository.save(newProductoInventario);
