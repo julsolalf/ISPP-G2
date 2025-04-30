@@ -5,7 +5,6 @@ import ispp_g2.gastrostock.negocio.NegocioRepository;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,6 +57,11 @@ public class ProveedorService {
     @Transactional(readOnly = true)
     public List<Proveedor> findProveedorByNegocioId(Integer negocio) {
         return proveedorRepository.findProveedorByNegocioId(negocio);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Proveedor> findProveedorByDuenoId(Integer dueno) {
+        return proveedorRepository.findProveedorByDuenoId(dueno);
     }
 
     @Transactional
