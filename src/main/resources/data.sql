@@ -87,7 +87,7 @@ VALUES (3, 'Antonio', 'Fernández', 'antonio.fernandez@gmail.com', '987654323', 
 INSERT INTO empleado (id, first_name, last_name, email, num_telefono, token_empleado, descripcion, negocio_id, user_id)
 VALUES (4, 'Paco', 'Hernández', 'paco.hernandez@gmail.com', '987654324', 'gst-hoGkisz7nslugPfQbZ8mp0QW3JSYhM6', 'Cocina', (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'paco'));
 INSERT INTO empleado (id, first_name, last_name, email, num_telefono, token_empleado, descripcion, negocio_id, user_id)
-VALUES (5, 'Fernando', 'Pérez', 'fernando.perez@gmail.com', '987654325', 'gst-hoGkisz7metalPSIbZ8mp0QW3JSYhM7', null, (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'fernando'));
+VALUES (5, 'Fernando', 'Pérez', 'fernando.perez@gmail.com', '987654325', 'gst-hoGkisz7metalPSIbZ8mp0QW3JSYhM7', null, (SELECT id FROM negocio WHERE name = 'Restaurante Burguer'), (SELECT id FROM app_user WHERE username = 'fernando'));
 --Empleado temporal mientras se conecta el frontend con el backend
 INSERT INTO empleado (id, first_name, last_name, email, num_telefono, token_empleado, descripcion, negocio_id, user_id)
 VALUES (6, 'Empleado', 'Temporal', 'empleado@gmail.com', '987456325', 'gst-hoGkisz7mgoldPSIbZ8mp0QW3JSYhM7', null, (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'empleado'));
@@ -141,16 +141,34 @@ VALUES (8, 'Pez espada', 3, 10.50);
 -- Insertando pedidos
 INSERT INTO pedido (id, fecha, precio_total, mesa_id, empleado_id, negocio_id)
 VALUES (1, '2025-03-17 13:00:00', 15.00, (SELECT id FROM mesa WHERE name = 'Mesa 1'), (SELECT id FROM empleado WHERE first_name = 'Juan' AND last_name = 'Garcia'), 1);
+INSERT INTO pedido (id, fecha, precio_total, mesa_id, empleado_id, negocio_id)
+VALUES (2, '2025-03-17 13:00:00', 40.00, (SELECT id FROM mesa WHERE name = 'Mesa 1'), (SELECT id FROM empleado WHERE first_name = 'Juan' AND last_name = 'Garcia'), 1);
+INSERT INTO pedido (id, fecha, precio_total, mesa_id, empleado_id, negocio_id)
+VALUES (3, '2025-03-17 13:00:00', 55.00, (SELECT id FROM mesa WHERE name = 'Mesa 2'), (SELECT id FROM empleado WHERE first_name = 'Juan' AND last_name = 'Garcia'), 1);
+INSERT INTO pedido (id, fecha, precio_total, mesa_id, empleado_id, negocio_id)
+VALUES (4, '2025-03-17 13:00:00', 15.00, (SELECT id FROM mesa WHERE name = 'Mesa 1'), (SELECT id FROM empleado WHERE first_name = 'Juan' AND last_name = 'Garcia'), 1);
+INSERT INTO pedido (id, fecha, precio_total, mesa_id, empleado_id, negocio_id)
+VALUES (5, '2025-02-17 13:00:00', 30.00, (SELECT id FROM mesa WHERE name = 'Mesa 1'), (SELECT id FROM empleado WHERE first_name = 'Juan' AND last_name = 'Garcia'), 1);
+INSERT INTO pedido (id, fecha, precio_total, mesa_id, empleado_id, negocio_id)
+VALUES (6, '2025-02-17 13:00:00', 15.00, (SELECT id FROM mesa WHERE name = 'Mesa 1'), (SELECT id FROM empleado WHERE first_name = 'Juan' AND last_name = 'Garcia'), 1);
+INSERT INTO pedido (id, fecha, precio_total, mesa_id, empleado_id, negocio_id)
+VALUES (7, '2025-01-11 13:00:00', 9.00, (SELECT id FROM mesa WHERE name = 'Mesa 2'), (SELECT id FROM empleado WHERE first_name = 'Juan' AND last_name = 'Garcia'), 1);
+INSERT INTO pedido (id, fecha, precio_total, mesa_id, empleado_id, negocio_id)
+VALUES (8, '2025-01-10 13:00:00', 60.00, (SELECT id FROM mesa WHERE name = 'Mesa 2'), (SELECT id FROM empleado WHERE first_name = 'Juan' AND last_name = 'Garcia'), 1);
 
+INSERT INTO pedido (id, fecha, precio_total, mesa_id, empleado_id, negocio_id)
+VALUES (9, '2025-01-11 13:00:00', 9.00, (SELECT id FROM mesa WHERE name = 'Mesa 5'), (SELECT id FROM empleado WHERE first_name = 'Fernando' AND last_name = 'Pérez'), 2);
+INSERT INTO pedido (id, fecha, precio_total, mesa_id, empleado_id, negocio_id)
+VALUES (10, '2025-01-10 13:00:00', 60.00, (SELECT id FROM mesa WHERE name = 'Mesa 5'), (SELECT id FROM empleado WHERE first_name = 'Fernando' AND last_name = 'Pérez'), 2);
 -- Insertando líneas de pedido
 INSERT INTO linea_de_pedido (id, cantidad, salio_de_cocina, precio_unitario, pedido_id, producto_id)
-VALUES (1, 1, true, 12.50, (SELECT id FROM pedido WHERE precio_total = 15.00), (SELECT id FROM producto_venta WHERE name = 'Pizza Margherita'));
+VALUES (1, 1, true, 12.50, 1, (SELECT id FROM producto_venta WHERE name = 'Pizza Margherita'));
 INSERT INTO linea_de_pedido (id, cantidad, salio_de_cocina, precio_unitario, pedido_id, producto_id)
-VALUES (2, 1, true, 2.50, (SELECT id FROM pedido WHERE precio_total = 15.00), (SELECT id FROM producto_venta WHERE name = 'Coca Cola'));
+VALUES (2, 1, true, 2.50, 1, (SELECT id FROM producto_venta WHERE name = 'Coca Cola'));
 INSERT INTO linea_de_pedido (id, cantidad, salio_de_cocina, precio_unitario, pedido_id, producto_id)
-VALUES (3, 4, true, 2.50, (SELECT id FROM pedido WHERE precio_total = 15.00), (SELECT id FROM producto_venta WHERE name = 'Coca Cola'));
+VALUES (3, 4, true, 2.50, 2, (SELECT id FROM producto_venta WHERE name = 'Coca Cola'));
 INSERT INTO linea_de_pedido (id, cantidad, salio_de_cocina, precio_unitario, pedido_id, producto_id)
-VALUES (4, 10, true, 2.50, (SELECT id FROM pedido WHERE precio_total = 15.00), (SELECT id FROM producto_venta WHERE name = 'Coca Cola'));
+VALUES (4, 10, true, 2.50, 2, (SELECT id FROM producto_venta WHERE name = 'Coca Cola'));
 
 -- Insertando proveedores
 INSERT INTO proveedor (id, name, email, telefono, direccion, negocio_id)
