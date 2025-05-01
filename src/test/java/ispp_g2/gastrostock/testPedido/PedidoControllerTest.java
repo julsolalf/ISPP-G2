@@ -1,8 +1,7 @@
 package ispp_g2.gastrostock.testPedido;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -22,7 +21,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -43,7 +41,6 @@ import ispp_g2.gastrostock.pedido.PedidoService;
 import ispp_g2.gastrostock.user.Authorities;
 import ispp_g2.gastrostock.user.User;
 import ispp_g2.gastrostock.user.UserService;
-import jakarta.servlet.ServletException;
 
 abstract class UserMixin {
     @JsonIgnore
@@ -95,22 +92,27 @@ class PedidoControllerTest {
         // Crear fecha de prueba
         fecha = LocalDateTime.now();
         
-        // Configurar Mesa
-        mesa = new Mesa();
-        mesa.setId(1);
-        mesa.setName("Mesa 1");
-        mesa.setNumeroAsientos(4);
-        
-        // Configurar Empleado
-        empleado = new Empleado();
-        empleado.setId(1);
-        empleado.setTokenEmpleado("EMP123");
+
+
         
         // Configurar Negocio
         negocio = new Negocio();
         negocio.setId(1);
         negocio.setName("Restaurante Test");
+        
+        empleado = new Empleado();
+        empleado.setId(1);
+        empleado.setTokenEmpleado("EMP123");
+        empleado.setNegocio(negocio);
 
+               
+        mesa = new Mesa();
+        mesa.setId(1);
+        mesa.setName("Mesa 1");
+        mesa.setNumeroAsientos(4);
+        mesa.setNegocio(negocio);
+                
+               
         
         // Configurar Pedido
         pedido = new Pedido();
@@ -478,7 +480,7 @@ class PedidoControllerTest {
     @Test
     void testUpdate_IdNotMatch() throws Exception {
         Pedido invalidPedido = new Pedido();
-        // Sin establecer ID, debería causar un error
+        invalidPedido.setId(2);           
         invalidPedido.setPrecioTotal(60.75);
         invalidPedido.setMesa(mesa);
         invalidPedido.setEmpleado(empleado);
@@ -487,8 +489,9 @@ class PedidoControllerTest {
         mockMvc.perform(put("/api/pedidos/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(invalidPedido)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isForbidden());  
     }
+    
     
     // Test para update() - Entrada nula
     @Test

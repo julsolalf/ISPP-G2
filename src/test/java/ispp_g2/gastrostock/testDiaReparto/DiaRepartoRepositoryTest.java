@@ -25,6 +25,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -178,4 +179,79 @@ class DiaRepartoRepositoryTest {
 
         assertTrue(result.isEmpty());
     }
+    
+    @Test
+    void testFindAll_ReturnsAllSavedEntities() {
+        DiaReparto dr2 = new DiaReparto();
+        dr2.setDiaSemana(DayOfWeek.TUESDAY);
+        dr2.setProveedor(proveedor);
+        diaRepartoRepository.save(dr2);
+
+        List<DiaReparto> all = StreamSupport.stream(diaRepartoRepository.findAll().spliterator(), false).toList();
+
+        assertEquals(2, all.size());
+        List<DayOfWeek> days = all.stream().map(DiaReparto::getDiaSemana).toList();
+        assertTrue(days.containsAll(List.of(DayOfWeek.MONDAY, DayOfWeek.TUESDAY)));
+    }
+
+    @Test
+    void testDeleteById_RemovesEntity() {
+        DiaReparto dr = new DiaReparto();
+        dr.setDiaSemana(DayOfWeek.WEDNESDAY);
+        dr.setProveedor(proveedor);
+        dr = diaRepartoRepository.save(dr);
+        Integer id = dr.getId();
+        assertTrue(diaRepartoRepository.findById(id).isPresent());
+
+        diaRepartoRepository.deleteById(id);
+
+        assertFalse(diaRepartoRepository.findById(id).isPresent());
+    }
+
+    @Test
+    void testExistsById_ReturnsTrueAndFalse() {
+        DiaReparto dr = new DiaReparto();
+        dr.setDiaSemana(DayOfWeek.THURSDAY);
+        dr.setProveedor(proveedor);
+        dr = diaRepartoRepository.save(dr);
+        Integer id = dr.getId();
+
+        assertTrue(diaRepartoRepository.existsById(id));
+        assertFalse(diaRepartoRepository.existsById(9999));
+    }
+
+    @Test
+    void testCount_ReturnsNumberOfEntities() {
+        long before = diaRepartoRepository.count();
+
+        DiaReparto drA = new DiaReparto();
+        drA.setDiaSemana(DayOfWeek.FRIDAY);
+        drA.setProveedor(proveedor);
+        diaRepartoRepository.save(drA);
+
+        DiaReparto drB = new DiaReparto();
+        drB.setDiaSemana(DayOfWeek.SATURDAY);
+        drB.setProveedor(proveedor);
+        diaRepartoRepository.save(drB);
+
+        long after = diaRepartoRepository.count();
+        assertEquals(before + 2, after);
+    }
+
+    @Test
+    void testUpdateEntity_PersistedChanges() {
+        Integer id = diaReparto.getId();
+        DiaReparto fetched = diaRepartoRepository.findById(id).orElseThrow();
+        fetched.setDescripcion("Nueva descripción");
+        fetched.setDiaSemana(DayOfWeek.SUNDAY);
+
+        diaRepartoRepository.save(fetched);
+
+        DiaReparto updated = diaRepartoRepository.findById(id).orElseThrow();
+        assertEquals("Nueva descripción", updated.getDescripcion());
+        assertEquals(DayOfWeek.SUNDAY, updated.getDiaSemana());
+    }
+
+
+
 }

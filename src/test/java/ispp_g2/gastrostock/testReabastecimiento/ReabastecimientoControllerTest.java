@@ -29,6 +29,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import ispp_g2.gastrostock.dueno.Dueno;
 import ispp_g2.gastrostock.dueno.DuenoService;
 import ispp_g2.gastrostock.negocio.Negocio;
+import ispp_g2.gastrostock.negocio.NegocioService;
 import ispp_g2.gastrostock.proveedores.Proveedor;
 import ispp_g2.gastrostock.reabastecimiento.Reabastecimiento;
 import ispp_g2.gastrostock.reabastecimiento.ReabastecimientoController;
@@ -52,6 +53,9 @@ public class ReabastecimientoControllerTest {
 
     @Mock
     private DuenoService duenoService;
+
+    @Mock
+    private NegocioService negocioService;
 
     @InjectMocks
     private ReabastecimientoController reabastecimientoController;
@@ -401,7 +405,6 @@ public class ReabastecimientoControllerTest {
     
     @Test
     void testSave_Success() throws Exception {
-        // Crear Dueno
         Dueno nuevoDueno = new Dueno();
         nuevoDueno.setFirstName("Juan");
         nuevoDueno.setLastName("García");
@@ -409,8 +412,8 @@ public class ReabastecimientoControllerTest {
         nuevoDueno.setNumTelefono("652345678");
         nuevoDueno.setTokenDueno("TOKEN123");
     
-        // Crear Negocio
         Negocio nuevoNegocio = new Negocio();
+        nuevoNegocio.setId(1);
         nuevoNegocio.setName("Restaurante La Tasca");
         nuevoNegocio.setDireccion("Calle Principal 123");
         nuevoNegocio.setCiudad("Sevilla");
@@ -419,54 +422,44 @@ public class ReabastecimientoControllerTest {
         nuevoNegocio.setTokenNegocio(12345);
         nuevoNegocio.setDueno(nuevoDueno);
     
-        // Crear Proveedor
         Proveedor nuevoProveedor = new Proveedor();
         nuevoProveedor.setName("Distribuciones Alimentarias S.L.");
         nuevoProveedor.setEmail("distribuciones@example.com");
         nuevoProveedor.setTelefono("954111222");
         nuevoProveedor.setDireccion("Polígono Industrial, Nave 7");
     
-        // Crear Reabastecimiento de entrada
         Reabastecimiento nuevoReabastecimiento = new Reabastecimiento();
-        nuevoReabastecimiento.setId(1); // Importante para que el controlador lo use
         nuevoReabastecimiento.setFecha(LocalDate.now());
         nuevoReabastecimiento.setPrecioTotal(500.0);
         nuevoReabastecimiento.setReferencia("REF-NEW");
         nuevoReabastecimiento.setProveedor(nuevoProveedor);
         nuevoReabastecimiento.setNegocio(nuevoNegocio);
     
-        // Mock: usuario actual
         when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(negocioService.getById(1)).thenReturn(nuevoNegocio);
     
-        // Mock: getById() devuelve un objeto con el mismo negocio
-        Reabastecimiento existente = new Reabastecimiento();
-        existente.setId(1);
-        existente.setNegocio(nuevoNegocio);
-        when(reabastecimientoService.getById(1)).thenReturn(existente);
-    
-        // Mock: save() devuelve el objeto guardado
         Reabastecimiento reabastecimientoGuardado = new Reabastecimiento();
-        reabastecimientoGuardado.setId(1);
+        reabastecimientoGuardado.setId(42);
         reabastecimientoGuardado.setFecha(nuevoReabastecimiento.getFecha());
         reabastecimientoGuardado.setPrecioTotal(nuevoReabastecimiento.getPrecioTotal());
         reabastecimientoGuardado.setReferencia(nuevoReabastecimiento.getReferencia());
         reabastecimientoGuardado.setProveedor(nuevoProveedor);
         reabastecimientoGuardado.setNegocio(nuevoNegocio);
         when(reabastecimientoService.save(any(Reabastecimiento.class)))
-                .thenReturn(reabastecimientoGuardado);
+            .thenReturn(reabastecimientoGuardado);
     
-        // Ejecutar la petición POST
         mockMvc.perform(post("/api/reabastecimientos")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(nuevoReabastecimiento)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.referencia").value("REF-NEW"))
-                .andExpect(jsonPath("$.precioTotal").value(500.0));
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.id").value(42))
+            .andExpect(jsonPath("$.referencia").value("REF-NEW"))
+            .andExpect(jsonPath("$.precioTotal").value(500.0));
     
-        // Verificar invocaciones
-        verify(reabastecimientoService).getById(1);
+        verify(negocioService).getById(1);
         verify(reabastecimientoService).save(any(Reabastecimiento.class));
     }
+    
     
     
     @Test
