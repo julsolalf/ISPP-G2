@@ -48,6 +48,7 @@ import VerProductoCartaEmpleado from "./screens/verTipoProductoCartaEmpleado/ver
 import VerCarritoProveedor from "./screens/carritoProveedor/index.js";
 import VerCarritosPendientes from "./screens/verCarritosPendientes/index.js";
 import ConfirmarPendiente from "./screens/verCarritosPendientes/confirmarPendiente/index.js";
+import Home from "./screens/home/index.js";
 
 
 function AppScreen() {
@@ -94,7 +95,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<AppScreen />} />
+        <Route path="/" element={<Home />} />
         <Route path="/inicioSesion" element={<PantallaInicioSesion />} />
         <Route path="/recuperarContrasena" element={<PantallaRecuperarContrasena />} />
         <Route path="/registroDueno" element={<PantallaRegistroDueno />} />
