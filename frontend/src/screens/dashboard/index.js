@@ -21,104 +21,100 @@ function Dashboard() {
   const [lowStockData, setLowStockData] = useState([]);
   const [emergencyStockData, setEmergencyStockData] = useState([]);
 
+  const token = localStorage.getItem("token");
+  const negocioId = localStorage.getItem("negocioId");
 
   const toggleUserOptions = () => {
     setShowUserOptions(!showUserOptions);
   };
 
-
   useEffect(() => {
-    // Obtener datos de productos vendidos (Producto más vendido)
-    fetch("http://localhost:8080/api/lineasDePedido")
-      .then((response) => response.json())
-      .then((data) => {
-        const productsSold = data.reduce((acc, item) => {
-          if (acc[item.producto_id]) {
-            acc[item.producto_id].cantidad += item.cantidad;
-            acc[item.producto_id].totalVendido += item.precio_unitario * item.cantidad;
-          } else {
-            acc[item.producto_id] = {
-              nombre: item.name,
-              cantidad: item.cantidad,
-              precio: item.precio_unitario,
-              totalVendido: item.precio_unitario * item.cantidad,
-            };
-          }
-          return acc;
-        }, {});
+    if (!negocioId || !token) return;
 
-        const productsArray = Object.values(productsSold);
-        setProductsSoldData(productsArray);
-      })
-      .catch((error) => console.error("Error al obtener productos vendidos:", error));
-
-    // Obtener datos de ventas por semana
-    fetch("http://localhost:8080/api/pedidos")
-      .then((response) => response.json())
-      .then((data) => {
-        const sales = data.map((pedido) => {
-          const day = new Date(pedido.fecha);
-          return {
-            day: day.toLocaleString("es-ES", { weekday: "short" }),
-            total: pedido.precio_total,
-          };
+    const fetchData = async (url, onSuccess, errorMessage) => {
+      try {
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         });
-        setSalesData(sales);
-      })
-      .catch((error) => console.error("Error al obtener ventas:", error));
 
-    // Obtener ingresos semanales
-    fetch("http://localhost:8080/api/pedidos")
-      .then((response) => response.json())
-      .then((data) => {
-        const revenue = data.map((pedido) => {
-          const day = new Date(pedido.fecha);
-          return {
-            day: day.toLocaleString("es-ES", { weekday: "short" }),
-            revenue: pedido.precio_total,
-          };
-        });
-        setRevenueData(revenue);
-      })
-      .catch((error) => console.error("Error al obtener ingresos:", error));
+        if (!response.ok) throw new Error(`${errorMessage} (${response.status})`);
+        const data = await response.json();
+        onSuccess(data);
+      } catch (err) {
+        console.error(errorMessage, err);
+      }
+    };
 
-    // Obtener productos con stock bajo
-    fetch("http://localhost:8080/api/productosInventario")
-      .then((response) => response.json())
-      .then((data) => {
-        const lowStock = data.filter(item => {
-          const cantidadDisponible = item.lotes && Array.isArray(item.lotes)
-            ? item.lotes.reduce((sum, lote) => sum + lote.cantidad, 0)
-            : 0;
+    fetchData(
+      `http://localhost:8080/api/productoVenta/masVendido/${negocioId}`,
+      (data) => {
+        const parsed = Object.entries(data).map(([producto, cantidad]) => ({
+          nombre: producto,
+          cantidad,
+        }));
+        setProductsSoldData(parsed);
+      },
+      "Error al obtener productos más vendidos:"
+    );
 
-          return item.cantidad_deseada - item.cantidad_aviso > cantidadDisponible;
-        });
-        setLowStockData(lowStock);
-      })
-      .catch((error) => console.error("Error al obtener productos con stock bajo:", error));
+    fetchData(
+      `http://localhost:8080/api/pedido/volumen/${negocioId}`,
+      (data) => {
+        const parsed = Object.entries(data).map(([semana, total]) => ({
+          day: `Semana ${semana}`,
+          total,
+        }));
+        setSalesData(parsed);
+      },
+      "Error al obtener volumen de pedidos:"
+    );
 
-    // Obtener productos en stock de emergencia
-    fetch("http://localhost:8080/api/productosInventario")
-      .then((response) => response.json())
-      .then((data) => {
-        const emergencyStock = data.filter(item => {
-          const cantidadDisponible = item.lotes && Array.isArray(item.lotes)
-            ? item.lotes.reduce((sum, lote) => sum + lote.cantidad, 0)
-            : 0;
+    fetchData(
+      `http://localhost:8080/api/pedido/ingresos/${negocioId}`,
+      (data) => {
+        const parsed = Object.entries(data).map(([mes, ingreso]) => ({
+          day: mes,
+          revenue: ingreso,
+        }));
+        setRevenueData(parsed);
+      },
+      "Error al obtener ingresos mensuales:"
+    );
 
-          return cantidadDisponible <= item.cantidad_aviso;
-        });
-        setEmergencyStockData(emergencyStock);
-      })
-      .catch((error) => console.error("Error al obtener productos con stock de emergencia:", error));
-  }, []);
+    fetchData(
+      `http://localhost:8080/api/productoInventario/menosCantidad/${negocioId}`,
+      (data) => {
+        const parsed = Object.entries(data).map(([producto, cantidad]) => ({
+          product: producto,
+          stock: cantidad,
+        }));
+        setLowStockData(parsed);
+      },
+      "Error al obtener inventario bajo:"
+    );
+
+    fetchData(
+      `http://localhost:8080/api/productoInventario/aviso/${negocioId}`,
+      (data) => {
+        const parsed = Object.entries(data).map(([producto, cantidad]) => ({
+          product: producto,
+          stock: cantidad,
+        }));
+        setEmergencyStockData(parsed);
+      },
+      "Error al obtener stock de emergencia:"
+    );
+  }, [negocioId, token]);
 
   const handleLogout = () => {
     localStorage.clear();
     navigate("/");
   };
 
-  // Datos para las gráficas
   const salesChartData = salesData.map((sales) => ({
     day: sales.day,
     sales: sales.total,
@@ -130,13 +126,13 @@ function Dashboard() {
   }));
 
   const lowStockChartData = lowStockData.map((item) => ({
-    product: item.name,
-    stock: item.lotes.reduce((sum, lote) => sum + lote.cantidad, 0),
+    product: item.product,
+    stock: item.stock,
   }));
 
   const emergencyStockChartData = emergencyStockData.map((item) => ({
-    product: item.name,
-    stock: item.lotes.reduce((sum, lote) => sum + lote.cantidad, 0),
+    product: item.product,
+    stock: item.stock,
   }));
 
   const downloadPDF = () => {
@@ -161,7 +157,19 @@ function Dashboard() {
   };
 
   return (
-    <div className="home-container" style={{ backgroundImage: `url(${process.env.PUBLIC_URL + "/background-spices.jpg"})`, backgroundSize: "cover", backgroundPosition: "center", height: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", textAlign: "center", padding: "20px", overflow: "hidden" }}>
+    <div className="home-container" style={{
+      backgroundImage: `url(${process.env.PUBLIC_URL + "/background-spices.jpg"})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      height: "100vh",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "flex-start",
+      textAlign: "center",
+      padding: "20px",
+      overflow: "hidden"
+    }}>
       <div className="content">
         <div className="icon-container-right">
           <Bell size={30} className="icon" onClick={() => setShowNotifications(!showNotifications)} />
@@ -170,9 +178,9 @@ function Dashboard() {
 
         {showNotifications && (
           <div className="icon-container-right">
-          <Notificaciones />
-          <User size={30} className="icon" onClick={toggleUserOptions} />
-        </div>
+            <Notificaciones />
+            <User size={30} className="icon" onClick={toggleUserOptions} />
+          </div>
         )}
 
         {showUserOptions && (
@@ -192,7 +200,7 @@ function Dashboard() {
         <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
         <Link to="/inicioDueno">
           <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
-        </Link>        
+        </Link>
         <h1 className="title">GastroStock</h1>
         <h2>DashBoard</h2>
 
