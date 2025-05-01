@@ -4,7 +4,6 @@ import { Bell, User } from "lucide-react";
 import "../../css/listados/styles.css";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import Notificaciones from "../../components/Notifications";
 
 function Empleados() {
   const navigate = useNavigate();
@@ -106,10 +105,17 @@ function Empleados() {
         </div>
 
         {showNotifications && (
-          <div className="icon-container-right">
-          <Notificaciones />
-          <User size={30} className="icon" onClick={toggleUserOptions} />
-        </div>
+          <div className="notification-bubble">
+            <div className="notification-header">
+              <strong>Notificaciones</strong>
+              <button className="close-btn" onClick={toggleNotifications}>X</button>
+            </div>
+            <ul>
+              <li>Notificación 1</li>
+              <li>Notificación 2</li>
+              <li>Notificación 3</li>
+            </ul>
+          </div>
         )}
 
         {showUserOptions && (

@@ -2,18 +2,19 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
-import Notificaciones from "../../components/Notifications";
 
 const token = localStorage.getItem("token");
 
-const obtenerProveedor = async (idProveedor) => {
+
+const obtenerProveedor = async () => {
   try {
+    const idProveedor = localStorage.getItem("proveedorId");
     const response = await fetch(`http://localhost:8080/api/proveedores/${idProveedor}`, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
     });
     if (!response.ok) {
       throw new Error("Error al obtener el proveedor");
@@ -25,69 +26,38 @@ const obtenerProveedor = async (idProveedor) => {
   }
 };
 
-const obtenerDiasRepartoProveedor = async (idProveedor) => {
-  try {
-    const response = await fetch(`http://localhost:8080/api/diasReparto/proveedor/${idProveedor}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (!response.ok) {
-      throw new Error("Error al obtener los días de reparto del proveedor");
-    }
-    return await response.json();
-  } catch (error) {
-    console.error("Error al obtener los días de reparto:", error);
-    return [];
-  }
-};
-
 function VerProveedor() {
   const { id } = useParams(); 
   const navigate = useNavigate();
   const [proveedor, setProveedor] = useState(null);
-  const [diasReparto, setDiasReparto] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false); 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [cargando, setCargando] = useState(true);
 
   const handleLogout = () => {
     localStorage.clear();
-    navigate("/");
-  };
-
-  const toggleUserOptions = () => {
-    setShowUserOptions(!showUserOptions);
+    navigate("/"); // Redirigir a la pantalla de inicio de sesión
   };
 
 
   useEffect(() => {
-    const cargarDatos = async () => {
-      setCargando(true); // empezamos cargando
-      const dataProveedor = await obtenerProveedor(id);
-      setProveedor(dataProveedor);
-  
-      const dias = await obtenerDiasRepartoProveedor(id);
-      const diasFormateados = dias.map(d => d.diaSemana);
-      setDiasReparto(diasFormateados);
-      setCargando(false); // terminamos de cargar
+    const cargarProveedor = async () => {
+      const data = await obtenerProveedor();
+      setProveedor(data);
     };
-    cargarDatos();
+    cargarProveedor();
   }, [id]);
-  
 
   const eliminarProveedor = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/proveedores/${id}`, {
-        method: "DELETE",
+      const idProveedor = localStorage.getItem("proveedorId");
+      const response = await fetch(`http://localhost:8080/api/proveedores/${idProveedor}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
+        method: "DELETE",
       });
       if (!response.ok) {
         throw new Error("Error al eliminar el proveedor");
@@ -102,14 +72,6 @@ function VerProveedor() {
     return <h2>Proveedor no encontrado</h2>;
   }
 
-  if (cargando) {
-    return <h2>Cargando proveedor...</h2>;
-  }
-  
-  if (!proveedor) {
-    return <h2>Proveedor no encontrado</h2>;
-  }
-  
   return (
     <div className="home-container"
       style={{
@@ -129,10 +91,17 @@ function VerProveedor() {
         </div>
 
         {showNotifications && (
-          <div className="icon-container-right">
-          <Notificaciones />
-          <User size={30} className="icon" onClick={toggleUserOptions} />
-        </div>
+          <div className="notification-bubble">
+            <div className="notification-header">
+              <strong>Notificaciones</strong>
+              <button className="close-btn" onClick={() => setShowNotifications(false)}>X</button>
+            </div>
+            <ul>
+              <li>Notificación 1</li>
+              <li>Notificación 2</li>
+              <li>Notificación 3</li>
+            </ul>
+          </div>
         )}
 
         {showUserOptions && (
@@ -160,12 +129,11 @@ function VerProveedor() {
           <p><strong>Email:</strong> {proveedor.email}</p>
           <p><strong>Teléfono:</strong> {proveedor.telefono}</p>
           <p><strong>Dirección:</strong> {proveedor.direccion}</p>
-          <p><strong>Días de Reparto:</strong> {diasReparto.length > 0 ? diasReparto.join(", ") : "No especificados"}</p>
           
-          <button style={{ background: "#157E03", color: "white" }} onClick={() => navigate(`/editarProveedor/${proveedor.id}`)}>Editar Proveedor</button>
+          <button style={{ background: "#157E03", color: "white" }} onClick={() => {
+            localStorage.setItem("proveedorId", proveedor.id)
+            navigate(`/editarProveedor/${proveedor.id}`)}}>Editar Proveedor</button>
           <button style={{ background: "#9A031E", color: "white" }} onClick={() => setShowDeleteModal(true)}>Eliminar Proveedor</button>
-          <button style={{ background: "#F57C20", color: "white" }} onClick={() => navigate(`/verCarritoProveedor/${proveedor.id}`)}>Ver Carrito</button>
-          <button style={{ background: "#F57C20", color: "white" }} onClick={() => navigate(`/verCarritosPendientes/${proveedor.id}`)}>Ver Pendientes</button>
         </div>
 
         {showDeleteModal && (
@@ -180,7 +148,7 @@ function VerProveedor() {
           </div>
         )}
 
-        {showLogoutModal && (
+{showLogoutModal && (
           <div className="modal-overlay">
             <div className="modal">
               <h3>¿Está seguro que desea abandonar la sesión?</h3>

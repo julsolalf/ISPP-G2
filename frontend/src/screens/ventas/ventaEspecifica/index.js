@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import "../../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
-import Notificaciones from "../../../components/Notifications";
 
 // Función para obtener la venta desde el backend
 const obtenerVenta = async (ventaId) => {
@@ -34,7 +33,6 @@ function VerVentaEspecifica() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
   
   const eliminarVenta = async () => {
     try {
@@ -56,11 +54,6 @@ function VerVentaEspecifica() {
 
   const toggleUserOptions = () => {
     setShowUserOptions(!showUserOptions);
-  };
-
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate("/"); // Redirigir a la pantalla de inicio de sesión
   };
 
   useEffect(() => {
@@ -96,17 +89,24 @@ function VerVentaEspecifica() {
         </div>
 
         {showNotifications && (
-          <div className="icon-container-right">
-          <Notificaciones />
-          <User size={30} className="icon" onClick={toggleUserOptions} />
-        </div>
+          <div className="notification-bubble">
+            <div className="notification-header">
+              <strong>Notificaciones</strong>
+              <button className="close-btn" onClick={toggleNotifications}>X</button>
+            </div>
+            <ul>
+              <li>Notificación 1</li>
+              <li>Notificación 2</li>
+              <li>Notificación 3</li>
+            </ul>
+          </div>
         )}
 
-{showUserOptions && (
+        {showUserOptions && (
           <div className="notification-bubble user-options">
             <div className="notification-header">
               <strong>Usuario</strong>
-              <button className="close-btn" onClick={() => setShowUserOptions(false)}>X</button>
+              <button className="close-btn" onClick={toggleUserOptions}>X</button>
             </div>
             <ul>
               <li>
@@ -116,7 +116,7 @@ function VerVentaEspecifica() {
                 <button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button>
               </li>
               <li>
-                <button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
+                <button className="user-btn" onClick={() => navigate("/logout")}>Cerrar Sesión</button>
               </li>
             </ul>
           </div>
@@ -148,18 +148,6 @@ function VerVentaEspecifica() {
               <div className="modal-buttons">
                 <button className="confirm-btn" onClick={eliminarVenta}>Sí</button>
                 <button className="cancel-btn" onClick={() => setShowDeleteModal(false)}>No</button>
-              </div>
-            </div>
-          </div>
-        )}
-
-{showLogoutModal && (
-          <div className="modal-overlay">
-            <div className="modal">
-              <h3>¿Está seguro que desea abandonar la sesión?</h3>
-              <div className="modal-buttons">
-                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
-                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
               </div>
             </div>
           </div>
