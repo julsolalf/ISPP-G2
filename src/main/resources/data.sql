@@ -16,12 +16,12 @@ DELETE FROM subscripcion;
 DELETE FROM app_user;
 DELETE FROM authorities;
 
--- Insertando autoridades
+-- 1. Insertar autoridades
 INSERT INTO authorities (id, authority) VALUES (1,'dueno');
 INSERT INTO authorities (id, authority) VALUES (2,'empleado');
-INSERT INTO authorities (id, authority) VALUES (3, 'admin');
+INSERT INTO authorities (id, authority) VALUES (3,'admin');
 
--- Insertando usuarios todos con password como contraseña
+-- 2. Insertar usuarios con subscripcion_id referenciando las ya creadas
 INSERT INTO app_user (id, username, password, authority_id) VALUES (1, 'admin', '$2a$10$wPqDTEhcLj7vLpEVxvlreehCK1tZl0FtvaxXxTiQoJOIOJL2uXSQm', (SELECT id FROM authorities WHERE authority = 'dueno'));
 INSERT INTO app_user (id, username, password, authority_id) VALUES (2, 'admin2', '$2a$10$wPqDTEhcLj7vLpEVxvlreehCK1tZl0FtvaxXxTiQoJOIOJL2uXSQm', (SELECT id FROM authorities WHERE authority = 'dueno'));
 INSERT INTO app_user (id, username, password, authority_id) VALUES (3, 'juan', '$2a$10$wPqDTEhcLj7vLpEVxvlreehCK1tZl0FtvaxXxTiQoJOIOJL2uXSQm', (SELECT id FROM authorities WHERE authority = 'empleado'));
@@ -35,10 +35,13 @@ INSERT INTO app_user (id, username, password, authority_id) VALUES (9, 'empleado
 -- Usuario admin, psswd = password
 INSERT INTO app_user (id, username, password, authority_id) VALUES (10,'gastroAdmin','$2a$10$wPqDTEhcLj7vLpEVxvlreehCK1tZl0FtvaxXxTiQoJOIOJL2uXSQm',(SELECT id FROM authorities WHERE authority ='admin'));
 
--- Insertar suscripciones gratuitas para todos los usuarios
-INSERT INTO subscripcion (id, type, status, start_date, end_date,user_id,stripe_customer_id) VALUES (1, 'PREMIUM', 'ACTIVE', CURRENT_TIMESTAMP(),'2025-12-31',1,'cus_test_123456');
-INSERT INTO subscripcion (id, type, status, start_date, end_date,user_id) VALUES (2, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP(), '2025-12-31',2);
+-- 3. Insertar subscripciones con user_id ya creado
+INSERT INTO subscripcion (id, type, status, start_date, end_date, stripe_customer_id, user_id) VALUES (1, 'PREMIUM', 'ACTIVE', CURRENT_TIMESTAMP(), '2025-12-31', 'cus_test_123456', 1);
+INSERT INTO subscripcion (id, type, status, start_date, end_date, user_id) VALUES (2, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP(), '2025-12-31', 2);
 
+-- 4. Actualizar usuarios para asociar subscripcion_id (opcional si el @OneToOne es bidireccional y mappedBy se encarga)
+UPDATE app_user SET subscripcion_id = 1 WHERE id = 1;
+UPDATE app_user SET subscripcion_id = 2 WHERE id = 2;
 
 -- Insertando duenos
 INSERT INTO dueno (id, first_name, last_name, email, num_telefono, token_dueno, user_id)
@@ -203,4 +206,3 @@ INSERT INTO linea_de_carrito (id, cantidad, precio_linea, producto_id, carrito_i
 VALUES (1, 200, 100, (SELECT id FROM producto_inventario WHERE name = 'Harina'), (SELECT id FROM carrito WHERE id = 1));
 INSERT INTO linea_de_carrito (id, cantidad, precio_linea, producto_id, carrito_id)
 VALUES (2, 200, 60,(SELECT id FROM producto_inventario WHERE name = 'Tomate'), (SELECT id FROM carrito WHERE id = 1));
-
