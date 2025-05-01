@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import "../../../css/listados/styles.css";
 
 const DetallesPedido = () => {
   const { pedidoId } = useParams();
@@ -133,9 +134,24 @@ const DetallesPedido = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div>
-      <button onClick={() => navigate(-1)}>Volver</button>
-      <h1>Detalles del Pedido #{pedidoId}</h1>
+    <div
+      className="home-container"
+      style={{
+        backgroundImage: `url(${process.env.PUBLIC_URL + "/background-spices.jpg"})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        minHeight: "100vh",
+        padding: "20px",
+        color: "#fff"
+      }}
+    >
+      <div className='content'>
+      <button onClick={() => navigate(-1)} className="back-button">
+      ⬅ Volver
+      </button>
+      <h2 style={{ marginTop: '1rem' }}>Editando pedido actual</h2>
+      <div className="empleado-card">    
+      <h1>🧾 Detalles del Pedido #{pedidoId}</h1>
       {lineasModificadas.map(linea => (
         <div key={linea.id}>
           <h3>{linea.nombreProducto}</h3>
@@ -145,6 +161,8 @@ const DetallesPedido = () => {
         </div>
       ))}
       <button onClick={actualizarPedido}>Actualizar Pedido</button>
+      </div>
+      </div>
     </div>
   );
 };

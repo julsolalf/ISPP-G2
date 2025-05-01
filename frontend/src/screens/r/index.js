@@ -9,13 +9,16 @@ const TPV = () => {
   const [showUserOptions, setShowUserOptions] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const navigate = useNavigate();
+
+  const empleado = JSON.parse(localStorage.getItem("empleado"));
+  const negocioId = empleado.negocio.id; // Obtener el ID del negocio del empleado
   
   useEffect(() => {
     const token = localStorage.getItem("token");  // Obtener el token del localStorage
 
     const fetchMesas = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/api/mesas/negocio/1`, {
+        const res = await fetch(`http://localhost:8080/api/mesas/negocio/${negocioId}`, {
           method: "GET",
           credentials: "include",
           headers: {

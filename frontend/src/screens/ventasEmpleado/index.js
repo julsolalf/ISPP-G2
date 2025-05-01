@@ -4,7 +4,8 @@ import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
 const token = localStorage.getItem("token");
-const negocioId = 1//localStorage.getItem("negocioId");
+const empleado = JSON.parse(localStorage.getItem("empleado"));  
+const negocioId = empleado.negocio.id; // Obtener el ID del negocio del empleado
 
 // Función para obtener los pedidos desde la API
 const obtenerPedidos = async () => {
