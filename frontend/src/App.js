@@ -50,6 +50,9 @@ import VerCarritosPendientes from "./screens/verCarritosPendientes/index.js";
 import ConfirmarPendiente from "./screens/verCarritosPendientes/confirmarPendiente/index.js";
 import PantallaAnadirCategoriaVenta from "./screens/anadirCategoriaVenta/index.js";
 
+import Productos from "./screens/r/verProductosTPV/index.js";
+import PantallaLineasDePedido from "./screens/r/pedidos/index.js";
+import DetallesPedido from "./screens/r/detallePedido/index.js";
 
 
 function AppScreen() {
@@ -143,6 +146,10 @@ function App() {
         <Route path="/verCarritosPendientes/:proveedorId" element={<VerCarritosPendientes />} />
         <Route path="/confirmarPendiente/:carritoId" element={<ConfirmarPendiente />} />
         <Route path="/anadirCategoriaVenta" element={<PantallaAnadirCategoriaVenta/>} />
+        <Route path="/TPV" element={<TPV />} />
+        <Route exact path="/productos/:mesaId" element={<Productos/>} />
+        <Route exact path="/pedidos/mesa/:mesaId" element={<PantallaLineasDePedido/>} />
+        <Route exact path="/pedido/:pedidoId" element={<DetallesPedido/>} />
       </Routes>
     </Router>
   );

@@ -7,7 +7,6 @@ import {
 } from "recharts";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
-import Notificaciones from "../../components/Notifications";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -20,12 +19,6 @@ function Dashboard() {
   const [revenueData, setRevenueData] = useState([]);
   const [lowStockData, setLowStockData] = useState([]);
   const [emergencyStockData, setEmergencyStockData] = useState([]);
-
-
-  const toggleUserOptions = () => {
-    setShowUserOptions(!showUserOptions);
-  };
-
 
   useEffect(() => {
     // Obtener datos de productos vendidos (Producto más vendido)
@@ -169,10 +162,17 @@ function Dashboard() {
         </div>
 
         {showNotifications && (
-          <div className="icon-container-right">
-          <Notificaciones />
-          <User size={30} className="icon" onClick={toggleUserOptions} />
-        </div>
+          <div className="notification-bubble">
+            <div className="notification-header">
+              <strong>Notificaciones</strong>
+              <button className="close-btn" onClick={() => setShowNotifications(false)}>X</button>
+            </div>
+            <ul>
+              <li>Notificación 1</li>
+              <li>Notificación 2</li>
+              <li>Notificación 3</li>
+            </ul>
+          </div>
         )}
 
         {showUserOptions && (

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
-import Notificaciones from "../../components/Notifications";
 
 function PantallaAñadirProducto() {
   const navigate = useNavigate();
@@ -149,10 +148,17 @@ function PantallaAñadirProducto() {
         </div>
 
         {showNotifications && (
-          <div className="icon-container-right">
-          <Notificaciones />
-          <User size={30} className="icon" onClick={toggleUserOptions} />
-        </div>
+          <div className="notification-bubble">
+            <div className="notification-header">
+              <strong>Notificaciones</strong>
+              <button className="close-btn" onClick={toggleNotifications}>X</button>
+            </div>
+            <ul>
+              <li>Notificación 1</li>
+              <li>Notificación 2</li>
+              <li>Notificación 3</li>
+            </ul>
+          </div>
         )}
 
         {showUserOptions && (

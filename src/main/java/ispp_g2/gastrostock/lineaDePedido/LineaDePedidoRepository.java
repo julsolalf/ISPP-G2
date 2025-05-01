@@ -19,9 +19,6 @@ public interface LineaDePedidoRepository extends CrudRepository<LineaDePedido,In
     @Query("SELECT l FROM LineaDePedido l WHERE l.pedido.id = ?1")
     List<LineaDePedido> findLineaDePedidosByPedidoId(@Positive Integer pedido);
 
-    @Query("SELECT l FROM LineaDePedido l WHERE l.pedido.negocio.id = ?1")
-    List<LineaDePedido> findLineaDePedidosByNegocioId(@Positive Integer negocio);
-
     @Query("SELECT l FROM LineaDePedido l WHERE l.producto.id = ?1")
     List<LineaDePedido> findLineaDePedidosByProductoId(@Positive Integer producto);
 
