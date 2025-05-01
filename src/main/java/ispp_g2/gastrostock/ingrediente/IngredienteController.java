@@ -199,7 +199,7 @@ public class IngredienteController {
     @PostMapping
     public ResponseEntity<Ingrediente> save(@RequestBody @Valid Ingrediente ingrediente) {
         User user = userService.findCurrentUser();
-        Negocio negocio = categoriaService.getById(ingrediente.getProductoInventario().getCategoria().getNegocio().getId()).getNegocio();
+        Negocio negocio = categoriaService.getById(ingrediente.getProductoInventario().getCategoria().getId()).getNegocio();
 
         if(! ((user.getAuthority().getAuthority().equals(ADMIN)) ||
                 (user.getAuthority().getAuthority().equals(DUENO)) && negocio.getDueno().getUser().getId().equals(user.getId()) ||
@@ -221,7 +221,7 @@ public class IngredienteController {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
-            Negocio negocio = categoriaService.getById(ingrediente.getProductoInventario().getCategoria().getNegocio().getId()).getNegocio();
+            Negocio negocio = categoriaService.getById(ingrediente.getProductoInventario().getCategoria().getId()).getNegocio();
             Negocio negocioToUpdate = existingIngrediente.getProductoInventario().getCategoria().getNegocio();
 
             //        Si no es admin
@@ -252,7 +252,7 @@ public class IngredienteController {
             if (ingrediente == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-            Negocio negocio = categoriaService.getById(ingrediente.getProductoInventario().getCategoria().getNegocio().getId()).getNegocio();
+            Negocio negocio = categoriaService.getById(ingrediente.getProductoInventario().getCategoria().getId()).getNegocio();
 
             if(!((user.getAuthority().getAuthority().equals(ADMIN)) ||
                     (user.getAuthority().getAuthority().equals(DUENO) &&
