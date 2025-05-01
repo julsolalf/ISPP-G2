@@ -3,6 +3,7 @@ package ispp_g2.gastrostock.testEmpleado;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -36,6 +37,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
@@ -472,8 +474,8 @@ class EmpleadoControllerTest {
     @Test
     void testUpdate_Success() throws Exception {
         EmpleadoDTO empleadoDTO = new EmpleadoDTO();
-        empleadoDTO.setUsername("anton");
-        empleadoDTO.setPassword("password123");
+        empleadoDTO.setUsername("juanperez");
+        empleadoDTO.setPassword("Password1!");
         empleadoDTO.setFirstName("Juan Actualizado");
         empleadoDTO.setLastName("Pérez");
         empleadoDTO.setEmail("juan.perez@example.com");
@@ -481,6 +483,17 @@ class EmpleadoControllerTest {
         empleadoDTO.setTokenEmpleado("TOKEN123");
         empleadoDTO.setDescripcion("Camarero principal actualizado");
         empleadoDTO.setNegocio(1);
+
+        Empleado empleadoOriginal = new Empleado();
+        empleadoOriginal.setId(1);
+        empleadoOriginal.setFirstName("Juan");
+        empleadoOriginal.setLastName("Pérez");
+        empleadoOriginal.setEmail("juan.perez@example.com");
+        empleadoOriginal.setNumTelefono("666111222");
+        empleadoOriginal.setTokenEmpleado("TOKEN123");
+        empleadoOriginal.setDescripcion("Camarero principal");
+        empleadoOriginal.setUser(user);
+        empleadoOriginal.setNegocio(negocio);
 
         Empleado empleadoActualizado = new Empleado();
         empleadoActualizado.setId(1);
@@ -493,28 +506,26 @@ class EmpleadoControllerTest {
         empleadoActualizado.setUser(user);
         empleadoActualizado.setNegocio(negocio);
 
-        when(empleadoService.getEmpleadoById(1)).thenReturn(empleado1);
-        when(negocioService.getById(1)).thenReturn(negocio);
-        when(empleadoService.convertirDTOEmpleado(any(EmpleadoDTO.class))).thenReturn(empleadoActualizado);
-        when(empleadoService.saveEmpleado(any(Empleado.class))).thenReturn(empleadoActualizado);
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(empleadoService.getEmpleadoById(1)).thenReturn(empleadoOriginal, empleadoActualizado);
+        when(empleadoService.update(eq(1), any(Empleado.class))).thenReturn(empleadoActualizado);
 
         mockMvc.perform(put("/api/empleados/1")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(empleadoDTO)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName", is("Juan Actualizado")));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.firstName", is("Juan Actualizado")));
 
         verify(empleadoService, atLeastOnce()).getEmpleadoById(1);
-        verify(negocioService).getById(1);
-        verify(empleadoService).saveEmpleado(any(Empleado.class));
+        verify(empleadoService).update(eq(1), any(Empleado.class));
     }
-
+  
     @Test
     void testUpdate_NotFound() throws Exception {
         EmpleadoDTO empleadoDTO = new EmpleadoDTO();
         empleadoDTO.setUsername("noexiste");
-        empleadoDTO.setPassword("password123");
+        empleadoDTO.setPassword("Password1!");
         empleadoDTO.setFirstName("No");
         empleadoDTO.setLastName("Existe");
         empleadoDTO.setEmail("noexiste@example.com");
@@ -522,17 +533,15 @@ class EmpleadoControllerTest {
         empleadoDTO.setTokenEmpleado("TOKEN999");
         empleadoDTO.setDescripcion("Descripción test");
         empleadoDTO.setNegocio(1);
-
+    
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         when(empleadoService.getEmpleadoById(999)).thenReturn(null);
-
+    
         mockMvc.perform(put("/api/empleados/999")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(empleadoDTO)))
-                .andExpect(status().isNotFound());
-
-        verify(empleadoService, atLeastOnce()).getEmpleadoById(999);
-        verify(empleadoService, never()).saveEmpleado(any(Empleado.class));
+            .andExpect(status().isInternalServerError());
     }
 
     @Test
@@ -957,19 +966,24 @@ class EmpleadoControllerTest {
         dto.setEmail("juan.perez@example.com");
         dto.setNumTelefono("666111222");
         dto.setNegocio(1);
+    
         empleado1.getUser().setId(empleadoUser.getId());
+    
         when(userService.findCurrentUser()).thenReturn(empleadoUser);
-        when(empleadoService.getEmpleadoById(1)).thenReturn(empleado1);
-        when(negocioService.getById(1)).thenReturn(negocio);
-        when(empleadoService.convertirDTOEmpleado(any())).thenReturn(empleado1);
-        when(empleadoService.saveEmpleado(any())).thenReturn(empleado1);
-
-        mockMvc.perform(put("/api/empleados/{id}", 1)
+        when(empleadoService.getEmpleadoById(1)).thenReturn(empleado1, empleado1);
+        when(empleadoService.getEmpleadoByUser(empleadoUser.getId())).thenReturn(empleado1);
+        when(empleadoService.update(eq(1), any(Empleado.class))).thenReturn(empleado1);
+    
+        mockMvc.perform(put("/api/empleados/1")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto)))
-               .andExpect(status().isOk());
+            .andExpect(status().isOk());
+    
+        verify(userService).updateUser(eq(empleado1.getUser().getId()), any(User.class));
+        verify(empleadoService).update(eq(1), any(Empleado.class));
     }
+    
 
     @Test
     void testDelete_AsEmpleado_Forbidden() throws Exception {

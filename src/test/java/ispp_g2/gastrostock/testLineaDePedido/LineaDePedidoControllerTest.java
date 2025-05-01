@@ -595,22 +595,20 @@ class LineaDePedidoControllerTest {
     
     @Test
     void testSave_Success() throws Exception {        
-        // Crear LineaDePedidoDTO con los campos requeridos (sin idProducto)
         LineaDePedidoDTO lineaDto = new LineaDePedidoDTO();
         lineaDto.setCantidad(3);
         lineaDto.setPrecioUnitario(3.0);
         lineaDto.setPedidoId(1);
+        lineaDto.setProductoId(1);            
         lineaDto.setCategoriaProducto("Bebidas");
         lineaDto.setEstado(false);
         lineaDto.setNombreProducto("Cerveza");
         
-        // Stub del servicio: se retorna 'linea' (preparado en setUp)
         when(userService.findCurrentUser()).thenReturn(user);
         when(empleadoService.getEmpleadoByUser(user.getId())).thenReturn(empleado);
         when(lineaDePedidoService.convertDtoLineaDePedido(any(LineaDePedidoDTO.class))).thenReturn(linea);
         when(lineaDePedidoService.save(any(LineaDePedido.class))).thenReturn(linea);
-        
-
+    
         mockMvc.perform(post("/api/lineasDePedido")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -622,6 +620,7 @@ class LineaDePedidoControllerTest {
         
         verify(lineaDePedidoService).save(any(LineaDePedido.class));
     }
+    
 
     
     @Test
@@ -642,6 +641,7 @@ class LineaDePedidoControllerTest {
         lineaDto.setCantidad(3);
         lineaDto.setPrecioUnitario(3.0);
         lineaDto.setPedidoId(1);
+        lineaDto.setProductoId(1);         
         lineaDto.setCategoriaProducto("Bebidas");
         lineaDto.setNombreProducto("Cerveza");
         lineaDto.setEstado(false);
@@ -881,6 +881,7 @@ class LineaDePedidoControllerTest {
         dto.setCantidad(2);
         dto.setPrecioUnitario(3.0);
         dto.setPedidoId(1);
+        dto.setProductoId(1);
         dto.setNombreProducto("Cerveza");
         dto.setCategoriaProducto("Bebidas");
         dto.setEstado(false);
@@ -906,6 +907,7 @@ class LineaDePedidoControllerTest {
         dto.setPrecioUnitario(2.0);
         dto.setEstado(false);
         dto.setPedidoId(1);
+        dto.setProductoId(1);
         dto.setNombreProducto("ProductoX");
         dto.setCategoriaProducto("CategoriaY");
     
@@ -984,6 +986,7 @@ class LineaDePedidoControllerTest {
         dto.setPrecioUnitario(5.0);
         dto.setPedidoId(1);
         dto.setEstado(false);
+        dto.setProductoId(1);
         dto.setNombreProducto("Cerveza");
         dto.setCategoriaProducto("Bebidas");
         LineaDePedido conv = new LineaDePedido();
@@ -1022,6 +1025,7 @@ class LineaDePedidoControllerTest {
         dto.setCantidad(3);
         dto.setPrecioUnitario(3.0);
         dto.setPedidoId(1);
+        dto.setProductoId(1);
         dto.setEstado(false);
         dto.setNombreProducto("Cerveza");
         dto.setCategoriaProducto("Bebidas");
@@ -1049,6 +1053,7 @@ class LineaDePedidoControllerTest {
         dto.setCantidad(4);
         dto.setPrecioUnitario(3.0);
         dto.setPedidoId(1);
+        dto.setProductoId(1);
         dto.setEstado(false);
         dto.setNombreProducto("Cerveza");
         dto.setCategoriaProducto("Bebidas");

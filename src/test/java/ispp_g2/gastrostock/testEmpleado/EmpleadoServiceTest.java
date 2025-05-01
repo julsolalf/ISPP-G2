@@ -519,6 +519,7 @@ class EmpleadoServiceTest {
         dto.setUsername("jperez");
         dto.setFirstName("Juan");
         dto.setLastName("Pérez");
+        dto.setTokenEmpleado("gst-12345-emp1");
         dto.setEmail("juan.perez@example.com");
         dto.setNumTelefono("666111222");
         dto.setDescripcion("Camarero");

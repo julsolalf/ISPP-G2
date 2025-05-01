@@ -61,6 +61,8 @@ class LineaDePedidoServiceTest {
         linea.setPrecioUnitario(100.0);
         linea.setPedido(new Pedido());
         linea.setProducto(new ProductoVenta());
+
+
     }
 
     @Test
@@ -213,25 +215,32 @@ class LineaDePedidoServiceTest {
         dto.setPrecioUnitario(10.0);
         dto.setEstado(false);
         dto.setPedidoId(1);
-        dto.setNombreProducto("Tortilla");
-
+        dto.setProductoId(1);
+        dto.setNombreProducto("Tortilla");  
+    
         ProductoVenta producto = new ProductoVenta();
         producto.setId(1);
+        producto.setName("Tortilla");
+    
         ispp_g2.gastrostock.negocio.Negocio negocio = new ispp_g2.gastrostock.negocio.Negocio();
         negocio.setId(1);
-
-        Pedido pedido = new Pedido();
+    
         Mesa mesa = new Mesa();
         mesa.setNegocio(negocio);
+    
+        Pedido pedido = new Pedido();
         pedido.setMesa(mesa);
-
+    
         when(pedidoRepository.findById(1)).thenReturn(Optional.of(pedido));
-        when(productoVentaRepository.findProductoVentaByNombreAndNegocioId("Tortilla", 1)).thenReturn(Optional.of(producto));
-
+        when(productoVentaRepository.findById(1)).thenReturn(Optional.of(producto));
+    
         LineaDePedido result = service.convertDtoLineaDePedido(dto);
+    
         assertEquals(2, result.getCantidad());
         assertEquals(producto, result.getProducto());
     }
+    
+    
 
     @Test
     void testConvertDtoLineaDePedidoPedidoNoExiste() {
