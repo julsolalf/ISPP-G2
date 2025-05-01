@@ -22,4 +22,13 @@ public interface LoteRepository extends CrudRepository<Lote,Integer> {
     @Query("SELECT l FROM Lote l WHERE l.reabastecimiento.id = ?1")
     List<Lote> findByReabastecimientoId(Integer reabastecimiento);
 
+    @Query("SELECT l FROM Lote l WHERE l.reabastecimiento.negocio.id =?1")
+    List<Lote> findByNegocioId(Integer negocioId);
+
+    @Query("SELECT l FROM Lote l WHERE l.reabastecimiento.negocio.dueno.id =?1")
+    List<Lote> findByDuenoId(Integer duenoId);
+
+    @Query("SELECT l FROM Lote l WHERE l.reabastecimiento.negocio.id =?1 AND l.fechaCaducidad <= ?2")
+    List<Lote> findCaducadosByNegocioId(Integer negocioId, LocalDate fecha);
+
 }

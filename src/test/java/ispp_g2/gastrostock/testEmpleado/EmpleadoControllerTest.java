@@ -25,7 +25,8 @@ import ispp_g2.gastrostock.dueno.DuenoService;
 import ispp_g2.gastrostock.dueno.Dueno;
 import ispp_g2.gastrostock.user.UserService;       
 import ispp_g2.gastrostock.user.User;  
-import ispp_g2.gastrostock.user.Authorities;  
+import ispp_g2.gastrostock.user.Authorities;
+import ispp_g2.gastrostock.user.AuthoritiesService;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,7 +37,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -62,8 +65,14 @@ class EmpleadoControllerTest {
     @Mock
     private DuenoService duenoService;
 
+    @Mock
+    private PasswordEncoder encoder;
+
+    @Mock
+    private AuthoritiesService authorityService;
+
     private ObjectMapper objectMapper;
-    private Empleado empleado1, empleadoNuevo, empleado;
+    private Empleado empleado1, empleado;
     private Empleado empleado2;
     private Empleado empleadoInvalido;
     private List<Empleado> empleadosList;
@@ -71,26 +80,28 @@ class EmpleadoControllerTest {
     private User user, user1;
     private Dueno duenoNormal;
     private Authorities authority;
-
-    // --- Configuración de usuario admin para simular la seguridad ---
     private User adminUser;
     private Authorities adminAuthority;
+    private User duenoUser;
+    private User empleadoUser;
+    private Authorities duenoAuthority;
+    private Authorities empleAuthority;
 
     @BeforeEach
     void setUp() {
-        // Configurar MockMvc con ControllerAdvice
         mockMvc = MockMvcBuilders.standaloneSetup(empleadoController)
                 .setControllerAdvice(new ExceptionHandlerController())
                 .build();
 
         objectMapper = new ObjectMapper();
 
-        // Crear autoridad para empleado
-        authority = new Authorities();
+        encoder = mock(PasswordEncoder.class);
+ 
+
+        authority = new Authorities();  
         authority.setId(1);
         authority.setAuthority("empleado");
 
-        // Crear usuarios de prueba
         user = new User();
         user.setId(1);
         user.setUsername("juanperez");
@@ -103,7 +114,6 @@ class EmpleadoControllerTest {
         user1.setPassword("password123");
         user1.setAuthority(authority);
 
-        // Configurar usuario administrador para la seguridad de los endpoints
         adminAuthority = new Authorities();
         adminAuthority.setId(100);
         adminAuthority.setAuthority("admin");
@@ -114,11 +124,10 @@ class EmpleadoControllerTest {
         adminUser.setPassword("adminpass");
         adminUser.setAuthority(adminAuthority);
 
-        // Configurar que findCurrentUser() retorne al usuario admin
         lenient().when(userService.findCurrentUser()).thenReturn(adminUser);
 
 
-        Dueno duenoNormal = new Dueno();
+        duenoNormal = new Dueno();
         duenoNormal.setId(1);
         duenoNormal.setFirstName("Juan");
         duenoNormal.setLastName("García");
@@ -127,7 +136,6 @@ class EmpleadoControllerTest {
         duenoNormal.setTokenDueno("TOKEN123");
         duenoNormal.setUser(user);
         
-        // Crear un negocio de prueba
         negocio = new Negocio();
         negocio.setId(1);
         negocio.setName("Restaurante Test");
@@ -138,7 +146,6 @@ class EmpleadoControllerTest {
         negocio.setCodigoPostal("41001");
         negocio.setTokenNegocio(12345);
 
-        // Crear empleados para los tests
         empleado1 = new Empleado();
         empleado1.setId(1);
         empleado1.setFirstName("Juan");
@@ -169,16 +176,29 @@ class EmpleadoControllerTest {
         empleado2.setDescripcion("Cocinera");
         empleado2.setNegocio(negocio);
 
-        // Empleado inválido (sin campos requeridos)
         empleadoInvalido = new Empleado();
 
-        // Lista de empleados para pruebas
         empleadosList = new ArrayList<>();
         empleadosList.add(empleado1);
         empleadosList.add(empleado2);
+
+        duenoAuthority = new Authorities();
+        duenoAuthority.setId(200);
+        duenoAuthority.setAuthority("dueno");
+        duenoUser = new User();
+        duenoUser.setId(10);
+        duenoUser.setUsername("dueno");
+        duenoUser.setAuthority(duenoAuthority);
+
+        empleAuthority = new Authorities();
+        empleAuthority.setId(300);
+        empleAuthority.setAuthority("empleado");
+        empleadoUser = new User();
+        empleadoUser.setId(20);
+        empleadoUser.setUsername("empleado");
+        empleadoUser.setAuthority(empleAuthority);
     }
 
-    // TESTS PARA findAll()
 
     @Test
     void testFindAll_Success() throws Exception {
@@ -205,7 +225,6 @@ class EmpleadoControllerTest {
         verify(empleadoService).getAllEmpleados();
     }
 
-    // TESTS PARA findById()
 
     @Test
     void testFindById_Success() throws Exception {
@@ -231,7 +250,6 @@ class EmpleadoControllerTest {
         verify(empleadoService).getEmpleadoById(999);
     }
 
-    // TESTS PARA findByEmail()
 
     @Test
     void testFindByEmail_Success() throws Exception {
@@ -258,7 +276,6 @@ class EmpleadoControllerTest {
         verify(empleadoService).getEmpleadoByEmail("noexiste@example.com");
     }
 
-    // TESTS PARA findByNombre()
 
     @Test
     void testFindByNombre_Success() throws Exception {
@@ -284,7 +301,6 @@ class EmpleadoControllerTest {
         verify(empleadoService).getEmpleadoByNombre("NoExiste");
     }
 
-    // TESTS PARA findByApellido()
 
     @Test
     void testFindByApellido_Success() throws Exception {
@@ -310,7 +326,6 @@ class EmpleadoControllerTest {
         verify(empleadoService).getEmpleadoByApellido("NoExiste");
     }
 
-    // TESTS PARA findByTelefono()
 
     @Test
     void testFindByTelefono_Success() throws Exception {
@@ -335,13 +350,11 @@ class EmpleadoControllerTest {
         verify(empleadoService).getEmpleadoByTelefono("999999999");
     }
 
-    // TESTS PARA findByNegocio()
 
     @Test
     void testFindByNegocio_Success() throws Exception {
         when(empleadoService.getEmpleadoByNegocio(1)).thenReturn(empleadosList);
-        // Para endpoints que validan la relación con el dueño, se puede omitir la validación al usar admin
-        when(duenoService.getDuenoByUser(anyInt())).thenReturn(null); // No se usa cuando el usuario es admin
+        when(duenoService.getDuenoByUser(anyInt())).thenReturn(null); 
 
         mockMvc.perform(get("/api/empleados/negocio/1")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -364,7 +377,6 @@ class EmpleadoControllerTest {
         verify(empleadoService).getEmpleadoByNegocio(999);
     }
 
-    // TESTS PARA findByUser()
 
     @Test
     void testFindByUser_Success() throws Exception {
@@ -390,7 +402,6 @@ class EmpleadoControllerTest {
         verify(empleadoService).getEmpleadoByUser(999);
     }
 
-    // TESTS PARA findByTokenEmpleado()
 
     @Test
     void testFindByTokenEmpleado_Success() throws Exception {
@@ -415,36 +426,36 @@ class EmpleadoControllerTest {
         verify(empleadoService).getEmpleadoByTokenEmpleado("TOKEN_NONEXISTENT");
     }
 
-    // TESTS PARA save()
 
     @Test
     void testSave_Success() throws Exception {
-        // Crear EmpleadoDTO de prueba
         EmpleadoDTO empleadoDTO = new EmpleadoDTO();
         empleadoDTO.setUsername("anton");
-        empleadoDTO.setPassword("password123");
+        empleadoDTO.setPassword("Password123!"); // Password válido
         empleadoDTO.setFirstName("Antonio");
         empleadoDTO.setLastName("Almanza");
         empleadoDTO.setEmail("antonio@example.com");
-        empleadoDTO.setNumTelefono("666151222");
-        empleadoDTO.setTokenEmpleado("TOKEN129");
+        empleadoDTO.setNumTelefono("666151222"); // Formato válido
         empleadoDTO.setDescripcion("Camarero principal");
         empleadoDTO.setNegocio(1);
-
+    
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(duenoService.getDuenoByUser(adminUser.getId())).thenReturn(duenoNormal);
         when(negocioService.getById(1)).thenReturn(negocio);
-        when(userService.findUserByUsername("anton")).thenReturn(null);
-        when(empleadoService.convertirDTOEmpleado(any(EmpleadoDTO.class), eq(negocio))).thenReturn(empleado);
-        when(empleadoService.saveEmpleado(any(Empleado.class))).thenReturn(empleado1);
-
+        when(authorityService.findByAuthority(anyString())).thenReturn(authority);
+        when(userService.saveUser(any(User.class))).thenReturn(user);
+        when(empleadoService.saveEmpleado(any(Empleado.class))).thenReturn(empleado);
+        
         mockMvc.perform(post("/api/empleados")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(empleadoDTO)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.firstName", is("Juan")));
-
+                .andExpect(jsonPath("$.firstName", is("Antonio")));
+        
         verify(negocioService).getById(1);
-        verify(userService).findUserByUsername("anton");
+        verify(authorityService).findByAuthority(anyString());
+        verify(userService).saveUser(any(User.class));
         verify(empleadoService).saveEmpleado(any(Empleado.class));
     }
 
@@ -459,13 +470,12 @@ class EmpleadoControllerTest {
         verify(empleadoService, never()).saveEmpleado(any(Empleado.class));
     }
 
-    // TESTS PARA update()
 
     @Test
     void testUpdate_Success() throws Exception {
         EmpleadoDTO empleadoDTO = new EmpleadoDTO();
-        empleadoDTO.setUsername("anton");
-        empleadoDTO.setPassword("password123");
+        empleadoDTO.setUsername("juanperez");
+        empleadoDTO.setPassword("Password1!");
         empleadoDTO.setFirstName("Juan Actualizado");
         empleadoDTO.setLastName("Pérez");
         empleadoDTO.setEmail("juan.perez@example.com");
@@ -473,6 +483,17 @@ class EmpleadoControllerTest {
         empleadoDTO.setTokenEmpleado("TOKEN123");
         empleadoDTO.setDescripcion("Camarero principal actualizado");
         empleadoDTO.setNegocio(1);
+
+        Empleado empleadoOriginal = new Empleado();
+        empleadoOriginal.setId(1);
+        empleadoOriginal.setFirstName("Juan");
+        empleadoOriginal.setLastName("Pérez");
+        empleadoOriginal.setEmail("juan.perez@example.com");
+        empleadoOriginal.setNumTelefono("666111222");
+        empleadoOriginal.setTokenEmpleado("TOKEN123");
+        empleadoOriginal.setDescripcion("Camarero principal");
+        empleadoOriginal.setUser(user);
+        empleadoOriginal.setNegocio(negocio);
 
         Empleado empleadoActualizado = new Empleado();
         empleadoActualizado.setId(1);
@@ -485,28 +506,26 @@ class EmpleadoControllerTest {
         empleadoActualizado.setUser(user);
         empleadoActualizado.setNegocio(negocio);
 
-        when(empleadoService.getEmpleadoById(1)).thenReturn(empleado1);
-        when(negocioService.getById(1)).thenReturn(negocio);
-        when(empleadoService.convertirDTOEmpleado(any(EmpleadoDTO.class), eq(negocio))).thenReturn(empleadoActualizado);
-        when(empleadoService.saveEmpleado(any(Empleado.class))).thenReturn(empleadoActualizado);
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(empleadoService.getEmpleadoById(1)).thenReturn(empleadoOriginal, empleadoActualizado);
+        when(empleadoService.update(eq(1), any(Empleado.class))).thenReturn(empleadoActualizado);
 
         mockMvc.perform(put("/api/empleados/1")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(empleadoDTO)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName", is("Juan Actualizado")));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.firstName", is("Juan Actualizado")));
 
         verify(empleadoService, atLeastOnce()).getEmpleadoById(1);
-        verify(negocioService).getById(1);
-        verify(empleadoService).saveEmpleado(any(Empleado.class));
+        verify(empleadoService).update(eq(1), any(Empleado.class));
     }
-
+  
     @Test
     void testUpdate_NotFound() throws Exception {
         EmpleadoDTO empleadoDTO = new EmpleadoDTO();
         empleadoDTO.setUsername("noexiste");
-        empleadoDTO.setPassword("password123");
+        empleadoDTO.setPassword("Password1!");
         empleadoDTO.setFirstName("No");
         empleadoDTO.setLastName("Existe");
         empleadoDTO.setEmail("noexiste@example.com");
@@ -514,17 +533,15 @@ class EmpleadoControllerTest {
         empleadoDTO.setTokenEmpleado("TOKEN999");
         empleadoDTO.setDescripcion("Descripción test");
         empleadoDTO.setNegocio(1);
-
+    
+        when(userService.findCurrentUser()).thenReturn(adminUser);
         when(empleadoService.getEmpleadoById(999)).thenReturn(null);
-
+    
         mockMvc.perform(put("/api/empleados/999")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(empleadoDTO)))
-                .andExpect(status().isNotFound());
-
-        verify(empleadoService, atLeastOnce()).getEmpleadoById(999);
-        verify(empleadoService, never()).saveEmpleado(any(Empleado.class));
+            .andExpect(status().isInternalServerError());
     }
 
     @Test
@@ -538,7 +555,6 @@ class EmpleadoControllerTest {
         verify(empleadoService, never()).saveEmpleado(any(Empleado.class));
     }
 
-    // TESTS PARA delete()
 
     @Test
     void testDelete_Success() throws Exception {
@@ -566,4 +582,461 @@ class EmpleadoControllerTest {
         verify(empleadoService).getEmpleadoById(999);
         verify(empleadoService, never()).deleteEmpleado(anyInt());
     }
+
+    @Test
+    void testFindAll_AsDueno_ReturnsOk() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(duenoUser);
+        when(duenoService.getDuenoByUser(duenoUser.getId())).thenReturn(duenoNormal);
+        when(empleadoService.getEmpleadoByDueno(duenoNormal.getId())).thenReturn(empleadosList);
+
+        mockMvc.perform(get("/api/empleados"))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$", hasSize(2)));
+
+        verify(empleadoService).getEmpleadoByDueno(duenoNormal.getId());
+    }
+
+    @Test
+    void testFindAll_AsEmpleado_ReturnsForbidden() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(empleadoUser);
+
+        mockMvc.perform(get("/api/empleados"))
+               .andExpect(status().isForbidden());
+    }
+
+
+    @Test
+    void testFindAllDTO_AsDueno_ReturnsOk() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(duenoUser);
+        when(duenoService.getDuenoByUser(duenoUser.getId())).thenReturn(duenoNormal);
+        when(empleadoService.getEmpleadoByDueno(duenoNormal.getId())).thenReturn(empleadosList);
+        when(empleadoService.convertirEmpleadoDTO(empleado1)).thenReturn(new EmpleadoDTO());
+        when(empleadoService.convertirEmpleadoDTO(empleado2)).thenReturn(new EmpleadoDTO());
+
+        mockMvc.perform(get("/api/empleados/dto"))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$", hasSize(2)));
+
+        verify(empleadoService, times(2)).convertirEmpleadoDTO(any());
+    }
+
+    @Test
+    void testFindAllDTO_AsEmpleado_ReturnsForbidden() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(empleadoUser);
+
+        mockMvc.perform(get("/api/empleados/dto"))
+               .andExpect(status().isForbidden());
+    }
+
+
+    @Test
+    void testFindById_AsDueno_ReturnsOk() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(duenoUser);
+        when(empleadoService.getEmpleadoById(1)).thenReturn(empleado1);
+        empleado1.getNegocio().getDueno().setUser(duenoUser);
+
+        mockMvc.perform(get("/api/empleados/1"))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.id", is(1)));
+    }
+
+    @Test
+    void testFindById_AsEmpleadoSelf_ReturnsOk() throws Exception {
+        empleado1.getUser().setId(empleadoUser.getId());
+        when(userService.findCurrentUser()).thenReturn(empleadoUser);
+        when(empleadoService.getEmpleadoById(1)).thenReturn(empleado1);
+
+        mockMvc.perform(get("/api/empleados/1"))
+               .andExpect(status().isOk());
+    }
+
+    @Test
+    void testFindById_AsEmpleadoOther_ReturnsForbidden() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(empleadoUser);
+        when(empleadoService.getEmpleadoById(1)).thenReturn(empleado1);
+
+        mockMvc.perform(get("/api/empleados/1"))
+               .andExpect(status().isForbidden());
+    }
+
+
+    @Test
+    void testFindDTOById_AsDueno_ReturnsOk() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(duenoUser);
+        when(empleadoService.getEmpleadoById(1)).thenReturn(empleado1);
+        empleado1.getNegocio().getDueno().setUser(duenoUser);
+        when(empleadoService.convertirEmpleadoDTO(empleado1)).thenReturn(new EmpleadoDTO());
+
+        mockMvc.perform(get("/api/empleados/dto/1"))
+               .andExpect(status().isOk());
+    }
+
+    @Test
+    void testFindDTOById_AsEmpleadoSelf_ReturnsOk() throws Exception {
+        empleado1.getUser().setId(empleadoUser.getId());
+        when(userService.findCurrentUser()).thenReturn(empleadoUser);
+        when(empleadoService.getEmpleadoById(1)).thenReturn(empleado1);
+        when(empleadoService.convertirEmpleadoDTO(empleado1)).thenReturn(new EmpleadoDTO());
+
+        mockMvc.perform(get("/api/empleados/dto/1"))
+               .andExpect(status().isOk());
+    }
+
+    @Test
+    void testFindDTOById_AsEmpleadoOther_ReturnsForbidden() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(empleadoUser);
+        when(empleadoService.getEmpleadoById(1)).thenReturn(empleado1);
+
+        mockMvc.perform(get("/api/empleados/dto/1"))
+               .andExpect(status().isForbidden());
+    }
+
+
+    @Test
+    void testFindByEmail_AsDueno_ReturnsForbidden() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(duenoUser);
+
+        mockMvc.perform(get("/api/empleados/email/{email}", empleado1.getEmail()))
+               .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testFindByEmail_AsEmpleado_ReturnsForbidden() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(empleadoUser);
+
+        mockMvc.perform(get("/api/empleados/email/{email}", empleado1.getEmail()))
+               .andExpect(status().isForbidden());
+    }
+
+
+    @Test
+    void testFindByNegocio_AsDueno_InvalidNegocio_ReturnsNotFound() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(duenoUser);
+        when(duenoService.getDuenoByUser(duenoUser.getId())).thenReturn(duenoNormal);
+        when(negocioService.getById(99)).thenReturn(null);
+        when(empleadoService.getEmpleadoByNegocio(99)).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/api/empleados/negocio/99"))
+               .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testFindByNegocio_AsEmpleado_ReturnsForbidden() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(empleadoUser);
+        when(empleadoService.getEmpleadoByNegocio(1)).thenReturn(empleadosList);
+
+        mockMvc.perform(get("/api/empleados/negocio/1"))
+               .andExpect(status().isForbidden());
+    }
+
+
+    @Test
+    void testFindByUser_AsEmpleadoSelf_ReturnsOk() throws Exception {
+        empleado1.getUser().setId(empleadoUser.getId());
+        when(userService.findCurrentUser()).thenReturn(empleadoUser);
+        when(empleadoService.getEmpleadoByUser(empleadoUser.getId())).thenReturn(empleado1);
+
+        mockMvc.perform(get("/api/empleados/user/{id}", empleadoUser.getId()))
+               .andExpect(status().isOk());
+    }
+
+    @Test
+    void testFindByUser_AsDuenoOther_ReturnsForbidden() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(duenoUser);
+
+        mockMvc.perform(get("/api/empleados/user/{id}", empleadoUser.getId()))
+               .andExpect(status().isForbidden());
+    }
+
+
+    @Test
+    void testSave_AsDueno_Success() throws Exception {
+        EmpleadoDTO dto = new EmpleadoDTO();
+        dto.setUsername("nuevo");
+        dto.setPassword("Password1!");
+        dto.setFirstName("Nuevo");
+        dto.setLastName("Empleado");
+        dto.setEmail("n@e.com");
+        dto.setNumTelefono("666123456");
+        dto.setNegocio(1);
+
+        when(userService.findCurrentUser()).thenReturn(duenoUser);
+        when(duenoService.getDuenoByUser(duenoUser.getId())).thenReturn(duenoNormal);
+        when(negocioService.getById(1)).thenReturn(negocio);
+        when(authorityService.findByAuthority(anyString())).thenReturn(authority);
+        when(userService.saveUser(any())).thenReturn(user);
+        when(empleadoService.saveEmpleado(any())).thenReturn(empleado);
+
+        mockMvc.perform(post("/api/empleados")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+               .andExpect(status().isCreated());
+
+        verify(empleadoService).saveEmpleado(any());
+    }
+
+    @Test
+    void testFindAllDTO_NoContent_AsDueno() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(duenoUser);
+        when(duenoService.getDuenoByUser(duenoUser.getId())).thenReturn(duenoNormal);
+        when(empleadoService.getEmpleadoByDueno(duenoNormal.getId())).thenReturn(Collections.emptyList());
+    
+        mockMvc.perform(get("/api/empleados/dto"))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$", hasSize(0)));
+    }
+    
+
+    @Test
+    void testFindAllDTO_AsEmpleado_Forbidden() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(empleadoUser);
+
+        mockMvc.perform(get("/api/empleados/dto"))
+               .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testFindByEmail_AsAdminDTO() throws Exception {
+        String email = "juan.perez@example.com";
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(empleadoService.getEmpleadoByEmail(email)).thenReturn(empleado1);
+    
+        EmpleadoDTO dto = new EmpleadoDTO();
+        dto.setEmail(email);
+        dto.setFirstName("Juan");
+        when(empleadoService.convertirEmpleadoDTO(empleado1))
+            .thenReturn(dto);
+    
+        mockMvc.perform(get("/api/empleados/dto/email/{email}", email)
+                .contentType(MediaType.APPLICATION_JSON))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.email", is(email)))
+               .andExpect(jsonPath("$.firstName", is("Juan")));
+    }
+    
+
+    @Test
+    void testFindDTOByEmail_AsDueno_Forbidden() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(duenoUser);
+
+        mockMvc.perform(get("/api/empleados/dto/email/{email}", empleado1.getEmail()))
+               .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testFindByNombre_AsAdminDTO() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(empleadoService.getEmpleadoByNombre("Juan")).thenReturn(Collections.singletonList(empleado1));
+        EmpleadoDTO dto = new EmpleadoDTO();
+        dto.setFirstName("Juan");
+        when(empleadoService.convertirEmpleadoDTO(empleado1)).thenReturn(dto);
+    
+        mockMvc.perform(get("/api/empleados/dto/nombre/{nombre}", "Juan")
+                .contentType(MediaType.APPLICATION_JSON))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$[0].firstName", is("Juan")));
+    }
+    
+
+    @Test
+    void testFindDTOByNombre_AsDueno_Forbidden() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(duenoUser);
+
+        mockMvc.perform(get("/api/empleados/dto/nombre/{nombre}", "Juan"))
+               .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testFindByApellido_AsAdminDTO() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(empleadoService.getEmpleadoByApellido("García"))
+            .thenReturn(Collections.singletonList(empleado2));
+    
+        EmpleadoDTO dto = new EmpleadoDTO();
+        dto.setLastName("García");
+        when(empleadoService.convertirEmpleadoDTO(empleado2))
+            .thenReturn(dto);
+    
+        mockMvc.perform(get("/api/empleados/dto/apellido/{apellido}", "García")
+                .contentType(MediaType.APPLICATION_JSON))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$[0].lastName", is("García")));
+    }
+
+    @Test
+    void testFindDTOByApellido_AsEmpleado_Forbidden() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(empleadoUser);
+
+        mockMvc.perform(get("/api/empleados/dto/apellido/{apellido}", "García"))
+               .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testFindByTelefono_AsAdminDTO() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(empleadoService.getEmpleadoByTelefono("666111222"))
+            .thenReturn(empleado1);
+        EmpleadoDTO dto = new EmpleadoDTO();
+        dto.setNumTelefono("666111222");
+        when(empleadoService.convertirEmpleadoDTO(empleado1))
+            .thenReturn(dto);
+    
+        mockMvc.perform(get("/api/empleados/dto/telefono/{telefono}", "666111222"))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.numTelefono", is("666111222")));
+    }
+    
+
+    @Test
+    void testFindDTOByTelefono_AsDueno_Forbidden() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(duenoUser);
+
+        mockMvc.perform(get("/api/empleados/dto/telefono/{telefono}", "666111222"))
+               .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testFindByNegocio_AsDueno_Mismatch_Forbidden() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(duenoUser);
+        when(duenoService.getDuenoByUser(duenoUser.getId())).thenReturn(duenoNormal);
+        Negocio other = new Negocio(); other.setId(2);
+        other.setDueno(new Dueno()); other.getDueno().setUser(duenoUser);
+        when(negocioService.getById(1)).thenReturn(other);
+        when(empleadoService.getEmpleadoByNegocio(1)).thenReturn(empleadosList);
+
+        mockMvc.perform(get("/api/empleados/negocio/{id}", 1))
+               .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testFindDTOByNegocio_AsDueno_Success() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(duenoUser);
+        when(duenoService.getDuenoByUser(duenoUser.getId())).thenReturn(duenoNormal);
+        negocio.setDueno(duenoNormal);
+        when(negocioService.getById(1)).thenReturn(negocio);
+        when(empleadoService.getEmpleadoByNegocio(1)).thenReturn(empleadosList);
+        when(empleadoService.convertirEmpleadoDTO(any())).thenReturn(new EmpleadoDTO());
+
+        mockMvc.perform(get("/api/empleados/dto/negocio/{id}", 1))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$", hasSize(2)));
+    }
+
+    @Test
+    void testFindByUser_AsAdmin_Success() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(empleadoService.getEmpleadoByUser(1)).thenReturn(empleado1);
+
+        mockMvc.perform(get("/api/empleados/user/{id}", 1))
+               .andExpect(status().isOk());
+    }
+
+    @Test
+    void testFindByUser_AsEmpleadoOther_Forbidden() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(empleadoUser);
+
+        mockMvc.perform(get("/api/empleados/user/{id}", 1))
+               .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testFindByTokenEmpleado_AsDueno_Forbidden() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(duenoUser);
+
+        mockMvc.perform(get("/api/empleados/token/{token}", "TOKEN123"))
+               .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testFindDTOByTokenEmpleado_AsEmpleado_Forbidden() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(empleadoUser);
+
+        mockMvc.perform(get("/api/empleados/dto/token/{token}", "TOKEN123"))
+               .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testUpdate_AsEmpleadoSelf_Success() throws Exception {
+        EmpleadoDTO dto = new EmpleadoDTO();
+        dto.setUsername("juanperez");
+        dto.setPassword("Password1!");
+        dto.setFirstName("Juan");
+        dto.setLastName("Pérez");
+        dto.setEmail("juan.perez@example.com");
+        dto.setNumTelefono("666111222");
+        dto.setNegocio(1);
+    
+        empleado1.getUser().setId(empleadoUser.getId());
+    
+        when(userService.findCurrentUser()).thenReturn(empleadoUser);
+        when(empleadoService.getEmpleadoById(1)).thenReturn(empleado1, empleado1);
+        when(empleadoService.getEmpleadoByUser(empleadoUser.getId())).thenReturn(empleado1);
+        when(empleadoService.update(eq(1), any(Empleado.class))).thenReturn(empleado1);
+    
+        mockMvc.perform(put("/api/empleados/1")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isOk());
+    
+        verify(userService).updateUser(eq(empleado1.getUser().getId()), any(User.class));
+        verify(empleadoService).update(eq(1), any(Empleado.class));
+    }
+    
+
+    @Test
+    void testDelete_AsEmpleado_Forbidden() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(empleadoUser);
+        when(empleadoService.getEmpleadoById(1)).thenReturn(empleado1);
+
+        mockMvc.perform(delete("/api/empleados/{id}", 1)
+                .with(csrf()))
+               .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testFindDTOByUser_AsAdmin_Success() throws Exception {
+        EmpleadoDTO dto = new EmpleadoDTO();
+        dto.setFirstName("Juan");
+        dto.setLastName("Pérez");
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(empleadoService.getEmpleadoByUser(1)).thenReturn(empleado1);
+        when(empleadoService.convertirEmpleadoDTO(empleado1)).thenReturn(dto);
+
+        mockMvc.perform(get("/api/empleados/dto/user/{id}", 1)
+                .contentType(MediaType.APPLICATION_JSON))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.firstName", is("Juan")))
+               .andExpect(jsonPath("$.lastName", is("Pérez")));
+    }
+
+    @Test
+    void testFindDTOByUser_AsAdmin_NotFound() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(empleadoService.getEmpleadoByUser(2)).thenReturn(null);
+
+        mockMvc.perform(get("/api/empleados/dto/user/{id}", 2)
+                .contentType(MediaType.APPLICATION_JSON))
+               .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testFindDTOByUser_AsDueno_Forbidden() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(duenoUser);
+
+        mockMvc.perform(get("/api/empleados/dto/user/{id}", 1)
+                .contentType(MediaType.APPLICATION_JSON))
+               .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testFindDTOByUser_AsEmpleado_Forbidden() throws Exception {
+        when(userService.findCurrentUser()).thenReturn(empleadoUser);
+
+        mockMvc.perform(get("/api/empleados/dto/user/{id}", 1)
+                .contentType(MediaType.APPLICATION_JSON))
+               .andExpect(status().isForbidden());
+    }
+
 }

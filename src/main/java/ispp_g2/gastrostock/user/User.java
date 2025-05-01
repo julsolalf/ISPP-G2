@@ -62,10 +62,11 @@ public class User extends BaseEntity implements UserDetails{
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return List.of(new SimpleGrantedAuthority(authority.getAuthority()));
 	}
-    @JsonManagedReference
-    @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinColumn(name = "subscripcion_id")
-    private Subscripcion subscripcion;
+  
+	@JsonManagedReference
+	@OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinColumn(name = "subscripcion_id")
+	private Subscripcion subscripcion;
 
 	public boolean hasPremiumAccess() {
 	return subscripcion != null && subscripcion.isPremium();

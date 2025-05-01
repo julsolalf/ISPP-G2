@@ -46,7 +46,7 @@ public class EmpleadoRepositoryTest {
     private DuenoRepository duenoRepository;
 
     
-    private Empleado empleado1, empleado2, empleado3, empleadoSinToken, empleadoSinEmail;
+    private Empleado empleado1, empleado2, empleado3;
     private User user1, user2, user3;
     private Authorities authority;
     private Negocio negocio1, negocio2;
@@ -210,7 +210,7 @@ public class EmpleadoRepositoryTest {
         
         // Contar cuántos empleados hay
         int count = 0;
-        for (Empleado empleado : empleados) {
+        for (@SuppressWarnings("unused") Empleado empleado : empleados) {
             count++;
         }
         
@@ -250,7 +250,7 @@ public class EmpleadoRepositoryTest {
         // Verificar que el resto sigue existiendo
         Iterable<Empleado> remaining = empleadoRepository.findAll();
         int count = 0;
-        for (Empleado empleado : remaining) {
+        for (@SuppressWarnings("unused") Empleado empleado : remaining) {
             count++;
         }
         assertEquals(2, count);

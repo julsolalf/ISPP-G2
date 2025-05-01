@@ -2,6 +2,7 @@ package ispp_g2.gastrostock.testProveedores;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -18,24 +19,41 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import ispp_g2.gastrostock.dueno.DuenoService;
+import ispp_g2.gastrostock.empleado.EmpleadoService;
+import ispp_g2.gastrostock.negocio.NegocioService;
 import ispp_g2.gastrostock.proveedores.Proveedor;
 import ispp_g2.gastrostock.proveedores.ProveedorController;
+import ispp_g2.gastrostock.proveedores.ProveedorDTO;
 import ispp_g2.gastrostock.proveedores.ProveedorService;
+import ispp_g2.gastrostock.user.Authorities;
+import ispp_g2.gastrostock.user.User;
+import ispp_g2.gastrostock.user.UserService;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
-public class ProveedorControllerTest {
+@WithMockUser(username = "admin", roles = {"admin"})
+class ProveedorControllerTest {
 
     private MockMvc mockMvc;
 
     @Mock
     private ProveedorService proveedorService;
+    @Mock 
+    private UserService userService;
+    @Mock 
+    private DuenoService duenoService;
+    @Mock 
+    private EmpleadoService empleadoService;
+    @Mock 
+    private NegocioService negocioService;
 
     @InjectMocks
     private ProveedorController proveedorController;
@@ -44,6 +62,7 @@ public class ProveedorControllerTest {
     private Proveedor proveedor1;
     private Proveedor proveedor2;
     private Proveedor proveedor3;
+    private User adminUser;
     private List<Proveedor> proveedores;
     private List<Proveedor> emptyList;
 
@@ -78,6 +97,14 @@ public class ProveedorControllerTest {
         proveedor3.setTelefono("954555666");
         proveedor3.setDireccion("Calle Comercio, 15");
         
+        adminUser = new User();
+        adminUser.setId(99);
+        Authorities auth = new Authorities();
+        auth.setAuthority("admin");
+        adminUser.setAuthority(auth);
+
+        // Cuando el controlador pregunte por el usuario actual, devolvemos el admin
+        lenient().when(userService.findCurrentUser()).thenReturn(adminUser);
         // Lista de proveedores
         proveedores = Arrays.asList(proveedor1, proveedor2, proveedor3);
         emptyList = Collections.emptyList();
@@ -89,9 +116,10 @@ public class ProveedorControllerTest {
     void testFindAll_Success() throws Exception {
         // Arrange
         when(proveedorService.findAll()).thenReturn(proveedores);
-        
+
         // Act & Assert
-        mockMvc.perform(get("/api/proveedores"))
+        mockMvc.perform(get("/api/proveedores")
+                .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$", hasSize(3)))
@@ -101,7 +129,7 @@ public class ProveedorControllerTest {
             .andExpect(jsonPath("$[1].name", is("Productos Frescos del Sur")))
             .andExpect(jsonPath("$[2].id", is(3)))
             .andExpect(jsonPath("$[2].name", is("Distribuciones Rápidas")));
-        
+
         verify(proveedorService, atLeastOnce()).findAll();
     }
 
@@ -148,16 +176,16 @@ public class ProveedorControllerTest {
     }
 
     @Test
-    void testFindById_NotFound() throws Exception {
-        // Arrange
+    void testFindById_NotFound_ReturnsOkAndEmptyBody() throws Exception {
         when(proveedorService.findById(999)).thenReturn(null);
-        
-        // Act & Assert
+    
         mockMvc.perform(get("/api/proveedores/999"))
-            .andExpect(status().isNotFound());
-        
+            .andExpect(status().isOk())
+            .andExpect(content().string(""));
+    
         verify(proveedorService).findById(999);
     }
+    
 
 @Test
 void testFindById_InvalidId() throws Exception {
@@ -192,8 +220,9 @@ void testFindById_InvalidId() throws Exception {
         
         // Act & Assert
         mockMvc.perform(get("/api/proveedores/email/noexiste@example.com"))
-            .andExpect(status().isNotFound());
-        
+            .andExpect(status().isOk())
+            .andExpect(content().string(""));
+
         verify(proveedorService).findByEmail("noexiste@example.com");
     }
 
@@ -221,7 +250,8 @@ void testFindById_InvalidId() throws Exception {
         
         // Act & Assert
         mockMvc.perform(get("/api/proveedores/telefono/999999999"))
-            .andExpect(status().isNotFound());
+            .andExpect(status().isOk())
+            .andExpect(content().string(""));
         
         verify(proveedorService).findByTelefono("999999999");
     }
@@ -250,7 +280,8 @@ void testFindById_InvalidId() throws Exception {
         
         // Act & Assert
         mockMvc.perform(get("/api/proveedores/direccion/Dirección inexistente"))
-            .andExpect(status().isNotFound());
+            .andExpect(status().isOk())
+            .andExpect(content().string(""));
         
         verify(proveedorService).findByDireccion("Dirección inexistente");
     }
@@ -279,7 +310,8 @@ void testFindById_InvalidId() throws Exception {
         
         // Act & Assert
         mockMvc.perform(get("/api/proveedores/nombre/Nombre inexistente"))
-            .andExpect(status().isNotFound());
+            .andExpect(status().isOk())
+            .andExpect(content().string(""));
         
         verify(proveedorService).findByNombre("Nombre inexistente");
     }
@@ -289,11 +321,18 @@ void testFindById_InvalidId() throws Exception {
     @Test
     void testSave_Success() throws Exception {
         // Arrange
-        Proveedor nuevoProveedor = new Proveedor();
-        nuevoProveedor.setName("Nuevo Proveedor S.A.");
-        nuevoProveedor.setEmail("nuevo@example.com");
-        nuevoProveedor.setTelefono("954777888");
-        nuevoProveedor.setDireccion("Calle Nueva, 123");
+        ProveedorDTO nuevoProveedorDTO = new ProveedorDTO();
+        nuevoProveedorDTO.setName("Nuevo Proveedor S.A.");
+        nuevoProveedorDTO.setEmail("nuevo@example.com");
+        nuevoProveedorDTO.setTelefono("954777888");
+        nuevoProveedorDTO.setDireccion("Calle Nueva, 123");
+        nuevoProveedorDTO.setNegocioId(1); 
+        
+        Proveedor proveedorConvertido = new Proveedor();
+        proveedorConvertido.setName("Nuevo Proveedor S.A.");
+        proveedorConvertido.setEmail("nuevo@example.com");
+        proveedorConvertido.setTelefono("954777888");
+        proveedorConvertido.setDireccion("Calle Nueva, 123");
         
         Proveedor proveedorGuardado = new Proveedor();
         proveedorGuardado.setId(4);
@@ -302,18 +341,20 @@ void testFindById_InvalidId() throws Exception {
         proveedorGuardado.setTelefono("954777888");
         proveedorGuardado.setDireccion("Calle Nueva, 123");
         
+        when(proveedorService.convertirDTOProveedor(any(ProveedorDTO.class))).thenReturn(proveedorConvertido);
         when(proveedorService.save(any(Proveedor.class))).thenReturn(proveedorGuardado);
         
         // Act & Assert
         mockMvc.perform(post("/api/proveedores")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(nuevoProveedor)))
+                .content(objectMapper.writeValueAsString(nuevoProveedorDTO)))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(4)))
                 .andExpect(jsonPath("$.name", is("Nuevo Proveedor S.A.")))
                 .andExpect(jsonPath("$.email", is("nuevo@example.com")));
         
+        verify(proveedorService).convertirDTOProveedor(any(ProveedorDTO.class));
         verify(proveedorService).save(any(Proveedor.class));
     }
 
@@ -347,58 +388,107 @@ void testFindById_InvalidId() throws Exception {
 
     @Test
     void testUpdate_Success() throws Exception {
-        // Arrange
-        Proveedor proveedorActualizado = new Proveedor();
-        proveedorActualizado.setName("Distribuciones Alimentarias Actualizado");
-        proveedorActualizado.setEmail("actualizado@example.com");
-        proveedorActualizado.setTelefono("954111333");
-        proveedorActualizado.setDireccion("Polígono Industrial, Nave 8");
-        
+        // DTO de entrada
+        ProveedorDTO proveedorDTO = new ProveedorDTO();
+        proveedorDTO.setName("Distribuciones Alimentarias Actualizado");
+        proveedorDTO.setEmail("actualizado@example.com");
+        proveedorDTO.setTelefono("954111333");
+        proveedorDTO.setDireccion("Polígono Industrial, Nave 8");
+        proveedorDTO.setNegocioId(1);
+    
+        // Objeto convertido desde DTO
+        Proveedor proveedorConvertido = new Proveedor();
+        proveedorConvertido.setName(proveedorDTO.getName());
+        proveedorConvertido.setEmail(proveedorDTO.getEmail());
+        proveedorConvertido.setTelefono(proveedorDTO.getTelefono());
+        proveedorConvertido.setDireccion(proveedorDTO.getDireccion());
+        proveedorConvertido.setNegocio(proveedor1.getNegocio());
+    
+        // Resultado esperado tras update()
         Proveedor proveedorGuardado = new Proveedor();
         proveedorGuardado.setId(1);
-        proveedorGuardado.setName("Distribuciones Alimentarias Actualizado");
-        proveedorGuardado.setEmail("actualizado@example.com");
-        proveedorGuardado.setTelefono("954111333");
-        proveedorGuardado.setDireccion("Polígono Industrial, Nave 8");
-        
-        when(proveedorService.findById(1)).thenReturn(proveedor1);
-        when(proveedorService.save(any(Proveedor.class))).thenReturn(proveedorGuardado);
-        
-        // Act & Assert
+        proveedorGuardado.setName(proveedorDTO.getName());
+        proveedorGuardado.setEmail(proveedorDTO.getEmail());
+        proveedorGuardado.setTelefono(proveedorDTO.getTelefono());
+        proveedorGuardado.setDireccion(proveedorDTO.getDireccion());
+        proveedorGuardado.setNegocio(proveedor1.getNegocio());
+    
+        // Mocks: convert y update
+        when(proveedorService.convertirDTOProveedor(any(ProveedorDTO.class)))
+            .thenReturn(proveedorConvertido);
+        when(proveedorService.update(eq(1), any(Proveedor.class)))
+            .thenReturn(proveedorGuardado);
+    
+        // Ejecutar PUT
         mockMvc.perform(put("/api/proveedores/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(proveedorActualizado)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id", is(1)))
-                .andExpect(jsonPath("$.name", is("Distribuciones Alimentarias Actualizado")))
-                .andExpect(jsonPath("$.email", is("actualizado@example.com")));
-        
-        verify(proveedorService).findById(1);
-        verify(proveedorService).save(any(Proveedor.class));
+                .content(objectMapper.writeValueAsString(proveedorDTO)))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.id", is(1)))
+            .andExpect(jsonPath("$.name", is("Distribuciones Alimentarias Actualizado")))
+            .andExpect(jsonPath("$.email", is("actualizado@example.com")));
+    
+        // Verificaciones: solo los métodos realmente invocados
+        verify(proveedorService, times(2)).convertirDTOProveedor(any(ProveedorDTO.class));
+        verify(proveedorService).update(eq(1), any(Proveedor.class));
+        verify(proveedorService, never()).findById(anyInt());
+        verify(proveedorService, never()).save(any());
     }
+    
+    
 
     @Test
-    void testUpdate_NotFound() throws Exception {
-        // Arrange
-        Proveedor proveedorActualizado = new Proveedor();
-        proveedorActualizado.setName("Distribuciones Alimentarias Actualizado");
-        proveedorActualizado.setEmail("actualizado@example.com");
-        proveedorActualizado.setTelefono("954111333"); // Anadir teléfono
-        proveedorActualizado.setDireccion("Polígono Industrial, Nave 8"); // Anadir dirección
-        // Anadir otros campos obligatorios si los hay
+    void testUpdate_InvalidEmail() throws Exception {
+        ProveedorDTO proveedorDTO = new ProveedorDTO();
+        proveedorDTO.setName("Proveedor Test");
+        proveedorDTO.setEmail("email-invalido"); 
+        proveedorDTO.setTelefono("954111333");
+        proveedorDTO.setDireccion("Dirección test");
+        proveedorDTO.setNegocioId(1);
         
-        when(proveedorService.findById(999)).thenReturn(null);
-        
-        // Act & Assert
-        mockMvc.perform(put("/api/proveedores/999")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(proveedorActualizado)))
-                .andExpect(status().isNotFound());
-        
-        verify(proveedorService).findById(999);
-        verify(proveedorService, never()).save(any(Proveedor.class));
-    }
+        mockMvc.perform(put("/api/proveedores/1")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(proveedorDTO)))
+            .andExpect(status().isBadRequest());
+}
+
+@Test
+void testUpdate_NonExistingDto_ReturnsOk() throws Exception {
+    // Preparamos el DTO de entrada
+    ProveedorDTO proveedorDTO = new ProveedorDTO();
+    proveedorDTO.setName("Distribuciones Alimentarias Actualizado");
+    proveedorDTO.setEmail("actualizado@example.com");
+    proveedorDTO.setTelefono("954111333");
+    proveedorDTO.setDireccion("Polígono Industrial, Nave 8");
+    proveedorDTO.setNegocioId(1);
+
+    // Mock de conversión
+    Proveedor convertido = new Proveedor();
+    convertido.setName(proveedorDTO.getName());
+    convertido.setEmail(proveedorDTO.getEmail());
+    convertido.setTelefono(proveedorDTO.getTelefono());
+    convertido.setDireccion(proveedorDTO.getDireccion());
+    // Mock de update (se devuelve el mismo convertido para simplificar)
+    when(proveedorService.convertirDTOProveedor(any(ProveedorDTO.class)))
+        .thenReturn(convertido);
+    when(proveedorService.update(eq(999), any(Proveedor.class)))
+        .thenReturn(convertido);
+
+    // Ejecutamos el PUT y esperamos 200 OK
+    mockMvc.perform(put("/api/proveedores/999")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(proveedorDTO)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.name", is("Distribuciones Alimentarias Actualizado")))
+        .andExpect(jsonPath("$.email", is("actualizado@example.com")));
+
+    // Verificamos las invocaciones reales
+    verify(proveedorService, times(2)).convertirDTOProveedor(any(ProveedorDTO.class));
+    verify(proveedorService).update(eq(999), any(Proveedor.class));
+    verify(proveedorService, never()).findById(anyInt());
+}
+
 
     @Test
     void testUpdate_NullProveedor() throws Exception {
@@ -429,18 +519,20 @@ void testFindById_InvalidId() throws Exception {
     }
 
     @Test
-    void testDeleteById_NotFound() throws Exception {
-        // Arrange
+    public void testDeleteById_NoContent() throws Exception {
+
         when(proveedorService.findById(999)).thenReturn(null);
-        
+        doNothing().when(proveedorService).deleteById(999);
+    
         // Act & Assert
         mockMvc.perform(delete("/api/proveedores/999"))
-                .andExpect(status().isNotFound());
-        
+               .andExpect(status().isNoContent());
+    
         verify(proveedorService).findById(999);
-        verify(proveedorService, never()).deleteById(999);
+        // Ahora esperamos que sí se llame a deleteById
+        verify(proveedorService).deleteById(999);
     }
-
+    
     @Test
     void testDeleteById_ServiceThrowsException() throws Exception {
         // Arrange

@@ -1,5 +1,6 @@
 package ispp_g2.gastrostock.pedido;
 
+import ispp_g2.gastrostock.negocio.Negocio;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,9 @@ import ispp_g2.gastrostock.user.User;
 import ispp_g2.gastrostock.user.UserService;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/pedidos")
@@ -324,6 +327,36 @@ public class PedidoController {
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
+    @GetMapping("/volumen/{negocio}")
+    public ResponseEntity<Map<Integer,Integer>> getVolumenByNegocio(@PathVariable("negocio") Integer negocio) {
+        User user = userService.findCurrentUser();
+        Map<Integer,Integer> volumen;
+        switch (user.getAuthority().getAuthority()){
+            case ADMIN -> volumen = pedidoService.getNumPedidosPorSemana(negocio);
+            case DUENO -> {
+                Dueno dueno = duenoService.getDuenoByUser(user.getId());
+                List<Negocio> negocios = negocioService.getByDueno(dueno.getId());
+                Negocio currNegocio = negocioService.getById(negocio);
+                if(!negocios.contains(currNegocio) || !user.hasPremiumAccess()){
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                }
+                volumen = pedidoService.getNumPedidosPorSemana(negocio);
+            }
+            case EMPLEADO -> {
+                Empleado currEmpleado = empleadoService.getEmpleadoByUser(user.getId());
+                Dueno duenoDeEmpleado = currEmpleado.getNegocio().getDueno();
+                if(!currEmpleado.getNegocio().getId().equals(negocio) || !duenoDeEmpleado.getUser().hasPremiumAccess()){
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                }
+                volumen = pedidoService.getNumPedidosPorSemana(negocio);
+            }
+            default -> {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+        }
+        return new ResponseEntity<>(volumen, HttpStatus.OK);
+    }
+
     private void isPedidoValid(Pedido pedido) {
         if (pedido == null) {
             throw new IllegalArgumentException("Pedido no puede ser nulo");
@@ -334,6 +367,36 @@ public class PedidoController {
         if (!pedido.getMesa().getNegocio().getId().equals(pedido.getNegocio().getId())) {
             throw new IllegalArgumentException("La mesa no pertenece al negocio");
         }
+    }
+
+    @GetMapping("ingresos/{negocio}")
+    public ResponseEntity<Map<Month,Double>> getIngresosByNegocio(@PathVariable("negocio") Integer negocio) {
+        User user = userService.findCurrentUser();
+        Map<Month,Double> ingresos;
+        switch (user.getAuthority().getAuthority()){
+            case ADMIN -> ingresos = pedidoService.getIngresosPorMes(negocio);
+            case DUENO -> {
+                Dueno dueno = duenoService.getDuenoByUser(user.getId());
+                List<Negocio> negocios = negocioService.getByDueno(dueno.getId());
+                Negocio currNegocio = negocioService.getById(negocio);
+                if(!negocios.contains(currNegocio) || !user.hasPremiumAccess()){
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                }
+                ingresos = pedidoService.getIngresosPorMes(negocio);
+            }
+            case EMPLEADO -> {
+                Empleado currEmpleado = empleadoService.getEmpleadoByUser(user.getId());
+                Dueno duenoDeEmpleado = currEmpleado.getNegocio().getDueno();
+                if(!currEmpleado.getNegocio().getId().equals(negocio) || !duenoDeEmpleado.getUser().hasPremiumAccess()){
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                }
+                ingresos = pedidoService.getIngresosPorMes(negocio);
+            }
+            default -> {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+        }
+        return new ResponseEntity<>(ingresos, HttpStatus.OK);
     }
 
     @PostMapping
@@ -430,6 +493,29 @@ public class PedidoController {
             }
         }
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    }
+
+    @PutMapping("{id}/pagado")
+    public ResponseEntity<Pedido> updatePagado(@PathVariable("id") Integer id,
+        @RequestBody LocalDateTime fecha) {
+        User user = userService.findCurrentUser();
+        Pedido pedido = pedidoService.getById(id);
+        if(pedido.getFecha() != null) {
+            throw new IllegalArgumentException("Pedido ya pagado");
+        }
+        if(user.hasAnyAuthority(ADMIN).equals(true)){
+            return new ResponseEntity<>(pedidoService.updatePagado(id, fecha), HttpStatus.OK); 
+        } else if(user.hasAnyAuthority(DUENO).equals(true)) {
+            if(pedido.getNegocio().getDueno().getUser().getId().equals(user.getId())) {
+                return new ResponseEntity<>(pedidoService.updatePagado(id, fecha), HttpStatus.OK);
+            }
+        } else if(user.hasAnyAuthority(EMPLEADO).equals(true)) {
+            if(pedido.getNegocio().getId().equals(empleadoService.getEmpleadoByUser(user.getId()).getNegocio().getId())) {
+                return new ResponseEntity<>(pedidoService.updatePagado(id, fecha), HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        
     }
 
     @DeleteMapping("/{id}")

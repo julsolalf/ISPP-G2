@@ -4,6 +4,7 @@ import { Bell, User } from "lucide-react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import "../../css/listados/styles.css";
+import Notificaciones from "../../components/Notifications";
 
 function Proveedores() {
   const navigate = useNavigate();
@@ -15,6 +16,8 @@ function Proveedores() {
   const [showUserOptions, setShowUserOptions] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [ordenAscendente, setOrdenAscendente] = useState(true); 
+
+  const toggleUserOptions = () => setShowUserOptions(!showUserOptions);
 
   useEffect(() => {
     if (!negocioId) {
@@ -95,17 +98,10 @@ function Proveedores() {
         </div>
 
         {showNotifications && (
-          <div className="notification-bubble">
-            <div className="notification-header">
-              <strong>Notificaciones</strong>
-              <button className="close-btn" onClick={() => setShowNotifications(false)}>X</button>
-            </div>
-            <ul>
-              <li>Notificación 1</li>
-              <li>Notificación 2</li>
-              <li>Notificación 3</li>
-            </ul>
-          </div>
+          <div className="icon-container-right">
+          <Notificaciones />
+          <User size={30} className="icon" onClick={toggleUserOptions} />
+        </div>
         )}
 
         {showUserOptions && (

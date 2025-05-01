@@ -2,6 +2,7 @@ package ispp_g2.gastrostock.testCategoria;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
@@ -10,10 +11,14 @@ import java.util.List;
 import java.util.Optional;
 
 import ispp_g2.gastrostock.categorias.Categoria;
+import ispp_g2.gastrostock.categorias.CategoriaDTO;
 import ispp_g2.gastrostock.categorias.CategoriaRepository;
 import ispp_g2.gastrostock.categorias.CategoriaService;
 import ispp_g2.gastrostock.categorias.Pertenece;
+import ispp_g2.gastrostock.exceptions.ResourceNotFoundException;
 import ispp_g2.gastrostock.negocio.Negocio;
+import ispp_g2.gastrostock.negocio.NegocioRepository;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,6 +35,9 @@ class CategoriaServiceTest {
 
     @Mock
     private CategoriaRepository categoriaRepository;
+    
+    @Mock
+    private NegocioRepository negocioRepository;
 
     @InjectMocks
     private CategoriaService categoriaService;
@@ -40,7 +48,10 @@ class CategoriaServiceTest {
     private Categoria categoriaValida;
     private Categoria categoriaInvalida;
     private List<Categoria> categoriaList;
+    private List<Categoria> categoriaInventarioList;
+    private List<Categoria> categoriaVentaList;
     private Negocio negocio;
+    private CategoriaDTO categoriaDTO;
 
     @BeforeEach
     void setUp() {
@@ -55,16 +66,42 @@ class CategoriaServiceTest {
         categoriaValida.setNegocio(negocio);
         categoriaValida.setPertenece(Pertenece.INVENTARIO);
 
-        // Crear una categoría con datos inválidos (por ejemplo, sin nombre, sin negocio y sin pertenece)
+        // Crear una categoría con datos inválidos
         categoriaInvalida = new Categoria();
         categoriaInvalida.setId(2);
-        categoriaInvalida.setName(""); // nombre vacío
-        categoriaInvalida.setNegocio(null); // negocio nulo
-        categoriaInvalida.setPertenece(null); // pertenece nulo
+        categoriaInvalida.setName(""); 
+        categoriaInvalida.setNegocio(null);
+        categoriaInvalida.setPertenece(null);
 
         // Lista de categorías para tests
         categoriaList = new ArrayList<>();
         categoriaList.add(categoriaValida);
+        
+        // Lista de categorías de inventario
+        categoriaInventarioList = new ArrayList<>();
+        Categoria categoriaInventario = new Categoria();
+        categoriaInventario.setId(3);
+        categoriaInventario.setName("Materias Primas");
+        categoriaInventario.setNegocio(negocio);
+        categoriaInventario.setPertenece(Pertenece.INVENTARIO);
+        categoriaInventarioList.add(categoriaValida);
+        categoriaInventarioList.add(categoriaInventario);
+        
+        // Lista de categorías de venta
+        categoriaVentaList = new ArrayList<>();
+        Categoria categoriaVenta = new Categoria();
+        categoriaVenta.setId(4);
+        categoriaVenta.setName("Menús");
+        categoriaVenta.setNegocio(negocio);
+        categoriaVenta.setPertenece(Pertenece.VENTA);
+        categoriaVentaList.add(categoriaVenta);
+        
+        // DTO para tests
+        categoriaDTO = new CategoriaDTO();
+        categoriaDTO.setId(1);
+        categoriaDTO.setNombre("Bebidas");
+        categoriaDTO.setNegocioId(1);
+        categoriaDTO.setPertenece(Pertenece.INVENTARIO);
     }
 
     // TEST PARA getById()
@@ -82,11 +119,14 @@ class CategoriaServiceTest {
 
     @Test
     void testGetById_NotFound() {
+        // Dado que el repositorio devuelve vacío
         when(categoriaRepository.findById(99)).thenReturn(Optional.empty());
-
-        Categoria result = categoriaService.getById(99);
-
-        assertNull(result);
+    
+        // Entonces esperamos que getById lance ResourceNotFoundException
+        assertThrows(ResourceNotFoundException.class, () -> {
+            categoriaService.getById(99);
+        });
+    
         verify(categoriaRepository, times(1)).findById(99);
     }
 
@@ -242,4 +282,157 @@ class CategoriaServiceTest {
         assertEquals("ID cannot be null", exception.getMessage());
         verify(categoriaRepository, times(1)).deleteById(null);
     }
+
+    @Test
+    void testGetCategoriasInventarioByNegocioId_Success() {
+        when(categoriaRepository.findInventarioByNegocioId(1)).thenReturn(categoriaInventarioList);
+
+        List<Categoria> result = categoriaService.getCategoriasInventarioByNegocioId(1);
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals(Pertenece.INVENTARIO, result.get(0).getPertenece());
+        assertEquals(Pertenece.INVENTARIO, result.get(1).getPertenece());
+        verify(categoriaRepository, times(1)).findInventarioByNegocioId(1);
+    }
+
+    @Test
+    void testGetCategoriasInventarioByNegocioId_EmptyList() {
+        when(categoriaRepository.findInventarioByNegocioId(2)).thenReturn(Collections.emptyList());
+
+        List<Categoria> result = categoriaService.getCategoriasInventarioByNegocioId(2);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        verify(categoriaRepository, times(1)).findInventarioByNegocioId(2);
+    }
+
+    @Test
+    void testGetCategoriasInventarioByNegocioId_NullId() {
+        when(categoriaRepository.findInventarioByNegocioId(null)).thenReturn(Collections.emptyList());
+
+        List<Categoria> result = categoriaService.getCategoriasInventarioByNegocioId(null);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        verify(categoriaRepository, times(1)).findInventarioByNegocioId(null);
+    }
+
+    // TEST PARA getCategoriasVentaByNegocioId()
+
+    @Test
+    void testGetCategoriasVentaByNegocioId_Success() {
+        when(categoriaRepository.findVentaByNegocioId(1)).thenReturn(categoriaVentaList);
+
+        List<Categoria> result = categoriaService.getCategoriasVentaByNegocioId(1);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(Pertenece.VENTA, result.get(0).getPertenece());
+        assertEquals("Menús", result.get(0).getName());
+        verify(categoriaRepository, times(1)).findVentaByNegocioId(1);
+    }
+
+    @Test
+    void testGetCategoriasVentaByNegocioId_EmptyList() {
+        when(categoriaRepository.findVentaByNegocioId(2)).thenReturn(Collections.emptyList());
+
+        List<Categoria> result = categoriaService.getCategoriasVentaByNegocioId(2);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        verify(categoriaRepository, times(1)).findVentaByNegocioId(2);
+    }
+
+    @Test
+    void testGetCategoriasVentaByNegocioId_NullId() {
+        when(categoriaRepository.findVentaByNegocioId(null)).thenReturn(Collections.emptyList());
+
+        List<Categoria> result = categoriaService.getCategoriasVentaByNegocioId(null);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        verify(categoriaRepository, times(1)).findVentaByNegocioId(null);
+    }
+
+    // TEST PARA update()
+
+    @Test
+    void testUpdateCategoria_Success() {
+        Categoria categoriaToUpdate = new Categoria();
+        categoriaToUpdate.setId(1);
+        categoriaToUpdate.setName("Bebidas Actualizadas");
+        categoriaToUpdate.setNegocio(negocio);
+        categoriaToUpdate.setPertenece(Pertenece.INVENTARIO);
+        
+        when(categoriaRepository.findById(1)).thenReturn(Optional.of(categoriaValida));
+        when(categoriaRepository.save(any(Categoria.class))).thenReturn(categoriaToUpdate);
+
+        Categoria result = categoriaService.update(1, categoriaToUpdate);
+
+        assertNotNull(result);
+        assertEquals("Bebidas Actualizadas", result.getName());
+        verify(categoriaRepository).findById(1);
+        verify(categoriaRepository).save(any(Categoria.class));
+    }
+
+    @Test
+    void testUpdateCategoria_NotFound() {
+        when(categoriaRepository.findById(99)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            categoriaService.update(99, categoriaValida);
+        });
+
+        verify(categoriaRepository).findById(99);
+        verify(categoriaRepository, never()).save(any(Categoria.class));
+    }
+
+    @Test
+    void testUpdateCategoria_NullCategoria() {
+        when(categoriaRepository.findById(1)).thenReturn(Optional.of(categoriaValida));
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            categoriaService.update(1, null);
+        });
+
+        verify(categoriaRepository).findById(1);
+        verify(categoriaRepository, never()).save(any(Categoria.class));
+    }
+
+    // TEST PARA convertirCategoria()
+
+    @Test
+    void testConvertirCategoria_Success() {
+        when(negocioRepository.findById(1)).thenReturn(Optional.of(negocio));
+
+        Categoria result = categoriaService.convertirCategoria(categoriaDTO);
+
+        assertNotNull(result);
+        assertEquals("Bebidas", result.getName());
+        assertEquals(negocio, result.getNegocio());
+        assertEquals(Pertenece.INVENTARIO, result.getPertenece());
+        verify(negocioRepository).findById(1);
+    }
+
+    @Test
+    void testConvertirCategoria_NegocioNotFound() {
+        when(negocioRepository.findById(anyInt())).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            categoriaService.convertirCategoria(categoriaDTO);
+        });
+
+        verify(negocioRepository).findById(1);
+    }
+
+    @Test
+    void testConvertirCategoria_NullDTO() {
+        assertThrows(NullPointerException.class, () -> {
+            categoriaService.convertirCategoria(null);
+        });
+        
+        verify(negocioRepository, never()).findById(anyInt());
+    }
+
 }

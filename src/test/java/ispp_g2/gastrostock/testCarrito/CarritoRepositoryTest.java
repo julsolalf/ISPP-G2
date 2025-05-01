@@ -157,6 +157,7 @@ class CarritoRepositoryTest {
 
     @Test
     void testFindById_NotFound() {
+        carritoRepository.deleteAll();    
         Optional<Carrito> notFound = carritoRepository.findById(999);
         assertFalse(notFound.isPresent());
     }
