@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>ispp-g2</groupId>
 	<artifactId>gastrostock</artifactId>
-	<version>4.0.0</version>
+	<version>3.0.1-SNAPSHOT</version>
 	<name>gastrostock</name>
 	<description>Demo project for gastrostock</description>
 	<url/>
