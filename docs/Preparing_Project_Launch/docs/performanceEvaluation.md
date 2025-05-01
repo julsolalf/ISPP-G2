@@ -1,13 +1,13 @@
 ---
 title: performanceEvaluation
-groupNumber: 3
+groupNumber: 2
 groupName: GastroStock
 deliverable: Preparing Project Launch
 description: Report of the evaluation on the different tasks of every team member and their performance 
 author: Writing by Mario Zambrano Zapata
 ---
 
-# [Sprint 3] Performance Evaluation - GastroStock (Group 2)
+# [Preparing Project Launch] Performance Evaluation - GastroStock (Group 2)
 
 # Agreed Individual Performance Evaluation
 **Date**: 1/5
