@@ -12,6 +12,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -75,6 +76,11 @@ public class ExceptionHandlerController {
          error.put("error", ex.getMessage());
          return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+	@ExceptionHandler(value = HttpMessageNotReadableException.class)
+	public ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+    return new ResponseEntity<>("Formato de solicitud inválido o cuerpo de solicitud nulo", HttpStatus.BAD_REQUEST);
+}
     
 	@ExceptionHandler(value = NumberFormatException.class)
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
