@@ -10,24 +10,26 @@ const negocioId = localStorage.getItem("negocioId");
 
 const obtenerCategorias = async () => {
   try {
-    const negocioId = localStorage.getItem("negocioId");
-
+    /*
+    Falta una lógica de que en cada pantalla esté guardada la información del usuario logueado y por tanto el respectivo negocioId
+    const negocioId = localStorage.getItem("negocioId"); // Obtiene el ID del negocio guardado
     if (!negocioId) {
       throw new Error("No se encontró el ID del negocio");
     }
+    const response = await fetch(`http://localhost:8080/api/categorias/negocio/${negocioId}/inventario`);*/
 
-    const response = await fetch(`http://localhost:8080/api/categorias/negocio/${negocioId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
+    const response = await fetch(`http://localhost:8080/api/categorias/negocio/${negocioId}`,{
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }); 
+    
     if (!response.ok) {
       throw new Error("Error al obtener las categorías");
     }
-
+    
     const categorias = await response.json();
 
     // Filtrar solo las categorías que son de venta
@@ -39,7 +41,6 @@ const obtenerCategorias = async () => {
     return [];
   }
 };
-
 
 function CartaEmpleado() {
   const navigate = useNavigate();
