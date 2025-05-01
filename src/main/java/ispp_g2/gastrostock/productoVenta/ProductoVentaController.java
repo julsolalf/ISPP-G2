@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/productosVenta")
@@ -379,6 +380,39 @@ public class ProductoVentaController {
                 productosVenta = productoVentaService.getProductosVentaByDuenoID(currDueno.getId()).stream()
                         .filter(p -> p.getCategoria().getName().equalsIgnoreCase(categoriaVenta) && p.getPrecioVenta().equals(precioVenta))
                         .toList();
+            }
+            default -> {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+        }
+        if (productosVenta == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(productosVenta, HttpStatus.OK);
+    }
+
+    @GetMapping("masVendido/{negocioId}")
+    public ResponseEntity<Map<ProductoVenta,Integer>> findMasVendidos(@PathVariable("negocioId") Integer negocioId) {
+        User user = userService.findCurrentUser();
+        Map<ProductoVenta,Integer> productosVenta;
+        switch (user.getAuthority().getAuthority()) {
+            case admin -> productosVenta = productoVentaService.getProductosVentaMasVendidosByNegocio(negocioId);
+            case empleado -> {
+                Empleado currEmpleado = empleadoService.getEmpleadoByUser(user.getId());
+                Dueno duenoDeEmpleado = currEmpleado.getNegocio().getDueno();
+                if(!currEmpleado.getNegocio().getId().equals(negocioId) || !duenoDeEmpleado.getUser().hasPremiumAccess()){
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                }
+                productosVenta = productoVentaService.getProductosVentaMasVendidosByNegocio(negocioId);
+            }
+            case dueno -> {
+                Dueno currDueno = duenoService.getDuenoByUser(user.getId());
+                List<Negocio> negocios = negocioService.getByDueno(currDueno.getId());
+                Negocio negocio = negocioService.getById(negocioId);
+                if(!negocios.contains(negocio)  || !user.hasPremiumAccess()){
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                }
+                productosVenta = productoVentaService.getProductosVentaMasVendidosByNegocio(negocioId);
             }
             default -> {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);

@@ -9,11 +9,12 @@ import ispp_g2.gastrostock.empleado.EmpleadoRepository;
 import ispp_g2.gastrostock.exceptions.ResourceNotFoundException;
 import ispp_g2.gastrostock.mesa.MesaRepository;
 import ispp_g2.gastrostock.negocio.NegocioRepository;
-import jakarta.annotation.Resource;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.time.Month;
+import java.time.temporal.WeekFields;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -67,6 +68,47 @@ public class PedidoService {
     @Transactional(readOnly = true)
     public List<Pedido> getPedidoByNegocioId(Integer negocio) {
         return pedidoRepository.findPedidoByNegocioId(negocio);
+    }
+
+    @Transactional(readOnly = true)
+    public Map<Integer, Integer> getNumPedidosPorSemana(Integer negocio) {
+        List<Pedido> pedidos = pedidoRepository.findPedidoByNegocioId(negocio);
+        Map<Integer, Integer> numPedidosPorSemana = new HashMap<>();
+        pedidos.forEach(pedido -> {
+            Integer week = pedido.getFecha().toLocalDate().get(WeekFields.ISO.weekOfWeekBasedYear());
+            if(numPedidosPorSemana.containsKey(week)){
+                numPedidosPorSemana.put(week, numPedidosPorSemana.get(week) + 1);
+            } else {
+                numPedidosPorSemana.put(week, 1);
+            }
+        });
+        return numPedidosPorSemana.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
+    }
+    @Transactional(readOnly = true)
+    public Map<Month, Double> getIngresosPorMes(Integer negocio) {
+        List<Pedido> pedidos = pedidoRepository.findPedidoByNegocioId(negocio);
+        Map<Month, Double> ingresosPorMes = new HashMap<>();
+        pedidos.forEach(pedido -> {
+            Month month = pedido.getFecha().getMonth();
+            if(ingresosPorMes.containsKey(month)){
+                ingresosPorMes.put(month, ingresosPorMes.get(month) + pedido.getPrecioTotal());
+            } else {
+                ingresosPorMes.put(month, pedido.getPrecioTotal());
+            }
+        });
+        return ingresosPorMes.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
     }
 
     @Transactional

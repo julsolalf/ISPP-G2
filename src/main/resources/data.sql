@@ -16,36 +16,12 @@ DELETE FROM subscripcion;
 DELETE FROM app_user;
 DELETE FROM authorities;
 
--- Insertando autoridades
+-- 1. Insertar autoridades
 INSERT INTO authorities (id, authority) VALUES (1,'dueno');
 INSERT INTO authorities (id, authority) VALUES (2,'empleado');
-INSERT INTO authorities (id, authority) VALUES (3, 'admin');
+INSERT INTO authorities (id, authority) VALUES (3,'admin');
 
--- Insertar suscripciones gratuitas para todos los usuarios
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (1, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (2, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (3, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (4, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (5, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (6, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (7, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (8, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (9, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-INSERT INTO subscripcion (id, type, status, start_date) VALUES (10, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP());
-UPDATE subscripcion SET stripe_customer_id = 'cus_test_123456' WHERE id = 1;
--- Actualizar usuarios para asociarlos con sus suscripciones
-UPDATE app_user SET subscripcion_id = 1 WHERE id = 1; -- admin
-UPDATE app_user SET subscripcion_id = 2 WHERE id = 2; -- admin2
-UPDATE app_user SET subscripcion_id = 3 WHERE id = 3; -- juan
-UPDATE app_user SET subscripcion_id = 4 WHERE id = 4; -- alejandro
-UPDATE app_user SET subscripcion_id = 5 WHERE id = 5; -- antonio
-UPDATE app_user SET subscripcion_id = 6 WHERE id = 6; -- paco
-UPDATE app_user SET subscripcion_id = 7 WHERE id = 7; -- fernando
-UPDATE app_user SET subscripcion_id = 8 WHERE id = 8; -- owner1 (temporal)
-UPDATE app_user SET subscripcion_id = 9 WHERE id = 9; -- empleado (temporal)
-UPDATE app_user SET subscripcion_id = 10 WHERE id = 10; -- gastroAdmin
-
--- Insertando usuarios todos con password como contraseña
+-- 2. Insertar usuarios con subscripcion_id referenciando las ya creadas
 INSERT INTO app_user (id, username, password, authority_id) VALUES (1, 'admin', '$2a$10$wPqDTEhcLj7vLpEVxvlreehCK1tZl0FtvaxXxTiQoJOIOJL2uXSQm', (SELECT id FROM authorities WHERE authority = 'dueno'));
 INSERT INTO app_user (id, username, password, authority_id) VALUES (2, 'admin2', '$2a$10$wPqDTEhcLj7vLpEVxvlreehCK1tZl0FtvaxXxTiQoJOIOJL2uXSQm', (SELECT id FROM authorities WHERE authority = 'dueno'));
 INSERT INTO app_user (id, username, password, authority_id) VALUES (3, 'juan', '$2a$10$wPqDTEhcLj7vLpEVxvlreehCK1tZl0FtvaxXxTiQoJOIOJL2uXSQm', (SELECT id FROM authorities WHERE authority = 'empleado'));
@@ -58,6 +34,14 @@ INSERT INTO app_user (id, username, password, authority_id) VALUES (8, 'owner1',
 INSERT INTO app_user (id, username, password, authority_id) VALUES (9, 'empleado', 'password', (SELECT id FROM authorities WHERE authority = 'empleado'));
 -- Usuario admin, psswd = password
 INSERT INTO app_user (id, username, password, authority_id) VALUES (10,'gastroAdmin','$2a$10$wPqDTEhcLj7vLpEVxvlreehCK1tZl0FtvaxXxTiQoJOIOJL2uXSQm',(SELECT id FROM authorities WHERE authority ='admin'));
+
+-- 3. Insertar subscripciones con user_id ya creado
+INSERT INTO subscripcion (id, type, status, start_date, end_date, stripe_customer_id, user_id) VALUES (1, 'PREMIUM', 'ACTIVE', CURRENT_TIMESTAMP(), '2025-12-31', 'cus_test_123456', 1);
+INSERT INTO subscripcion (id, type, status, start_date, end_date, user_id) VALUES (2, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP(), '2025-12-31', 2);
+
+-- 4. Actualizar usuarios para asociar subscripcion_id (opcional si el @OneToOne es bidireccional y mappedBy se encarga)
+UPDATE app_user SET subscripcion_id = 1 WHERE id = 1;
+UPDATE app_user SET subscripcion_id = 2 WHERE id = 2;
 
 -- Insertando duenos
 INSERT INTO dueno (id, first_name, last_name, email, num_telefono, token_dueno, user_id)
@@ -73,6 +57,8 @@ INSERT INTO negocio (id, name, token_negocio, direccion, codigo_postal, ciudad, 
 VALUES (1, 'Restaurante La Trattoria', 12345, 'Calle Falsa 123', '28001', 'Madrid', 'Espana', (SELECT id FROM dueno WHERE first_name = 'Carlos')); --Cambiar de dueño cuando se borre el temporal
 INSERT INTO negocio (id, name, token_negocio, direccion, codigo_postal, ciudad, pais, dueno_id)
 VALUES (2, 'Restaurante Burguer', 09876, 'Calle Falsa 123', '28001', 'Madrid', 'Espana', (SELECT id FROM dueno WHERE first_name = 'Carlos'));
+INSERT INTO negocio (id, name, token_negocio, direccion, codigo_postal, ciudad, pais, dueno_id)
+VALUES (3, 'Restaurante 400', 02876, 'Calle Falsa 123', '28001', 'Madrid', 'Espana', (SELECT id FROM dueno WHERE first_name = 'Pablo'));
 
 -- Insertando empleados
 INSERT INTO empleado (id, first_name, last_name, email, num_telefono, token_empleado, descripcion, negocio_id, user_id)
@@ -84,7 +70,7 @@ VALUES (3, 'Antonio', 'Fernández', 'antonio.fernandez@gmail.com', '987654323', 
 INSERT INTO empleado (id, first_name, last_name, email, num_telefono, token_empleado, descripcion, negocio_id, user_id)
 VALUES (4, 'Paco', 'Hernández', 'paco.hernandez@gmail.com', '987654324', 'gst-hoGkisz7nslugPfQbZ8mp0QW3JSYhM6', 'Cocina', (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'paco'));
 INSERT INTO empleado (id, first_name, last_name, email, num_telefono, token_empleado, descripcion, negocio_id, user_id)
-VALUES (5, 'Fernando', 'Pérez', 'fernando.perez@gmail.com', '987654325', 'gst-hoGkisz7metalPSIbZ8mp0QW3JSYhM7', null, (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'fernando'));
+VALUES (5, 'Fernando', 'Pérez', 'fernando.perez@gmail.com', '987654325', 'gst-hoGkisz7metalPSIbZ8mp0QW3JSYhM7', null, (SELECT id FROM negocio WHERE name = 'Restaurante Burguer'), (SELECT id FROM app_user WHERE username = 'fernando'));
 --Empleado temporal mientras se conecta el frontend con el backend
 INSERT INTO empleado (id, first_name, last_name, email, num_telefono, token_empleado, descripcion, negocio_id, user_id)
 VALUES (6, 'Empleado', 'Temporal', 'empleado@gmail.com', '987456325', 'gst-hoGkisz7mgoldPSIbZ8mp0QW3JSYhM7', null, (SELECT id FROM negocio WHERE name = 'Restaurante La Trattoria'), (SELECT id FROM app_user WHERE username = 'empleado'));
@@ -138,12 +124,34 @@ VALUES (8, 'Pez espada', 3, 10.50);
 -- Insertando pedidos
 INSERT INTO pedido (id, fecha, precio_total, mesa_id, empleado_id, negocio_id)
 VALUES (1, '2025-03-17 13:00:00', 15.00, (SELECT id FROM mesa WHERE name = 'Mesa 1'), (SELECT id FROM empleado WHERE first_name = 'Juan' AND last_name = 'Garcia'), 1);
+INSERT INTO pedido (id, fecha, precio_total, mesa_id, empleado_id, negocio_id)
+VALUES (2, '2025-03-17 13:00:00', 40.00, (SELECT id FROM mesa WHERE name = 'Mesa 1'), (SELECT id FROM empleado WHERE first_name = 'Juan' AND last_name = 'Garcia'), 1);
+INSERT INTO pedido (id, fecha, precio_total, mesa_id, empleado_id, negocio_id)
+VALUES (3, '2025-03-17 13:00:00', 55.00, (SELECT id FROM mesa WHERE name = 'Mesa 2'), (SELECT id FROM empleado WHERE first_name = 'Juan' AND last_name = 'Garcia'), 1);
+INSERT INTO pedido (id, fecha, precio_total, mesa_id, empleado_id, negocio_id)
+VALUES (4, '2025-03-17 13:00:00', 15.00, (SELECT id FROM mesa WHERE name = 'Mesa 1'), (SELECT id FROM empleado WHERE first_name = 'Juan' AND last_name = 'Garcia'), 1);
+INSERT INTO pedido (id, fecha, precio_total, mesa_id, empleado_id, negocio_id)
+VALUES (5, '2025-02-17 13:00:00', 30.00, (SELECT id FROM mesa WHERE name = 'Mesa 1'), (SELECT id FROM empleado WHERE first_name = 'Juan' AND last_name = 'Garcia'), 1);
+INSERT INTO pedido (id, fecha, precio_total, mesa_id, empleado_id, negocio_id)
+VALUES (6, '2025-02-17 13:00:00', 15.00, (SELECT id FROM mesa WHERE name = 'Mesa 1'), (SELECT id FROM empleado WHERE first_name = 'Juan' AND last_name = 'Garcia'), 1);
+INSERT INTO pedido (id, fecha, precio_total, mesa_id, empleado_id, negocio_id)
+VALUES (7, '2025-01-11 13:00:00', 9.00, (SELECT id FROM mesa WHERE name = 'Mesa 2'), (SELECT id FROM empleado WHERE first_name = 'Juan' AND last_name = 'Garcia'), 1);
+INSERT INTO pedido (id, fecha, precio_total, mesa_id, empleado_id, negocio_id)
+VALUES (8, '2025-01-10 13:00:00', 60.00, (SELECT id FROM mesa WHERE name = 'Mesa 2'), (SELECT id FROM empleado WHERE first_name = 'Juan' AND last_name = 'Garcia'), 1);
 
+INSERT INTO pedido (id, fecha, precio_total, mesa_id, empleado_id, negocio_id)
+VALUES (9, '2025-01-11 13:00:00', 9.00, (SELECT id FROM mesa WHERE name = 'Mesa 5'), (SELECT id FROM empleado WHERE first_name = 'Fernando' AND last_name = 'Pérez'), 2);
+INSERT INTO pedido (id, fecha, precio_total, mesa_id, empleado_id, negocio_id)
+VALUES (10, '2025-01-10 13:00:00', 60.00, (SELECT id FROM mesa WHERE name = 'Mesa 5'), (SELECT id FROM empleado WHERE first_name = 'Fernando' AND last_name = 'Pérez'), 2);
 -- Insertando líneas de pedido
 INSERT INTO linea_de_pedido (id, cantidad, salio_de_cocina, precio_unitario, pedido_id, producto_id)
-VALUES (1, 1, true, 12.50, (SELECT id FROM pedido WHERE precio_total = 15.00), (SELECT id FROM producto_venta WHERE name = 'Pizza Margherita'));
+VALUES (1, 1, true, 12.50, 1, (SELECT id FROM producto_venta WHERE name = 'Pizza Margherita'));
 INSERT INTO linea_de_pedido (id, cantidad, salio_de_cocina, precio_unitario, pedido_id, producto_id)
-VALUES (2, 1, true, 2.50, (SELECT id FROM pedido WHERE precio_total = 15.00), (SELECT id FROM producto_venta WHERE name = 'Coca Cola'));
+VALUES (2, 1, true, 2.50, 1, (SELECT id FROM producto_venta WHERE name = 'Coca Cola'));
+INSERT INTO linea_de_pedido (id, cantidad, salio_de_cocina, precio_unitario, pedido_id, producto_id)
+VALUES (3, 4, true, 2.50, 2, (SELECT id FROM producto_venta WHERE name = 'Coca Cola'));
+INSERT INTO linea_de_pedido (id, cantidad, salio_de_cocina, precio_unitario, pedido_id, producto_id)
+VALUES (4, 10, true, 2.50, 2, (SELECT id FROM producto_venta WHERE name = 'Coca Cola'));
 
 -- Insertando proveedores
 INSERT INTO proveedor (id, name, email, telefono, direccion, negocio_id)
@@ -198,4 +206,3 @@ INSERT INTO linea_de_carrito (id, cantidad, precio_linea, producto_id, carrito_i
 VALUES (1, 200, 100, (SELECT id FROM producto_inventario WHERE name = 'Harina'), (SELECT id FROM carrito WHERE id = 1));
 INSERT INTO linea_de_carrito (id, cantidad, precio_linea, producto_id, carrito_id)
 VALUES (2, 200, 60,(SELECT id FROM producto_inventario WHERE name = 'Tomate'), (SELECT id FROM carrito WHERE id = 1));
-

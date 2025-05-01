@@ -26,4 +26,7 @@ public interface ProveedorRepository extends CrudRepository<Proveedor, Integer> 
     @Query("SELECT p FROM Proveedor p WHERE p.negocio.id = ?1")
     List<Proveedor> findProveedorByNegocioId(Integer negocio);
 
+    @Query("SELECT p FROM Proveedor p WHERE p.negocio.dueno.id = ?1")
+    List<Proveedor> findProveedorByDuenoId(Integer dueno);
+
 }
