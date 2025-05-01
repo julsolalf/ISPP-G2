@@ -55,6 +55,16 @@ public class LoteService {
         return loteRepository.findCaducadosByNegocioId(negocioId, fechaActual); 
     }
 
+    @Transactional(readOnly = true)
+    public List<Lote> getLotesByNegocioId(Integer negocioId) {
+        return loteRepository.findByNegocioId(negocioId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Lote> getLotesByDuenoId(Integer duenoId) {
+        return loteRepository.findByDuenoId(duenoId);
+    }
+
     @Transactional
     public Lote save(Lote lote) {
         return loteRepository.save(lote);
