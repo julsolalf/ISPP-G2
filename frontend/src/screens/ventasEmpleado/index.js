@@ -46,11 +46,13 @@ function VerPedidos() {
   useEffect(() => {
     const cargarDatos = async () => {
       const datosPedidos = await obtenerPedidos();
-      setPedidos(datosPedidos);
+      const pedidosFiltrados = datosPedidos.filter(pedido => pedido.precioTotal > 0);
+      setPedidos(pedidosFiltrados);
     };
-
+  
     cargarDatos();
   }, []);
+  
 
   const handleFilter = () => {
     let filteredPedidos = [...pedidos];

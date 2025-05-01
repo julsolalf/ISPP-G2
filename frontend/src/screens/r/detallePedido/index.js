@@ -76,10 +76,7 @@ const DetallesPedido = () => {
       const pedidoDto = {
         id: pedido.id,
         fecha: pedido.fecha,
-        precioTotal: lineasModificadas.reduce(
-          (total, linea) => total + (linea.precioUnitario * linea.cantidad),
-          0
-        ),
+        precioTotal: pedido.precioTotal,
         mesaId: pedido.mesaId,
         empleadoId: pedido.empleadoId,
         negocioId: pedido.negocioId,

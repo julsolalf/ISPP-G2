@@ -43,15 +43,16 @@ function VerPedidos() {
     navigate("/"); // Redirigir a la pantalla de inicio de sesión
   };
 
-  useEffect(() => {
-    const cargarDatos = async () => {
-      const datosPedidos = await obtenerPedidos();
-      setPedidos(datosPedidos);
-    };
-
-    cargarDatos();
-  }, []);
-
+ useEffect(() => {
+     const cargarDatos = async () => {
+       const datosPedidos = await obtenerPedidos();
+       const pedidosFiltrados = datosPedidos.filter(pedido => pedido.precioTotal > 0);
+       setPedidos(pedidosFiltrados);
+     };
+   
+     cargarDatos();
+   }, []);
+   
   const handleFilter = () => {
     let filteredPedidos = [...pedidos];
     if (searchTerm) {
