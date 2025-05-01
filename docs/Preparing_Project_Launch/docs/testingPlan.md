@@ -7,7 +7,7 @@ description: Testing plan for the GastroStock app.
 author: Writing by Mario Zambrano Zapata
 ---
 
-# **Plan de Pruebas GastroStock**
+# [Preparing Project Launch] Testing Plan - GastroStock (Group 2)
 
 # **1\. Introducción**
 
@@ -133,7 +133,7 @@ La estrategia se divide en diversas categorías que aseguran la validación inte
   Las pruebas de interfaz verificarán la usabilidad, accesibilidad y consistencia de la interfaz de usuario, asegurando una experiencia de usuario óptima.
 
   **Enfoque y Metodología**  
-  Herramientas: Selenium WebDriver, Katalon Recorder  
+  Herramientas: Playwright
   Alcance: Interfaces web, comportamiento responsive, flujos de usuario
 
   **Tipos de Pruebas:**  
