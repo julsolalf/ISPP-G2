@@ -39,10 +39,15 @@ function VerTipoProductoCartaDueno() {
   useEffect(() => {
     const cargarProductos = async () => {
       const productosCategoria = await obtenerProductosPorCategoria();
-      setProductos(productosCategoria);
+      const negocioId = parseInt(localStorage.getItem("negocioId"));
+      const productosDelNegocio = productosCategoria.filter(
+        (producto) => producto.categoria?.negocio?.id === negocioId
+      );
+      setProductos(productosDelNegocio);
     };
     cargarProductos();
   }, [categoriaId]);
+  
 
   const exportarProductosPDF = () => {
     const doc = new jsPDF();
