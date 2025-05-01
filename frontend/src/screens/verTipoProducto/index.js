@@ -4,7 +4,6 @@ import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
-import Notificaciones from "../../components/Notifications";
 
 function VerTipoProducto() {
   const { categoriaId } = useParams();
@@ -16,16 +15,6 @@ function VerTipoProducto() {
   const [filtro, setFiltro] = useState(""); 
   const [ordenAscendente, setOrdenAscendente] = useState(true); 
   const [ordenPorCantidad, setOrdenPorCantidad] = useState(false); 
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [showUserOptions, setShowUserOptions] = useState(false);
-
-  const toggleNotifications = () => {
-    setShowNotifications(!showNotifications);
-  };
-
-  const toggleUserOptions = () => {
-    setShowUserOptions(!showUserOptions);
-  };
 
   const obtenerProductosPorCategoria = async () => {
     try {
@@ -106,37 +95,9 @@ function VerTipoProducto() {
       }}>
       <div className="content">
         <div className="icon-container-right">
-          <Bell size={30} className="icon" onClick={toggleNotifications} />
-          <User size={30} className="icon" onClick={toggleUserOptions} />
+          <Bell size={30} className="icon" />
+          <User size={30} className="icon" />
         </div>
-
-        {showNotifications && (
-          <div className="icon-container-right">
-          <Notificaciones />
-          <User size={30} className="icon" onClick={toggleUserOptions} />
-        </div>
-        )}
-
-{showUserOptions && (
-          <div className="notification-bubble user-options">
-            <div className="notification-header">
-              <strong>Usuario</strong>
-              <button className="close-btn" onClick={() => setShowUserOptions(false)}>X</button>
-            </div>
-            <ul>
-              <li>
-                <button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button>
-              </li>
-              <li>
-                <button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button>
-              </li>
-              <li>
-                <button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
-              </li>
-            </ul>
-          </div>
-        )}
-
 
         <button onClick={() => navigate("/inventario")} className="back-button">⬅ Volver</button>
         <Link to="/inicioDueno">
