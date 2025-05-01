@@ -1,11 +1,16 @@
 .page-container {
-    display: flex;              /* Enables flexbox layout */
-    justify-content: center;     /* Aligns the items horizontally in the center */
-    align-items: center;         /* Aligns the items vertically in the center */
-    height: 100%;
+    display: flex;              
+    justify-content: center;     
+    align-items: center;         
+    height: 100vh;
     width: 100%;
     gap: 10%;
+    background-image: url('/public/background-spices.jpg');
+    background-size: cover;
+    background-position: center;
+    text-align: center;
 }
+
 
 .app-logo {
     transform: scale(2);  /* Scales the image by 3 times */
