@@ -16,7 +16,7 @@ function VerTipoProductoCartaDueno() {
   const [ordenAscendente, setOrdenAscendente] = useState(true); 
   const [ordenPorCantidad, setOrdenPorCantidad] = useState(false); 
 
-  const obtenerProductosPorCategoria = async () => {
+  const obtenerProductosPorCategoria = async () => { 
     try {
       const response = await fetch(`http://localhost:8080/api/productosVenta/categoriaVenta/${categoriaId}`, {
         headers: {
@@ -92,7 +92,7 @@ function VerTipoProductoCartaDueno() {
         <h2>Productos</h2>
         <div className="button-container3">
           <button className="button" onClick={() => {
-            localStorage.setItem("categoriaNombre", localStorage.getItem("categoriaNombre"));
+            localStorage.setItem("categoriaId", localStorage.getItem("categoriaId"));
             navigate("/anadirProductoVenta")}}>➕ Añadir</button>
           <button className="button" onClick={exportarProductosPDF}>📥 Exportar</button>
           <button className="button">🔍 Filtrar</button>
@@ -107,7 +107,7 @@ function VerTipoProductoCartaDueno() {
               <div key={producto.id} className="empleado-card"
                 onClick={() => {
                   localStorage.setItem("productoId", producto.id);
-                  navigate(`/categoriaVenta/${localStorage.getItem("categoriaNombre")}/producto/${producto.id}`);
+                  navigate(`/categoriaVenta/${localStorage.getItem("categoriaId")}/producto/${producto.id}`);
                 }}
                 style={{ cursor: "pointer" }}>
                 <h3>{producto.name}</h3>

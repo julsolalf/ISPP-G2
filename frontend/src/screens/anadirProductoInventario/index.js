@@ -29,34 +29,44 @@ function PantallaAñadirProducto() {
   useEffect(() => {
     const storedCategoriaNombre = localStorage.getItem("categoriaNombre");
     setCategoriaNombre(storedCategoriaNombre);
-
-    if (storedCategoriaNombre && storedNegocioId) {
-      fetch(`http://localhost:8080/api/categorias/nombre/${storedCategoriaNombre}`, {
+  
+    const token = localStorage.getItem("token");
+  
+    if (storedCategoriaNombre && storedNegocioId && token) {
+      fetch(`http://localhost:8080/api/categorias/negocio/${storedNegocioId}/inventario`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       })
-        .then(response => response.json())
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
         .then(data => {
           if (Array.isArray(data)) {
-            const categoriaDelNegocio = data.find(categoria => categoria.negocio.id === parseInt(storedNegocioId));
+            const categoriaDelNegocio = data.find(
+              categoria =>
+                categoria.name === storedCategoriaNombre && categoria.pertenece === "INVENTARIO"
+            );
             if (categoriaDelNegocio) {
               setCategoriaId(categoriaDelNegocio.id);
             } else {
-              alert("No se encontró la categoría para este negocio");
+              alert("No se encontró la categoría de INVENTARIO con ese nombre para este negocio.");
             }
           } else {
             alert("La respuesta de la API no es una lista de categorías");
           }
         })
-        .catch((error) => {
-          console.error("Error obteniendo el ID de la categoría", error);
+        .catch(error => {
+          console.error("Error obteniendo el ID de la categoría:", error);
           alert("Hubo un problema al obtener el ID de la categoría");
         });
     } else {
-      alert("No se encontró la categoría o negocioId en el almacenamiento local.");
+      alert("No se encontró la categoría, el negocioId o el token en el almacenamiento local.");
     }
 
     // Obtener proveedores del negocio
