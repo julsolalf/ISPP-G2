@@ -49,8 +49,8 @@
     border-radius: 15px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     text-align: center;
-    height: 20%;
-    width: 80%;
+    height: 20% !important;
+    width: 80% !important;
   }
 
   .content-bottom {

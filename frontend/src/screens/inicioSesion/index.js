@@ -86,7 +86,8 @@ function PantallaInicioSesion() {
         textAlign: "center"
       }}
     >
-      <div className="content">
+      <div className="login-container">
+        <div className="login-content">  
         <button onClick={() => navigate("/")} className="back-button">⬅ Volver</button>
         <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
         <h1 className="title">GastroStock</h1>
@@ -111,6 +112,7 @@ function PantallaInicioSesion() {
         </Link>
       </div>
     </div>
+  </div>
   );
 }
 

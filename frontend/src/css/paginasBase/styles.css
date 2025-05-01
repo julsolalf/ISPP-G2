@@ -18,31 +18,58 @@ body, html {
 }
 
 /* Contenedor del formulario con fondo translúcido */
-.content {
+.login-content {
+  background: rgba(234, 197, 197, 0.85);
+  padding: 50px 40px; /* Aumentado el padding */
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  width: 95%; /* Aumentado el ancho */
+  width: 40vw; /* Cambiado a vw para mejor adaptabilidad */
+  max-width: none; /* Aumentado significativamente */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px; /* Mayor espaciado entre elementos */
+}
+
+.fondo {
   background: rgba(234, 197, 197, 0.85); /* Más opacidad para mejor visibilidad */
   padding: 40px 30px;
   border-radius: 15px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  text-align: center;
-  width: 90%;
-  max-width: 400px; /* Aumentado el ancho */
-  display: flex;
-  flex-direction: column;
+  height: 90%;
+  width: 70%;
+  margin: 5%;
+  justify-content: center;
   align-items: center;
-  gap: 5px; /* Espaciado más uniforme */
+}
+
+.fondo-login {
+  background: rgba(234, 197, 197, 0.85); /* Más opacidad para mejor visibilidad */
+  padding: 40px 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  height: 90%;
+  width: 40%;
+  margin: 5%;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Estilo para el logo */
 .app-logo {
-  width: 120px; /* Aumentado el tamano */
-  margin-bottom: 10px; /* Más espacio debajo del logo */
+  width: 150px; /* Aumentado el tamaño */
+  margin-bottom: 20px;
 }
 
 /* Estilo para el título */
 .title {
   margin: 0;
-  font-size: 30px; /* Ajustado para mayor visibilidad */
+  font-size: 38px; /* Aumentado el tamaño */
+  margin-bottom: 10px;
 }
+
 
 /* Estilo para el encabezado */
 h2 {
@@ -56,12 +83,13 @@ h2 {
 /* Estilo para los campos de entrada */
 input {
   width: 100%;
-  padding: 10px;
-  margin: 5px 0; /* Reducido el margen para optimizar espacio */
+  padding: 15px; /* Campos más grandes */
+  margin: 8px 0;
   border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 16px;
+  border-radius: 8px; /* Bordes más redondeados */
+  font-size: 18px; /* Texto más grande */
 }
+
 
 /* Ajustes para pantallas pequenas */
 @media (max-width: 480px) {
@@ -82,14 +110,9 @@ input {
 
 /* Estilo para los botones */
 button {
-  font-size: 18px;
-  padding: 12px 20px;
-  border-radius: 10px;
-  cursor: pointer;
-  border: none;
-  transition: 0.3s;
-  width: 100%;
-  margin-top: 10px;
+  font-size: 20px; /* Texto más grande */
+  padding: 15px 25px; /* Botones más grandes */
+  margin-top: 15px;
 }
 
 /* Estilo para el botón de registro */
@@ -97,6 +120,7 @@ button {
   background-color: #a92d4e;
   color: white;
   font-weight: bold;
+  max-height: 80px;
 }
 
 /* Efecto hover en los botones */
@@ -133,46 +157,37 @@ button:hover {
 }
 
 .pricing {
+  height: 60%;
   display: flex;
   justify-content: space-between;
   gap: 15px;
-  margin: 20px 0;
 }
 
 .plan {
   background:  rgb(238, 183, 183);
   padding: 15px;
   border-radius: 10px;
-  width: 30%;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .plan h3 {
   color: #a92d4e;
   margin-bottom: 5px;
+  margin: 5%;
 }
 
 /* Botón de volver arriba a la izquierda dentro del contenedor */
-.back-button {
-  position: absolute;
-  top: 15px;
-  left: -70px; 
-  background: none;
-  border: none;
-  font-size: 16px;
-  color: #333;
-  cursor: pointer;
-  font-weight: bold;
-}
+button {
+  font-size: 20px; /* Texto más grande */
+  padding: 15px 25px; /* Botones más grandes */
+  margin-top: 15px;
+}s
 
 .back-button:hover {
   text-decoration: underline;
 }
 
-.content {
-  position: relative;
-  padding-top: 50px; 
-}
+
 
 /* Botón de confirmación (Sí) en rojo */
 .confirm-btn {
@@ -204,114 +219,6 @@ button:hover {
   background-color: #388E3C;
 }
 
-/* Botón de desabilitado */
-.login-btn.disabled {
-  background-color: #999;
-  color: #eee;
-  cursor: not-allowed;
-  opacity: 0.7;
-  pointer-events: none;
-}
-
-/* Estilos para el modal del Customer Agreement y la checkbox asociada*/
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0,0,0,0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background-color: white;
-  padding: 30px;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 700px;
-  max-height: 85vh;
-  overflow-y: auto;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: -80px;
-}
-
-.modal-text {
-  text-align: left;
-  font-size: 14px;
-  line-height: 1.6;
-  color: #333;
-}
-
-.modal-text p {
-  margin-bottom: 1em;
-}
-
-.modal-text strong {
-  color: #a92d4e;
-  font-weight: bold;
-}
-
-.modal-text h2 {
-  font-size: 30px;
-  font-weight: bold;
-  margin-bottom: 15px;
-  text-align: center;
-  color: #a92d4e;
-}
-
-.modal-text .section-title {
-  font-size: 20px;
-  font-weight: bold;
-  margin-top: 1.2em;
-  margin-bottom: 0.3em;
-  color: #a92d4e;
-  text-transform: uppercase;
-}
-
-.custom-checkbox-container {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  text-align: left;
-  gap: 10px;
-  margin: 15px 0;
-  width: 100%;
-}
-
-.custom-checkbox {
-  appearance: none;
-  width: 18px;
-  height: 18px;
-  border: 2px solid #a92d4e;
-  border-radius: 4px;
-  cursor: not-allowed;
-  position: relative;
-  background-color: white;
-}
-
-.custom-checkbox:checked::before {
-  content: "✔";
-  position: absolute;
-  top: -2px;
-  left: 2px;
-  font-size: 16px;
-  color: #a92d4e;
-}
-
-.agreement-link {
-  color: #a92d4e;
-  font-weight: bold;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.agreement-link:hover {
-  opacity: 0.8;
+.clearfix {
+  clear: both;  
 }
