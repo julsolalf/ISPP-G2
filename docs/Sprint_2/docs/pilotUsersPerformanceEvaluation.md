@@ -2,14 +2,14 @@
 title: pilotUsersPerformanceEvaluation
 groupNumber: 2
 groupName: GastroStock
-deliverable: Sprint 1
+deliverable: Sprint 2
 description: Performance Evaluation of Pilot Users
-author: Writing by Raul Toro Romero and reviewed by Mario Zambrano Zapata
+author: Writing by Raul Toro Romero
 ---
 
-# [Sprint 1] Commitment Agreement of Pilot Users - GastroStock (Group 2)
+# [Sprint 2] Commitment Agreement of Pilot Users - GastroStock (Group 2)
 
-During this Sprint 1, no task were scheduled to any Pilot Users other than accepting the official methods of communication of GastroStock and verbally agreeing to perform their tasks in the future. In that note, all of them scored a 10 out of 10, we could not be happier to have them.
+During this Sprint 2, below we add all the feedback we got from them, and their marks:
 
 | Name         | Surname        | Grade     |
 |--------------|----------------|-----------|

@@ -1,13 +1,17 @@
 import { useState } from "react";
+import { useEffect } from "react";
 import { useNavigate, Link  } from "react-router-dom";
 import { Bell, User } from "lucide-react";
 import "../../css/inicio/styles.css";
+import Notificaciones from "../../components/Notifications";
 
 function HomeScreen() {
   const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
+  const [showReabastecimientoModal, setShowReabastecimientoModal] = useState(false);
+  const [proveedoresProximos, setProveedoresProximos] = useState([]);
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
@@ -22,6 +26,59 @@ function HomeScreen() {
     navigate("/"); // Redirigir a la pantalla de inicio de sesión
   };
 
+  useEffect(() => {
+    const fetchReabastecimientos = async () => {
+        try {
+          const token = localStorage.getItem("token");
+          const negocioId = localStorage.getItem("negocioId");
+      
+          const response = await fetch(`http://localhost:8080/api/reabastecimientos/negocio/${negocioId}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          });
+      
+          if (response.ok) {
+            const data = await response.json();
+      
+            const hoy = new Date(); // Para uno de ejemplo poner "2025-05-30"
+            const tresDiasDespues = new Date(hoy);
+            tresDiasDespues.setDate(hoy.getDate() + 7);
+      
+            const reabastecimientosProximos = data.filter((r) => {
+              const fecha = new Date(r.fecha);
+              return fecha >= hoy && fecha <= tresDiasDespues;
+            });
+      
+            if (reabastecimientosProximos.length > 0) {
+              setShowReabastecimientoModal(true);
+              const proveedores = [...new Set(reabastecimientosProximos.map((r) => r.proveedor.name))];
+              setProveedoresProximos(proveedores);
+              localStorage.setItem('reabastecimientos', JSON.stringify(proveedores));
+            } else {
+              // Limpiar notificaciones si ya no hay reabastecimientos próximos
+              localStorage.removeItem('reabastecimientos');
+              setProveedoresProximos([]);
+            }
+          }
+        } catch (error) {
+          console.error("Error al obtener reabastecimientos:", error);
+        }
+      };    
+    
+      fetchReabastecimientos();
+
+
+    const storedReabastecimientos = localStorage.getItem("reabastecimientos");
+    if (storedReabastecimientos) {
+      setProveedoresProximos(JSON.parse(storedReabastecimientos));
+    } else {
+      setProveedoresProximos([]);
+    }
+  }, []);
+    
   return (
     <div
       className="home-container"
@@ -43,17 +100,10 @@ function HomeScreen() {
         </div>
 
         {showNotifications && (
-          <div className="notification-bubble">
-            <div className="notification-header">
-              <strong>Notificaciones</strong>
-              <button className="close-btn" onClick={toggleNotifications}>X</button>
-            </div>
-            <ul>
-              <li>Notificación 1</li>
-              <li>Notificación 2</li>
-              <li>Notificación 3</li>
-            </ul>
-          </div>
+          <div className="icon-container-right">
+          <Notificaciones />
+          <User size={30} className="icon" onClick={toggleUserOptions} />
+        </div>
         )}
 
         {showUserOptions && (
@@ -88,9 +138,26 @@ function HomeScreen() {
             <button className="menu-btn" onClick={() => navigate("/dashboard")}><span role="img" aria-label="dashboard">📊</span> Dashboard</button>
             <button className="menu-btn" onClick={() => navigate("/inventario")}><span role="img" aria-label="inventario">📦</span> Inventario</button>
             <button className="menu-btn" onClick={() => navigate("/ventas")}><span role="img" aria-label="ventas">💰</span> Ventas</button>
-            <button className="menu-btn" onClick={() => navigate("/carta")}><span role="img" aria-label="carta">🍽️</span> Carta</button>
+            <button className="menu-btn" onClick={() => navigate("/cartaDueno")}><span role="img" aria-label="carta">🍽️</span> Carta</button>
             <button className="menu-btn" onClick={() => navigate("/proveedores")}><span role="img" aria-label="proveedores">📋</span> Proveedores</button>
         </div>
+        
+        {showReabastecimientoModal && (
+            <div className="modal-overlay">
+              <div className="modal">
+                <h3>¡Atención!</h3>
+                <p>Pronto recibirás un reabastecimiento de los siguientes proveedores:</p>
+                <ul>
+                  {proveedoresProximos.map((nombre, index) => (
+                    <li key={index}>{nombre}</li>
+                  ))}
+                </ul>
+                <p>Añade los productos al carrito</p>
+                <button className="confirm-btn" onClick={() => setShowReabastecimientoModal(false)}>Cerrar</button>
+              </div>
+            </div>
+          )}
+
          {/* Modal de Confirmación para Logout */}
          {showLogoutModal && (
           <div className="modal-overlay">

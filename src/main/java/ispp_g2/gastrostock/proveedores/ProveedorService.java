@@ -1,6 +1,9 @@
 package ispp_g2.gastrostock.proveedores;
 
+import ispp_g2.gastrostock.exceptions.ResourceNotFoundException;
 import ispp_g2.gastrostock.negocio.NegocioRepository;
+
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +31,7 @@ public class ProveedorService {
 
     @Transactional(readOnly = true)
     public Proveedor findById(Integer id) {
-        return proveedorRepository.findById(id).orElse(null);
+        return proveedorRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Proveedor no encontrado"));
     }
 
     @Transactional(readOnly = true)
@@ -56,9 +59,22 @@ public class ProveedorService {
         return proveedorRepository.findProveedorByNegocioId(negocio);
     }
 
+    @Transactional(readOnly = true)
+    public List<Proveedor> findProveedorByDuenoId(Integer dueno) {
+        return proveedorRepository.findProveedorByDuenoId(dueno);
+    }
+
     @Transactional
     public Proveedor save(Proveedor proveedor) {
         return proveedorRepository.save(proveedor);
+    }
+
+    @Transactional
+    public Proveedor update(Integer id, Proveedor proveedor) {
+        Proveedor toUpdate = proveedorRepository.findById(id)
+            .orElseThrow(()-> new ResourceNotFoundException("Proveedor no encontrado"));
+        BeanUtils.copyProperties(proveedor, toUpdate,"id");
+        return proveedorRepository.save(toUpdate);
     }
 
     @Transactional
@@ -73,7 +89,8 @@ public class ProveedorService {
         proveedor.setEmail(proveedorDTO.getEmail());
         proveedor.setTelefono(proveedorDTO.getTelefono());
         proveedor.setDireccion(proveedorDTO.getDireccion());
-        proveedor.setNegocio(negocioRepository.findById(proveedorDTO.getNegocioId()).orElse(null));
+        proveedor.setNegocio(negocioRepository.findById(proveedorDTO.getNegocioId())
+            .orElseThrow(()-> new ResourceNotFoundException("Negocio no encontrado")));
         return proveedor;
     }
 

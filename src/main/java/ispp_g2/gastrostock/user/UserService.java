@@ -1,6 +1,7 @@
 package ispp_g2.gastrostock.user;
 
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,7 +38,16 @@ public class UserService {
 
 	@Transactional(readOnly = true)
 	public User findUserByUsername(String username) {
-		return userRepository.findByUsername(username);
+		return userRepository.findByUsername(username)
+			.orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+	}
+
+
+
+	@Transactional(readOnly = true)
+	public User findUserByUsernameNull(String username) {
+		return userRepository.findByUsername(username)
+			.orElse(null);
 	}
 
 	@Transactional(readOnly = true)
@@ -67,6 +77,13 @@ public class UserService {
 	@Transactional
 	public User saveUser(User user) {
 		return userRepository.save(user);
+	}
+
+	@Transactional
+	public User updateUser(Integer id, User user) {
+		User toUpdate = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+		BeanUtils.copyProperties(user, toUpdate, "id", "authority");
+		return userRepository.save(toUpdate);
 	}
 
 	@Transactional

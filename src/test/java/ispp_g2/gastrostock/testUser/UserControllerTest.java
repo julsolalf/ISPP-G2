@@ -62,30 +62,32 @@ class UserControllerTest {
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
         objectMapper = new ObjectMapper();
-        // Registra el mixin para ignorar la propiedad authorities
         objectMapper.addMixIn(User.class, UserMixin.class);
-
+    
         // Configuración de autoridades
         authUser = new Authorities();
         authUser.setId(1);
         authUser.setAuthority("user");
-
+    
         authAdmin = new Authorities();
         authAdmin.setId(2);
         authAdmin.setAuthority("admin");
-
+    
         // Configuración de usuarios
         user1 = new User();
         user1.setId(1);
         user1.setUsername("johndoe");
         user1.setPassword("password123");
         user1.setAuthority(authUser);
-        
+    
         user2 = new User();
         user2.setId(2);
         user2.setUsername("admin");
         user2.setPassword("adminpass");
         user2.setAuthority(authAdmin);
+    
+        // Simula un usuario autenticado con rol admin
+        lenient().when(userService.findCurrentUser()).thenReturn(user2);
     }
     
     @Test

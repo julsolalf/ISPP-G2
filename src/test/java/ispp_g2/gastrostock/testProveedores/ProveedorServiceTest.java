@@ -24,6 +24,7 @@ import ispp_g2.gastrostock.proveedores.Proveedor;
 import ispp_g2.gastrostock.proveedores.ProveedorRepository;
 import ispp_g2.gastrostock.proveedores.ProveedorService;
 import ispp_g2.gastrostock.diaReparto.DiaReparto;
+import ispp_g2.gastrostock.exceptions.ResourceNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -131,19 +132,19 @@ public class ProveedorServiceTest {
         assertEquals("Distribuciones Alimentarias S.L.", result.get().getName());
         verify(proveedorRepository, times(1)).findById(1);
     }
-
-        @Test
-        void testGetById_NotExists() {
-            // Arrange
-            when(proveedorRepository.findById(999)).thenReturn(Optional.empty());
-
-            // Act
-            Proveedor result = proveedorService.findById(999);
-
-            // Assert
-            assertNull(result);
-            verify(proveedorRepository, times(1)).findById(999);
-        }
+    
+    @Test
+    void testGetById_NotExists() {
+        // Arrange
+        when(proveedorRepository.findById(999)).thenReturn(Optional.empty());
+    
+        // Act & Assert
+        assertThrows(ResourceNotFoundException.class, () -> {
+            proveedorService.findById(999);
+        });
+    
+        verify(proveedorRepository, times(1)).findById(999);
+    }
 
     @Test
     void testGetById_NullId() {

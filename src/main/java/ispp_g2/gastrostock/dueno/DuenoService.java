@@ -6,6 +6,8 @@ import ispp_g2.gastrostock.exceptions.DuenoSaveException;
 import ispp_g2.gastrostock.user.AuthoritiesRepository;
 import ispp_g2.gastrostock.user.User;
 import ispp_g2.gastrostock.user.UserRepository;
+
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -88,6 +90,13 @@ public class DuenoService {
         } catch (Exception e) {
             throw new DuenoSaveException("Error al guardar el dueño: " + e.getMessage(), e);
         }
+    }
+
+    @Transactional
+    public Dueno updateDueno(Integer id, Dueno dueno) {
+      Dueno toUpdate = duenoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("El dueño con id " + id + " no existe"));
+      BeanUtils.copyProperties(dueno, toUpdate, "id", "user", "tokenDueno");
+      return duenoRepository.save(toUpdate);
     }
 
     @Transactional

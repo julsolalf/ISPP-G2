@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,6 +42,7 @@ import ispp_g2.gastrostock.user.UserService;
 @WebMvcTest(DuenoController.class)
 @Import({SecurityConfiguration.class, JwtAuthFilter.class})
 @ActiveProfiles("test")
+@WithMockUser(username = "admin", roles = {"admin"})
 class DuenoControllerTest {
 
     @Autowired
@@ -88,7 +89,7 @@ class DuenoControllerTest {
         // Crear autoridad de dueño
         authority = new Authorities();
         authority.setId(1);
-        authority.setAuthority("DUENO");
+        authority.setAuthority("admin");
         
         // Crear usuario dueño
         user = new User();

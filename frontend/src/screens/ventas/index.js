@@ -4,9 +4,11 @@ import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import Notificaciones from "../../components/Notifications";
 
 const token = localStorage.getItem("token");
 const negocioId = localStorage.getItem("negocioId");
+
 
 // Función para obtener los pedidos desde la API
 const obtenerPedidos = async () => {
@@ -37,6 +39,8 @@ function VerPedidos() {
   const [showLogoutModal, setShowLogoutModal] = useState(false); 
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("");  
+
+  const toggleUserOptions = () => setShowUserOptions(!showUserOptions);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -115,17 +119,10 @@ function VerPedidos() {
         </div>
 
         {showNotifications && (
-          <div className="notification-bubble">
-            <div className="notification-header">
-              <strong>Notificaciones</strong>
-              <button className="close-btn" onClick={() => setShowNotifications(false)}>X</button>
-            </div>
-            <ul>
-              <li>Notificación 1</li>
-              <li>Notificación 2</li>
-              <li>Notificación 3</li>
-            </ul>
-          </div>
+          <div className="icon-container-right">
+          <Notificaciones />
+          <User size={30} className="icon" onClick={toggleUserOptions} />
+        </div>
         )}
 
 {showLogoutModal && (

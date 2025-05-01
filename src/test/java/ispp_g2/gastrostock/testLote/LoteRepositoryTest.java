@@ -164,6 +164,7 @@ public class LoteRepositoryTest {
         producto1.setPrecioCompra(2.5);
         producto1.setCantidadAviso(5);
         producto1.setCantidadDeseada(10);
+        producto1.setProveedor(proveedor1); // Asignar proveedor al producto
         producto1 = productoInventarioRepository.save(producto1);
         
         producto2 = new ProductoInventario();
@@ -172,6 +173,7 @@ public class LoteRepositoryTest {
         producto2.setPrecioCompra(1.8);
         producto2.setCantidadAviso(3);
         producto2.setCantidadDeseada(8);
+        producto2.setProveedor(proveedor2); // Asignar proveedor al producto
         producto2 = productoInventarioRepository.save(producto2);
         
         // Crear productos adicionales para pruebas más exhaustivas
@@ -181,6 +183,7 @@ public class LoteRepositoryTest {
         producto3.setPrecioCompra(0.8);
         producto3.setCantidadAviso(10);
         producto3.setCantidadDeseada(50);
+        producto3.setProveedor(proveedor1); // Asignar proveedor al producto
         productoInventarioRepository.save(producto3);
         
         // Crear reabastecimientos

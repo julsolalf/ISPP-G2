@@ -29,4 +29,7 @@ public interface ReabastecimientoRepository extends CrudRepository<Reabastecimie
     @Query("SELECT r FROM Reabastecimiento r WHERE r.negocio.id = ?1")
     List<Reabastecimiento> findByNegocio(Integer negocio);
 
+    @Query("SELECT r FROM Reabastecimiento r WHERE r.negocio.dueno.id = ?1")
+    List<Reabastecimiento> findByDueno(Integer dueno);
+
 }

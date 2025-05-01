@@ -1,9 +1,13 @@
 package ispp_g2.gastrostock.productoInventario;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.StreamSupport;
 
 import ispp_g2.gastrostock.categorias.CategoriaRepository;
+import ispp_g2.gastrostock.lote.Lote;
+import ispp_g2.gastrostock.lote.LoteRepository;
 import ispp_g2.gastrostock.proveedores.ProveedorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,12 +21,14 @@ public class ProductoInventarioService {
     private final ProductoInventarioRepository productoInventarioRepository;
     private final CategoriaRepository categoriaRepository;
     private final ProveedorRepository proveedorRepository;
+    private final LoteRepository loteRepository;
 
     @Autowired
-    public ProductoInventarioService(ProductoInventarioRepository ProductoInventarioRepository, CategoriaRepository categoriaRepository, ProveedorRepository proveedorRepository) {
+    public ProductoInventarioService(ProductoInventarioRepository ProductoInventarioRepository, CategoriaRepository categoriaRepository, ProveedorRepository proveedorRepository, LoteRepository loteRepository) {
         this.productoInventarioRepository = ProductoInventarioRepository;
         this.categoriaRepository = categoriaRepository;
         this.proveedorRepository = proveedorRepository;
+        this.loteRepository = loteRepository;
     }
 
     @Transactional(readOnly = true)
@@ -45,6 +51,11 @@ public class ProductoInventarioService {
     @Transactional(readOnly = true)
     public List<ProductoInventario> getProductoInventarioByCategoriaName(String categoriaInventario) {
         return productoInventarioRepository.findByCategoriaName(categoriaInventario);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductoInventario> getProductoInventarioByCategoriaId(Integer categoriaId) {
+        return productoInventarioRepository.findByCategoriaId(categoriaId);
     }
 
     @Transactional(readOnly = true)
@@ -75,6 +86,35 @@ public class ProductoInventarioService {
     @Transactional(readOnly = true)
     public List<ProductoInventario> getProductoInventarioByDuenoId(Integer duenoId) {
         return productoInventarioRepository.findByDuenoId(duenoId);
+    }
+
+    @Transactional(readOnly = true)
+    public Map<ProductoInventario,Integer> getProductoInventarioMenosCantidad(Integer negocioId) {
+        Map<ProductoInventario,Integer> productoInventarioMenosCantidad = new HashMap<>();
+        List<ProductoInventario> productosInventario = productoInventarioRepository.findByNegocioId(negocioId);
+        productosInventario.forEach(p -> {
+            List<Lote> lotes = loteRepository.findByProductoId(p.getId());
+            Integer cantidad = p.calcularCantidad(lotes);
+            productoInventarioMenosCantidad.put(p, cantidad);
+        });
+        return productoInventarioMenosCantidad.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue())
+                .collect(HashMap::new, (m, e) -> m.put(e.getKey(), e.getValue()), HashMap::putAll);
+    }
+
+    @Transactional(readOnly = true)
+    public Map<ProductoInventario,Integer> getProductoInventarioStockEmergencia(Integer negocioId) {
+        Map<ProductoInventario,Integer> productoInventarioMenosCantidad = new HashMap<>();
+        List<ProductoInventario> productosInventario = productoInventarioRepository.findByNegocioId(negocioId);
+        productosInventario.forEach(p -> {
+            List<Lote> lotes = loteRepository.findByProductoId(p.getId());
+            Integer cantidad = p.calcularCantidad(lotes);
+            if(p.getCantidadAviso()>=cantidad)
+                productoInventarioMenosCantidad.put(p, cantidad);
+        });
+        return productoInventarioMenosCantidad.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue())
+                .collect(HashMap::new, (m, e) -> m.put(e.getKey(), e.getValue()), HashMap::putAll);
     }
 
     @Transactional
