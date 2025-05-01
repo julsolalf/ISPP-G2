@@ -4,12 +4,12 @@ import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 
 const token = localStorage.getItem("token");
-const negocioId = localStorage.getItem("negocioId");
+const negocioId = 1//localStorage.getItem("negocioId");
 
 // Función para obtener los pedidos desde la API
 const obtenerPedidos = async () => {
   try {
-    const response = await fetch(`http://localhost:8080/api/pedidos/negocio/${negocioId}`,{
+    const response = await fetch(`http://localhost:8080/api/pedidos/dto/venta/${negocioId}`,{
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -20,12 +20,14 @@ const obtenerPedidos = async () => {
       throw new Error("Error al obtener los pedidos");
     }
     const data = await response.json();
+    console.log(data); // Verifica los datos que estás recibiendo
     return data;
   } catch (error) {
     console.error("Error al obtener los pedidos:", error);
     return [];
   }
 };
+
 
 function VerPedidos() {
   const navigate = useNavigate();
@@ -168,20 +170,18 @@ function VerPedidos() {
         </div>
 
         <div className="empleados-grid">
-          {handleFilter().map((pedido) => (
-            <div key={pedido.id} className="empleado-card">
-              <h3>Pedido #{pedido.id}</h3>
-              <p>Fecha: {new Date(pedido.fecha).toLocaleString()}</p>
-              <p>Total: ${pedido.precioTotal.toFixed(2)}</p>
-              <p>Mesa: {pedido.mesa.name}</p>
-              <p>Empleado: {pedido.empleado.firstName} {pedido.empleado.lastName}</p>
-              <p>Negocio: {pedido.mesa.negocio.name}</p>
-              <button className="ver-btn" onClick={() => navigate(`/ventasEmpleado/${pedido.id}`)}>
-                Ver
-              </button>
-            </div>
-          ))}
-        </div>
+  {handleFilter().map((pedido) => (
+    <div key={pedido.id} className="empleado-card">
+      <h3>Pedido #{pedido.id}</h3>
+      <p>Fecha: {new Date(pedido.fecha).toLocaleString()}</p>
+      <p>Total: ${pedido.precioTotal.toFixed(2)}</p>
+      <button className="ver-btn" onClick={() => navigate(`/ventasEmpleado/${pedido.id}`)}>
+        Ver
+      </button>
+    </div>
+  ))}
+</div>
+
       </div>
     </div>
   );

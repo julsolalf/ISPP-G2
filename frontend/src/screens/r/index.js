@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 
 const TPV = () => {
   const [mesas, setMesas] = useState([]);
-  const [activeMesa, setActiveMesa] = useState(null);
   const navigate = useNavigate();
   useEffect(() => {
     const token = localStorage.getItem("token");  // Obtener el token del localStorage
@@ -31,9 +30,9 @@ const TPV = () => {
   }, []);
 
   const handleMesaClick = (mesaId) => {
-    setActiveMesa(mesaId);
-    navigate(`/productos/${mesaId}`)  // Establecer la mesa activa seleccionada
+    navigate(`/productos/${mesaId}`);
   };
+  
 
   return (
     <div className="mesa-container">

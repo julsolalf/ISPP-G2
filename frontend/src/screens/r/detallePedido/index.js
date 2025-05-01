@@ -141,7 +141,7 @@ const DetallesPedido = () => {
       <h1>Detalles del Pedido #{pedidoId}</h1>
       {lineasModificadas.map(linea => (
         <div key={linea.id}>
-          <h3>{linea.productoName}</h3>
+          <h3>{linea.nombreProducto}</h3>
           <p>{linea.precioUnitario} € x {linea.cantidad}</p>
           <button onClick={() => actualizarCantidad(linea, -1)}>-</button>
           <button onClick={() => actualizarCantidad(linea, 1)}>+</button>
