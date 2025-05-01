@@ -21,7 +21,6 @@ import ispp_g2.gastrostock.user.AuthoritiesRepository;
 import ispp_g2.gastrostock.user.User;
 import ispp_g2.gastrostock.user.UserRepository;
 import jakarta.validation.ConstraintViolationException;
-import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioRepository;
 
 @DataJpaTest
@@ -44,7 +43,6 @@ class DuenoRepositoryTest {
     
     private Dueno dueno1, dueno2, dueno3, duenoSinToken, duenoSinEmail;
     private User user1, user2, user3;
-    private Negocio negocio;
     
     @BeforeEach
     void setUp() {
@@ -152,7 +150,7 @@ class DuenoRepositoryTest {
         
         // Verificar que hay 3 duenos (los creados en setUp)
         int count = 0;
-        for (Dueno dueno : duenos) {
+        for (@SuppressWarnings("unused") Dueno dueno : duenos) {
             count++;
         }
         assertEquals(3, count);
@@ -190,7 +188,7 @@ class DuenoRepositoryTest {
         // Verificar que el resto sigue existiendo
         Iterable<Dueno> remaining = duenoRepository.findAll();
         int count = 0;
-        for (Dueno dueno : remaining) {
+        for (@SuppressWarnings("unused") Dueno dueno : remaining) {
             count++;
         }
         assertEquals(2, count);

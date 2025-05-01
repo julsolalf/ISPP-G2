@@ -160,6 +160,7 @@ class DuenoServiceTest {
     @Test
     void testSaveDueno_Null() {
         // Act & Assert
+        @SuppressWarnings("unused")
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             duenoService.saveDueno(null);
         });
@@ -204,6 +205,7 @@ class DuenoServiceTest {
         when(duenoRepository.findAll()).thenReturn(null);
 
         // Act & Assert
+        @SuppressWarnings("unused")
         Exception exception = assertThrows(NullPointerException.class, () -> {
             duenoService.getAllDuenos();
         });
@@ -240,6 +242,7 @@ class DuenoServiceTest {
         verify(duenoRepository, times(1)).findById(999);
     }
 
+    @SuppressWarnings("null")
     @Test
     void testGetDuenoById_NullId() {
         // Arrange
@@ -336,6 +339,7 @@ class DuenoServiceTest {
         verify(duenoRepository, times(1)).deleteById(999);
     }
 
+    @SuppressWarnings("null")
     @Test
     void testDeleteDueno_NullId() {
         // Arrange
