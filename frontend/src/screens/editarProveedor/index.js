@@ -2,11 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
-import Notificaciones from "../../components/Notifications";
 
 const token = localStorage.getItem("token");
 const negocioId = localStorage.getItem("negocioId");
-
 
 const obtenerProveedor = async (id) => {
   try {
@@ -50,24 +48,6 @@ const actualizarProveedor = async (id, proveedor) => {
 };
 
 function EditarProveedor() {
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [showUserOptions, setShowUserOptions] = useState(false);
-  
-  const toggleUserOptions = () => {
-    setShowUserOptions(!showUserOptions);
-  };
-
-  const toggleNotifications = () => {
-    setShowNotifications(!showNotifications);
-  };
-
-  const [showLogoutModal, setShowLogoutModal] = useState(false); 
-
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate("/"); // Redirigir a la pantalla de inicio de sesión
-  };
-
   const navigate = useNavigate();
   const { id } = useParams(); // Usamos useParams para obtener el ID de la URL
   const [proveedor, setProveedor] = useState({
@@ -126,31 +106,9 @@ function EditarProveedor() {
     >
       <div className="content">
         <div className="icon-container-right">
-          <Bell size={30} className="icon" onClick={toggleNotifications} />
-          <User size={30} className="icon" onClick={toggleUserOptions} />
+          <Bell size={30} className="icon" />
+          <User size={30} className="icon" />
         </div>
-        
-        {showNotifications && (
-          <div className="icon-container-right">
-          <Notificaciones />
-          <User size={30} className="icon" onClick={toggleUserOptions} />
-        </div>
-        )}
-
-        {showUserOptions && (
-          <div className="notification-bubble user-options">
-            <div className="notification-header">
-              <strong>Usuario</strong>
-              <button className="close-btn" onClick={toggleUserOptions}>X</button>
-            </div>
-            <ul>
-              <li><button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button></li>
-              <li><button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button></li>
-              <li><button className="user-btn logout-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button></li>
-            </ul>
-          </div>
-        )}
-
         <button onClick={() => navigate(-1)} className="back-button">
           ⬅ Volver
         </button>
@@ -196,18 +154,6 @@ function EditarProveedor() {
             💾 Guardar
           </button>
         </form>
-
-        {showLogoutModal && (
-          <div className="modal-overlay">
-            <div className="modal">
-              <h3>¿Está seguro que desea abandonar la sesión?</h3>
-              <div className="modal-buttons">
-                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
-                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

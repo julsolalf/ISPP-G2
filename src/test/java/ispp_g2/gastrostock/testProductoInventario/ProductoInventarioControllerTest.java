@@ -183,7 +183,7 @@ void testCreateProductoInventario_Success() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/productosInventario")
             .contentType(MediaType.APPLICATION_JSON)
-            .content("{\"id\":\"1\",\"name\":}")) 
+            .content("{\"id\":\"1\",\"name\":}"))
             .andExpect(status().isBadRequest());
     }
 

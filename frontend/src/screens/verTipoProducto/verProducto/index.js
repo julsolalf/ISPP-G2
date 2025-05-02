@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
-import Notificaciones from "../../../components/Notifications";
 
 function VerProducto() {
   const navigate = useNavigate();
@@ -17,10 +16,6 @@ function VerProducto() {
   const handleLogout = () => {
     localStorage.clear();
     navigate("/"); // Redirigir a la pantalla de inicio de sesión
-  };
-
-  const toggleUserOptions = () => {
-    setShowUserOptions(!showUserOptions);
   };
 
   const obtenerLotes = async () => {
@@ -113,10 +108,17 @@ function VerProducto() {
         </div>
 
         {showNotifications && (
-          <div className="icon-container-right">
-          <Notificaciones />
-          <User size={30} className="icon" onClick={toggleUserOptions} />
-        </div>
+          <div className="notification-bubble">
+            <div className="notification-header">
+              <strong>Notificaciones</strong>
+              <button className="close-btn" onClick={() => setShowNotifications(false)}>X</button>
+            </div>
+            <ul>
+              <li>Notificación 1</li>
+              <li>Notificación 2</li>
+              <li>Notificación 3</li>
+            </ul>
+          </div>
         )}
 
         {showUserOptions && (

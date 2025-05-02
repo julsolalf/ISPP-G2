@@ -1,6 +1,5 @@
 package ispp_g2.gastrostock.proveedores;
 
-import ispp_g2.gastrostock.dueno.Dueno;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,46 +45,30 @@ public class ProveedorController {
     @GetMapping
     public ResponseEntity<List<Proveedor>> findAll() {
         User user = userService.findCurrentUser();
-        List<Proveedor> proveedores;
-        switch (user.getAuthority().getAuthority()){
-            case ADMIN -> proveedores = proveedorService.findAll();
-            case EMPLEADO -> {
-                Empleado empleado = empleadoService.getEmpleadoByUser(user.getId());
-                proveedores = proveedorService.findProveedorByNegocioId(empleado.getNegocio().getId());
+        if(user.hasAnyAuthority(ADMIN).equals(true)) {
+            List<Proveedor> proveedores = proveedorService.findAll();
+            if(proveedores.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
-            case DUENO -> {
-                Dueno dueno = duenoService.getDuenoByUser(user.getId());
-                proveedores = proveedorService.findProveedorByDuenoId(dueno.getId());
-            }
-            default -> {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-            }
+            return new ResponseEntity<>(proveedores, HttpStatus.OK);
         }
-        return new ResponseEntity<>(proveedores, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @GetMapping("/dto")
     public ResponseEntity<List<ProveedorDTO>> findAllDTO() {
         User user = userService.findCurrentUser();
-        List<Proveedor> proveedores;
-        switch (user.getAuthority().getAuthority()){
-            case ADMIN -> proveedores = proveedorService.findAll();
-            case EMPLEADO -> {
-                Empleado empleado = empleadoService.getEmpleadoByUser(user.getId());
-                proveedores = proveedorService.findProveedorByNegocioId(empleado.getNegocio().getId());
+        if(user.hasAnyAuthority(ADMIN).equals(true)) {
+            List<Proveedor> proveedores = proveedorService.findAll();
+            if(proveedores.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
-            case DUENO -> {
-                Dueno dueno = duenoService.getDuenoByUser(user.getId());
-                proveedores = proveedorService.findProveedorByDuenoId(dueno.getId());
-            }
-            default -> {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-            }
+            return new ResponseEntity<>(proveedores
+                    .stream()
+                    .map(proveedorService::convertirProveedorDTO)
+                    .toList(), HttpStatus.OK);
         }
-        return new ResponseEntity<>(proveedores
-                .stream()
-                .map(proveedorService::convertirProveedorDTO)
-                .toList(), HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @GetMapping("/{id}")

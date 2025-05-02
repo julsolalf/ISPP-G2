@@ -5,6 +5,7 @@ import ispp_g2.gastrostock.proveedores.Proveedor;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
@@ -21,7 +22,7 @@ public class Carrito extends BaseEntity {
 
 
     @NotNull
-    @Positive
+    @Min(0)
     private Double precioTotal;
 
     @ManyToOne

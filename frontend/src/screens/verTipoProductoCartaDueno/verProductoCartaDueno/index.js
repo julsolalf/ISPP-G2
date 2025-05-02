@@ -141,7 +141,7 @@ function VerProductoCartaDueno() {
           </div>
         )}
 
-        <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
+        <button onClick={() => navigate(`/verTipoProductoCartaDueno/${localStorage.getItem("categoriaNombre")}`)} className="back-button">⬅ Volver</button>
         <Link to="/inicioDueno">
           <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
         </Link>

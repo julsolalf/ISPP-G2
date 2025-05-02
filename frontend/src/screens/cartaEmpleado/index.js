@@ -6,18 +6,13 @@ import { Bell, User } from "lucide-react";
 
 
 const token = localStorage.getItem("token");
-const negocioId = localStorage.getItem("negocioId");
+const empleado = JSON.parse(localStorage.getItem("empleado"));
+const negocioId = empleado.negocio.id; // Obtener el ID del negocio del empleado
+
 
 const obtenerCategorias = async () => {
   try {
-    /*
-    Falta una lógica de que en cada pantalla esté guardada la información del usuario logueado y por tanto el respectivo negocioId
-    const negocioId = localStorage.getItem("negocioId"); // Obtiene el ID del negocio guardado
-    if (!negocioId) {
-      throw new Error("No se encontró el ID del negocio");
-    }
-    const response = await fetch(`http://localhost:8080/api/categorias/negocio/${negocioId}/inventario`);*/
-
+  
     const response = await fetch(`http://localhost:8080/api/categorias/negocio/${negocioId}`,{
         method: "GET",
         headers: {
