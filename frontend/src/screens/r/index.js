@@ -1,115 +1,135 @@
-import React, { useState } from "react";
-import "./styles.css";
-
-const products = [
-  { id: 1, name: "Café", price: 1.5, image: "/imagesProductos/cafe.jpg" },
-  { id: 2, name: "Té", price: 1.2, image: "/imagesProductos/te.jpg" },
-  { id: 3, name: "Zumo de naranja", price: 1.0, image: "/imagesProductos/zumoNaranja.jpg" },
-  { id: 4, name: "Carne con Tomate", price: 1.5, image: "/imagesProductos/carneTomate.jpg" },
-  { id: 5, name: "Tortilla", price: 1.0, image: "/imagesProductos/tortilla.jpg" },
-  { id: 6, name: "Agua", price: 0.8, image: "/imagesProductos/agua.jpg" },
-  { id: 7, name: "Cerveza", price: 2.5, image: "/imagesProductos/cerveza.jpg" },
-  { id: 8, name: "Queso", price: 2.0, image: "/imagesProductos/queso.jpg" },
-];
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import "../../css/listados/styles.css";
+import { Bell, User } from "lucide-react";
 
 const TPV = () => {
-  // Inicializamos 8 pedidos independientes
-  const [orders, setOrders] = useState(
-    Array.from({ length: 8 }, () => ({ items: [], total: 0 }))
-  );
-  // Estado para el pedido activo (null = vista de selección)
-  const [activeOrder, setActiveOrder] = useState(null);
+  const [mesas, setMesas] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showUserOptions, setShowUserOptions] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const navigate = useNavigate();
 
-  const addOrderItem = (product) => {
-    if (activeOrder === null) return; // Si no ha seleccionado ningún pedido, no hacer nada
-    const newOrders = orders.map((order, index) => {
-      if (index === activeOrder) {
-        return {
-          items: [...order.items, product],
-          total: order.total + product.price,
-        };
+  const empleado = JSON.parse(localStorage.getItem("empleado"));
+  const negocioId = empleado.negocio.id; // Obtener el ID del negocio del empleado
+  
+  useEffect(() => {
+    const token = localStorage.getItem("token");  // Obtener el token del localStorage
+
+    const fetchMesas = async () => {
+      try {
+        const res = await fetch(`http://localhost:8080/api/mesas/negocio/${negocioId}`, {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,  // Incluir el token en los encabezados
+          },
+        });
+
+        if (!res.ok) throw new Error("Error al obtener mesas");
+        const data = await res.json();
+        setMesas(data);  // Guardar las mesas en el estado
+      } catch (error) {
+        console.error("Error cargando mesas:", error);
       }
-      return order;
-    });
-    setOrders(newOrders);
+    };
+
+    fetchMesas();  // Llamar a la función de obtener mesas
+  }, []);
+
+  const handleMesaClick = (mesaId) => {
+    localStorage.setItem("mesaId", mesaId);  // Guardar el ID de la mesa en el localStorage
+    navigate(`/productos/${mesaId}`);
   };
 
-  const clearActiveOrder = () => {
-    if (activeOrder === null) return;
-    const newOrders = orders.map((order, index) =>
-      index === activeOrder ? { items: [], total: 0 } : order
-    );
-    setOrders(newOrders);
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/"); // Redirigir a la pantalla de inicio de sesión
   };
+  
 
   return (
-    <div style={{ padding: "20px" }}>
-      {/* Logo en la parte superior central */}
-      <div className="logo-container">
-        <img src="/gastrostockLogo.png" alt="App Logo" className="app-logo" />
-      </div>
+    <div
+      className="home-container"
+      style={{
+        backgroundImage: `url(${process.env.PUBLIC_URL + "/background-spices.jpg"})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+      }}
+    >
+    <div className="content">
 
-      <div style={{ display: "flex", gap: "20px", padding: "20px" }}>
-        {/* Lista de productos */}
-        <div style={{ flex: 1, padding: "10px", background: "#fff", borderRadius: "10px" }}>
-          <h2 style={{ color: "#000" }}>Productos</h2>
-          {products.map((product) => (
-            <button 
-              key={product.id} 
-              onClick={() => addOrderItem(product)}
-              className="producto-button" 
-              style={{ backgroundImage: `url(${product.image})` }}
-            >            
-              <span className="producto-name">
-                {product.name} - {product.price.toFixed(2)}€
-              </span>           
-            </button>
-          ))}
+    <div className="icon-container-right">
+          <Bell size={30} className="icon" onClick={() => setShowNotifications(!showNotifications)} />
+          <User size={30} className="icon" onClick={() => setShowUserOptions(!showUserOptions)} />
         </div>
 
-        {/* Gestión de pedidos */}
-        <div style={{ flex: 1, padding: "10px", background: "#fff", borderRadius: "10px" }}>
-          {activeOrder === null ? (
-            <>
-              <h2 style={{ color: "#000" }}>Pedidos</h2>
-              <div className="orders-grid">
-                {orders.map((order, index) => (
-                  <button 
-                    key={index} 
-                    className="order-button" 
-                    onClick={() => setActiveOrder(index)}
-                    style={{ backgroundImage: `url(/imagesProductos/mesa.png)`}}
-                  >
-                    Pedido {index + 1}
-                  </button>
-                ))}
+        {showNotifications && (
+          <div className="notification-bubble">
+            <div className="notification-header">
+              <strong>Notificaciones</strong>
+              <button className="close-btn" onClick={() => setShowNotifications(false)}>X</button>
+            </div>
+            <ul>
+              <li>Notificación 1</li>
+              <li>Notificación 2</li>
+              <li>Notificación 3</li>
+            </ul>
+          </div>
+        )}
+
+{showLogoutModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>¿Está seguro que desea abandonar la sesión?</h3>
+              <div className="modal-buttons">
+                <button className="confirm-btn" onClick={handleLogout}>Sí</button>
+                <button className="cancel-btn" onClick={() => setShowLogoutModal(false)}>No</button>
               </div>
-            </>
-          ) : (
-            <>
-              <h2 style={{ color: "#000" }}>Detalle del Pedido {activeOrder + 1}</h2>
-              <ul>
-                {orders[activeOrder].items.map((item, idx) => (
-                  <li key={idx} style={{ color: "#000" }}>
-                    {item.name} - ${item.price.toFixed(2)}
-                  </li>
-                ))}
-              </ul>
-              <h3 style={{ color: "#000" }}>Total: {orders[activeOrder].total.toFixed(2)}€</h3>
-              <button 
-                onClick={clearActiveOrder} 
-                style={{ background: "#FF5733", color: "#000", padding: "10px", border: "none", borderRadius: "5px", marginRight: "10px" }}>
-                Limpiar Pedido
-              </button>
-              <button 
-                onClick={() => setActiveOrder(null)} 
-                style={{ background: "#6c757d", color: "#fff", padding: "10px", border: "none", borderRadius: "5px" }}>
-                Volver a Pedidos
-              </button>
-            </>
-          )}
-        </div>
+            </div>
+          </div>
+        )}
+
+        {showUserOptions && (
+          <div className="notification-bubble user-options">
+            <div className="notification-header">
+              <strong>Usuario</strong>
+              <button className="close-btn" onClick={() => setShowUserOptions(false)}>X</button>
+            </div>
+            <ul>
+              <li>
+                <button className="user-btn" onClick={() => navigate("/perfil")}>Ver Perfil</button>
+              </li>
+              <li>
+                <button className="user-btn" onClick={() => navigate("/planes")}>Ver planes</button>
+              </li>
+              <li>
+                <button className="user-btn" onClick={() => setShowLogoutModal(true)}>Cerrar Sesión</button>
+              </li>
+            </ul>
+          </div>
+        )}
+      <button onClick={() => navigate("/inicioEmpleado")} className="back-button">⬅ Volver</button>
+      <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+      <h1 className="title">GastroStock</h1>
+      <h2>🪑 Selecciona una Mesa</h2>
+      <div className="empleados-grid">
+        {mesas.map((mesa) => (
+          <div key={mesa.id} className="empleado-card">
+            <h3>{mesa.name || `Mesa ${mesa.id}`}</h3>
+            <button className="ver-btn" onClick={() => handleMesaClick(mesa.id)}>
+              Seleccionar
+            </button>
+          </div>
+        ))}
       </div>
+    </div>
     </div>
   );
 };
