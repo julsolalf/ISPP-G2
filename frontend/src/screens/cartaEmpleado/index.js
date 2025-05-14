@@ -6,18 +6,12 @@ import { Bell, User } from "lucide-react";
 
 
 const token = localStorage.getItem("token");
-const negocioId = localStorage.getItem("negocioId");
+const negocioId = localStorage.getItem("negocioIdEmpleado"); // Obtener el ID del negocio del empleado
+
 
 const obtenerCategorias = async () => {
   try {
-    /*
-    Falta una lógica de que en cada pantalla esté guardada la información del usuario logueado y por tanto el respectivo negocioId
-    const negocioId = localStorage.getItem("negocioId"); // Obtiene el ID del negocio guardado
-    if (!negocioId) {
-      throw new Error("No se encontró el ID del negocio");
-    }
-    const response = await fetch(`http://localhost:8080/api/categorias/negocio/${negocioId}/inventario`);*/
-
+  
     const response = await fetch(`http://localhost:8080/api/categorias/negocio/${negocioId}`,{
         method: "GET",
         headers: {
@@ -121,7 +115,7 @@ function CartaEmpleado() {
         )}
 
         <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
-        <button onClick={() => navigate("/inicioDueno")} className="back-button">⬅ Volver</button>
+        <button onClick={() => navigate("/inicioEmpleado")} className="back-button">⬅ Volver</button>
         <Link to="/inicioEmpleado">
           <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
         </Link>

@@ -107,7 +107,7 @@ function VerProductosVenta() {
         )}
 
         <button onClick={() => navigate(-1)} className="back-button">⬅ Volver</button>
-        <button onClick={() => navigate("/cartaDueno")} className="back-button">⬅ Volver</button>
+        <button onClick={() => navigate("/cartaEmpleado")} className="back-button">⬅ Volver</button>
         <Link to="/inicioEmpleado">
           <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
         </Link>        
