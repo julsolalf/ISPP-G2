@@ -4,7 +4,7 @@ import "../../css/listados/styles.css";
 import { Bell, User } from "lucide-react";
 import { MenuIconos } from "../../components/MenuIconos";
 
-function PantallaAnadirCategoria() {
+function PantallaAnadirCategoriaVenta() {
   const navigate = useNavigate();
   const [nombre, setNombre] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
@@ -29,16 +29,16 @@ function PantallaAnadirCategoria() {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/api/categorias", {
+      const response = await fetch("http://localhost:8080/api/categorias/dto", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          name: nombre,
-          negocio: { id: negocioId },
-          pertenece: "INVENTARIO",
+          nombre: nombre,
+          negocioId: negocioId,
+          pertenece: "VENTA",
         }),
       });
 
@@ -140,4 +140,4 @@ function PantallaAnadirCategoria() {
   );
 }
 
-export default PantallaAnadirCategoria
+export default PantallaAnadirCategoriaVenta
