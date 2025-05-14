@@ -3,9 +3,8 @@ import { useNavigate, Link } from "react-router-dom";
 import "../../css/listados/styles.css";  
 import { Bell, User } from "lucide-react";
 
-const token = localStorage.getItem("token");
-const empleado = JSON.parse(localStorage.getItem("empleado"));  
-const negocioId = empleado.negocio.id; // Obtener el ID del negocio del empleado
+const token = localStorage.getItem("token");  
+const negocioId = localStorage.getItem("negocioIdEmpleado"); // Obtener el ID del negocio del empleado
 
 // Función para obtener los pedidos desde la API
 const obtenerPedidos = async () => {

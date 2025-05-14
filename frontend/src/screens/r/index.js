@@ -10,8 +10,7 @@ const TPV = () => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const navigate = useNavigate();
 
-  const empleado = JSON.parse(localStorage.getItem("empleado"));
-  const negocioId = empleado.negocio.id; // Obtener el ID del negocio del empleado
+  const negocioId = localStorage.getItem("negocioIdEmpleado"); // Obtener el ID del negocio del empleado
   
   useEffect(() => {
     const token = localStorage.getItem("token");  // Obtener el token del localStorage

@@ -50,7 +50,8 @@ function PantallaInicioSesion() {
           },
         });
         const empleado = await empleadoResponse.json();
-        localStorage.setItem("empleado", JSON.stringify(empleado));
+        localStorage.setItem("negocioIdEmpleado", empleado.negocio.id);
+        console.log(empleado.negocio.id);
         navigate("/inicioEmpleado");
       } else if (user.authority.authority === "dueno") {
         const duenoResponse = await fetch(`http://localhost:8080/api/duenos/user/${user.id}`, {

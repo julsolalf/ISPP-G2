@@ -7,12 +7,13 @@ const Productos = () => {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const navigate = useNavigate();
   const mesaId = localStorage.getItem("mesaId");
+  const negocioId = localStorage.getItem("negocioIdEmpleado"); // Obtener el ID del negocio del empleado
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await fetch("http://localhost:8080/api/productosVenta/negocio/1", {
+        const res = await fetch(`http://localhost:8080/api/productosVenta/negocio/${negocioId}`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
