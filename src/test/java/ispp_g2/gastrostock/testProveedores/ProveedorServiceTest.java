@@ -21,10 +21,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
 import ispp_g2.gastrostock.proveedores.Proveedor;
+import ispp_g2.gastrostock.proveedores.ProveedorDTO;
 import ispp_g2.gastrostock.proveedores.ProveedorRepository;
 import ispp_g2.gastrostock.proveedores.ProveedorService;
 import ispp_g2.gastrostock.diaReparto.DiaReparto;
 import ispp_g2.gastrostock.exceptions.ResourceNotFoundException;
+import ispp_g2.gastrostock.negocio.Negocio;
+import ispp_g2.gastrostock.negocio.NegocioRepository;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -32,9 +35,14 @@ public class ProveedorServiceTest {
 
     @Mock
     private ProveedorRepository proveedorRepository;
+    
+    @Mock
+    private NegocioRepository negocioRepository;
 
     @InjectMocks
     private ProveedorService proveedorService;
+
+    
 
     private Proveedor proveedor1;
     private Proveedor proveedor2;
@@ -463,5 +471,133 @@ public class ProveedorServiceTest {
             proveedorService.deleteById(null);
         });
         verify(proveedorRepository, times(1)).deleteById(null);
+ 
     }
+
+    @Test
+    void testFindProveedorByNegocioId_Success() {
+        when(proveedorRepository.findProveedorByNegocioId(1)).thenReturn(Arrays.asList(proveedor1, proveedor2));
+        List<Proveedor> result = proveedorService.findProveedorByNegocioId(1);
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals(proveedor1, result.get(0));
+        assertEquals(proveedor2, result.get(1));
+        verify(proveedorRepository, times(1)).findProveedorByNegocioId(1);
+    }
+
+    @Test
+    void testFindProveedorByNegocioId_EmptyList() {
+        when(proveedorRepository.findProveedorByNegocioId(42)).thenReturn(Collections.emptyList());
+        List<Proveedor> result = proveedorService.findProveedorByNegocioId(42);
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        verify(proveedorRepository, times(1)).findProveedorByNegocioId(42);
+    }
+
+    @Test
+    void testFindProveedorByDuenoId_Success() {
+        when(proveedorRepository.findProveedorByDuenoId(5)).thenReturn(Arrays.asList(proveedor2, proveedor3));
+        List<Proveedor> result = proveedorService.findProveedorByDuenoId(5);
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals(proveedor2, result.get(0));
+        assertEquals(proveedor3, result.get(1));
+        verify(proveedorRepository, times(1)).findProveedorByDuenoId(5);
+    }
+
+    @Test
+    void testFindProveedorByDuenoId_EmptyList() {
+        when(proveedorRepository.findProveedorByDuenoId(99)).thenReturn(Collections.emptyList());
+        List<Proveedor> result = proveedorService.findProveedorByDuenoId(99);
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        verify(proveedorRepository, times(1)).findProveedorByDuenoId(99);
+    }
+
+
+
+    @Test
+    void testConvertirDTOProveedor_Success() {
+        ProveedorDTO dto = new ProveedorDTO();
+        dto.setName("Test");
+        dto.setEmail("t@example.com");
+        dto.setTelefono("123");
+        dto.setDireccion("Dir");
+        dto.setNegocioId(1);
+        Negocio negocio = new Negocio();
+        negocio.setId(1);
+        when(negocioRepository.findById(1)).thenReturn(Optional.of(negocio));
+
+        Proveedor result = proveedorService.convertirDTOProveedor(dto);
+
+        assertEquals("Test", result.getName());
+        assertEquals("t@example.com", result.getEmail());
+        assertEquals("123", result.getTelefono());
+        assertEquals("Dir", result.getDireccion());
+        assertEquals(negocio, result.getNegocio());
+        verify(negocioRepository).findById(1);
+    }
+
+    @Test
+    void testConvertirDTOProveedor_NegocioNotFound_Throws() {
+        ProveedorDTO dto = new ProveedorDTO();
+        dto.setNegocioId(99);
+        when(negocioRepository.findById(99)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () ->
+            proveedorService.convertirDTOProveedor(dto)
+        );
+        verify(negocioRepository).findById(99);
+    }
+
+    @Test
+    void testConvertirProveedorDTO() {
+        Proveedor p = new Proveedor();
+        p.setName("A");
+        p.setEmail("a@a");
+        p.setTelefono("000");
+        p.setDireccion("D");
+        Negocio n = new Negocio(); n.setId(5);
+        p.setNegocio(n);
+
+        ProveedorDTO dto = proveedorService.convertirProveedorDTO(p);
+
+        assertEquals("A", dto.getName());
+        assertEquals("a@a", dto.getEmail());
+        assertEquals("000", dto.getTelefono());
+        assertEquals("D", dto.getDireccion());
+        assertEquals(5, dto.getNegocioId());
+    }
+
+    @Test
+    void testUpdate_Success() {
+        Proveedor existing = new Proveedor();
+        existing.setId(1);
+        existing.setName("Old");
+        when(proveedorRepository.findById(1)).thenReturn(Optional.of(existing));
+        Proveedor input = new Proveedor();
+        input.setName("New");
+        input.setEmail("n@e");
+        input.setTelefono("111");
+        input.setDireccion("X");
+        when(proveedorRepository.save(existing)).thenReturn(existing);
+
+        Proveedor result = proveedorService.update(1, input);
+
+        assertEquals("New", result.getName());
+        assertEquals("n@e", result.getEmail());
+        assertEquals("111", result.getTelefono());
+        assertEquals("X", result.getDireccion());
+        verify(proveedorRepository).findById(1);
+        verify(proveedorRepository).save(existing);
+    }
+
+    @Test
+    void testUpdate_NotFound_Throws() {
+        when(proveedorRepository.findById(2)).thenReturn(Optional.empty());
+        Proveedor input = new Proveedor();
+        assertThrows(ResourceNotFoundException.class, () -> proveedorService.update(2, input));
+        verify(proveedorRepository).findById(2);
+    }
+
 }
