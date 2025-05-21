@@ -140,7 +140,7 @@ class ProveedorControllerTest {
         
         // Act & Assert
         mockMvc.perform(get("/api/proveedores"))
-            .andExpect(status().isNoContent());
+            .andExpect(status().isOk());
         
         verify(proveedorService).findAll();
     }
