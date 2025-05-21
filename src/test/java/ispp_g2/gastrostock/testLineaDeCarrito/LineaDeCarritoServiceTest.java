@@ -128,9 +128,9 @@ public class LineaDeCarritoServiceTest {
     void testDelete_Success() {
         doNothing().when(lineaDeCarritoRepository).delete(lineaNormal);
         
-        lineaDeCarritoService.delete(lineaNormal);
+        lineaDeCarritoService.delete(1);
         
-        verify(lineaDeCarritoRepository).delete(lineaNormal);
+        verify(lineaDeCarritoRepository).deleteById(1);
     }
 
     @Test
@@ -138,7 +138,7 @@ public class LineaDeCarritoServiceTest {
         doThrow(new RuntimeException("Error al eliminar")).when(lineaDeCarritoRepository).delete(lineaNormal);
         
         assertThrows(RuntimeException.class, () -> {
-            lineaDeCarritoService.delete(lineaNormal);
+            lineaDeCarritoService.delete(1);
         });
         
         verify(lineaDeCarritoRepository).delete(lineaNormal);

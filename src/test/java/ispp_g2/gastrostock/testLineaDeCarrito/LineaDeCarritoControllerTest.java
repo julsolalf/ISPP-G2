@@ -327,13 +327,13 @@ class LineaDeCarritoControllerTest {
     @Test
     void testDelete_Success() throws Exception {
         when(lineaDeCarritoService.findLineaDeCarritoById(1)).thenReturn(lineaNormal);
-        doNothing().when(lineaDeCarritoService).delete(any(LineaDeCarrito.class));
+        doNothing().when(lineaDeCarritoService).delete(any(Integer.class));
 
         mockMvc.perform(delete("/api/lineasDeCarrito/1"))
                 .andExpect(status().isNoContent());
 
         verify(lineaDeCarritoService).findLineaDeCarritoById(1);
-        verify(lineaDeCarritoService).delete(any(LineaDeCarrito.class));
+        verify(lineaDeCarritoService).delete(any(Integer.class));
     }
 
     @Test
@@ -344,7 +344,7 @@ class LineaDeCarritoControllerTest {
                 .andExpect(status().isNotFound());
 
         verify(lineaDeCarritoService).findLineaDeCarritoById(999);
-        verify(lineaDeCarritoService, never()).delete(any(LineaDeCarrito.class));
+        verify(lineaDeCarritoService, never()).delete(any(Integer.class));
     }
     
     @Test
@@ -417,12 +417,12 @@ class LineaDeCarritoControllerTest {
     @Test
     void testDelete_WithExceptionInService() throws Exception {
         when(lineaDeCarritoService.findLineaDeCarritoById(1)).thenReturn(lineaNormal);
-        doThrow(new RuntimeException("Error al eliminar")).when(lineaDeCarritoService).delete(any(LineaDeCarrito.class));
+        doThrow(new RuntimeException("Error al eliminar")).when(lineaDeCarritoService).delete(any(Integer.class));
 
         mockMvc.perform(delete("/api/lineasDeCarrito/1"))
                 .andExpect(status().isInternalServerError());
 
         verify(lineaDeCarritoService).findLineaDeCarritoById(1);
-        verify(lineaDeCarritoService).delete(any(LineaDeCarrito.class));
+        verify(lineaDeCarritoService).delete(any(Integer.class));
     }
 }
