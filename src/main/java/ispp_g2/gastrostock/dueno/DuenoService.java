@@ -44,7 +44,6 @@ public class DuenoService {
                 .toList();
     }
 
-
     @Transactional(readOnly = true)
     public Dueno getDuenoByEmail(String email) {
         return duenoRepository.findDuenoByEmail(email).orElse(null);

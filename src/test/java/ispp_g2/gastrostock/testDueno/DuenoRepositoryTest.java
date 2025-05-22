@@ -54,7 +54,7 @@ class DuenoRepositoryTest {
 
         // Crear roles de usuario
         Authorities dueno = new Authorities();
-        dueno.setAuthority("DUEnO");
+        dueno.setAuthority("DUENO");
         dueno = authorities.save(dueno);
         
         // Crear usuarios para asociar a los duenos
@@ -366,8 +366,6 @@ class DuenoRepositoryTest {
     void testFindDuenoByUser_NotFound() {
         // Buscar por User ID que no existe
         Optional<Dueno> notFound = duenoRepository.findDuenoByUser(999);
-        
-        // Verificar que no existe
         assertFalse(notFound.isPresent());
     }
     

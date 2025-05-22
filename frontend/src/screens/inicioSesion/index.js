@@ -9,7 +9,7 @@ function PantallaInicioSesion() {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/auth/login", {
+      const response = await fetch("https://ispp-2425-g2.ew.r.appspot.com/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -28,7 +28,7 @@ function PantallaInicioSesion() {
       const token = data.token;
       localStorage.setItem("token", token);
 
-      const userResponse = await fetch("http://localhost:8080/api/users/me", {
+      const userResponse = await fetch("https://ispp-2425-g2.ew.r.appspot.com/api/users/me", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -43,7 +43,7 @@ function PantallaInicioSesion() {
       localStorage.setItem("user", JSON.stringify(user));
 
       if (user.authority.authority === "empleado") {
-        const empleadoResponse = await fetch(`http://localhost:8080/api/empleados/user/${user.id}`, {
+        const empleadoResponse = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/empleados/user/${user.id}`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -53,7 +53,7 @@ function PantallaInicioSesion() {
         localStorage.setItem("negocioIdEmpleado", empleado.negocio.id);
         navigate("/inicioEmpleado");
       } else if (user.authority.authority === "dueno") {
-        const duenoResponse = await fetch(`http://localhost:8080/api/duenos/user/${user.id}`, {
+        const duenoResponse = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/duenos/user/${user.id}`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,

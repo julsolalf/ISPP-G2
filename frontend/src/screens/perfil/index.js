@@ -16,7 +16,7 @@ function PantallaPerfil() {
     // Fetch user profile
     const fetchUserData = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/users/me", {
+        const response = await fetch("https://ispp-2425-g2.ew.r.appspot.com/api/users/me", {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",

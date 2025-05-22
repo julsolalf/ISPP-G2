@@ -44,7 +44,7 @@ function VerProducto() {
 
   const obtenerProducto = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/productosInventario/${localStorage.getItem("productoId")}`, {
+      const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/productosInventario/${localStorage.getItem("productoId")}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -75,7 +75,7 @@ function VerProducto() {
 
   const eliminarProducto = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/productosInventario/${producto.id}`, {
+      const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/productosInventario/${producto.id}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

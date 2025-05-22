@@ -31,7 +31,7 @@ public class Pedido extends BaseEntity{
     private Double precioTotal;
 
     @ManyToOne(optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
     @JoinColumn(name = "mesa_id")
     private Mesa mesa;
 
@@ -41,7 +41,7 @@ public class Pedido extends BaseEntity{
     private Empleado empleado;
 
     @ManyToOne(optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
     @JoinColumn(name = "negocio_id")
     private Negocio negocio;
 

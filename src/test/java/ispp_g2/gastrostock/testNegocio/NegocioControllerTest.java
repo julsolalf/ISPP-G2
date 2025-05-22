@@ -114,7 +114,6 @@ class NegocioControllerTest {
         negocio1.setCodigoPostal("41001");
         negocio1.setTokenNegocio(12345);
         negocio1.setDueno(dueno);
-
         negocio2 = new Negocio();
         negocio2.setId(2);
         negocio2.setName("Bar El Rincón");
@@ -124,7 +123,6 @@ class NegocioControllerTest {
         negocio2.setCodigoPostal("41001");
         negocio2.setTokenNegocio(67890);
         negocio2.setDueno(dueno);
-
         negocioList = Arrays.asList(negocio1, negocio2);
 
         // Stub general para los endpoints que usan al dueno

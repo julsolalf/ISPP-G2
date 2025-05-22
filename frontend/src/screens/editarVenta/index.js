@@ -8,7 +8,7 @@ const ventaId = localStorage.getItem("ventaId");
 
 const obtenerVenta = async () => {
   try {
-    const response = await fetch(`http://localhost:8080/api/pedidos/${ventaId}`, {
+    const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/pedidos/${ventaId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -26,7 +26,7 @@ const obtenerVenta = async () => {
 
 const obtenerEmpleados = async (negocioId) => {
   try {
-    const response = await fetch(`http://localhost:8080/api/empleados/negocio/${negocioId}`, {
+    const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/empleados/negocio/${negocioId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -44,7 +44,7 @@ const obtenerEmpleados = async (negocioId) => {
 
 const obtenerMesas = async (negocioId) => {
   try {
-    const response = await fetch(`http://localhost:8080/api/mesas/negocio/${negocioId}`, {
+    const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/mesas/negocio/${negocioId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -73,7 +73,7 @@ const actualizarVenta = async (venta, negocioId) => {
 
     console.log("Datos enviados:", bodyData);
 
-    const response = await fetch(`http://localhost:8080/api/pedidos/dto/${ventaId}`, {
+    const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/pedidos/dto/${ventaId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

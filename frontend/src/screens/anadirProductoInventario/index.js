@@ -31,7 +31,7 @@ function PantallaAñadirProducto() {
     setCategoriaNombre(storedCategoriaNombre);
 
     if (storedCategoriaNombre && storedNegocioId) {
-      fetch(`http://localhost:8080/api/categorias/nombre/${storedCategoriaNombre}`, {
+      fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/categorias/nombre/${storedCategoriaNombre}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -61,7 +61,7 @@ function PantallaAñadirProducto() {
 
     // Obtener proveedores del negocio
     if (storedNegocioId) {
-      fetch(`http://localhost:8080/api/proveedores/negocio/${storedNegocioId}`, {
+      fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/proveedores/negocio/${storedNegocioId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -90,7 +90,7 @@ function PantallaAñadirProducto() {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/api/productosInventario", {
+      const response = await fetch("https://ispp-2425-g2.ew.r.appspot.com/api/productosInventario", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

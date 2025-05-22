@@ -34,6 +34,7 @@ function PantallaRegistroDueno() {
       return;
     }
 
+
     const data = {
       username: usuario,
       password: password,
@@ -45,11 +46,10 @@ function PantallaRegistroDueno() {
 
     try {
       setLoading(true);
-
-      const registerResponse = await axios.post("http://localhost:8080/api/auth/register", data);
+      const registerResponse = await axios.post("https://ispp-2425-g2.ew.r.appspot.com/api/auth/register", data);
       console.log("Registro exitoso:", registerResponse.data);
 
-      const loginResponse = await fetch("http://localhost:8080/api/auth/login", {
+      const loginResponse = await fetch("https://ispp-2425-g2.ew.r.appspot.com/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -60,11 +60,12 @@ function PantallaRegistroDueno() {
         }),
       });
 
+
       const loginData = await loginResponse.json();
       const token = loginData.token;
       localStorage.setItem("token", token);
 
-      const userResponse = await fetch("http://localhost:8080/api/users/me", {
+      const userResponse = await fetch("https://ispp-2425-g2.ew.r.appspot.com/api/users/me", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -73,7 +74,7 @@ function PantallaRegistroDueno() {
       const user = await userResponse.json();
       localStorage.setItem("user", JSON.stringify(user));
 
-      const duenoResponse = await fetch(`http://localhost:8080/api/duenos/user/${user.id}`, {
+      const duenoResponse = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/duenos/user/${user.id}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -159,18 +160,18 @@ function PantallaRegistroDueno() {
         )}
 
         <button className="back-button" onClick={() => navigate("/")}>
-          ← Volver
-        </button>
+      ← Volver
+    </button>
 
-        <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
-        <h1 className="title">GastroStock</h1>
-        <h2>Registrarse</h2>
+    <img src="/gastrostockLogoSinLetra.png" alt="App Logo" className="app-logo" />
+    <h1 className="title">GastroStock</h1>
+    <h2>Registrarse</h2>
 
-        <input type="text" placeholder="Nombre del dueno" value={ownerFirstName} onChange={(e) => setOwnerFirstName(e.target.value)} />
-        <input type="text" placeholder="Apellidos del dueno" value={ownerLastName} onChange={(e) => setOwnerLastName(e.target.value)} />
-        <input type="email" placeholder="Correo Electrónico" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <input type="tel" placeholder="Teléfono" value={phone} onChange={(e) => setPhone(e.target.value)} />
-        <input type="text" placeholder="Usuario" value={usuario} onChange={(e) => setUsuario(e.target.value)} />
+    <input type="text" placeholder="Nombre del dueno" value={ownerFirstName} onChange={(e) => setOwnerFirstName(e.target.value)} />
+    <input type="text" placeholder="Apellidos del dueno" value={ownerLastName} onChange={(e) => setOwnerLastName(e.target.value)} />
+    <input type="email" placeholder="Correo Electrónico" value={email} onChange={(e) => setEmail(e.target.value)} />
+    <input type="tel" placeholder="Teléfono" value={phone} onChange={(e) => setPhone(e.target.value)} />
+    <input type="text" placeholder="Usuario" value={usuario} onChange={(e) => setUsuario(e.target.value)} />
         <input type="password" placeholder="Contrasena" value={password} onChange={(e) => setPassword(e.target.value)} />
         <input type="password" placeholder="Confirmar Contrasena" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
         <div className="checkbox-container custom-checkbox-container">
@@ -295,9 +296,8 @@ function PantallaRegistroDueno() {
         >
           {loading ? "Registrando..." : "Registrarse"}
         </button>
-
-      </div>
-    </div>
+      </div >
+    </div >
   );
 }
 

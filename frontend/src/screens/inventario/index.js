@@ -21,7 +21,7 @@ function Inventario() {
 
   const obtenerCategorias = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/categorias/negocio/${negocioId}/inventario`, {
+      const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/categorias/negocio/${negocioId}/inventario`, {
         method: "GET",
         headers: { 
           "Content-Type": "application/json",
