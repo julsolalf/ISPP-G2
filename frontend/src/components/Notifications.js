@@ -17,7 +17,7 @@ function Notificaciones() {
   setShowNotifications(false);
   try {
     const token = localStorage.getItem("token");
-    const response = await fetch(`http://localhost:8080/api/productosInventario/name/${encodeURIComponent(producto.name)}`, {
+    const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/productosInventario/name/${encodeURIComponent(producto.name)}`, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -48,7 +48,7 @@ function Notificaciones() {
 
     const fetchReabastecimientos = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/reabastecimientos/negocio/${negocioId}`, {
+        const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/reabastecimientos/negocio/${negocioId}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -84,13 +84,13 @@ function Notificaciones() {
     const fetchProductosConStockBajo = async () => {
       try {
         const [productosRes, lotesRes] = await Promise.all([
-          fetch(`http://localhost:8080/api/productosInventario/negocio/${negocioId}`, {
+          fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/productosInventario/negocio/${negocioId}`, {
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
             },
           }),
-          fetch("http://localhost:8080/api/lotes", {
+          fetch("https://ispp-2425-g2.ew.r.appspot.com/api/lotes", {
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",

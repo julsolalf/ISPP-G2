@@ -13,7 +13,7 @@ const Productos = () => {
     const fetchProducts = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await fetch(`http://localhost:8080/api/productosVenta/negocio/${negocioId}`, {
+        const res = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/productosVenta/negocio/${negocioId}`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
@@ -54,7 +54,7 @@ const Productos = () => {
       let pedidoId = localStorage.getItem(`pedidoId_${mesaId}`);
 
       if (!pedidoId) {
-        const pedidoResponse = await fetch("http://localhost:8080/api/pedidos/dto", {
+        const pedidoResponse = await fetch("https://ispp-2425-g2.ew.r.appspot.com/api/pedidos/dto", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -77,7 +77,7 @@ const Productos = () => {
       }
 
       for (const product of selectedProducts) {
-        const response = await fetch("http://localhost:8080/api/lineasDePedido", {
+        const response = await fetch("https://ispp-2425-g2.ew.r.appspot.com/api/lineasDePedido", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

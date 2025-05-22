@@ -16,7 +16,7 @@ const DetallesPedido = () => {
       try {
         const token = localStorage.getItem('token');
         console.log('Cargando información del pedido...');
-        const response = await fetch(`http://localhost:8080/api/pedidos/dto/${pedidoId}`, {
+        const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/pedidos/dto/${pedidoId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -37,7 +37,7 @@ const DetallesPedido = () => {
       try {
         const token = localStorage.getItem('token');
         console.log('Cargando líneas de pedido...');
-        const response = await fetch(`http://localhost:8080/api/lineasDePedido/dto/pedido/${pedidoId}`, {
+        const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/lineasDePedido/dto/pedido/${pedidoId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -85,7 +85,7 @@ const DetallesPedido = () => {
   
       console.log('Actualizando pedido con los datos:', pedidoDto);
   
-      const responsePedido = await fetch(`http://localhost:8080/api/pedidos/dto/${pedidoId}`, {
+      const responsePedido = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/pedidos/dto/${pedidoId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -107,7 +107,7 @@ const DetallesPedido = () => {
           productoId: linea.productoId,  // ID del producto
         };
   
-        const responseLinea = await fetch(`http://localhost:8080/api/lineasDePedido/${linea.id}`, {
+        const responseLinea = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/lineasDePedido/${linea.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

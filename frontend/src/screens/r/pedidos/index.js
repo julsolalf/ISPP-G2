@@ -22,7 +22,7 @@ const PantallaPedidoDetalle = () => {
     
     const fetchPedido = async () => {
       try {
-        const pedidoResponse = await fetch(`http://localhost:8080/api/pedidos/dto/${pedidoId}`, {
+        const pedidoResponse = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/pedidos/dto/${pedidoId}`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
@@ -32,7 +32,7 @@ const PantallaPedidoDetalle = () => {
         const pedidoData = await pedidoResponse.json();
         setPedido(pedidoData);
   
-        const lineasResponse = await fetch(`http://localhost:8080/api/lineasDePedido/dto/pedido/${pedidoId}`, {
+        const lineasResponse = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/lineasDePedido/dto/pedido/${pedidoId}`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
@@ -63,7 +63,7 @@ const PantallaPedidoDetalle = () => {
   
     try {
       // Actualizar el pedido con el precio total y la fecha de finalización
-      const response = await fetch(`http://localhost:8080/api/pedidos/dto/${pedidoId}`, {
+      const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/pedidos/dto/${pedidoId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

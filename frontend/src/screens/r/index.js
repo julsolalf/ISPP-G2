@@ -17,7 +17,7 @@ const TPV = () => {
 
     const fetchMesas = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/api/mesas/negocio/${negocioId}`, {
+        const res = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/mesas/negocio/${negocioId}`, {
           method: "GET",
           credentials: "include",
           headers: {

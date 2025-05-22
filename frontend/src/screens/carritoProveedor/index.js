@@ -24,7 +24,7 @@ const VerCarritoProveedor = () => {
   useEffect(() => {
     const obtenerProductosPorProveedor = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/productosInventario/proveedor/${proveedorId}`, {
+        const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/productosInventario/proveedor/${proveedorId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -99,7 +99,7 @@ const getProximoDiaReparto = (diasReparto) => {
     });
   
     // Obtener el próximo día de reparto
-    const responseReparto = await fetch(`http://localhost:8080/api/diasReparto/proveedor/${proveedorId}`, {
+    const responseReparto = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/diasReparto/proveedor/${proveedorId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -124,7 +124,7 @@ const getProximoDiaReparto = (diasReparto) => {
   
     try {
       // Enviar solicitud para crear el carrito
-      const carritoRes = await fetch("http://localhost:8080/api/carritos", {
+      const carritoRes = await fetch("https://ispp-2425-g2.ew.r.appspot.com/api/carritos", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -151,7 +151,7 @@ const getProximoDiaReparto = (diasReparto) => {
           producto: { id: item.id },
         };
   
-        const lineaRes = await fetch("http://localhost:8080/api/lineasDeCarrito", {
+        const lineaRes = await fetch("https://ispp-2425-g2.ew.r.appspot.com/api/lineasDeCarrito", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,

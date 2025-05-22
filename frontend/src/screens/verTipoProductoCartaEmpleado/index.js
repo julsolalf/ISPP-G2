@@ -6,7 +6,7 @@ import { Bell, User } from "lucide-react";
 const token = localStorage.getItem("token");
 const obtenerProductosPorCategoria = async () => {
   try {
-    const response = await fetch(`http://localhost:8080/api/productosVenta/categoriaVenta/${localStorage.getItem("categoriaNombre")}`, {
+    const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/productosVenta/categoriaVenta/${localStorage.getItem("categoriaNombre")}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

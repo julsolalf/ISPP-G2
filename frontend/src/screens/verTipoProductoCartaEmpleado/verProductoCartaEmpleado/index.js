@@ -10,7 +10,7 @@ const productoId = localStorage.getItem("productoId");
 // Obtener detalles del producto
 const obtenerProducto = async () => {
   try {
-    const response = await fetch(`http://localhost:8080/api/productosVenta/${productoId}`, {
+    const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/productosVenta/${productoId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -30,7 +30,7 @@ const obtenerProducto = async () => {
 // Obtener ingredientes del producto
 const obtenerIngredientes = async () => {
   try {
-    const response = await fetch(`http://localhost:8080/api/ingredientes/productoVenta/${productoId}`, {
+    const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/ingredientes/productoVenta/${productoId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

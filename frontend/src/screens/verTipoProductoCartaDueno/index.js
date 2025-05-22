@@ -18,7 +18,7 @@ function VerTipoProductoCartaDueno() {
 
   const obtenerProductosPorCategoria = async () => { 
     try {
-      const response = await fetch(`http://localhost:8080/api/productosVenta/categoriaVenta/${categoriaId}`, {
+      const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/productosVenta/categoriaVenta/${categoriaId}`, {
         headers: {
         "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json"

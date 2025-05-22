@@ -32,7 +32,7 @@ function HomeScreen() {
           const token = localStorage.getItem("token");
           const negocioId = localStorage.getItem("negocioId");
       
-          const response = await fetch(`http://localhost:8080/api/reabastecimientos/negocio/${negocioId}`, {
+          const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/reabastecimientos/negocio/${negocioId}`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",

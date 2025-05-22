@@ -29,7 +29,7 @@ function PantallaAnadirCategoriaVenta() {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/api/categorias/dto", {
+      const response = await fetch("https://ispp-2425-g2.ew.r.appspot.com/api/categorias/dto", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

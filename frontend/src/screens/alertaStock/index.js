@@ -27,13 +27,13 @@ function AlertaStock() {
   const cargarDatos = async () => {
     try {
       const [productosRes, lotesRes] = await Promise.all([
-        fetch(`http://localhost:8080/api/productosInventario/negocio/${negocioId}`, {
+        fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/productosInventario/negocio/${negocioId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         }),
-        fetch("http://localhost:8080/api/lotes", {
+        fetch("https://ispp-2425-g2.ew.r.appspot.com/api/lotes", {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",

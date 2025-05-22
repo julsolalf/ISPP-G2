@@ -26,7 +26,7 @@ function PantallaPerdidas() {
         const formattedDate = fechaActual.toISOString().split('T')[0];
         const token = localStorage.getItem("token");
   
-        const response = await fetch(`http://localhost:8080/api/lotes/negocio/${negocioId}/fecha/${formattedDate}`, {
+        const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/lotes/negocio/${negocioId}/fecha/${formattedDate}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

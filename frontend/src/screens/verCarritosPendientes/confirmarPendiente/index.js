@@ -29,7 +29,7 @@ const ConfirmarPendiente = () => {
   useEffect(() => {
     const obtenerLineasDeCarrito = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/lineasDeCarrito/carrito/${carritoId}`, {
+        const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/lineasDeCarrito/carrito/${carritoId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -73,7 +73,7 @@ const ConfirmarPendiente = () => {
       };
 
       // 1. Crear el reabastecimiento
-      const reabResponse = await fetch("http://localhost:8080/api/reabastecimientos", {
+      const reabResponse = await fetch("https://ispp-2425-g2.ew.r.appspot.com/api/reabastecimientos", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -98,7 +98,7 @@ const ConfirmarPendiente = () => {
           reabastecimiento: { id: reabData.id }
         };
 
-        const loteResponse = await fetch("http://localhost:8080/api/lotes", {
+        const loteResponse = await fetch("https://ispp-2425-g2.ew.r.appspot.com/api/lotes", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -113,7 +113,7 @@ const ConfirmarPendiente = () => {
       }
 
       // 3. Eliminar el carrito
-      const deleteResponse = await fetch(`http://localhost:8080/api/carritos/${carritoId}`, {
+      const deleteResponse = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/carritos/${carritoId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`

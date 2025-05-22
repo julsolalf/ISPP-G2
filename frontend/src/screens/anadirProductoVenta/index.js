@@ -26,7 +26,7 @@ function PantallaAñadirProductoCarta() {
     const token = localStorage.getItem("token");
   
     if (storedCategoriaNombre && storedNegocioId && token) {
-      fetch(`http://localhost:8080/api/categorias/negocio/${storedNegocioId}/venta`, {
+      fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/categorias/negocio/${storedNegocioId}/venta`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -70,7 +70,7 @@ function PantallaAñadirProductoCarta() {
     // Cargar los productos del inventario
     const cargarProductosInventario = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/productosInventario", {
+        const response = await fetch("https://ispp-2425-g2.ew.r.appspot.com/api/productosInventario", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -156,7 +156,7 @@ function PantallaAñadirProductoCarta() {
       }
   
       // Crear producto de venta
-      const productoResponse = await fetch("http://localhost:8080/api/productosVenta", {
+      const productoResponse = await fetch("https://ispp-2425-g2.ew.r.appspot.com/api/productosVenta", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -179,7 +179,7 @@ function PantallaAñadirProductoCarta() {
       // Crear ingredientes vinculados
       for (const ingrediente of ingredientes) {
         if (ingrediente.productoInventarioId && ingrediente.cantidad) {
-          const ingredienteResponse = await fetch("http://localhost:8080/api/ingredientes", {
+          const ingredienteResponse = await fetch("https://ispp-2425-g2.ew.r.appspot.com/api/ingredientes", {
             method: "POST",
             headers: { 
               "Content-Type": "application/json",

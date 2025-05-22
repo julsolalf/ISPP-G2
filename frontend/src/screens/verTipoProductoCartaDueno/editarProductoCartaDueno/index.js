@@ -8,7 +8,7 @@ const productoId = localStorage.getItem("productoId");
 
 const obtenerProducto = async () => {
   try {
-    const response = await fetch(`http://localhost:8080/api/productosVenta/${productoId}`, {
+    const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/productosVenta/${productoId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -56,7 +56,7 @@ const actualizarProducto = async (producto) => {
       categoriaId: parseInt(producto.categoria.id),
     };
 
-    const response = await fetch(`http://localhost:8080/api/productosVenta/${producto.id}`, {
+    const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/productosVenta/${producto.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -87,7 +87,7 @@ const obtenerIngredientes = async (productoVentaId) => {
       return;
     }
 
-    const response = await fetch(`http://localhost:8080/api/ingredientes/productoVenta/${productoVentaId}`, {
+    const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/ingredientes/productoVenta/${productoVentaId}`, {
       method: "GET", 
       headers: {
         "Content-Type": "application/json",
@@ -120,7 +120,7 @@ const agregarIngrediente = async (productoVentaId, productoInventarioId, cantida
       throw new Error("No se encontró el token de autorización.");
     }
 
-    const response = await fetch("http://localhost:8080/api/ingredientes", {
+    const response = await fetch("https://ispp-2425-g2.ew.r.appspot.com/api/ingredientes", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -153,7 +153,7 @@ const eliminarIngrediente = async (ingredienteId) => {
       throw new Error("No se encontró el token de autorización.");
     }
 
-    const response = await fetch(`http://localhost:8080/api/ingredientes/${ingredienteId}`, {
+    const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/ingredientes/${ingredienteId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -236,7 +236,7 @@ function EditarProductoCarta() {
 
     const cargarInventario = async () => {
       try {
-        const res = await fetch("http://localhost:8080/api/productosInventario", {
+        const res = await fetch("https://ispp-2425-g2.ew.r.appspot.com/api/productosInventario", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
