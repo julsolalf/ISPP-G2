@@ -16,7 +16,7 @@ const obtenerCategorias = async () => {
       }
       const response = await fetch(`http://localhost:8080/api/categorias/negocio/${negocioId}/inventario`);*/
   
-      const response = await fetch(`http://localhost:8080/api/categorias/negocio/${negocioId}`,{
+      const response = await fetch(`http://localhost:8080/api/categorias/negocio/${negocioId}/venta`,{
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -125,7 +125,7 @@ function CartaDueno() {
         <h1 className="title">GastroStock</h1>
         <h2>Carta</h2>
         <div className="button-container3">
-          <button className="button" onClick={() => navigate("/anadirCategoria")}>➕ Añadir</button>
+          <button className="button" onClick={() => navigate("/anadirCategoriaVenta")}>➕ Añadir</button>
           <button className="button">📥 Exportar</button>
           <button className="button">🔍 Filtrar</button>
         </div>

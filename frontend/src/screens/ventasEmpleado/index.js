@@ -3,12 +3,13 @@ import { useNavigate, Link } from "react-router-dom";
 import "../../css/listados/styles.css";  
 import { Bell, User } from "lucide-react";
 
-const token = localStorage.getItem("token");
-const negocioId = localStorage.getItem("negocioId");
+const token = localStorage.getItem("token");  
+const negocioId = localStorage.getItem("negocioIdEmpleado"); // Obtener el ID del negocio del empleado
 
 // Función para obtener los pedidos desde la API
 const obtenerPedidos = async () => {
   try {
+
     const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/pedidos/negocio/${negocioId}`,{
       method: "GET",
       headers: {
@@ -20,12 +21,14 @@ const obtenerPedidos = async () => {
       throw new Error("Error al obtener los pedidos");
     }
     const data = await response.json();
+    console.log(data); // Verifica los datos que estás recibiendo
     return data;
   } catch (error) {
     console.error("Error al obtener los pedidos:", error);
     return [];
   }
 };
+
 
 function VerPedidos() {
   const navigate = useNavigate();
@@ -44,11 +47,13 @@ function VerPedidos() {
   useEffect(() => {
     const cargarDatos = async () => {
       const datosPedidos = await obtenerPedidos();
-      setPedidos(datosPedidos);
+      const pedidosFiltrados = datosPedidos.filter(pedido => pedido.precioTotal > 0);
+      setPedidos(pedidosFiltrados);
     };
-
+  
     cargarDatos();
   }, []);
+  
 
   const handleFilter = () => {
     let filteredPedidos = [...pedidos];
@@ -168,20 +173,18 @@ function VerPedidos() {
         </div>
 
         <div className="empleados-grid">
-          {handleFilter().map((pedido) => (
-            <div key={pedido.id} className="empleado-card">
-              <h3>Pedido #{pedido.id}</h3>
-              <p>Fecha: {new Date(pedido.fecha).toLocaleString()}</p>
-              <p>Total: ${pedido.precioTotal.toFixed(2)}</p>
-              <p>Mesa: {pedido.mesa.name}</p>
-              <p>Empleado: {pedido.empleado.firstName} {pedido.empleado.lastName}</p>
-              <p>Negocio: {pedido.mesa.negocio.name}</p>
-              <button className="ver-btn" onClick={() => navigate(`/ventasEmpleado/${pedido.id}`)}>
-                Ver
-              </button>
-            </div>
-          ))}
-        </div>
+  {handleFilter().map((pedido) => (
+    <div key={pedido.id} className="empleado-card">
+      <h3>Pedido #{pedido.id}</h3>
+      <p>Fecha: {new Date(pedido.fecha).toLocaleString()}</p>
+      <p>Total: ${pedido.precioTotal.toFixed(2)}</p>
+      <button className="ver-btn" onClick={() => navigate(`/ventasEmpleado/${pedido.id}`)}>
+        Ver
+      </button>
+    </div>
+  ))}
+</div>
+
       </div>
     </div>
   );

@@ -50,7 +50,7 @@ function PantallaInicioSesion() {
           },
         });
         const empleado = await empleadoResponse.json();
-        localStorage.setItem("duenoId", empleado.id); 
+        localStorage.setItem("negocioIdEmpleado", empleado.negocio.id);
         navigate("/inicioEmpleado");
       } else if (user.authority.authority === "dueno") {
         const duenoResponse = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/duenos/user/${user.id}`, {
