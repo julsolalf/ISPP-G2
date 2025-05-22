@@ -1,5 +1,96 @@
 # Changelog
 
+## [4.0.0](https://github.com/julsolalf/ISPP-G2/compare/v3.0.0...v4.0.0) (2025-05-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* todos los docs
+* PPL vers
+* **docs:** Presentaciones y anuncio para inversores
+
+### doc
+
+* todos los docs ([aa4c028](https://github.com/julsolalf/ISPP-G2/commit/aa4c02849ba92ac452757655f7b4dc1b31be75b9))
+
+
+### Features
+
+* **#309:** Finish carta ([8e26297](https://github.com/julsolalf/ISPP-G2/commit/8e262976df65b2a6bbef64b3b52b1bee761a1082))
+* **#352:** Add lotes to productoInventario details ([110c558](https://github.com/julsolalf/ISPP-G2/commit/110c5586ded9b52bb380f017656f71d1374ebf06))
+* **#366:** Connect alertaStock with backend ([a74d81a](https://github.com/julsolalf/ISPP-G2/commit/a74d81a50faff91c5d422d2613d50dd91f53d23e))
+* **#366:** Fix filter ([19a4458](https://github.com/julsolalf/ISPP-G2/commit/19a4458ef34e77ad4142abeed318d96e93eaf7cf))
+* **#367:** Se ha conectado con backend las pérdidas(la fecha no va bien ahora mismo) ([b7d55cf](https://github.com/julsolalf/ISPP-G2/commit/b7d55cf3bb0a43d05baf47d6515696f2700be5c0))
+* **#367:** Ya está conectada la página de pérdidas con backend ([c058995](https://github.com/julsolalf/ISPP-G2/commit/c058995aa0683f1b747d2286b0a9d10ca8fe1f08))
+* **#380:** Notificación de reabastecimiento pronto ([1e9b905](https://github.com/julsolalf/ISPP-G2/commit/1e9b905eb92202c7d862ec711adb678748f661aa))
+* **#380:** Notificación de reabastecimiento pronto (había algunas pantallas que no tenía para las notificaciones y se ha modificado esto) ([4be37c3](https://github.com/julsolalf/ISPP-G2/commit/4be37c3a094de358da9acb9bb495b1bce1f007db))
+* **#392:** Notificación Producto por debajo de cantidad de alerta ([8515790](https://github.com/julsolalf/ISPP-G2/commit/8515790e07d105bcd4004caa446f85be1775404c))
+* **#392:** Notificación Producto por debajo de cantidad de alerta ([29e169c](https://github.com/julsolalf/ISPP-G2/commit/29e169c8fd92368a68c39efc6747bc3dfa036d67))
+* **#394:** Idea de carrito pero está mal ([9870adb](https://github.com/julsolalf/ISPP-G2/commit/9870adb2a85ce79aa712354cdbd4386b63753d35))
+* **#394:** Pantalla ver carrito completada en principio ([0b088b2](https://github.com/julsolalf/ISPP-G2/commit/0b088b2b4d7aaabe181547d98f47a7c4599354b9))
+* **#394:** Pantallas de carritos pendientes y confirmacion de entregas hechas ([26c1c21](https://github.com/julsolalf/ISPP-G2/commit/26c1c21f3b7951202712d78c8b1eb6567a9d2bc0))
+* **#TPV:** He cambiado la forma para obtener el negocioId cuando inicias sesion cuando eres empleado ([8749d71](https://github.com/julsolalf/ISPP-G2/commit/8749d716f3225088085de4f138dd34cb30f5ecec))
+* **#TPV:** TPV terminada ([42c18cd](https://github.com/julsolalf/ISPP-G2/commit/42c18cd96c7aa6a4b7d15aa65804eb9778f72240))
+* Added data ([8fc38e5](https://github.com/julsolalf/ISPP-G2/commit/8fc38e578d69ccd05efd1968f16cec931f1f3b5e))
+* **docs:** Presentaciones y anuncio para inversores ([71598ee](https://github.com/julsolalf/ISPP-G2/commit/71598ee516aef9cc3d8300b6b9e429a67f7ba00f))
+* Ingrediente DTO ([eed10de](https://github.com/julsolalf/ISPP-G2/commit/eed10ded45cc3b06ac28c611810b0cfdd091ea2f))
+* Ingrediente DTO ([d6d659f](https://github.com/julsolalf/ISPP-G2/commit/d6d659f341f7191df153f987dcfee759d1c3c6d1))
+* ingresos y volumen ([aebd309](https://github.com/julsolalf/ISPP-G2/commit/aebd3093266fef67992febfa612c65ea6e50ecee))
+* menosCantidad ([83f4022](https://github.com/julsolalf/ISPP-G2/commit/83f4022cfc9efa2b5cfba25b394387ada4f56848))
+* PPL vers ([fc9b918](https://github.com/julsolalf/ISPP-G2/commit/fc9b91822b01248bfacb5a1eca5239de2a414b4d))
+* productos por debajo ([ef1b1ff](https://github.com/julsolalf/ISPP-G2/commit/ef1b1ff9fa253283be62070ad14b4775ef86297a))
+* productos por debajo ([9495855](https://github.com/julsolalf/ISPP-G2/commit/9495855ece7e16626b3229968f8a5fa4bfd7a206))
+* ProductosMasvendidos ([6fb9ee7](https://github.com/julsolalf/ISPP-G2/commit/6fb9ee7590bd4fe1964b86712e44d53bdf668f52))
+* **registroDueño:** Customer Agreement en checkbox. ([5cb0481](https://github.com/julsolalf/ISPP-G2/commit/5cb04818ae8e503695ad713b2748306a9810fc14))
+* Restricciones CRUD ([75dfa3e](https://github.com/julsolalf/ISPP-G2/commit/75dfa3e921390e333ab6240d6352acd6f3fd750c))
+* Restricciones CRUD ([28c4a95](https://github.com/julsolalf/ISPP-G2/commit/28c4a95d3ea9e23f470242d9ed7d15ebd64b2744))
+* Restricciones CRUD ([516d665](https://github.com/julsolalf/ISPP-G2/commit/516d665ca94afc56997140874dd2890d6194d709))
+* Restricciones CRUD ([5070ad0](https://github.com/julsolalf/ISPP-G2/commit/5070ad0baf23267cb910a332be333117174025dd))
+* Restricciones CRUD ([06cd14d](https://github.com/julsolalf/ISPP-G2/commit/06cd14d516d2e91873f31e95b3cae71d915187e2))
+* Search by categoriaID ([6a54ab6](https://github.com/julsolalf/ISPP-G2/commit/6a54ab6358576730ea349c7472711cd73207a128))
+* Search by categoriaID ([1eeea8b](https://github.com/julsolalf/ISPP-G2/commit/1eeea8b95aaae6109eba55b6aabcc17557978fec))
+* Search by negocioID ([690a23d](https://github.com/julsolalf/ISPP-G2/commit/690a23da59a7b7bd8fe9e9bc74d9ea58f60eea11))
+* Search by negocioID ([2ea5941](https://github.com/julsolalf/ISPP-G2/commit/2ea59412c491dae1f18270f817ff3d50c8a6eb86))
+* **TPV:** Eliminado mensajes de logs ([f48de5f](https://github.com/julsolalf/ISPP-G2/commit/f48de5fa51a035d7e59fe939fdeb8d9ec3390c38))
+
+
+### Bug Fixes
+
+* **#281:** Corregido errores test unitarios despues de las pr ([1bc75bc](https://github.com/julsolalf/ISPP-G2/commit/1bc75bcbdedb1008025ddc10b11bf7011ff1873a))
+* **#281:** Corregido errores test unitarios, todos funcionando ([0564f0a](https://github.com/julsolalf/ISPP-G2/commit/0564f0a692245313ecd166c38edb217817cd9ace))
+* **#309:** Fix eliminar and merge develop ([01ea1d8](https://github.com/julsolalf/ISPP-G2/commit/01ea1d8cb882d42a48f1378a40daaae1a570552f))
+* **#348:** Corregir ver proveedor específico ([b54ff4a](https://github.com/julsolalf/ISPP-G2/commit/b54ff4a9f043bf6a252aa8c085ebe751f663cd8b))
+* **#366:** Fix alertaStock ([5b46de0](https://github.com/julsolalf/ISPP-G2/commit/5b46de07324c3b64df648e0f8b21316b44b7ae11))
+* **#392:** Al pulsar en la notificacion va para el carrito del proveedor ([c8006e3](https://github.com/julsolalf/ISPP-G2/commit/c8006e3ffcd3d2ee7dcf534236cea11b9a87e3ed))
+* **#392:** Al pulsar en la notificacion va para el carrito del proveedor ([2c7b414](https://github.com/julsolalf/ISPP-G2/commit/2c7b414bbee1802bc9f80233b25815ed773f1d82))
+* **#394:** Añadidas las funciones de notificaciones y las opciones del usuario a las pantallas anteriormente creadas ([18fa34e](https://github.com/julsolalf/ISPP-G2/commit/18fa34e89afbc4e3353c9d4df1b635272f2c9cd5))
+* **#394:** Pequeño cambio para ver proveedor ([546136c](https://github.com/julsolalf/ISPP-G2/commit/546136c3592b37b41dba84061a1d70092cfd5a1b))
+* **#394:** Se ha añadido que se vean los dias de reparto en la carta del Proveedor ([56faf41](https://github.com/julsolalf/ISPP-G2/commit/56faf410879a8281db4aeb2afaaf76293babb58d))
+* **#435:** Solucionar problema con las ramas ([225b6af](https://github.com/julsolalf/ISPP-G2/commit/225b6af68a7affecb2bccf8da5d14286968b3276))
+* **#435:** Solucionar problema con las ramas ([7247b8b](https://github.com/julsolalf/ISPP-G2/commit/7247b8be88a39ec8731a5604405803c1cba0d366))
+* **394:** Pequeños cambios para que funcione la aplicacion ([a0f0eaa](https://github.com/julsolalf/ISPP-G2/commit/a0f0eaa647203037f96c69ba1d8c4dd56d7fb737))
+* Arreglo de todos los tests ([ce79eae](https://github.com/julsolalf/ISPP-G2/commit/ce79eae7bf947cf416b85bc26336cd1dd640ce5e))
+* Data Sql for android ([6aa799b](https://github.com/julsolalf/ISPP-G2/commit/6aa799bf240e0603a43f0eb0af7821a77884fb9a))
+* error ([56e8517](https://github.com/julsolalf/ISPP-G2/commit/56e851798a9accee46de2f1f7b536740b6660b64))
+* GetAll controllers ([969fd40](https://github.com/julsolalf/ISPP-G2/commit/969fd40e403485009be9bb6eb6a1333d38623f39))
+* initial subscription data ([68adf58](https://github.com/julsolalf/ISPP-G2/commit/68adf58e4e410c581652a8a3ce5153993464ccec))
+* initial subscription data ([6ec1eb5](https://github.com/julsolalf/ISPP-G2/commit/6ec1eb50b7eff0f22d8b8c02776c3aa804191943))
+* Input name change ([ed24f0b](https://github.com/julsolalf/ISPP-G2/commit/ed24f0bf992ba1116d09ed8bce0a7c8e09f0ef08))
+* Negocio Search ([817c392](https://github.com/julsolalf/ISPP-G2/commit/817c39229f3cde12a02d65760ab39bd1b9dbf6b1))
+* save fix ([9627af7](https://github.com/julsolalf/ISPP-G2/commit/9627af7bdf411083acd7ffed89a757171ebf503f))
+* save fix ([1252da1](https://github.com/julsolalf/ISPP-G2/commit/1252da10a3976bdcf948c8df79093403ff3774c5))
+* todos los tests arreglados ([e7dcd18](https://github.com/julsolalf/ISPP-G2/commit/e7dcd188b2cf7638c5149e25c60a8f39761b39c1))
+* Todos los tests funcionando ([541067a](https://github.com/julsolalf/ISPP-G2/commit/541067affa41cfed498ee75f210d68db41b2e899))
+* Varios tests arreglados ([716ef2a](https://github.com/julsolalf/ISPP-G2/commit/716ef2ad4453dc2c4800ae2f188c535f09d1e5ee))
+
+
+### Documentation
+
+* Lecciones aprendidas ([6093518](https://github.com/julsolalf/ISPP-G2/commit/60935187d4ce65de6ddc7e649d9e01f575acd33c))
+* PPL ([a8b68a7](https://github.com/julsolalf/ISPP-G2/commit/a8b68a7251cee018c047eb95015be34ee0211484))
+* PPL ([e3dd4a5](https://github.com/julsolalf/ISPP-G2/commit/e3dd4a5e245598090d24f47c1d5a0adb589cfcf8))
+* PPL ([4df3182](https://github.com/julsolalf/ISPP-G2/commit/4df318246b5d4db7cfa3c98177be0c2ba7785906))
+
 ## [3.0.0](https://github.com/julsolalf/ISPP-G2/compare/v2.0.0...v3.0.0) (2025-04-10)
 
 
