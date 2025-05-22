@@ -9,6 +9,9 @@ function PantallaInicioDueno() {
   const [showUserOptions, setShowUserOptions] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para la modal de logout
 
+  const empleado = JSON.parse(localStorage.getItem("empleado"));
+
+
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
   };
