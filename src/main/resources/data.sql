@@ -1,21 +1,3 @@
---Borrando todos los datos anteriores para partir siempre desde el mismo punto de inicio
-DELETE FROM dia_reparto;
-DELETE FROM lote;
-DELETE FROM reabastecimiento;
-DELETE FROM proveedor;
-DELETE FROM ingrediente;
-DELETE FROM producto_inventario;
-DELETE FROM linea_de_pedido;
-DELETE FROM pedido;
-DELETE FROM producto_venta;
-DELETE FROM mesa;
-DELETE FROM empleado;
-DELETE FROM negocio;
-DELETE FROM dueno;
-DELETE FROM subscripcion;
-DELETE FROM app_user;
-DELETE FROM authorities;
-
 -- 1. Insertar autoridades
 INSERT INTO authorities (id, authority) VALUES (1,'dueno');
 INSERT INTO authorities (id, authority) VALUES (2,'empleado');
@@ -36,8 +18,8 @@ INSERT INTO app_user (id, username, password, authority_id) VALUES (9, 'empleado
 INSERT INTO app_user (id, username, password, authority_id) VALUES (10,'gastroAdmin','$2a$10$wPqDTEhcLj7vLpEVxvlreehCK1tZl0FtvaxXxTiQoJOIOJL2uXSQm',(SELECT id FROM authorities WHERE authority ='admin'));
 
 -- 3. Insertar subscripciones con user_id ya creado
-INSERT INTO subscripcion (id, type, status, start_date, end_date, stripe_customer_id, user_id) VALUES (1, 'PREMIUM', 'ACTIVE', CURRENT_TIMESTAMP(), '2025-12-31', 'cus_test_123456', 1);
-INSERT INTO subscripcion (id, type, status, start_date, end_date, user_id) VALUES (2, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP(), '2025-12-31', 2);
+INSERT INTO subscripcion (id, type, status, start_date, end_date, stripe_customer_id, user_id) VALUES (1, 'PREMIUM', 'ACTIVE', CURRENT_TIMESTAMP, '2025-12-31', 'cus_test_123456', 1);
+INSERT INTO subscripcion (id, type, status, start_date, end_date, user_id) VALUES (2, 'FREE', 'ACTIVE', CURRENT_TIMESTAMP, '2025-12-31', 2);
 
 -- 4. Actualizar usuarios para asociar subscripcion_id (opcional si el @OneToOne es bidireccional y mappedBy se encarga)
 UPDATE app_user SET subscripcion_id = 1 WHERE id = 1;
@@ -145,13 +127,13 @@ INSERT INTO pedido (id, fecha, precio_total, mesa_id, empleado_id, negocio_id)
 VALUES (10, '2025-01-10 13:00:00', 60.00, (SELECT id FROM mesa WHERE name = 'Mesa 5'), (SELECT id FROM empleado WHERE first_name = 'Fernando' AND last_name = 'Pérez'), 2);
 -- Insertando líneas de pedido
 INSERT INTO linea_de_pedido (id, cantidad, salio_de_cocina, precio_unitario, pedido_id, producto_id)
-VALUES (1, 1, true, 12.50, 1, (SELECT id FROM producto_venta WHERE name = 'Pizza Margherita'));
+VALUES (1, 1, 1, 12.50, 1, (SELECT id FROM producto_venta WHERE name = 'Pizza Margherita'));
 INSERT INTO linea_de_pedido (id, cantidad, salio_de_cocina, precio_unitario, pedido_id, producto_id)
-VALUES (2, 1, true, 2.50, 1, (SELECT id FROM producto_venta WHERE name = 'Coca Cola'));
+VALUES (2, 1, 1, 2.50, 1, (SELECT id FROM producto_venta WHERE name = 'Coca Cola'));
 INSERT INTO linea_de_pedido (id, cantidad, salio_de_cocina, precio_unitario, pedido_id, producto_id)
-VALUES (3, 4, true, 2.50, 2, (SELECT id FROM producto_venta WHERE name = 'Coca Cola'));
+VALUES (3, 4, 1, 2.50, 2, (SELECT id FROM producto_venta WHERE name = 'Coca Cola'));
 INSERT INTO linea_de_pedido (id, cantidad, salio_de_cocina, precio_unitario, pedido_id, producto_id)
-VALUES (4, 10, true, 2.50, 2, (SELECT id FROM producto_venta WHERE name = 'Coca Cola'));
+VALUES (4, 10, 1, 2.50, 2, (SELECT id FROM producto_venta WHERE name = 'Coca Cola'));
 
 -- Insertando proveedores
 INSERT INTO proveedor (id, name, email, telefono, direccion, negocio_id)
