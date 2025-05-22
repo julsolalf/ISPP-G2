@@ -25,7 +25,7 @@ function VerEmpleado() {
 
   const obtenerEmpleado = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/empleados/${empleadoId}`, {
+      const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/empleados/${empleadoId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -52,7 +52,7 @@ function VerEmpleado() {
 
   const eliminarEmpleado = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/empleados/${empleadoId}`, {
+      const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/empleados/${empleadoId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

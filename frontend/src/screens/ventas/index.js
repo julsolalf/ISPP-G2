@@ -13,7 +13,7 @@ const negocioId = localStorage.getItem("negocioId");
 // Función para obtener los pedidos desde la API
 const obtenerPedidos = async () => {
   try {
-    const response = await fetch(`http://localhost:8080/api/pedidos/venta/${negocioId}`,{
+    const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/pedidos/venta/${negocioId}`,{
       method: "GET",
       headers: {
         "Content-Type": "application/json",

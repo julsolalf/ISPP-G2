@@ -22,7 +22,7 @@ function EditarProducto() {
 
   const obtenerProducto = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/productosInventario/${id}`, {
+      const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/productosInventario/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -41,7 +41,7 @@ function EditarProducto() {
 
   const actualizarProducto = async (producto) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/productosInventario/${productoId}`, {
+      const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/productosInventario/${productoId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -62,7 +62,7 @@ function EditarProducto() {
   useEffect(() => {
     // Obtener proveedores
     if (storedNegocioId) {
-      fetch(`http://localhost:8080/api/proveedores/negocio/${storedNegocioId}`, {
+      fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/proveedores/negocio/${storedNegocioId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

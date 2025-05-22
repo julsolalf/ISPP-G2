@@ -65,7 +65,6 @@ public class EmpleadoRepositoryTest {
         authority = new Authorities();
         authority.setAuthority("EMPLEADO");
         authority = authoritiesRepository.save(authority);
-
         
         // Crear usuarios para asociar a los empleados
         user1 = new User();

@@ -15,7 +15,7 @@ function Empleados() {
     const duenoId = localStorage.getItem("duenoId");
     try {
       if (duenoId) {
-        const response = await fetch(`http://localhost:8080/api/negocios`, {
+        const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/negocios`, {
           method: "GET", 
           headers: {
             "Content-Type": "application/json",

@@ -30,7 +30,7 @@ public class Negocio extends NamedEntity {
     private String pais;
 
     @ManyToOne(optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
     @JoinColumn(name = "dueno_id")
     private Dueno dueno;
 

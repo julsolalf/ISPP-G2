@@ -8,7 +8,7 @@ const token = localStorage.getItem("token");
 
 const obtenerProveedor = async (idProveedor) => {
   try {
-    const response = await fetch(`http://localhost:8080/api/proveedores/${idProveedor}`, {
+    const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/proveedores/${idProveedor}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -82,7 +82,7 @@ function VerProveedor() {
 
   const eliminarProveedor = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/proveedores/${id}`, {
+      const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/proveedores/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

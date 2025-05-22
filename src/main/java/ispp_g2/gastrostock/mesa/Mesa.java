@@ -21,7 +21,7 @@ public class Mesa extends NamedEntity{
     private Integer numeroAsientos;
 
     @ManyToOne(optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
     @JoinColumn(name = "negocio_id")
     private Negocio negocio;
 }

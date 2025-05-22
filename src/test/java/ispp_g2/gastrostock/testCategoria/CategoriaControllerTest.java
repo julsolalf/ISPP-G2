@@ -28,7 +28,10 @@ import java.util.Collections;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+
 import ispp_g2.gastrostock.exceptions.ResourceNotFoundException;
 import java.util.Collections;
 import java.util.List;
@@ -66,7 +69,6 @@ public class CategoriaControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    // Servicios que inyecta CategoriaController:
     @MockBean
     private CategoriaService categoriaService;
 
@@ -78,6 +80,9 @@ public class CategoriaControllerTest {
 
     @MockBean
     private EmpleadoService empleadoService;
+
+    @Autowired
+    private CategoriaController categoriaController;
 
     // Estos son del filtro de seguridad:
     @MockBean private JwtService jwtService;
@@ -1324,5 +1329,602 @@ public class CategoriaControllerTest {
         verify(categoriaService).convertirCategoria(any(CategoriaDTO.class));
         verify(categoriaService).update(eq(1), any(Categoria.class));
     }
+
+    @Test
+    public void testSaveDto_NullDto_ReturnsBadRequest() throws Exception {
+        mockMvc.perform(post("/api/categorias/dto")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("")) // contenido vacío = null DTO
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testSaveDto_AsAdmin_ReturnsCreated() throws Exception {
+        CategoriaDTO dto = new CategoriaDTO();
+        dto.setNombre("TestCategoria");
+        dto.setPertenece(Pertenece.INVENTARIO);
+        dto.setNegocioId(1);
+
+        when(categoriaService.convertirCategoria(any())).thenReturn(categoria);
+        when(categoriaService.save(any())).thenReturn(categoria);
+        adminUser.getAuthority().setAuthority("admin"); // ya está por defecto
+
+        mockMvc.perform(post("/api/categorias/dto")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.name", is("Bebidas")));
+    }
+
+    @Test
+    public void testSaveDto_AsDueno_OwnsNegocio_ReturnsCreated() throws Exception {
+        CategoriaDTO dto = new CategoriaDTO();
+        dto.setNombre("CategoriaDueno");
+        dto.setPertenece(Pertenece.INVENTARIO);
+        dto.setNegocioId(1);
+
+        Dueno dueno = new Dueno();
+        dueno.setUser(adminUser);
+        negocio.setDueno(dueno);
+
+        Categoria categoriaConverted = new Categoria();
+        categoriaConverted.setNegocio(negocio);
+        categoriaConverted.setName("CategoriaDueno");
+
+        adminUser.getAuthority().setAuthority("dueno");
+
+        when(categoriaService.convertirCategoria(any())).thenReturn(categoriaConverted);
+        when(categoriaService.save(any())).thenReturn(categoriaConverted);
+
+        mockMvc.perform(post("/api/categorias/dto")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isCreated());
+    }
+
+
+    @Test
+    public void testSaveDto_Dueno_NotOwner_ReturnsForbidden() throws Exception {
+        adminUser.getAuthority().setAuthority("dueno");
+
+        Dueno otroDueno = new Dueno();
+        User otroUser = new User();
+        otroUser.setId(2); // distinto del adminUser
+        otroDueno.setUser(otroUser);
+        negocio.setDueno(otroDueno);
+
+        CategoriaDTO dto = new CategoriaDTO();
+        dto.setNombre("OtraCat");
+        dto.setNegocioId(1);
+        dto.setPertenece(Pertenece.VENTA);
+
+        when(categoriaService.convertirCategoria(any())).thenReturn(categoria);
+
+        mockMvc.perform(post("/api/categorias/dto")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void testSaveDto_Empleado_CorrectNegocio_ReturnsCreated() throws Exception {
+        adminUser.getAuthority().setAuthority("empleado");
+
+        CategoriaDTO dto = new CategoriaDTO();
+        dto.setNombre("EmpleadoCat");
+        dto.setNegocioId(1);
+        dto.setPertenece(Pertenece.VENTA);
+
+        Empleado empleado = new Empleado();
+        empleado.setNegocio(negocio);
+
+        when(empleadoService.getEmpleadoByUser(1)).thenReturn(empleado);
+        when(categoriaService.convertirCategoria(any())).thenReturn(categoria);
+        when(categoriaService.save(any())).thenReturn(categoria);
+
+        mockMvc.perform(post("/api/categorias/dto")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.name", is("Bebidas")));
+    }
+
+    @Test
+    public void testSaveDto_Empleado_WrongNegocio_ReturnsForbidden() throws Exception {
+        adminUser.getAuthority().setAuthority("empleado");
+
+        CategoriaDTO dto = new CategoriaDTO();
+        dto.setNombre("EmpleadoCat");
+        dto.setNegocioId(2);
+        dto.setPertenece(Pertenece.INVENTARIO);
+
+        Empleado empleado = new Empleado();
+        Negocio otroNegocio = new Negocio();
+        otroNegocio.setId(1);
+        empleado.setNegocio(otroNegocio);
+
+        when(empleadoService.getEmpleadoByUser(adminUser.getId())).thenReturn(empleado);
+        when(categoriaService.convertirCategoria(any())).thenReturn(categoria);
+
+        mockMvc.perform(post("/api/categorias/dto")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void testDelete_Empleado_CorrectNegocio_ReturnsNoContent() throws Exception {
+        adminUser.getAuthority().setAuthority("empleado");
+
+        Categoria cat = new Categoria();
+        cat.setId(1);
+        cat.setNegocio(negocio);
+
+        Empleado empleado = new Empleado();
+        empleado.setNegocio(negocio);
+
+        when(categoriaService.getById(1)).thenReturn(cat);
+        when(empleadoService.getEmpleadoByUser(adminUser.getId())).thenReturn(empleado);
+
+        mockMvc.perform(delete("/api/categorias/{id}", 1)
+                .with(csrf()))
+            .andExpect(status().isNoContent());
+
+        verify(categoriaService).delete(1);
+    }
+
+    @Test
+    public void testDelete_Empleado_WrongNegocio_ReturnsForbidden() throws Exception {
+        adminUser.getAuthority().setAuthority("empleado");
+
+        Negocio otroNegocio = new Negocio();
+        otroNegocio.setId(2);
+        Categoria cat = new Categoria();
+        cat.setId(1);
+        cat.setNegocio(otroNegocio);
+
+        Empleado empleado = new Empleado();
+        empleado.setNegocio(negocio); // negocio.id == 1
+
+        when(categoriaService.getById(1)).thenReturn(cat);
+        when(empleadoService.getEmpleadoByUser(adminUser.getId())).thenReturn(empleado);
+
+        mockMvc.perform(delete("/api/categorias/{id}", 1)
+                .with(csrf()))
+            .andExpect(status().isForbidden());
+
+        verify(categoriaService, never()).delete(anyInt());
+    }
+
+    @Test
+    public void testUpdateDto_NullDto_ThrowsIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () -> categoriaController.updateDto(1, null));
+    }
+
+    @Test
+    public void testUpdateDto_Dueno_NegocioMismatch_ReturnsForbidden() throws Exception {
+        adminUser.getAuthority().setAuthority("dueno");
+        Categoria existing = new Categoria();
+        existing.setId(1);
+        Negocio negocio1 = new Negocio();
+        negocio1.setId(1);
+        Dueno dueno = new Dueno();
+        dueno.setUser(adminUser);
+        negocio1.setDueno(dueno);
+        existing.setNegocio(negocio1);
+        CategoriaDTO dto = new CategoriaDTO();
+        dto.setNombre("X");
+        dto.setNegocioId(2);
+        dto.setPertenece(Pertenece.INVENTARIO);
+        when(categoriaService.getById(1)).thenReturn(existing);
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(categoriaService.convertirCategoria(any())).thenReturn(existing);
+        mockMvc.perform(put("/api/categorias/dto/{id}", 1)
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isForbidden());
+        verify(categoriaService, never()).update(anyInt(), any());
+    }
+
+    @Test
+    public void testUpdateDto_Empleado_NegocioMismatch_ReturnsForbidden() throws Exception {
+        adminUser.getAuthority().setAuthority("empleado");
+        Categoria existing = new Categoria();
+        existing.setId(1);
+        Negocio negocio1 = new Negocio();
+        negocio1.setId(1);
+        existing.setNegocio(negocio1);
+        CategoriaDTO dto = new CategoriaDTO();
+        dto.setNombre("Y");
+        dto.setNegocioId(2);
+        dto.setPertenece(Pertenece.VENTA);
+        Empleado empleado = new Empleado();
+        Negocio negocioEmpleado = new Negocio();
+        negocioEmpleado.setId(1);
+        empleado.setNegocio(negocioEmpleado);
+        when(categoriaService.getById(1)).thenReturn(existing);
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(empleadoService.getEmpleadoByUser(adminUser.getId())).thenReturn(empleado);
+        mockMvc.perform(put("/api/categorias/dto/{id}", 1)
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isForbidden());
+        verify(categoriaService, never()).update(anyInt(), any());
+    }
+
+    @Test
+    public void testUpdate_NullCategoria_ThrowsIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () ->
+            categoriaController.update(1, null)
+        );
+    }
+
+    @Test
+    public void testUpdate_Admin_ReturnsOk() throws Exception {
+        adminUser.getAuthority().setAuthority("admin");
+        when(categoriaService.update(eq(1), any(Categoria.class))).thenReturn(categoria);
+
+        mockMvc.perform(put("/api/categorias/{id}", 1)
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(categoria)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.name", is("Bebidas")));
+
+        verify(categoriaService).update(eq(1), any(Categoria.class));
+    }
+
+    @Test
+    public void testUpdate_Dueno_NegocioMismatch_ReturnsForbidden() {
+        adminUser.getAuthority().setAuthority("dueno");
+
+        Categoria existing = new Categoria();
+        existing.setId(1);
+        Negocio negocio1 = new Negocio(); negocio1.setId(1);
+        Dueno dueno1 = new Dueno(); dueno1.setUser(adminUser);
+        negocio1.setDueno(dueno1);
+        existing.setNegocio(negocio1);
+
+        Categoria cuerpo = new Categoria();
+        cuerpo.setId(1);
+        Negocio negocio2 = new Negocio(); negocio2.setId(2);
+        Dueno dueno2 = new Dueno();
+        User mismoUser = new User(); mismoUser.setId(adminUser.getId());
+        dueno2.setUser(mismoUser);
+        negocio2.setDueno(dueno2);
+        cuerpo.setNegocio(negocio2);
+
+        when(categoriaService.getById(1)).thenReturn(existing);
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+
+        ResponseEntity<Categoria> response = categoriaController.update(1, cuerpo);
+
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        verify(categoriaService, never()).update(anyInt(), any());
+    }
+
+
+    @Test
+    public void testUpdate_Empleado_NegocioMismatch_ReturnsForbidden() throws Exception {
+        adminUser.getAuthority().setAuthority("empleado");
+
+        Categoria existing = new Categoria();
+        existing.setId(1);
+        Negocio negocio1 = new Negocio(); negocio1.setId(1);
+        existing.setNegocio(negocio1);
+
+        Categoria cuerpo = new Categoria();
+        cuerpo.setId(1);
+        cuerpo.setName("Test");
+        cuerpo.setPertenece(Pertenece.INVENTARIO);
+        Negocio negocio2 = new Negocio(); negocio2.setId(2);
+        cuerpo.setNegocio(negocio2);
+
+        Empleado empleado = new Empleado();
+        Negocio negocioEmpleado = new Negocio(); negocioEmpleado.setId(1);
+        empleado.setNegocio(negocioEmpleado);
+
+        when(categoriaService.getById(1)).thenReturn(existing);
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(empleadoService.getEmpleadoByUser(adminUser.getId())).thenReturn(empleado);
+
+        mockMvc.perform(put("/api/categorias/{id}", 1)
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(cuerpo)))
+            .andExpect(status().isForbidden());
+
+        verify(categoriaService, never()).update(anyInt(), any());
+    }
+
+    @Test
+    public void testUpdate_Empleado_CorrectNegocio_ReturnsOk() throws Exception {
+        adminUser.getAuthority().setAuthority("empleado");
+
+        Categoria existing = new Categoria();
+        existing.setId(1);
+        Negocio negocio1 = new Negocio(); negocio1.setId(1);
+        existing.setNegocio(negocio1);
+
+        Categoria cuerpo = new Categoria();
+        cuerpo.setId(1);
+        cuerpo.setName("Test");
+        cuerpo.setPertenece(Pertenece.VENTA);
+        Negocio negocioMatch = new Negocio(); negocioMatch.setId(1);
+        cuerpo.setNegocio(negocioMatch);
+
+        Empleado empleado = new Empleado();
+        Negocio negocioEmpleado = new Negocio(); negocioEmpleado.setId(1);
+        empleado.setNegocio(negocioEmpleado);
+
+        when(categoriaService.getById(1)).thenReturn(existing);
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(empleadoService.getEmpleadoByUser(adminUser.getId())).thenReturn(empleado);
+        when(categoriaService.update(eq(1), any(Categoria.class))).thenReturn(cuerpo);
+
+        mockMvc.perform(put("/api/categorias/{id}", 1)
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(cuerpo)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.negocio.id", is(1)));
+
+        verify(categoriaService).update(eq(1), any(Categoria.class));
+    }
+
+    @Test
+    public void testFindByNegocioIdVentaDto_Dueno_NoContent_ReturnsNoContent() throws Exception {
+        adminUser.getAuthority().setAuthority("dueno");
+        Dueno dueno = new Dueno();
+        dueno.setUser(adminUser);
+        negocio.setDueno(dueno);
+
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(negocioService.getById(1)).thenReturn(negocio);
+        when(categoriaService.getCategoriasVentaByNegocioId(1)).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/api/categorias/dto/negocio/{negocioId}/venta", 1)
+                .with(csrf()))
+            .andExpect(status().isNoContent());
+    }
+
+
+    @Test
+    public void testFindByNegocioIdVentaDto_Dueno_WithResults_ReturnsOk() throws Exception {
+        adminUser.getAuthority().setAuthority("dueno");
+        Dueno dueno = new Dueno(); dueno.setUser(adminUser);
+        negocio.setDueno(dueno);
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(negocioService.getById(1)).thenReturn(negocio);
+        when(categoriaService.getCategoriasVentaByNegocioId(1)).thenReturn(List.of(categoria));
+
+        mockMvc.perform(get("/api/categorias/dto/negocio/{negocioId}/venta", 1)
+                .with(csrf()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].nombre", is("Bebidas")));
+    }
+
+    @Test
+    public void testFindByNegocioIdVentaDto_Dueno_NotOwner_ReturnsForbidden() throws Exception {
+        adminUser.getAuthority().setAuthority("dueno");
+        Dueno otroDueno = new Dueno();
+        User user2 = new User(); user2.setId(2);
+        otroDueno.setUser(user2);
+        negocio.setDueno(otroDueno);
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(negocioService.getById(1)).thenReturn(negocio);
+
+        mockMvc.perform(get("/api/categorias/dto/negocio/{negocioId}/venta", 1)
+                .with(csrf()))
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void testFindByNegocioIdVentaDto_Empleado_NoContent_ReturnsNoContent() throws Exception {
+        adminUser.getAuthority().setAuthority("empleado");
+        Empleado empleado = new Empleado(); empleado.setNegocio(negocio);
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(empleadoService.getEmpleadoByUser(adminUser.getId())).thenReturn(empleado);
+        when(categoriaService.getCategoriasVentaByNegocioId(1)).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/api/categorias/dto/negocio/{negocioId}/venta", 1)
+                .with(csrf()))
+            .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void testFindByNegocioIdVentaDto_Empleado_WithResults_ReturnsOk() throws Exception {
+        adminUser.getAuthority().setAuthority("empleado");
+        Empleado empleado = new Empleado();
+        empleado.setNegocio(negocio);
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(empleadoService.getEmpleadoByUser(adminUser.getId())).thenReturn(empleado);
+        when(categoriaService.getCategoriasVentaByNegocioId(1)).thenReturn(List.of(categoria));
+
+        mockMvc.perform(get("/api/categorias/dto/negocio/{negocioId}/venta", 1)
+                .with(csrf()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].nombre", is("Bebidas")));
+    }
+
+
+    @Test
+    public void testFindByNegocioIdVentaDto_Empleado_NotMatch_ReturnsForbidden() throws Exception {
+        adminUser.getAuthority().setAuthority("empleado");
+        Negocio otroNegocio = new Negocio(); otroNegocio.setId(2);
+        Empleado empleado = new Empleado(); empleado.setNegocio(otroNegocio);
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(empleadoService.getEmpleadoByUser(adminUser.getId())).thenReturn(empleado);
+
+        mockMvc.perform(get("/api/categorias/dto/negocio/{negocioId}/venta", 1)
+                .with(csrf()))
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void testFindByNegocioIdInventarioDto_Dueno_NoContent_ReturnsNoContent() throws Exception {
+        adminUser.getAuthority().setAuthority("dueno");
+        Dueno dueno = new Dueno(); dueno.setUser(adminUser);
+        negocio.setDueno(dueno);
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(negocioService.getById(1)).thenReturn(negocio);
+        when(categoriaService.getCategoriasInventarioByNegocioId(1)).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/api/categorias/dto/negocio/{negocioId}/inventario", 1).with(csrf()))
+            .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void testFindByNegocioIdInventarioDto_Dueno_WithResults_ReturnsOk() throws Exception {
+        adminUser.getAuthority().setAuthority("dueno");
+        Dueno dueno = new Dueno(); dueno.setUser(adminUser);
+        negocio.setDueno(dueno);
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(negocioService.getById(1)).thenReturn(negocio);
+        when(categoriaService.getCategoriasInventarioByNegocioId(1)).thenReturn(List.of(categoria));
+
+        mockMvc.perform(get("/api/categorias/dto/negocio/{negocioId}/inventario", 1).with(csrf()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].nombre", is("Bebidas")));
+    }
+
+    @Test
+    public void testFindByNegocioIdInventarioDto_Dueno_NotOwner_ReturnsForbidden() throws Exception {
+        adminUser.getAuthority().setAuthority("dueno");
+        Dueno otro = new Dueno(); otro.setUser(new User() {{ setId(2); }});
+        negocio.setDueno(otro);
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(negocioService.getById(1)).thenReturn(negocio);
+
+        mockMvc.perform(get("/api/categorias/dto/negocio/{negocioId}/inventario", 1).with(csrf()))
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void testFindByNegocioIdInventarioDto_Empleado_NoContent_ReturnsNoContent() throws Exception {
+        adminUser.getAuthority().setAuthority("empleado");
+        Empleado empleado = new Empleado(); empleado.setNegocio(negocio);
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(empleadoService.getEmpleadoByUser(adminUser.getId())).thenReturn(empleado);
+        when(categoriaService.getCategoriasInventarioByNegocioId(1)).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/api/categorias/dto/negocio/{negocioId}/inventario", 1).with(csrf()))
+            .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void testFindByNegocioIdInventarioDto_Empleado_WithResults_ReturnsOk() throws Exception {
+        adminUser.getAuthority().setAuthority("empleado");
+        Empleado empleado = new Empleado(); empleado.setNegocio(negocio);
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(empleadoService.getEmpleadoByUser(adminUser.getId())).thenReturn(empleado);
+        when(categoriaService.getCategoriasInventarioByNegocioId(1)).thenReturn(List.of(categoria));
+
+        mockMvc.perform(get("/api/categorias/dto/negocio/{negocioId}/inventario", 1).with(csrf()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].nombre", is("Bebidas")));
+    }
+
+    @Test
+    public void testFindByNegocioIdInventarioDto_Empleado_NotMatch_ReturnsForbidden() throws Exception {
+        adminUser.getAuthority().setAuthority("empleado");
+        Empleado empleado = new Empleado(); empleado.setNegocio(new Negocio() {{ setId(2); }});
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(empleadoService.getEmpleadoByUser(adminUser.getId())).thenReturn(empleado);
+
+        mockMvc.perform(get("/api/categorias/dto/negocio/{negocioId}/inventario", 1).with(csrf()))
+            .andExpect(status().isForbidden());
+    }
+    
+    @Test
+    public void testFindByNegocioIdDto_Dueno_NoContent_ReturnsNoContent() throws Exception {
+        adminUser.getAuthority().setAuthority("dueno");
+        Dueno dueno = new Dueno(); dueno.setUser(adminUser);
+        negocio.setDueno(dueno);
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(negocioService.getById(1)).thenReturn(negocio);
+        when(categoriaService.getCategoriasByNegocioId(1)).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/api/categorias/dto/negocio/{negocioId}", 1).with(csrf()))
+            .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void testFindByNegocioIdDto_Dueno_WithResults_ReturnsOk() throws Exception {
+        adminUser.getAuthority().setAuthority("dueno");
+        Dueno dueno = new Dueno(); dueno.setUser(adminUser);
+        negocio.setDueno(dueno);
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(negocioService.getById(1)).thenReturn(negocio);
+        when(categoriaService.getCategoriasByNegocioId(1)).thenReturn(List.of(categoria));
+
+        mockMvc.perform(get("/api/categorias/dto/negocio/{negocioId}", 1).with(csrf()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].nombre", is("Bebidas")));
+    }
+
+    @Test
+    public void testFindByNegocioIdDto_Dueno_NotOwner_ReturnsForbidden() throws Exception {
+        adminUser.getAuthority().setAuthority("dueno");
+        Dueno otro = new Dueno(); otro.setUser(new User() {{ setId(2); }});
+        negocio.setDueno(otro);
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(negocioService.getById(1)).thenReturn(negocio);
+
+        mockMvc.perform(get("/api/categorias/dto/negocio/{negocioId}", 1).with(csrf()))
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void testFindByNegocioIdDto_Empleado_NoContent_ReturnsNoContent() throws Exception {
+        adminUser.getAuthority().setAuthority("empleado");
+        Empleado empleado = new Empleado(); empleado.setNegocio(negocio);
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(empleadoService.getEmpleadoByUser(adminUser.getId())).thenReturn(empleado);
+        when(categoriaService.getCategoriasByNegocioId(1)).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/api/categorias/dto/negocio/{negocioId}", 1).with(csrf()))
+            .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void testFindByNegocioIdDto_Empleado_WithResults_ReturnsOk() throws Exception {
+        adminUser.getAuthority().setAuthority("empleado");
+        Empleado empleado = new Empleado(); empleado.setNegocio(negocio);
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(empleadoService.getEmpleadoByUser(adminUser.getId())).thenReturn(empleado);
+        when(categoriaService.getCategoriasByNegocioId(1)).thenReturn(List.of(categoria));
+
+        mockMvc.perform(get("/api/categorias/dto/negocio/{negocioId}", 1).with(csrf()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].nombre", is("Bebidas")));
+    }
+
+    @Test
+    public void testFindByNegocioIdDto_Empleado_NotMatch_ReturnsForbidden() throws Exception {
+        adminUser.getAuthority().setAuthority("empleado");
+        Empleado empleado = new Empleado(); empleado.setNegocio(new Negocio() {{ setId(2); }});
+        when(userService.findCurrentUser()).thenReturn(adminUser);
+        when(empleadoService.getEmpleadoByUser(adminUser.getId())).thenReturn(empleado);
+
+        mockMvc.perform(get("/api/categorias/dto/negocio/{negocioId}", 1).with(csrf()))
+            .andExpect(status().isForbidden());
+    }
+
+
 
 }

@@ -7,7 +7,7 @@ import Notificaciones from "../../../components/Notifications";
 // Función para obtener la venta desde el backend
 const obtenerVenta = async (ventaId) => {
   try {
-    const response = await fetch(`http://localhost:8080/api/pedidos/${ventaId}`,
+    const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/pedidos/${ventaId}`,
       {
         method: "GET",
         headers: {
@@ -38,7 +38,7 @@ function VerVentaEspecifica() {
   
   const eliminarVenta = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/pedidos/${ventaId}`, {
+      const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/pedidos/${ventaId}`, {
         method: "DELETE",
       });
       if (!response.ok) {

@@ -27,7 +27,7 @@ function Proveedores() {
 
     const fetchProveedores = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/proveedores/negocio/${negocioId}`, {
+        const response = await fetch(`https://ispp-2425-g2.ew.r.appspot.com/api/proveedores/negocio/${negocioId}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

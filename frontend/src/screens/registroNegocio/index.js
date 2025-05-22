@@ -40,7 +40,7 @@ function PantallaRegistroNegocio() {
 
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:8080/api/negocios", {
+      const response = await fetch("https://ispp-2425-g2.ew.r.appspot.com/api/negocios", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

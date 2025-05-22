@@ -34,7 +34,6 @@ import ispp_g2.gastrostock.categorias.CategoriaService;
 import ispp_g2.gastrostock.config.SecurityConfiguration;
 import ispp_g2.gastrostock.config.jwt.JwtAuthFilter;
 import ispp_g2.gastrostock.config.jwt.JwtService;
-import ispp_g2.gastrostock.dueno.Dueno;
 import ispp_g2.gastrostock.dueno.DuenoService;
 import ispp_g2.gastrostock.empleado.EmpleadoService;
 import ispp_g2.gastrostock.ingrediente.Ingrediente;
@@ -43,6 +42,7 @@ import ispp_g2.gastrostock.ingrediente.IngredienteService;
 import ispp_g2.gastrostock.negocio.Negocio;
 import ispp_g2.gastrostock.negocio.NegocioService;
 import ispp_g2.gastrostock.productoInventario.ProductoInventario;
+import ispp_g2.gastrostock.productoInventario.ProductoInventarioService;
 import ispp_g2.gastrostock.productoVenta.ProductoVenta;
 import ispp_g2.gastrostock.user.Authorities;
 import ispp_g2.gastrostock.user.User;
@@ -81,6 +81,9 @@ public class IngredienteControllerTest {
 
     @MockBean
     private CategoriaService categoriaService;
+
+    @MockBean
+    private ProductoInventarioService productoInventarioService;
 
     @MockBean
     private NegocioService negocioService;
@@ -357,6 +360,7 @@ public class IngredienteControllerTest {
         Negocio negocioMock = new Negocio();
         negocioMock.setId(1);
         categoria.setNegocio(negocioMock);
+
         productoInventario1.setCategoria(categoria);
 
         Ingrediente nuevoIngrediente = new Ingrediente();
@@ -371,7 +375,7 @@ public class IngredienteControllerTest {
         ingredienteGuardado.setProductoVenta(productoVenta2);
 
         when(userService.findCurrentUser()).thenReturn(admin);
-        when(categoriaService.getById(1)).thenReturn(categoria);
+        when(productoInventarioService.getById(1)).thenReturn(productoInventario1);
         when(ingredienteService.save(any(Ingrediente.class))).thenReturn(ingredienteGuardado);
 
         mockMvc.perform(post("/api/ingredientes")
@@ -385,9 +389,10 @@ public class IngredienteControllerTest {
             .andExpect(jsonPath("$.productoInventario.id").value(1))
             .andExpect(jsonPath("$.productoVenta.id").value(2));
 
-        verify(categoriaService).getById(1);
+        verify(productoInventarioService).getById(1);
         verify(ingredienteService).save(any(Ingrediente.class));
     }
+
 
 
     @Test
@@ -420,26 +425,27 @@ public class IngredienteControllerTest {
         negocioMock.setId(1);
         categoria.setNegocio(negocioMock);
         productoInventario1.setCategoria(categoria);
-    
+
         Ingrediente nuevoIngrediente = new Ingrediente();
         nuevoIngrediente.setCantidad(5);
         nuevoIngrediente.setProductoInventario(productoInventario1);
         nuevoIngrediente.setProductoVenta(productoVenta2);
-    
+
         when(userService.findCurrentUser()).thenReturn(admin);
-        when(categoriaService.getById(1)).thenReturn(categoria);
+        when(productoInventarioService.getById(1)).thenReturn(productoInventario1);
         when(ingredienteService.save(any(Ingrediente.class)))
             .thenThrow(new RuntimeException("Database error"));
-    
+
         mockMvc.perform(post("/api/ingredientes")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(nuevoIngrediente)))
             .andExpect(status().isInternalServerError());
-    
-        verify(categoriaService).getById(1);
+
+        verify(productoInventarioService).getById(1);
         verify(ingredienteService).save(any(Ingrediente.class));
     }
+
     
 /* 
     @Test

@@ -23,7 +23,7 @@ function PantallaPlanes() {
     async function checkSubscription() {
       const token = localStorage.getItem("token");
       try {
-        const response = await fetch("http://localhost:8080/api/subscriptions/status", {
+        const response = await fetch("https://ispp-2425-g2.ew.r.appspot.com/api/subscriptions/status", {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (response.ok) {
@@ -49,7 +49,7 @@ function PantallaPlanes() {
   const handleUpgrade = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:8080/api/subscriptions/create-checkout-session", {
+      const response = await fetch("https://ispp-2425-g2.ew.r.appspot.com/api/subscriptions/create-checkout-session", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -76,7 +76,7 @@ function PantallaPlanes() {
   const handleCancelSubscription = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:8080/api/subscriptions/cancel", {
+      const response = await fetch("https://ispp-2425-g2.ew.r.appspot.com/api/subscriptions/cancel", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -1,0 +1,28 @@
+runtime: java21
+instance_class: F2
+
+env_variables:
+  DB_HOST: "gastrostockdb.database.windows.net"
+  DB_PORT: "1433"
+  DB_NAME: "gastrostockdb"
+  DB_USER: "gastrostock_admin"
+  DB_PASSWORD: "ISPP_gastro.stockdb"
+  STRIPE_API_KEY: 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
+  STRIPE_WEBHOOK_SECRET: whsec_anyjhF2njBbQwULwThYUuWOj8kzlolQH
+  STRIPE_PREMIUM_PRICE_ID: price_1RBJTuP27aogytxQURPebERY
+
+handlers:
+  - url: /static
+    static_dir: frontend/build/static
+
+  - url: /api/.*
+    script: auto
+
+  - url: /(.*\..+)$
+    static_files: frontend/build/\1
+    upload: frontend/build/(.*\..+)$
+
+  - url: /.*
+    static_files: frontend/build/index.html
+    upload: frontend/build/index.html
+

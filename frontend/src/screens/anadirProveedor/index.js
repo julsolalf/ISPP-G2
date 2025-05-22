@@ -8,7 +8,8 @@ function AnadirProveedor() {
   const [name, setNombre] = useState("");
   const [email, setEmail] = useState("");
   const [telefono, setTelefono] = useState("");
-  const [direccion, setDireccion] = useState(""); 
+  const [direccion, setDireccion] = useState("");
+  const [descripcion, setDescripcion] = useState("");  
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserOptions, setShowUserOptions] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false); 
@@ -46,7 +47,7 @@ function AnadirProveedor() {
         negocioId: negocio_id
       };
   
-      const response = await fetch("http://localhost:8080/api/proveedores", {
+      const response = await fetch("https://ispp-2425-g2.ew.r.appspot.com/api/proveedores", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
