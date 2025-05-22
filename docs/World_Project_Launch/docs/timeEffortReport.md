@@ -1,5 +1,5 @@
 ---
-title: Revision
+title: timeEffortReport
 groupNumber: 2
 groupName: GastroStock
 deliverable: World Project Launch
@@ -7,16 +7,11 @@ description: Report of time and tasks performed by each member of Group 2
 author: Writing by Mario Zambrano Zapata
 ---
 
-# [World Project Launch] Revision - GastroStock (Group 2)
+# [World Project Launch] timeEffortReport - GastroStock (Group 2)
 
 
-**Period:** 14/03/2025 - 11/04/2025  
-**Total Duration:** 337:41:44
-
-02/05/2025 - 23/05/2025
-**Total: 524:44:34**
-
-*(Clockify Logo in original)*
+**Period:** 02/05/2025 - 23/05/2025
+**Total Duration:** 524:44:34
 
 | Date       | Description                                                                    | Duration                                   | User                    |
 |------------|--------------------------------------------------------------------------------|--------------------------------------------|-------------------------|
